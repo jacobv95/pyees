@@ -58,14 +58,14 @@ class Pipe(System):
 
         self.unitConversion = unitConversion()
 
-        self.d = self.getParameter(d, 'm')
-        self.L = self.getParameter(L, 'm')
-        self.epsilon = self.getParameter(epsilon, '1')
+        self.d = self._getParameter(d, 'm')
+        self.L = self._getParameter(L, 'm')
+        self.epsilon = self._getParameter(epsilon, '1')
 
         self.area = np.pi / 4 * self.d**2
         super().__init__()
 
-    def getParameter(self, par, expectedUnit):
+    def _getParameter(self, par, expectedUnit):
         if isinstance(par, variable):
             if par.unit != expectedUnit:
                 raise ValueError(f'The unit of the input was {par.unit} but an input with a unit of {expectedUnit} was expected')
@@ -75,9 +75,9 @@ class Pipe(System):
 
     def curve(self, flow, rho, mu):
 
-        flow = self.getParameter(flow, 'm3/s')
-        rho = self.getParameter(rho, 'kg/m3')
-        mu = self.getParameter(mu, 'kg/m-s')
+        flow = self._getParameter(flow, 'm3/s')
+        rho = self._getParameter(rho, 'kg/m3')
+        mu = self._getParameter(mu, 'kg/m-s')
 
         v = flow / self.area
         Re = np.max([rho * v * self.d / mu, 1e-8])
@@ -119,9 +119,9 @@ class Pump(System):
 
 class Valve(System):
 
-    def __init__(self, dp, dpUnit, flow, flowUnit):
+    def __init__(self, dP, dPUnit, flow, flowUnit):
         U = unitConversion()
-        dp, _ = U.convertToSI(dp, dpUnit)
+        dp, _ = U.convertToSI(dP, dPUnit)
         flow, _ = U.convertToSI(flow, flowUnit)
         self.kv = dp / flow ** 2
         super().__init__()
@@ -141,7 +141,7 @@ def main():
     d = variable(30, 'mm')
     epsilon = 0.01
     dP = variable(1, 'bar')
-    P = pipe(d, L, epsilon)
+    P = Pipe(d, L, epsilon)
 
     mu = variable(0.0007973, 'kg/m-s')
     rho = variable(995.6, 'kg/s')

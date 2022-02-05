@@ -28,7 +28,7 @@ def prop(property, paramenterA, valueA, paramenterB, valueB, fluid):
 
 
 class variable():
-    def __init__(self, value=0, unit='m', upperBound=np.inf, lowerBound=-np.inf, nDigits=3, fix=False, pos=None) -> None:
+    def __init__(self, value, unit, upperBound=np.inf, lowerBound=-np.inf, nDigits=3, fix=False, pos=None) -> None:
         # unit
         self.unitOriginal = unit
         self.valueOriginal = value
