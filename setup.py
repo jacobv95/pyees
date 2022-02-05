@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
     name='pyees',
     packages=['pyees'],
-    version='1.2',
+    version='1.3',
     license='MIT',
     description='Python package to replace EES',
     author='Jacob Vestergaard',
     author_email='jacobvestergaard95@gmail.com',
     url='https://github.com/jacobv95/pyees',
-    download_url='https://github.com/jacobv95/pyees/archive/refs/tags/v1.tar.gz',
+    download_url='https://github.com/jacobv95/pyees/archive/refs/tags/v1.3.tar.gz',
     keywords=['python', 'EES'],
     install_requires=[            # I get to this in a second
         'pandas',
