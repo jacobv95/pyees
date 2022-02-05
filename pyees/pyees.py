@@ -1,4 +1,3 @@
-from tkinter import Variable
 import numpy as np
 from scipy.optimize import least_squares
 import CoolProp.CoolProp as CP
@@ -66,7 +65,7 @@ class variable():
         else:
             self.value = value
 
-    def _convertToOriginalUnit(self):
+    def convertToOriginalUnit(self):
         self.value, self.unit = self.unitConversion.convertFromSI(self.value, self.unitOriginal)
 
     def __repr__(self, original=False) -> str:
@@ -92,7 +91,7 @@ class variable():
         return variable(val, unit)
 
     def __radd__(self, other):
-        return other + self
+        return self + other
 
     def __sub__(self, other):
         if isinstance(other, variable):
@@ -122,11 +121,11 @@ class variable():
 
     def __mul__(self, other):
         if isinstance(other, variable):
-            unit = unitConversion().multiply(self.unitOriginal, other.unitOriginal)
-            val = self.valueOriginal * other.valueOriginal
+            unit = unitConversion().multiply(self.unit, other.unit)
+            val = self.value * other.value
         else:
-            unit = self.unitOriginal
-            val = self.valueOriginal * other
+            unit = self.unit
+            val = self.value * other
         return variable(val, unit)
 
     def __rmul__(self, other):
@@ -140,20 +139,20 @@ class variable():
 
     def __truediv__(self, other):
         if isinstance(other, variable):
-            unit = unitConversion().divide(self.unitOriginal, other.unitOriginal)
-            val = self.valueOriginal / other.valueOriginal
+            unit = unitConversion().divide(self.unit, other.unit)
+            val = self.value / other.value
         else:
-            unit = self.unitOriginal
-            val = self.valueOriginal / other
+            unit = self.unit
+            val = self.value / other
         return variable(val, unit)
 
     def __rtruediv__(self, other):
         if isinstance(other, variable):
-            unit = unitConversion().divide(other.unitOriginal, self.unitOriginal)
-            val = other.valueOriginal / self.valueOriginal
+            unit = unitConversion().divide(other.unit, self.unit)
+            val = other.value / self.value
         else:
-            unit = unitConversion().divide('1', self.unitOriginal)
-            val = other / self.valueOriginal
+            unit = unitConversion().divide('1', self.unit)
+            val = other / self.value
         return variable(val, unit)
 
     def __neg__(self):
@@ -259,7 +258,7 @@ class System():
 
         # convert all the varibles back in to their orogonal unit
         for var in self.variables:
-            var._convertToOriginalUnit()
+            var.convertToOriginalUnit()
 
     def _findScaleFactor(self):
         x = [var.value for var in self._notDefinedVariables]
@@ -313,7 +312,6 @@ class System():
                         self.scaleFactor[i] = scale
                     if not scale is None:
                         eq[i] = e / scale
-
         return eq
 
     def printVariables(self):
@@ -387,7 +385,7 @@ def main():
     A = variable(1000, 'L')
     B = variable(0.5, 'min/L')
     C = A * B
-    C._convertToOriginalUnit()
+    C.convertToOriginalUnit()
     D = C + B
     print(A)
 
