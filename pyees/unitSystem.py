@@ -361,6 +361,30 @@ class unit():
         u = self.combineUpperAndLower(upper, lower)
         return u
 
+    def power(self, unit1, power):
+
+        # determine the upper and lower units
+        upperUnit1, lowerUnit1 = self.splitCompositeUnit(unit1)
+
+        # increase the exponent of the upper and lower
+        if upperUnit1[0] != '1':
+            for i in range(len(upperUnit1)):
+                u = upperUnit1[i]
+                u, exponent = self.removeExponentFromUnit(u)
+                exponent *= power
+                u = u + str(int(exponent))
+                upperUnit1[i] = u
+        for i in range(len(lowerUnit1)):
+            u = lowerUnit1[i]
+            u, exponent = self.removeExponentFromUnit(u)
+            exponent *= power
+            u = u + str(int(exponent))
+            lowerUnit1[i] = u
+
+        # combine the upper and lower
+        u = self.combineUpperAndLower(upperUnit1, lowerUnit1)
+        return u
+
     def cancleUnits(self, upper, lower):
 
         # replace units with exponents with multiple occurances of the unit in upper

@@ -1,7 +1,10 @@
-import numpy as np
+from numpy import isin
+import autograd.numpy as np  # Thinly-wrapped numpy
+from autograd import grad
+from autograd.extend import primitive, defvjp
 import pandas as pd
 import os.path
-from scipy.interpolate import interp1d
+from scipy.interpolate import UnivariateSpline
 try:
     from pyees.unitSystem import unit as unitConversion
 except ModuleNotFoundError:
@@ -55,7 +58,6 @@ def _read(fileName, names, sheetNr=1):
 
 class Pipe(System):
     def __init__(self, d, L, epsilon):
-
         self.unitConversion = unitConversion()
 
         self.d = self._getParameter(d, 'm')
@@ -100,21 +102,32 @@ class Pipe(System):
         # hL = f * L/D * v**2 /(2*g)
         # dP = rho * g * hL
         dP = rho * f * self.L / self.d * v**2 / 2
-        return dP
+        return variable(dP, 'Pa')
 
 
 class Pump(System):
 
-    def __init__(self, datasheet, flowName, pressureName, sheetNr=1, kind='linear'):
+    def __init__(self, datasheet, flowName, pressureName, sheetNr=1, order=1):
         Q, dP = _read(datasheet, [flowName, pressureName], sheetNr)
-        self.inter = interp1d(Q, dP, kind=kind, fill_value='extrapolate')
+        self.inter = UnivariateSpline(Q, dP, k=order, ext=0)
+        self.diff = self.inter.derivative(n=1)
         super().__init__()
+        defvjp(Pump._curve, Pump.curve_g, argnums=[1, 2])
 
     def curve(self, flow):
         if isinstance(flow, variable):
             flow = flow.value
-        dP = self.inter(flow)
+        dP = self._curve(flow)
         return variable(dP, 'Pa')
+
+    @primitive
+    def _curve(self, flow):
+        dP = self.inter(flow)
+        return dP
+
+    def curve_g(ans, self, flow):
+        diff = self.diff(flow)
+        return lambda g: g * diff
 
 
 class Valve(System):
@@ -132,23 +145,38 @@ class Valve(System):
         if isinstance(flow, variable):
             flow = flow.value
         opening /= 100
-        val = (self.kv * opening + (1 - opening) * 100 * self.kv) * flow ** 2
-        return variable(val, 'Pa')
+        dP = (self.kv * opening + (1 - opening) * 100 * self.kv) * flow ** 2
+        return variable(dP, 'Pa')
 
 
 def main():
-    L = variable(10, 'm')
-    d = variable(30, 'mm')
-    epsilon = 0.01
-    dP = variable(1, 'bar')
-    P = Pipe(d, L, epsilon)
 
-    mu = variable(0.0007973, 'kg/m-s')
-    rho = variable(995.6, 'kg/s')
-    flow = variable(100, 'L/min')
-    dP.value = P.evaulate(flow, rho, mu)
-    dP._convertToOriginalUnit()
-    print(dP)
+    pump = Pump('pump.xlsx', 'Q', 'dP')
+    valve = Valve(1, 'bar', 100, 'L/min')
+    pipe = Pipe(d=variable(30, 'mm'), L=variable(1, 'm'), epsilon=0.25 / 30)
+
+    def f(x):
+        flow = variable(x[0], 'L/min')
+        cost = pump.curve(flow)
+        # cost = pump.curve(x[0])
+        # cost = flow ** 2
+        if isinstance(cost, variable):
+            cost = cost.value
+        # print(cost)
+        # exit()
+        return cost
+
+    def FD(func, x0):
+        dx = 0.001
+        f1 = func(x0)
+        f2 = func(x0 + dx)
+        df = (f2 - f1) / dx
+        return df
+
+    x0 = np.array([500], dtype=float)
+    g = grad(f)
+    print('grad', g(x0))
+    print('fd', FD(f, x0))
 
 
 if __name__ == "__main__":
