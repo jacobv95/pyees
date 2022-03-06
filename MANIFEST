@@ -3,5 +3,6 @@ setup.cfg
 setup.py
 pyees\__init__.py
 pyees\components.py
+pyees\prop.py
 pyees\pyees.py
 pyees\unitSystem.py

@@ -195,9 +195,9 @@ class unit():
 
     def splitCompositeUnit(self, compositeUnit):
 
-        special_characters = """!@#$%^&*()+?_=,.<>\\"""
+        special_characters = """!@#$%^&*()+?_=.,<>\\"""
         if any(s in compositeUnit for s in special_characters):
-            raise ValueError('The unit can only contain slashes (/) and hyphens (-)')
+            raise ValueError('The unit can only contain slashes (/), hyphens (-)')
 
         # remove spaces
         compositeUnit = compositeUnit.replace(' ', '')
@@ -487,24 +487,3 @@ class unit():
                 u += '/' + '-'.join(lower)
 
         return u
-
-
-def testConvertToSiAndBack():
-    u = 'mm3'
-    valOut, unitOut = unit().convertToSI(1, u)
-    print(valOut, unitOut)
-
-    valOut, unitOut = unit().convertFromSI(valOut, u)
-    print(valOut, unitOut)
-
-
-def testMultiply():
-    unit1 = 'L/min'
-    unit2 = '1/min3'
-    unitOut = unit().divide(unit1, unit2)
-    print(unitOut)
-
-
-if __name__ == '__main__':
-    testConvertToSiAndBack()
-    # testMultiply()

@@ -179,7 +179,9 @@ class variable():
             valSelf, unitSelf = self.unitConversion.convertFromSI(valSelf, self.unitOriginal)
             valOther, unitOther = other.unitConversion.convertFromSI(valOther, other.unitOriginal)
             if unitOther != '1':
-                raise ValueError('A measurement with a unit cannot be raise to the power of another measurement with a unit')
+                raise ValueError('The exponent can not have a unit')
+            if unitSelf != '1' and not valOther.is_integer():
+                raise ValueError('A measurement with a unit can only be raised to an integer power')
             unit = unitConversion().power(unitSelf, valOther)
 
             val = valSelf ** valOther
@@ -204,7 +206,9 @@ class variable():
             valOther, unitOther = other.unitConversion.convertFromSI(valOther, other.unitOriginal)
             uncertOther, _ = other.unitConversion.convertFromSI(other.uncert, other.unitOriginal)
             if unitSelf != '1':
-                raise ValueError('A measurement with a unit cannot be raise to the power of another measurement with a unit')
+                raise ValueError('The exponent can not have a unit')
+            if unitOther != '1' and not valSelf.is_integer():
+                raise ValueError('A measurement with a unit can only be raised to an integer power')
             unit = unitConversion().power(unitOther, valSelf)
 
             val = valOther ** valSelf
@@ -715,10 +719,10 @@ class System():
 
 
 def main():
-    A = variable(5, 'L/min', uncert=0.1)
+    A = variable(1.3, '1', uncert=0.1)
     B = variable(2, 'L/min', uncert=5)
     C = variable(3, 'm', uncert=0.5)
-    D = A**3
+    D = B ** A
     D.convertToOriginalUnit()
     D.nDigits = 10
     print(D.printValue())
