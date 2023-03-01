@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: pyees
+Version: 1.0
+Summary: EES but for python
+Home-page: https://github.com/jacobv95/pyees
+Download-URL: https://github.com/jacobv95/pyees/archive/refs/tags/v1.0.tar.gz
+Author: Jacob Vestergaard
+Author-email: jacobvestergaard95@gmail.com
+License: MIT
+Keywords: python,data processing,uncertanty,EES
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+License-File: LICENSE.txt
