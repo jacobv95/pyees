@@ -1,8 +1,12 @@
-from solve import solve
-from variable import variable
 import unittest
 import numpy as np
-
+try:
+    from .solve import solve
+    from .variable import variable
+except ImportError:
+    from solve import solve
+    from variable import variable
+    
 tol = 1e-5
 solveTol = 1e-12
 

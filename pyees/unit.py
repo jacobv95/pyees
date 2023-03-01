@@ -1,6 +1,9 @@
 import numpy as np
-from unitSystem import knownCharacters, knownPrefixes, knownUnits, baseUnit, _unitConversion, knownUnitsDict
-
+try:
+    from .unitSystem import knownCharacters, knownPrefixes, knownUnits, baseUnit, _unitConversion, knownUnitsDict
+except ImportError:
+    from unitSystem import knownCharacters, knownPrefixes, knownUnits, baseUnit, _unitConversion, knownUnitsDict
+    
 
 class unit():
 

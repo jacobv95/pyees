@@ -1,8 +1,10 @@
 import unittest
 import numpy as np
 from random import uniform
-from variable import variable
-
+try:
+    from .variable import variable
+except ImportError:
+    from variable import variable
 
 class test(unittest.TestCase): 
 

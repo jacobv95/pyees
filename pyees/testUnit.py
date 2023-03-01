@@ -1,6 +1,8 @@
 import unittest
-from unit import unit
-
+try:
+    from .unit import unit
+except ImportError:
+    from unit import unit
 
 class test(unittest.TestCase):
 

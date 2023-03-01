@@ -1,6 +1,9 @@
 import unittest
 import numpy as np
-from fit import *
+try:
+    from .fit import *
+except ImportError:
+    from fit import *
 
 
 class test(unittest.TestCase):

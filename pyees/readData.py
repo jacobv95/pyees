@@ -4,7 +4,10 @@ import xlrd
 import os.path
 import re
 import string
-from variable import variable
+try:
+    from .variable import variable
+except ImportError:
+    from variable import variable
 
 
 def readData(xlFile, dataRange, uncertRange=None):

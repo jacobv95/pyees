@@ -1,6 +1,9 @@
-from variable import variable
 from scipy.optimize import minimize
 import numpy as np
+try:
+    from .variable import variable
+except ImportError:
+    from variable import variable
 
 
 

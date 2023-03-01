@@ -1,10 +1,14 @@
 import numpy as np
 import scipy.odr as odr
 import string
-from variable import variable
-from unit import unit
-
-
+try:
+    from .variable import variable
+    from .unit import unit
+except ImportError:
+    from variable import variable
+    from unit import unit
+    
+    
 class _fit():
     def __init__(self, func, x, y, p0) -> None:
         self.func = func

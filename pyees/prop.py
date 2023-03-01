@@ -1,7 +1,11 @@
 from pyfluids import Fluid, FluidsList, Input, HumidAir, InputHumidAir
-from variable import variable
-from unit import unit
-
+try:
+    from .variable import variable
+    from .unit import unit
+except ImportError:
+    from variable import variable
+    from unit import unit
+    
 dx = 0.00001
 
 def prop(property, fluid, **kwargs):

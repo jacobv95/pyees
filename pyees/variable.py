@@ -1,7 +1,10 @@
 from copy import deepcopy
 import numpy as np
-from unit import unit
-
+try:
+    from .unit import unit
+except ImportError:
+    from unit import unit
+    
 HANDLED_FUNCTIONS = {}
 
 

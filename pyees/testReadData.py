@@ -1,7 +1,9 @@
 import unittest
 import numpy as np
-from readData import readData
-
+try:
+    from .readData import readData
+except ImportError:
+    from readData import readData
 
 class test(unittest.TestCase):
 

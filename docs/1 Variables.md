@@ -1,6 +1,15 @@
 
 # Variables
 
+## Example
+We would like to calculate <img src="https://render.githubusercontent.com/render/math?math=C=A\cdot B"> given to measurements <img src="https://render.githubusercontent.com/render/math?math=A=12.3"> and <img src="https://render.githubusercontent.com/render/math?math=B=35.1"> both with uncertanties <img src="https://render.githubusercontent.com/render/math?math=\sigma_A=2.6"> and <img src="https://render.githubusercontent.com/render/math?math=\sigma_B=8.9">. The value of <img src="https://render.githubusercontent.com/render/math?math=C"> is simply computed as <img src="https://render.githubusercontent.com/render/math?math=C=12.3\cdot 35.1 = 431.73">. The uncertanty of <img src="https://render.githubusercontent.com/render/math?math=C"> is determined using the following equation
+
+<img src="https://render.githubusercontent.com/render/math?math=\sigma_C = \sqrt{  \left(\frac{\partial C}{\partial A} \sigma_A\right)^2 %2B \left(\frac{\partial C}{\partial B} \sigma_B\right)^2 %2B 2\frac{\partial C}{\partial A}\frac{\partial C}{\partial B}\sigma_{AB}}">
+
+Here <img src="https://render.githubusercontent.com/render/math?math=\sigma_{AB}"> is the covariance of the measurements of <img src="https://render.githubusercontent.com/render/math?math=A"> and <img src="https://render.githubusercontent.com/render/math?math=B">. We will assumed that this is zero for now. The equation above is evaluated as follows:
+
+<img src="https://render.githubusercontent.com/render/math?math=\sigma_C = \sqrt{  \left(B \sigma_A\right)^2 %2B \left(A\sigma_B\right)^2 } = \sqrt{  \left(35.1 \cdot 2.6\right)^2 %2B \left(12.3 \cdot 8.9\right)^2 } = \sqrt{(91.26)^2 %2B (109.47)^2}=142.52">
+
 You can create a variables as follows
 
 ```

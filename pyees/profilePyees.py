@@ -1,8 +1,11 @@
 import cProfile
 import pstats
 import io
-from variable import variable
-
+try:
+    from .variable import variable
+except ImportError:
+    from variable import variable
+    
 pr = cProfile.Profile()
 pr.enable()
 
