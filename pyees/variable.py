@@ -481,7 +481,7 @@ class variable():
     def sin(self):
         if str(self._unitObject._SIBaseUnit) != 'rad':
             raise ValueError('You can only take sin of an angle')
-
+        
         outputUnit = '1'
         if self._unitObject._assertEqual('rad'):
             val = np.sin(self.value)
@@ -489,7 +489,7 @@ class variable():
         else:
             val = np.sin(np.pi / 180 * self.value)
             grad = [np.pi / 180 * np.cos(np.pi / 180 * self.value)]
-
+        
         vars = [self]
 
         var = variable(val, outputUnit)
@@ -549,7 +549,6 @@ class variable():
         if not all(issubclass(t, variable) for t in types):
             return NotImplemented
         return HANDLED_FUNCTIONS[func](*args, **kwargs)
-
 
     def _compareLengths(self, other):
         if self.len() != other.len():
