@@ -874,7 +874,7 @@ class test(unittest.TestCase):
     def testUnitless(self):
         with self.assertRaises(Exception) as context:
             A = variable(10, 'P', 1)
-        self.assertTrue('The unit (P) was not found. Therefore it was interpreted as a prefix and a unit. However the prefix (P) was not found' in str(context.exception))
+        self.assertTrue('''The unit (P) was not found. Therefore it was interpreted as a prefix and a unit. However a combination of prefix and unit which matches P was not found''' in str(context.exception))
 
         A = variable(10, '1', 1)
         self.assertEqual(A.value, 10)
@@ -1034,19 +1034,19 @@ class test(unittest.TestCase):
         self.assertEqual(C.uncert, np.sqrt(2.3**2 + 1.7**2))
 
     def testTrig(self):
-        a = variable(75, '°', 1)
+        a = variable(75, 'deg', 1)
         b = np.sin(a)
         self.assertAlmostEqual(b.value, 0.96592582628)
         self.assertEqual(b.unit, '1')
         self.assertAlmostEqual(b.uncert, np.sqrt(((1 * np.pi / 180) * (np.cos(75 * np.pi / 180)))**2))
 
-        a = variable(75, '°', 1)
+        a = variable(75, 'deg', 1)
         b = np.cos(a)
         self.assertAlmostEqual(b.value, 0.2588190451)
         self.assertEqual(b.unit, '1')
         self.assertAlmostEqual(b.uncert, np.sqrt(((1 * np.pi / 180) * (-np.sin(75 * np.pi / 180)))**2))
 
-        a = variable(75, '°', 1)
+        a = variable(75, 'deg', 1)
         b = np.tan(a)
         self.assertAlmostEqual(b.value, 3.73205080757)
         self.assertEqual(b.unit, '1')
@@ -1072,16 +1072,16 @@ class test(unittest.TestCase):
 
     def testProductRule(self):
 
-        a = variable(23, '°', 2)
+        a = variable(23, 'deg', 2)
         b = np.sin(a)
         c = a * b
         val = 23
         unc = 2
         self.assertEqual(c.value, val * np.sin(np.pi / 180 * val))
-        self.assertEqual(c.unit, '°')
+        self.assertEqual(c.unit, 'deg')
         self.assertEqual(c.uncert, np.sqrt((unc * (np.sin(np.pi / 180 * val) + (np.pi / 180 * val) * np.cos(np.pi / 180 * val)))**2))
 
-        a = variable(23, '°', 2)
+        a = variable(23, 'deg', 2)
         a.convert('rad')
         b = np.sin(a)
         c = a * b
@@ -1091,7 +1091,7 @@ class test(unittest.TestCase):
         self.assertEqual(c.unit, 'rad')
         self.assertEqual(c.uncert, np.sqrt((unc * (np.sin(val) + val * np.cos(val)))**2))
 
-        a = variable(23, '°', 2)
+        a = variable(23, 'deg', 2)
         b = np.sin(a)
         a.convert('rad')
         c = a * b
@@ -1103,12 +1103,12 @@ class test(unittest.TestCase):
 
         a = variable(np.pi / 180 * 23, 'rad', np.pi / 180 * 2)
         b = np.sin(a)
-        a.convert('°')
+        a.convert('deg')
         c = a * b
         val = 23
         unc = 2
         self.assertEqual(c.value, val * np.sin(np.pi / 180 * val))
-        self.assertEqual(c.unit, '°')
+        self.assertEqual(c.unit, 'deg')
         self.assertEqual(c.uncert, np.sqrt((unc * (np.sin(np.pi / 180 * val) + (np.pi / 180 * val) * np.cos(np.pi / 180 * val)))**2))
 
         a = variable(200, 'L/min', 1.5)
@@ -1149,13 +1149,13 @@ class test(unittest.TestCase):
         self.assertEqual(b.unit, 'L2/min2')
         self.assertAlmostEqual(b.uncert, np.sqrt((1.5 * 2 * 200 * np.exp(-200 / 100) * ((2 * 100 - 200) * np.sin(200) + 100 * 200 * np.cos(200)) / (23.8 * 100))**2))
 
-        a = variable(37, '°', 2.3)
+        a = variable(37, 'deg', 2.3)
         b = a**2 * np.cos(3 * a * np.sin(a))
         self.assertAlmostEqual(b.value, 539.274244145)
-        self.assertEqual(b.unit, '°2')
+        self.assertEqual(b.unit, 'deg2')
         self.assertAlmostEqual(b.uncert, np.sqrt((2.3 * (-44.47986837334018052364896281900061654705050149285482386191581710))**2))
 
-        a = variable(37, '°', 2.3)
+        a = variable(37, 'deg', 2.3)
         b = np.cos(3 * a * np.sin(a))
         a.convert('rad')
         b *= a**2

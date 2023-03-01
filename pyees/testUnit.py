@@ -118,19 +118,26 @@ class test(unittest.TestCase):
         c = a * b
         c = unit(c)
         converter = c.getConverter('W')
+        
+        a = unit('A')
+        b = unit('ohm')
+        c = a * b
+        c = unit(c)
+        converter = c.getConverter('V')
+        
         self.assertAlmostEqual(converter.convert(1, useOffset=True), 1)
 
         with self.assertRaises(Exception) as context:
-            a = unit('µ')
-        self.assertEqual('The unit (µ) was not found. Therefore it was interpreted as a prefix and a unit. Both the prefix and the unit were found. However, the unit "1" cannot have a prefix', str(context.exception))
+            a = unit('mu')
+        self.assertEqual('''The unit (mu) was not found. Therefore it was interpreted as a prefix and a unit. The prefix was identified as "mu" and the unit was identified as "1". However, the unit "1" cannot have a prefix''', str(context.exception))
 
         with self.assertRaises(Exception) as context:
             a = unit('1/M')
-        self.assertEqual('The unit (M) was not found. Therefore it was interpreted as a prefix and a unit. Both the prefix and the unit were found. However, the unit "1" cannot have a prefix', str(context.exception))
+        self.assertEqual('The unit (M) was not found. Therefore it was interpreted as a prefix and a unit. The prefix was identified as "M" and the unit was identified as "1". However, the unit "1" cannot have a prefix', str(context.exception))
 
         with self.assertRaises(Exception) as context:
             a = unit('1/k')
-        self.assertEqual('The unit (k) was not found. Therefore it was interpreted as a prefix and a unit. Both the prefix and the unit were found. However, the unit "1" cannot have a prefix', str(context.exception))
+        self.assertEqual('The unit (k) was not found. Therefore it was interpreted as a prefix and a unit. The prefix was identified as "k" and the unit was identified as "1". However, the unit "1" cannot have a prefix', str(context.exception))
 
         a = unit('L/min')
         with self.assertRaises(Exception) as context:

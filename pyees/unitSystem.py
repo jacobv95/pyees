@@ -79,9 +79,9 @@ pressure = {
 temperature = {
     'K': _unitConversion(1),
     'C': _unitConversion(1, 273.15),
-    '°C': _unitConversion(1, 273.15),
+    # '°C': _unitConversion(1, 273.15),
     'F': _unitConversion(5 / 9, 273.15 - 32 * 5 / 9),
-    '°F': _unitConversion(5 / 9, 273.15 - 32 * 5 / 9)
+    # '°F': _unitConversion(5 / 9, 273.15 - 32 * 5 / 9)
 
 }
 
@@ -90,7 +90,6 @@ temperatureDifference = {
     'DELTAC': _unitConversion(1),
     'DELTAF': _unitConversion(5 / 9)
 }
-
 
 time = {
     's': _unitConversion(1),
@@ -112,7 +111,7 @@ length = {
 
 angle = {
     'rad': _unitConversion(1),
-    '°': _unitConversion(np.pi / 180)
+    'deg': _unitConversion(np.pi / 180)
 }
 
 current = {
@@ -125,6 +124,14 @@ voltage = {
 
 frequency = {
     'Hz': _unitConversion(1)
+}
+
+resistance = {
+    'ohm': _unitConversion(1)
+}
+
+kinematicViscosity = {
+    'St': _unitConversion(1e-4)
 }
 
 knownUnitsDict = {
@@ -142,7 +149,9 @@ knownUnitsDict = {
     'kg-m2/s3-A': voltage,
     '1': baseUnit,
     'Hz': frequency,
-    'rad': angle
+    'rad': angle,
+    'kg-m2/s3-A2' : resistance,
+    'm2/s' : kinematicViscosity
 }
 
 knownPrefixes = {
@@ -151,11 +160,11 @@ knownPrefixes = {
     'M': 1e6,
     'k': 1e3,
     'h': 1e2,
-    # 'da': 1e1, # TODO 'da' wont work, as the prefix is pulled from a unit as the first character
+    'da': 1e1,
     'd': 1e-1,
     'c': 1e-2,
     'm': 1e-3,
-    'µ': 1e-6,
+    'mu': 1e-6,
     'n': 1e-9,
     'p': 1e-12
 }
@@ -168,6 +177,8 @@ for key, d in knownUnitsDict.items():
             knownUnits[item] = [key, knownUnitsDict[key][item]]
         else:
             raise Warning(f'The unit {item} known in more than one unit system')
+
+
 
 # determine the known characters within the unit system
 knownCharacters = list(knownUnits.keys()) + list(knownPrefixes.keys())
@@ -204,3 +215,4 @@ for elem in unitPrefixCombinations:
             raise ValueError(f'The unit {unit} was not found.')
 
         raise ValueError(f'The unit {elem} can be interpreted as a {unitType1} or a {unitType2} with the prefix {prefix}. The cannot be distiguished.')
+

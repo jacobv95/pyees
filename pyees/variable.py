@@ -781,5 +781,3 @@ def np_mean_for_variable(x, *args, **kwargs):
             unc = None
     return variable(val, x.unit, unc)
 
-
-

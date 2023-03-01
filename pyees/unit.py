@@ -271,20 +271,31 @@ class unit():
 
     @staticmethod
     def _removePrefixFromUnit(unit):
-
+        
         if unit in knownUnits:
             return unit, None
 
         # The unit was not found. This must be because the unit has a prefix
-        prefix = unit[0:1]
-        unit = unit[1:]
+        found = False
+        
+        for p in knownPrefixes.keys():
+            index = unit.find(p)
+            if index == -1:
+                continue
+            u = unit[len(p):]
+            if not u in knownUnits:
+                continue
+            found = True
+            prefix, unit = p,u
+            break
+        
 
-        if prefix not in knownPrefixes:
-            raise ValueError(f'The unit ({prefix}{unit}) was not found. Therefore it was interpreted as a prefix and a unit. However the prefix ({prefix}) was not found')
-
-        if unit in baseUnit:
-            raise ValueError(
-                f'The unit ({prefix}{unit}) was not found. Therefore it was interpreted as a prefix and a unit. Both the prefix and the unit were found. However, the unit "1" cannot have a prefix')
+        if not found:
+            raise ValueError(f'The unit ({unit}) was not found. Therefore it was interpreted as a prefix and a unit. However a combination of prefix and unit which matches {unit} was not found')
+        
+        if unit in baseUnit and unit != "%":
+            unit = "1"
+            raise ValueError(f'The unit ({prefix}) was not found. Therefore it was interpreted as a prefix and a unit. The prefix was identified as "{p}" and the unit was identified as "{unit}". However, the unit "1" cannot have a prefix')
 
         # look for the unit without the prefix
         if not unit in knownUnits:
@@ -581,4 +592,6 @@ class unit():
 
         self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
         self._converterToSI = self.getConverter(self._SIBaseUnit)
+
+
 
