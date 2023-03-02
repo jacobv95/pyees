@@ -5,42 +5,18 @@ try:
 except ImportError:
     from unit import unit
     
-HANDLED_FUNCTIONS = {}
 
-
-class variable():
-    def __init__(self, value, unitStr='', uncert=None, nDigits=3) -> None:
+class scalarVariable():
+    def __init__(self, value, unitStr, uncert, nDigits) -> None:
+        
+        self._value = value
+        self._uncert = uncert
 
         # create a unit object
         self._unitObject = unitStr if isinstance(unitStr, unit) else unit(unitStr)
 
         # number of digits to show
         self.nDigits = nDigits
-
-        # store the value and the uncertaty
-        def evaluateInput(input):
-            if isinstance(input, np.ndarray):
-                return input
-            else:
-                listLike = False
-                try:
-                    len(input)
-                    listLike = True
-                except:
-                    pass
-                if listLike:
-                    return np.array(input, dtype=float)
-                else:
-                    return np.array([input], dtype=float)
-        self._value = evaluateInput(value)
-        if uncert is None:
-            self._uncert = evaluateInput([0] * self.len())
-        else:
-            self._uncert = evaluateInput(uncert)
-
-        # check the length of the uncertanty and the value
-        if self.len() != len(self._uncert):
-            raise ValueError('The lenght of the value has to be equal to the lenght of the uncertanty')
 
         # value and unit in SI. This is used when determining the gradient in the uncertanty expression
         self._getConverterToSI()
@@ -54,8 +30,6 @@ class variable():
 
     @property
     def value(self):
-        if self.len() == 1:
-            return self._value[0]
         return self._value
 
     @property
@@ -64,8 +38,6 @@ class variable():
 
     @property
     def uncert(self):
-        if self.len() == 1:
-            return self._uncert[0]
         return self._uncert
 
     def convert(self, newUnit):
@@ -76,24 +48,7 @@ class variable():
 
         # update the converter to SI
         self._getConverterToSI()
-
-    def len(self):
-        return len(self._value)
-
-    def __getitem__(self, index):
-        if isinstance(index, int) or isinstance(index, slice):
-            if index >= self.len():
-                raise IndexError('Index out of bounds')
-            if self.len() == 1:
-                if index != 0:
-                    raise IndexError('Index out of bound')
-                return variable(self.value, self._unitObject, self.uncert)
-            return variable(self.value[index], self._unitObject, self.uncert[index])
-        else:
-            val = [self.value[elem]for elem in index]
-            unc = [self.uncert[elem]for elem in index]
-            return variable(val, self._unitObject, unc)
-
+ 
     def printUncertanty(self, value, uncert):
         # function to print number
         if uncert == 0 or uncert is None or np.isnan(uncert):
@@ -149,55 +104,17 @@ class variable():
         else:
             unitStr = rf'{squareBracketLeft}{unitStr}{squareBracketRight}'
 
-        if self.len() == 1:
-            # print a single value
-            value = self.value
-            if self.uncert != 0:
-                uncert = self.uncert
 
-            value, uncert = self.printUncertanty(value, uncert)
-            if uncert is None:
-                return rf'{value}{space}{unitStr}'
-            else:
-                return rf'{value} {pm} {uncert}{space}{unitStr}'
+        # print a single value
+        value = self.value
+        if self.uncert != 0:
+            uncert = self.uncert
 
+        value, uncert = self.printUncertanty(value, uncert)
+        if uncert is None:
+            return rf'{value}{space}{unitStr}'
         else:
-            # print array of values
-            valStr = []
-            uncStr = []
-            for v, u in zip(self._value, self._uncert):
-                v, u = self.printUncertanty(v, u)
-                valStr.append(v)
-                uncStr.append(u)
-
-            if all(self._uncert == 0) or all(elem is None for elem in self._uncert):
-                out = rf''
-                out += rf'['
-                for i, elem in enumerate(valStr):
-                    out += rf'{elem}'
-                    if i != len(valStr) - 1:
-                        out += rf', '
-                out += rf']'
-                out += rf'{space}{unitStr}'
-                return out
-            else:
-                # find number of significant digits in uncertanty
-                out = rf''
-                out += rf'['
-                for i, elem in enumerate(valStr):
-                    out += rf'{elem}'
-                    if i != len(valStr) - 1:
-                        out += r', '
-                out += rf']'
-                out += rf' {pm} '
-                out += rf'['
-                for i, elem in enumerate(uncStr):
-                    out += rf'{elem}'
-                    if i != len(uncStr) - 1:
-                        out += r', '
-                out += rf']'
-                out += rf'{space}{unitStr}'
-                return out
+                return rf'{value} {pm} {uncert}{space}{unitStr}'
 
     def _addDependents(self, vars, grads):
         # copy the gradients
@@ -235,10 +152,7 @@ class variable():
     def _calculateUncertanty(self):
 
         # variance from each measurement
-        if self.len() == 0:
-            variance = 0
-        else:
-            variance = np.zeros(self.len())
+        variance = 0
         selfScaleToSI = self._converterToSI.convert(1, useOffset=False)
         for var, grad in self.dependsOn.items():
             # the gradient is scaled with the inverse of the conversion of the unit to SI units.
@@ -265,7 +179,7 @@ class variable():
         
     def __add__(self, other):
         
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self + variable(other, self.unit)
 
         # determine if the two variable can be added
@@ -307,7 +221,7 @@ class variable():
         return self + other
 
     def __sub__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self - variable(other, self.unit)
 
         # determine if the variables can be subtracted
@@ -350,7 +264,7 @@ class variable():
         return - self + other
 
     def __mul__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self * variable(other)
 
         val = self.value * other.value
@@ -372,11 +286,9 @@ class variable():
         return self * other
 
     def __pow__(self, other):
-        if not isinstance(other, variable):
-            return self ** variable(other)
+        if not isinstance(other, scalarVariable):
+            return self ** variable(other, '')
 
-        if other.len() != 1:
-            raise ValueError('The exponent has to be a single number')
         if str(other.unit) != '1':
             raise ValueError('The exponent can not have a unit')
 
@@ -403,7 +315,7 @@ class variable():
         return variable(other, '1') ** self
 
     def __truediv__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self / variable(other)
 
         val = self._value / other._value
@@ -422,7 +334,7 @@ class variable():
         return var
 
     def __rtruediv__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return variable(other) / self
 
         val = other._value / self._value
@@ -542,20 +454,23 @@ class variable():
         return variable(np.abs(self.value), self.unit, self.uncert)
 
     def __array_function__(self, func, types, args, kwargs):
-        if func not in HANDLED_FUNCTIONS:
-            return NotImplemented
-        # Note: this allows subclasses that don't override
-        # __array_function__ to handle Physical objects
-        if not all(issubclass(t, variable) for t in types):
-            return NotImplemented
-        return HANDLED_FUNCTIONS[func](*args, **kwargs)
-
-    def _compareLengths(self, other):
-        if self.len() != other.len():
-            raise ValueError(f'You cannot compare {self} and {other} as they do not have the same length')
+        match func:
+            case np.max:
+                return self.max()
+            case np.min:
+                return self.min()
+            case np.mean:
+                return self.mean()
+    
+    def max(self):
+        return self
+    def min(self):
+        return self
+    def mean(self):
+        return self
 
     def __lt__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self < variable(other, self.unit)
 
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
@@ -567,22 +482,14 @@ class variable():
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
 
-        if self.len() == 1 and other.len() == 1:
-            out =  self.value < other.value
-        elif self.len() == 1:
-            out = list(self.value < other.value)
-        elif other.len() == 1:
-            out = list(self.value < other.value)
-        else:
-            self._compareLengths(other)
-            out = [elemA < elemB for elemA, elemB in zip(self.value, other.value)]
+        out = self.value < other.value
         
         self.convert(selfUnit)
         other.convert(otherUnit)
         return out
 
     def __le__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self <= variable(other, self.unit)
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
             raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
@@ -593,22 +500,14 @@ class variable():
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
         
-        if self.len() == 1 and other.len() == 1:
-            out = self.value <= other.value
-        elif self.len() == 1:
-            out = list(self.value <= other.value)
-        elif other.len() == 1:
-            out = list(self.value <= other.value)
-        else:
-            self._compareLengths(other)
-            out = [elemA <= elemB for elemA, elemB in zip(self.value, other.value)]
-
+        out = self.value <= other.value
+        
         self.convert(selfUnit)
         other.convert(otherUnit)
         return out
     
     def __gt__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self > variable(other, self.unit)
 
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
@@ -620,22 +519,14 @@ class variable():
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
 
-        if self.len() == 1 and other.len() == 1:
-            out =  self.value > other.value
-        elif self.len() == 1:
-            out =  list(self.value > other.value)
-        elif other.len() == 1:
-            out =  list(self.value > other.value)
-        else:
-            self._compareLengths(other)
-            out =  [elemA > elemB for elemA, elemB in zip(self.value, other.value)]
-        
+        out = self.value > other.value
+           
         self.convert(selfUnit)
         other.convert(otherUnit)
         return out
    
     def __ge__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self >= variable(other, self.unit)
 
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
@@ -647,22 +538,14 @@ class variable():
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
 
-        if self.len() == 1 and other.len() == 1:
-            out =  self.value >= other.value
-        elif self.len() == 1:
-            out =  list(self.value >= other.value)
-        elif other.len() == 1:
-            out =  list(self.value >= other.value)
-        else:
-            self._compareLengths(other)
-            out =  [elemA >= elemB for elemA, elemB in zip(self.value, other.value)]
-
+        out = self.value >= other.value
+        
         self.convert(selfUnit)
         other.convert(otherUnit)
         return out
 
     def __eq__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self == variable(other, self.unit)
 
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
@@ -673,23 +556,18 @@ class variable():
         
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
-
-        if self.len() == 1 and other.len() == 1:
-            out =  self.value == other.value
-        elif self.len() == 1:
-            out =  list(self.value == other.value)
-        elif other.len() == 1:
-            out =  list(self.value == other.value)
-        else:
-            self._compareLengths(other)
-            out =  [elemA == elemB for elemA, elemB in zip(self.value, other.value)]
-
+        
+        if isinstance(self, arrayVariable) and isinstance(other, arrayVariable):
+            if len(self) != len(other):
+                raise ValueError(f"operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}")    
+        out = self.value == other.value
+            
         self.convert(selfUnit)
         other.convert(otherUnit)
         return out
 
     def __ne__(self, other):
-        if not isinstance(other, variable):
+        if not isinstance(other, scalarVariable):
             return self != variable(other, self.unit)
 
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
@@ -701,16 +579,11 @@ class variable():
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
 
-        if self.len() == 1 and other.len() == 1:
-            out = self.value != other.value
-        elif self.len() == 1:
-            out = list(self.value != other.value)
-        elif other.len() == 1:
-            out = list(self.value != other.value)
-        else:
-            self._compareLengths(other)
-            out = [elemA != elemB for elemA, elemB in zip(self.value, other.value)]
-
+        if isinstance(self, arrayVariable) and isinstance(other, arrayVariable):
+            if len(self) != len(other):
+                raise ValueError(f"operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}")    
+        out = self.value != other.value
+            
         self.convert(selfUnit)
         other.convert(otherUnit)
         return out
@@ -719,64 +592,175 @@ class variable():
         return id(self)
 
 
-def implements(numpy_function):
-    """Register an __array_function__ implementation for Physical objects."""
-    def decorator(func):
-        HANDLED_FUNCTIONS[numpy_function] = func
-        return func
-    return decorator
 
+class arrayVariable(scalarVariable):
+   
+    def __len__(self):
+        return len(self._value)
 
-@implements(np.max)
-def np_max_for_variable(x, *args, **kwargs):
-    if x.len() > 1:
-        index = np.argmax(x.value)
-        val = x.value[index]
-        if not x.uncert is None:
-            unc = x.uncert[index]
+    def __getitem__(self, index):
+        if isinstance(index, int) or isinstance(index, slice):
+            if index >= len(self):
+                raise IndexError('Index out of bounds')
+            if len(self) == 1:
+                if index != 0:
+                    raise IndexError('Index out of bound')
+                return variable(self.value, self._unitObject, self.uncert)
+            return variable(self.value[index], self._unitObject, self.uncert[index])
         else:
-            unc = None
+            val = [self.value[elem]for elem in index]
+            unc = [self.uncert[elem]for elem in index]
+            return variable(val, self._unitObject, unc)
+ 
+    def __str__(self, pretty=None) -> str:
+        unitStr = self._unitObject.__str__(pretty=pretty)
+
+        if pretty:
+            pm = r'\pm'
+            space = r'\ '
+            squareBracketLeft = r'\left ['
+            squareBracketRight = r'\right ]'
+
+        else:
+            pm = '+/-'
+            squareBracketLeft = '['
+            squareBracketRight = ']'
+            space = ' '
+
+        if unitStr == '1':
+            unitStr = ''
+        else:
+            unitStr = rf'{squareBracketLeft}{unitStr}{squareBracketRight}'
+
+        # print array of values
+        valStr = []
+        uncStr = []
+        for v, u in zip(self._value, self._uncert):
+            v, u = self.printUncertanty(v, u)
+            valStr.append(v)
+            uncStr.append(u)
+
+        if all(self._uncert == 0) or all(elem is None for elem in self._uncert):
+            out = rf''
+            out += rf'['
+            for i, elem in enumerate(valStr):
+                out += rf'{elem}'
+                if i != len(valStr) - 1:
+                    out += rf', '
+            out += rf']'
+            out += rf'{space}{unitStr}'
+            return out
+        else:
+            # find number of significant digits in uncertanty
+            out = rf''
+            out += rf'['
+            for i, elem in enumerate(valStr):
+                out += rf'{elem}'
+                if i != len(valStr) - 1:
+                    out += r', '
+            out += rf']'
+            out += rf' {pm} '
+            out += rf'['
+            for i, elem in enumerate(uncStr):
+                out += rf'{elem}'
+                if i != len(uncStr) - 1:
+                    out += r', '
+            out += rf']'
+            out += rf'{space}{unitStr}'
+            return out
+    def __pow__(self, other):
+        if not (isinstance(other, scalarVariable) or isinstance(other, arrayVariable)):
+            return self ** variable(other)
+    
+        if isinstance(other, arrayVariable):
+            out = [a**b for a,b in zip(self, other)]
+        else:
+            out = [a**other for a in self]
+            
+        val = [elem.value for elem in out]
+        unc = [elem.uncert for elem in out]
+        
+        return variable(val, out[0].unit, unc)
+     
+    def __rpow__(self,other):
+        if not (isinstance(other, scalarVariable) or isinstance(other, arrayVariable)):
+            return variable(other) ** self
+    
+        if isinstance(other, arrayVariable):
+            out = [a**b for a,b in zip(other, self)]
+        else:
+            out = [other**a for a in self]
+            
+        val = [elem.value for elem in out]
+        unc = [elem.uncert for elem in out]
+        
+        return variable(val, out[0].unit, unc)
+           
+    def __array_ufunc__(self, ufunc, *args, **kwargs):
+        match ufunc:
+            case np.log:
+                return self.log()
+            case np.log10:
+                return self.log10()
+            case np.exp:
+                return self.exp()
+            case np.sin:
+                return self.sin()
+            case np.cos:
+                return self.cos()
+            case np.tan:
+                return self.tan()
+
+    def min(self):
+        index = np.argmin(self.value)
+        return variable(self.value[index], self.unit, self.uncert[index])
+
+    def max(self):
+        index = np.argmax(self.value)
+        return variable(self.value[index], self.unit, self.uncert[index])
+    
+    def mean(self):
+        return sum(self) / len(self)
+
+## TODO setitem
+    
+def variable(value, unit = '', uncert = None, nDigits = 3):
+    # store the value and the uncertaty
+    def evaluateInput(input):
+        if input is None:
+            return input
+        if isinstance(input, np.ndarray):
+            return input
+        else:
+            if isinstance(input, list):
+                return np.array(input, dtype=float)
+            else:
+                return float(input)
+                
+    value = evaluateInput(value)
+    uncert = evaluateInput(uncert)
+    
+    if uncert is None:
+        if isinstance(value,np.ndarray):
+            uncert = np.zeros(len(value))
+        else:
+            uncert = 0
     else:
-        val = x.value
-        if not x.uncert is None:
-            unc = x.uncert
+        if isinstance(value,np.ndarray):
+            if not isinstance(uncert, np.ndarray):
+                raise ValueError('The lenght of the value has to be equal to the lenght of the uncertanty')
+            if len(uncert) != len(value):
+                raise ValueError('The lenght of the value has to be equal to the lenght of the uncertanty')
         else:
-            unc = None
-    return variable(val, x.unit, unc)
-
-
-@implements(np.min)
-def np_max_for_variable(x, *args, **kwargs):
-    if x.len() > 1:
-        index = np.argmin(x.value)
-        val = x.value[index]
-        if not x.uncert is None:
-            unc = x.uncert[index]
-        else:
-            unc = None
+            if isinstance(uncert, np.ndarray):
+                raise ValueError('The lenght of the value has to be equal to the lenght of the uncertanty')      
+    
+    if isinstance(value, np.ndarray):
+        return arrayVariable(value, unit, uncert, nDigits)
     else:
-        val = x.value
-        if not x.uncert is None:
-            unc = x.uncert
-        else:
-            unc = None
-    return variable(val, x.unit, unc)
+        return scalarVariable(value, unit, uncert, nDigits)
 
-
-@implements(np.mean)
-def np_mean_for_variable(x, *args, **kwargs):
-    if x.len() > 1:
-        val = np.mean(x.value)
-        if not x.uncert is None:
-            n = len(x.uncert)
-            unc = np.sqrt(sum([(1 / n * elem)**2 for elem in x.uncert]))
-        else:
-            unc = None
-    else:
-        val = x.value
-        if not x.uncert is None:
-            unc = x.uncert
-        else:
-            unc = None
-    return variable(val, x.unit, unc)
-
+if __name__ == "__main__":
+    a = variable([1, 2], 'm')
+    b = variable([2, 3, 4], 'm')
+    a!=b
