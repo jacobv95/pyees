@@ -15,6 +15,17 @@ class _unitConversion():
             offset = self.offset
         return _unitConversion(scale, offset)
 
+    def __pow__(self, other):
+        scale = 1
+        offset = 0
+        
+        for _ in range(other):
+            scale *= self.scale
+            offset*= self.scale
+            offset += self.offset
+
+        return _unitConversion(scale, offset)
+
     def __imul__(self, other):
         if isinstance(other, _unitConversion):
             scale = self.scale * other.scale
@@ -218,3 +229,9 @@ def getDicts():
             raise ValueError(f'The unit {elem} can be interpreted as a {unitType1} or a {unitType2} with the prefix {prefix}. The cannot be distiguished.')
 
     return _knownUnits, _knownCharacters, _knownUnitsDict, _knownPrefixes, _baseUnit
+
+
+
+
+
+
