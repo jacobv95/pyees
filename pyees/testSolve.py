@@ -307,7 +307,6 @@ class test(unittest.TestCase):
         
         self.assertRelativeDifference(x.value, correct.value, tol)
     
-    
     def testSolveOneNonlinearEquationWithBoundsUsingDifferentUnits2(self):
                 
         a = variable(23.7, 'mbar-min2/L2', 0.1)

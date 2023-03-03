@@ -295,14 +295,18 @@ class scalarVariable():
         val = self._value ** other.value
         outputUnit = self._unitObject ** other.value
 
-        gradSelf = other._value * self._value ** (other._value - 1)
+        def gradSelf(valSelf, valOTher):
+            if valSelf != 0:
+                return  valOTher * valSelf ** (valOTher - 1)
+            return 0
+        
         def gradOther(valSelf, valOther, uncertOther):
             if uncertOther != 0:
                 return valSelf ** valOther * np.log(valSelf)
-            else:
-                return 0
+            return 0
+        
         gradOther = np.vectorize(gradOther, otypes=[float])(self._value, other._value, other._uncert)
-
+        gradSelf = np.vectorize(gradSelf, otypes=[float])(self._value, other._value)
         grad = [gradSelf, gradOther]
         vars = [self, other]
 
@@ -612,6 +616,15 @@ class arrayVariable(scalarVariable):
             unc = [self.uncert[elem]for elem in index]
             return variable(val, self._unitObject, unc)
  
+    def __setitem__(self, i, elem):
+        if (type(elem) != scalarVariable):
+            raise ValueError(f'You can only set an element with a scalar variable')
+        if (elem.unit != self.unit):
+            raise ValueError(f'You can not set an element of {self} with {elem} as they do not have the same unit')
+        self._value[i] = elem.value
+        self._uncert[i] = elem.uncert
+    
+ 
     def __str__(self, pretty=None) -> str:
         unitStr = self._unitObject.__str__(pretty=pretty)
 
@@ -635,7 +648,7 @@ class arrayVariable(scalarVariable):
         # print array of values
         valStr = []
         uncStr = []
-        for v, u in zip(self._value, self._uncert):
+        for v, u in zip(self.value, self.uncert):
             v, u = self.printUncertanty(v, u)
             valStr.append(v)
             uncStr.append(u)
@@ -668,33 +681,37 @@ class arrayVariable(scalarVariable):
             out += rf']'
             out += rf'{space}{unitStr}'
             return out
+    
     def __pow__(self, other):
         if not (isinstance(other, scalarVariable) or isinstance(other, arrayVariable)):
             return self ** variable(other)
     
         if isinstance(other, arrayVariable):
+            if len(self) != len(other):
+                raise ValueError(f'operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}')
             out = [a**b for a,b in zip(self, other)]
         else:
             out = [a**other for a in self]
-            
-        val = [elem.value for elem in out]
-        unc = [elem.uncert for elem in out]
+
+        if all([out[0].unit == elem.unit for elem in out]):
+            return variable([elem.value for elem in out], out[0].unit, [elem.uncert for elem in out])
         
-        return variable(val, out[0].unit, unc)
+        return out
      
     def __rpow__(self,other):
         if not (isinstance(other, scalarVariable) or isinstance(other, arrayVariable)):
             return variable(other) ** self
     
         if isinstance(other, arrayVariable):
+            if len(self) != len(other):
+                raise ValueError(f'operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}')
             out = [a**b for a,b in zip(other, self)]
         else:
             out = [other**a for a in self]
-            
-        val = [elem.value for elem in out]
-        unc = [elem.uncert for elem in out]
         
-        return variable(val, out[0].unit, unc)
+        if all([out[0].unit == elem.unit for elem in out]):
+            return variable([elem.value for elem in out], out[0].unit, [elem.uncert for elem in out])
+        return out        
            
     def __array_ufunc__(self, ufunc, *args, **kwargs):
         match ufunc:
@@ -722,17 +739,20 @@ class arrayVariable(scalarVariable):
     def mean(self):
         return sum(self) / len(self)
 
-## TODO setitem
-    
+
 def variable(value, unit = '', uncert = None, nDigits = 3):
     # store the value and the uncertaty
     def evaluateInput(input):
         if input is None:
             return input
         if isinstance(input, np.ndarray):
+            if len(input) == 1:
+                return input[0]
             return input
         else:
             if isinstance(input, list):
+                if len(input) == 1:
+                    return input[0]
                 return np.array(input, dtype=float)
             else:
                 return float(input)
@@ -759,8 +779,3 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return arrayVariable(value, unit, uncert, nDigits)
     else:
         return scalarVariable(value, unit, uncert, nDigits)
-
-if __name__ == "__main__":
-    a = variable([1, 2], 'm')
-    b = variable([2, 3, 4], 'm')
-    a!=b
