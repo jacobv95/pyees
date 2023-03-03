@@ -76,7 +76,7 @@ class test(unittest.TestCase):
         b = unit('K-m/bar-L')
         cBool, cUnit = a + b
         self.assertEqual(cBool, True)
-        self.assertEqual(cUnit, 'DELTAK-s2/kg-m')
+        self.assertTrue(unit._assertEqualStatic(cUnit, 'DELTAK-s2/kg-m'))
 
     def testSub(self):
         a = unit('L/min')

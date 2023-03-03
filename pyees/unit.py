@@ -1,10 +1,15 @@
 import numpy as np
 try:
-    from .unitSystem import knownCharacters, knownPrefixes, knownUnits, baseUnit, _unitConversion, knownUnitsDict
+    from .unitSystem import _unitConversion
+    from .__init__ import knownPrefixes, knownUnits, knownCharacters, knownUnitsDict, baseUnit
 except ImportError:
-    from unitSystem import knownCharacters, knownPrefixes, knownUnits, baseUnit, _unitConversion, knownUnitsDict
-    
+    from unitSystem import _unitConversion, getDicts
+    knownUnits, knownCharacters, knownUnitsDict, knownPrefixes, baseUnit = getDicts()
 
+hyphen = '-'
+slash = '/'
+integers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+temperatureUnits = knownUnitsDict['K']
 class unit():
 
     def __init__(self, unitStr) -> None:
@@ -21,7 +26,8 @@ class unit():
         self.unitStr = self._createUnitString()
 
         self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
-        self._converterToSI = self.getConverter(self._SIBaseUnit)
+        otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
+        self._converterToSI = self._getConverter(self._SIBaseUnit, self._SIBaseUnit, otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
 
     def _createUnitString(self):
         return self._combineUpperAndLower(self.upper, self.upperPrefix, self.upperExp, self.lower, self.lowerPrefix, self.lowerExp)
@@ -84,9 +90,9 @@ class unit():
         lower = [pre + low + exp for pre, low, exp in zip(lowerPrefix, lower, lowerExp) if low != "1"]
 
         # create a unit string
-        u = '-'.join(upper) if upper else "1"
+        u = hyphen.join(upper) if upper else "1"
         if lower:
-            lower = '-'.join(lower)
+            lower = hyphen.join(lower)
             u = u + '/' + lower
 
         return u
@@ -146,24 +152,30 @@ class unit():
         return out
 
     @staticmethod
+    def _splitUnitExponentAndPrefix(listOfUnitStrings):
+        n = len(listOfUnitStrings)
+        uList = [None] * n
+        prefixList = [None] * n
+        expList = [None] * n
+        for i in range(n):
+            prefixUnit, exponent = unit._removeExponentFromUnit(listOfUnitStrings[i])
+            u, prefix = unit._removePrefixFromUnit(prefixUnit)
+            uList[i] = u
+            prefixList[i] = prefix
+            expList[i] = exponent
+        return uList, prefixList, expList
+
+
+    @staticmethod
     def _getLists(unitStr):
         upper, lower = unit._splitCompositeUnit(unitStr)
 
-        def splitUnitExponentAndPrefix(unitList):
-            tmp = [unit._removeExponentFromUnit(elem) for elem in unitList]
-            exponent = [elem[1] for elem in tmp]
-            tmp = [elem[0]for elem in tmp]
-            tmp = [unit._removePrefixFromUnit(elem) for elem in tmp]
-            u = [elem[0] for elem in tmp]
-            prefix = [elem[1] for elem in tmp]
-            return u, prefix, exponent
-        upper, upperPrefix, upperExp = splitUnitExponentAndPrefix(upper)
-        lower, lowerPrefix, lowerExp = splitUnitExponentAndPrefix(lower)
+        upper, upperPrefix, upperExp = unit._splitUnitExponentAndPrefix(upper)
+        lower, lowerPrefix, lowerExp = unit._splitUnitExponentAndPrefix(lower)
 
-        if len(upper + lower) > 1:
-            temp = knownUnitsDict['K']
-            upper = ['DELTA' + elem if elem in temp else elem for elem in upper]
-            lower = ['DELTA' + elem if elem in temp else elem for elem in lower]
+        if lower:
+            upper = ['DELTA' + elem if elem in temperatureUnits else elem for elem in upper]
+            lower = ['DELTA' + elem if elem in temperatureUnits else elem for elem in lower]
 
         return upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp
 
@@ -181,22 +193,27 @@ class unit():
 
     @ staticmethod
     def _splitCompositeUnit(compositeUnit):
-        compositeUnit = compositeUnit.split('/')
+        lower = []
+        if not slash in compositeUnit:
+            upper = compositeUnit.split(hyphen)
+            return upper, lower
+    
+        compositeUnit = compositeUnit.split(slash)
 
         if len(compositeUnit) > 2:
             raise ValueError('A unit can only have a single slash (/)')
 
-        upper = compositeUnit[0].split('-')
-        lower = compositeUnit[1].split('-') if len(compositeUnit) > 1 else []
+        upper = compositeUnit[0].split(hyphen)
+        lower = compositeUnit[1].split(hyphen) if len(compositeUnit) > 1 else []
 
         return upper, lower
 
     @ staticmethod
     def _removeExponentFromUnit(u):
-        u = list(u)
-        lenU = len(u)
+        integerIndexes = [i for i, char in enumerate(u) if char in integers]
         exponent = 1
-        integerIndexes = [i for i, char in enumerate(u) if char in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']]
+        if not integerIndexes:
+            return u, exponent
 
         # override the exponent if there are any integerindexes
         if integerIndexes:
@@ -206,15 +223,13 @@ class unit():
             if sum(integerIndexes) != (maxIndex * (maxIndex + 1) - minIndex * (minIndex + 1)) / 2:
                 raise ValueError('All numbers in the unit has to be grouped together')
 
-            # Determien if the last integer is placed at the end of the unit
-            if integerIndexes[-1] != lenU - 1:
+            # Determine if the last integer is placed at the end of the unit
+            if integerIndexes[-1] != len(u) - 1:
                 raise ValueError('Any number has to be placed at the end of the unit')
 
-            # join the integers
-            exponent = int(''.join([u[i] for i in integerIndexes]))
+            exponent = int(u[minIndex+1:])
+            u = u[:minIndex+1]
 
-        # join the unit
-        u = ''.join([u[i] for i in range(lenU) if i not in integerIndexes])
 
         # Ensure that the entire use was not removed by removing the integers
         if not u:
@@ -222,7 +237,6 @@ class unit():
             if exponent != 1:
                 raise ValueError(f'The unit {u} was stripped of all integers which left no symbols in the unit. This is normally due to the integers removed being equal to 1, as the unit is THE unit. Howver, the intergers removed was not equal to 1. The unit is therefore not known.')
             u = '1'
-
         return u, exponent
 
     @staticmethod
@@ -233,7 +247,7 @@ class unit():
 
         if bool(aLower) != bool(bLower):
             return False
-
+        ## TODO optimize _assertEqualStatic
         aUpperIndexes = np.argsort(aUpper)
         aLowerIndexes = np.argsort(aLower)
         bUpperIndexes = np.argsort(bUpper)
@@ -304,59 +318,43 @@ class unit():
 
     @staticmethod
     def _getSIBaseUnit(upper, upperExp, lower, lowerExp):
-
-        def addUnitsMultipleTimes(units, unitExps):
-            out = []
-            for unit, unitExp in zip(units, unitExps):
-                for _ in range(unitExp):
-                    out.append(unit)
-            return out
-
-        upper = addUnitsMultipleTimes(upper, upperExp)
-        lower = addUnitsMultipleTimes(lower, lowerExp)
-
         # remove the prefix - this is just a scaling so this does not change the SI base unit
         upper = [unit._removePrefixFromUnit(elem)[0] for elem in upper]
         lower = [unit._removePrefixFromUnit(elem)[0] for elem in lower]
-
-        # return the splitted version of the base unit
-        upper = [unit._splitCompositeUnit(knownUnits[elem][0]) for elem in upper]
-        lower = [unit._splitCompositeUnit(knownUnits[elem][0]) for elem in lower]
-
-        # combine the upper and lower
-        tmpUpper = [elem[0] for elem in upper] + [elem[1] for elem in lower]
-        tmpLower = [elem[1] for elem in upper] + [elem[0] for elem in lower]
-        upper = [elem for L in tmpUpper for elem in L]
-        lower = [elem for L in tmpLower for elem in L]
-
-        # remove the exponents
-        tmpUpper = [unit._removeExponentFromUnit(elem) for elem in upper]
-        tmpLower = [unit._removeExponentFromUnit(elem) for elem in lower]
-        upper = [elem[0] for elem in tmpUpper]
-        tmpUpperExp = [elem[1]for elem in tmpUpper]
-        lower = [elem[0] for elem in tmpLower]
-        tmpLowerExp = [elem[1]for elem in tmpLower]
-
-        upperSet = list(set(upper))
-        upperSet.sort()
-        lowerSet = list(set(lower))
-        lowerSet.sort()
-        lenUpperSet = len(upperSet)
-        lenLowerSet = len(lowerSet)
-        upperExp = [0] * lenUpperSet
-        lowerExp = [0] * lenLowerSet
-        upperPrefix = [None] * lenUpperSet
-        lowerPrefix = [None] * lenLowerSet
-        for i, u in enumerate(upperSet):
-            indexes = [_ for _, elem in enumerate(upper) if elem == u]
-            upperExp[i] = sum([tmpUpperExp[elem] for elem in indexes])
-        for i, l in enumerate(lowerSet):
-            indexes = [_ for _, elem in enumerate(lower) if elem == l]
-            lowerExp[i] = sum([tmpLowerExp[elem] for elem in indexes])
-        upper, lower = upperSet, lowerSet
-
+        
+        nUpper = len(upper)
+        upperOut = []
+        lowerOut = []
+        upperExpOut = []
+        lowerExpOut = []
+        for i, (elem, exp) in enumerate(zip(upper + lower, upperExp + lowerExp)):
+            elem, e = unit._removeExponentFromUnit(elem)
+            exp *= e
+            up,low = unit._splitCompositeUnit(knownUnits[elem][0])
+            if (i >= nUpper):
+                up, low = low, up
+            for elem in up:
+                elem, eElem = unit._removeExponentFromUnit(elem)
+                if not elem in upperOut:
+                    upperOut.append(elem)
+                    upperExpOut.append(eElem * exp)
+                else:
+                    index = upperOut.index(elem)
+                    upperExpOut[index] += eElem * exp
+            for elem in low:
+                elem, eElem = unit._removeExponentFromUnit(elem)
+                if not elem in lowerOut:
+                    lowerOut.append(elem)
+                    lowerExpOut.append(eElem * exp)
+                else:
+                    index = lowerOut.index(elem)
+                    lowerExpOut[index] += eElem * exp
+                    
+        upperPrefix = [None] * len(upperOut)
+        lowerPrefix = [None] * len(lowerOut)
+        
         upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp = unit._cancleUnits(
-            upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp
+            upperOut, upperPrefix, upperExpOut, lowerOut, lowerPrefix, lowerExpOut
         )
 
         return unit._combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp)
@@ -531,6 +529,10 @@ class unit():
         # determine if the SI bases are identical
         otherSIBase = self._getSIBaseUnit(otherUpper, otherUpperExp, otherLower, otherLowerExp)
 
+        return self._getConverter(newUnit, otherSIBase, otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
+
+    def _getConverter(self, newUnit, otherSIBase, otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp):
+
         if unit._assertEqualStatic(self._SIBaseUnit, otherSIBase) == False:
             raise ValueError(f'You tried to convert from {self} to {newUnit}. But these do not have the same base units')
 
@@ -593,5 +595,7 @@ class unit():
         self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
         self._converterToSI = self.getConverter(self._SIBaseUnit)
 
-
+if __name__ == "__main__":
+    
+    a = unit('m-L2/min')
 

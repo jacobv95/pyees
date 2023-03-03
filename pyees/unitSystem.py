@@ -49,7 +49,7 @@ class _unitConversion():
             return self.scale * value
 
 
-baseUnit = {
+_baseUnit = {
     '1': _unitConversion(1),
     '': _unitConversion(1),
     '%': _unitConversion(1e-2)
@@ -134,7 +134,7 @@ kinematicViscosity = {
     'St': _unitConversion(1e-4)
 }
 
-knownUnitsDict = {
+_knownUnitsDict = {
     'kg-m/s2': force,
     'kg/m-s2': pressure,
     's': time,
@@ -147,14 +147,14 @@ knownUnitsDict = {
     'kg': mass,
     'A': current,
     'kg-m2/s3-A': voltage,
-    '1': baseUnit,
+    '1': _baseUnit,
     'Hz': frequency,
     'rad': angle,
     'kg-m2/s3-A2' : resistance,
     'm2/s' : kinematicViscosity
 }
 
-knownPrefixes = {
+_knownPrefixes = {
     'T': 1e12,
     'G': 1e9,
     'M': 1e6,
@@ -169,50 +169,52 @@ knownPrefixes = {
     'p': 1e-12
 }
 
+def getDicts():
 
-knownUnits = {}
-for key, d in knownUnitsDict.items():
-    for item, _ in d.items():
-        if item not in knownUnits:
-            knownUnits[item] = [key, knownUnitsDict[key][item]]
-        else:
-            raise Warning(f'The unit {item} known in more than one unit system')
+    _knownUnits = {}
+    for key, d in _knownUnitsDict.items():
+        for item, _ in d.items():
+            if item not in _knownUnits:
+                _knownUnits[item] = [key, _knownUnitsDict[key][item]]
+            else:
+                raise Warning(f'The unit {item} known in more than one unit system')
 
 
 
-# determine the known characters within the unit system
-knownCharacters = list(knownUnits.keys()) + list(knownPrefixes.keys())
-knownCharacters = ''.join(knownCharacters)
-knownCharacters += '-/'
-knownCharacters += '0123456789'
-knownCharacters = ''.join(list(set(knownCharacters)))
+    # determine the known characters within the unit system
+    _knownCharacters = list(_knownUnits.keys()) + list(_knownPrefixes.keys())
+    _knownCharacters = ''.join(_knownCharacters)
+    _knownCharacters += '-/'
+    _knownCharacters += '0123456789'
+    _knownCharacters = ''.join(list(set(_knownCharacters)))
 
-# check if all unit and prefix combinations can be distiguished
-unitPrefixCombinations = []
-for u in knownUnits:
-    unitPrefixCombinations += [u]
-    if u not in baseUnit:
-        unitPrefixCombinations += [p + u for p in knownPrefixes]
+    # check if all unit and prefix combinations can be distiguished
+    unitPrefixCombinations = []
+    for u in _knownUnits:
+        unitPrefixCombinations += [u]
+        if u not in _baseUnit:
+            unitPrefixCombinations += [p + u for p in _knownPrefixes]
 
-for elem in unitPrefixCombinations:
-    count = sum([1 if u == elem else 0 for u in unitPrefixCombinations])
-    if count > 1:
-        prefix = elem[0:1]
-        unit = elem[1:]
+    for elem in unitPrefixCombinations:
+        count = sum([1 if u == elem else 0 for u in unitPrefixCombinations])
+        if count > 1:
+            prefix = elem[0:1]
+            unit = elem[1:]
 
-        unitType1 = ''
-        for key, item in knownUnitsDict.items():
-            if elem in item:
-                unitType1 = [key for key, a in locals().items() if a == item][0]
-        if unitType1 == '':
-            raise ValueError(f'The unit {elem} was not found.')
+            unitType1 = ''
+            for key, item in _knownUnitsDict.items():
+                if elem in item:
+                    unitType1 = [key for key, a in locals().items() if a == item][0]
+            if unitType1 == '':
+                raise ValueError(f'The unit {elem} was not found.')
 
-        unitType2 = ''
-        for key, item in knownUnitsDict.items():
-            if unit in item:
-                unitType2 = [key for key, a in locals().items() if a == item][0]
-        if unitType2 == '':
-            raise ValueError(f'The unit {unit} was not found.')
+            unitType2 = ''
+            for key, item in _knownUnitsDict.items():
+                if unit in item:
+                    unitType2 = [key for key, a in locals().items() if a == item][0]
+            if unitType2 == '':
+                raise ValueError(f'The unit {unit} was not found.')
 
-        raise ValueError(f'The unit {elem} can be interpreted as a {unitType1} or a {unitType2} with the prefix {prefix}. The cannot be distiguished.')
+            raise ValueError(f'The unit {elem} can be interpreted as a {unitType1} or a {unitType2} with the prefix {prefix}. The cannot be distiguished.')
 
+    return _knownUnits, _knownCharacters, _knownUnitsDict, _knownPrefixes, _baseUnit
