@@ -1,9 +1,9 @@
 from pyfluids import Fluid, FluidsList, Input, HumidAir, InputHumidAir
 try:
-    from .variable import variable
+    from .variable import variable, scalarVariable, arrayVariable
     from .unit import unit
 except ImportError:
-    from variable import variable
+    from variable import variable, scalarVariable, arrayVariable
     from unit import unit
     
 dx = 0.00001
@@ -92,27 +92,28 @@ def differentials(fluid : Fluid, property : str, parameters):
 def outputFromParameters(scalarMethod, property, params):
     
     
-    if (all([elem.len() == 1 for elem in params if not elem is None])):
+    if (all([type(elem) == scalarVariable for elem in params if not elem is None])):
         ## all inputs are scalars
         out = scalarMethod(property, *params)
         return out
     
     out = []
+    ns = []
     paramVecs = [None] * len(params)
-    n = None
 
     for i, param in enumerate(params):
-        if not param is None:
-            if param.len() != 1:
-                paramVecs[i] = [variable(val, param.unit, unc) for val,unc in zip(param.value, param.uncert)]
-
-    for i in range(len(paramVecs)):
-        if not paramVecs[i] is None:
-            n = len(paramVecs[i])
+        if type(param) == arrayVariable:
+            paramVecs[i] = param
+            ns.append(len(param))
     
-    for i in range(len(paramVecs)):
-        if paramVecs[i] is None:
-            paramVecs[i] = [params[i]] * n
+    if not (all([ns[0] == n] for n in ns)):
+        raise ValueError('All parameters has to have the same length')
+    
+    
+    n = ns[0]
+    for i, param in enumerate(params):
+        if isinstance(param, scalarVariable):
+            paramVecs[i] = variable([param.value] * n, param.unit, [param.uncert] * n)
     
     for i in range(n):
         params = [elem[i] for elem in paramVecs]

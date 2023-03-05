@@ -2,10 +2,10 @@ import numpy as np
 import scipy.odr as odr
 import string
 try:
-    from .variable import variable
+    from .variable import variable, arrayVariable
     from .unit import unit
 except ImportError:
-    from variable import variable
+    from variable import variable, arrayVariable
     from unit import unit
     
     
@@ -13,7 +13,7 @@ class _fit():
     def __init__(self, func, x, y, p0) -> None:
         self.func = func
 
-        if not (isinstance(x, variable) and isinstance(y, variable)):
+        if not (isinstance(x, arrayVariable) and isinstance(y, arrayVariable)):
             raise ValueError('The inputs has to be variables')
 
         self.xVal = x.value
@@ -108,12 +108,12 @@ class _fit():
         ax.plot(self.xVal, self.yVal, label=label, **kwargs)
 
     def predict(self, x):
-        if not isinstance(x, variable):
+        if not isinstance(x, arrayVariable):
             x = variable(x, self.xUnit)
         return self.func(self.popt, x)
 
     def predictDifferential(self, x):
-        if not isinstance(x, variable):
+        if not isinstance(x, arrayVariable):
             x = variable(x, self.xUnit)
         return self.d_func(self.popt, x)
 
@@ -176,7 +176,7 @@ class _fit():
 class dummy_fit(_fit):
     def __init__(self, x, y, p0=None):
         
-        if not (isinstance(x, variable) and isinstance(y, variable)):
+        if not (isinstance(x, arrayVariable) and isinstance(y, arrayVariable)):
             raise ValueError('The inputs has to be variables')
 
         self.xVal = x.value

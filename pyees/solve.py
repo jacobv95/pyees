@@ -1,9 +1,10 @@
 from scipy.optimize import minimize
+import warnings
 import numpy as np
 try:
-    from .variable import variable
+    from .variable import variable, scalarVariable
 except ImportError:
-    from variable import variable
+    from variable import variable, scalarVariable
 
 
 
@@ -33,7 +34,7 @@ def solve(func, x, *args, bounds = None,**kwargs):
         if (len(o) != 2):
             raise ValueError('Each equation has to be a list of 2 elements')
         for elem in o:
-            if not isinstance(elem, variable):
+            if not isinstance(elem, scalarVariable):
                 raise ValueError('Each side of each equation has to be a variable')        
         ## test if the units match
         if (o[0]._unitObject._SIBaseUnit != o[1]._unitObject._SIBaseUnit):
@@ -66,7 +67,7 @@ def solve(func, x, *args, bounds = None,**kwargs):
                 if len(o) != 3:
                     raise ValueError('Each bound has to have 3 elements')
                 for elem in o:
-                    if not isinstance(elem, variable):
+                    if not isinstance(elem, scalarVariable):
                         raise ValueError('Each side of the bounds has to be a variable')         
                 ## check the bounds
                 if (o[0]._unitObject._SIBaseUnit != o[1]._unitObject._SIBaseUnit or o[1]._unitObject._SIBaseUnit != o[2]._unitObject._SIBaseUnit):
@@ -83,7 +84,7 @@ def solve(func, x, *args, bounds = None,**kwargs):
             bbounds = []
             for i, elem in enumerate(bounds):
                 for e in elem:
-                    if not isinstance(e, variable):
+                    if not isinstance(e, scalarVariable):
                         raise ValueError('All bounds has to be variables')
                     e.convert(x[i].unit)
                 bbounds.append([e.value for e in elem])
@@ -130,6 +131,7 @@ def solve(func, x, *args, bounds = None,**kwargs):
     
     ## run the minimization
     if callable(bounds): keepVariablesFeasible()
+    warnings.filterwarnings("ignore")
     out = minimize(
         minimizationProblem,
         [elem.value for elem in x],
@@ -138,6 +140,7 @@ def solve(func, x, *args, bounds = None,**kwargs):
         bounds = bounds if not callable(bounds) else None,
         callback=keepVariablesFeasible if callable(bounds) else None
         )
+    warnings.filterwarnings("default")
     if callable(bounds): keepVariablesFeasible()
 
     ## loop over all equations and create a list of the residuals and create the jacobian matrix

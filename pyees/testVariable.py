@@ -312,17 +312,19 @@ class test(unittest.TestCase):
 
         with self.assertRaises(Exception) as context:
             A_vec ** B_vec
-        self.assertTrue('The exponent has to be a single number' in str(context.exception))
+        self.assertTrue('The exponent can not have a unit' in str(context.exception))
 
         E = C**D
         self.assertAlmostEqual(E.value, 745.1**0.34)
         self.assertEqual(E.unit, '1')
         self.assertAlmostEqual(E.uncert, np.sqrt((0.34 * 745.1**(0.34 - 1) * 53.9)**2 + (745.1**0.34 * np.log(745.1) * 0.01)**2))
 
-        with self.assertRaises(Exception) as context:
-            C_vec**D_vec
-        self.assertTrue('The exponent has to be a single number' in str(context.exception))
+        E_vec = C_vec**D_vec
+        np.testing.assert_equal(E_vec.value, [745.1 ** 0.34, 496.13**0.64, 120.54**0.87])
+        self.assertEqual(E_vec.unit, '1')
+        self.assertAlmostEqual(E_vec.uncert[0], np.sqrt((0.34 * 745.1**(0.34 - 1) * 53.9)**2 + (745.1**0.34 * np.log(745.1) * 0.01)**2))
 
+        
         F = A**2
         self.assertAlmostEqual(F.value, (12.3)**2)
         self.assertEqual(F.unit, 'L2/min2')
@@ -360,10 +362,13 @@ class test(unittest.TestCase):
         self.assertEqual(G.unit, '1')
         self.assertAlmostEqual(G.uncert, np.sqrt((2.54**0.34 * np.log(2.54) * 0.01)**2))
 
-        with self.assertRaises(Exception) as context:
-            2.54**D_vec
-        self.assertTrue('The exponent has to be a single number' in str(context.exception))
+        G_vec = 2.54**D_vec
+        np.testing.assert_equal(G_vec.value, [2.54**0.34, 2.54 **0.64 , 2.54**0.87])
+        self.assertEqual(G_vec.unit, '1')
+        self.assertAlmostEqual(G_vec.uncert[0], np.sqrt((2.54**0.34 * np.log(2.54) * 0.01)**2))
 
+        
+        
     def test_log(self):
         A = variable(12.3, 'L/min', uncert=2.6)
         C = variable(745.1, '1', uncert=53.9)
@@ -429,28 +434,28 @@ class test(unittest.TestCase):
             np.exp(A)
         self.assertTrue('The exponent can not have a unit' in str(context.exception))
 
-        with self.assertRaises(Exception) as context:
-            np.exp(A_vec)
-        self.assertTrue('The exponent has to be a single number' in str(context.exception))
-
+        c_vec = np.exp(C_vec)
+        np.testing.assert_equal(c_vec.value, [np.e**12.3, np.e**54.3, np.e**91.3])
+        self.assertEqual(c_vec.unit, '1')
+        self.assertEqual(c_vec.uncert[0], np.sqrt((np.e**12.3 * np.log(np.e) * 2.6)**2))
+        
         D = np.exp(C)
         self.assertAlmostEqual(D.value, np.e**12.3)
         self.assertEqual(D.unit, '1')
         self.assertAlmostEqual(D.uncert, np.sqrt((np.e**12.3 * np.log(np.e) * 5.39)**2))
 
         with self.assertRaises(Exception) as context:
-            np.exp(C_vec)
-        self.assertTrue('The exponent has to be a single number' in str(context.exception))
+            np.exp(A_vec)
+        self.assertTrue('The exponent can not have a unit' in str(context.exception))
 
     def testIndex(self):
         A = variable(12.3, 'L/min', uncert=2.6)
         A_vec = variable([12.3, 54.3, 91.3], 'L/min', uncert=[2.6, 5.4, 10.56])
 
-        a = A[0]
-        self.assertEqual(a.value, 12.3)
-        self.assertEqual(a.unit, 'L/min')
-        self.assertEqual(a.uncert, 2.6)
-
+        with self.assertRaises(Exception) as context:
+            a = A[0]
+        self.assertTrue("'scalarVariable' object is not subscriptable" in str(context.exception))
+        
         a_vec = A_vec[0, 1]
         np.testing.assert_equal(a_vec.value, [12.3, 54.3])
         self.assertEqual(a_vec.unit, 'L/min')
@@ -468,10 +473,10 @@ class test(unittest.TestCase):
 
         with self.assertRaises(Exception) as context:
             a = A[1]
-        self.assertTrue('Index out of bounds' in str(context.exception))
+        self.assertTrue("'scalarVariable' object is not subscriptable" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            a = A[23]
+            a = A_vec[23]
         self.assertTrue('Index out of bounds' in str(context.exception))
 
     def testAddEqual(self):
@@ -917,20 +922,18 @@ class test(unittest.TestCase):
 
         with self.assertRaises(Exception) as context:
             2**A_vec
-        self.assertTrue('The exponent has to be a single number' in str(context.exception))
+        self.assertTrue('The exponent can not have a unit' in str(context.exception))
 
         with self.assertRaises(Exception) as context:
             2**B_vec
-        self.assertTrue('The exponent has to be a single number' in str(context.exception))
+        self.assertTrue('The exponent can not have a unit' in str(context.exception))
+     
+        d_vec = 2**D_vec
+        np.testing.assert_equal(d_vec.value, [2**0.34, 2**0.64, 2**0.87])
+        self.assertEqual(d_vec.unit, '1')
+        self.assertEqual(d_vec.uncert[0], np.sqrt((2**0.34 * np.log(2) * 0.01)**2 + (0.34 * 2**(0.34 - 1) * 0)**2))
 
-        with self.assertRaises(Exception) as context:
-            2**C_vec
-        self.assertTrue('The exponent has to be a single number' in str(context.exception))
-
-        with self.assertRaises(Exception) as context:
-            2**D_vec
-        self.assertTrue('The exponent has to be a single number' in str(context.exception))
-
+        
     def testPrettyPrint(self):
         a = variable(12.3, 'm')
         b = variable(12.3, 'm', 2.5)
@@ -1214,48 +1217,49 @@ class test(unittest.TestCase):
     def testCompare(self):
         a = variable(1, 'm')
         b = variable([2, 3, 4], 'm')
-        self.assertListEqual(a < b, [True, True, True])
-        self.assertEqual(a <= b, [True, True, True])
-        self.assertEqual(a > b, [False, False, False])
-        self.assertEqual(a >= b, [False, False, False])
-        self.assertEqual(a == b, [False, False, False])
-        self.assertEqual(a != b, [True, True, True])
+        np.testing.assert_equal(a < b, [True, True, True])
+        np.testing.assert_equal(a <= b, [True, True, True])
+        np.testing.assert_equal(a > b, [False, False, False])
+        np.testing.assert_equal(a >= b, [False, False, False])
+        np.testing.assert_equal(a == b, [False, False, False])
+        np.testing.assert_equal(a != b, [True, True, True])
 
         a = variable([2, 3, 4], 'm')
         b = variable(1, 'm')
-        self.assertListEqual(a < b, [False, False, False])
-        self.assertEqual(a <= b, [False, False, False])
-        self.assertEqual(a > b, [True, True, True])
-        self.assertEqual(a >= b, [True, True, True])
-        self.assertEqual(a == b, [False, False, False])
-        self.assertEqual(a != b, [True, True, True])
+        np.testing.assert_equal(a < b, [False, False, False])
+        np.testing.assert_equal(a <= b, [False, False, False])
+        np.testing.assert_equal(a > b, [True, True, True])
+        np.testing.assert_equal(a >= b, [True, True, True])
+        np.testing.assert_equal(a == b, [False, False, False])
+        np.testing.assert_equal(a != b, [True, True, True])
 
         a = variable([1, 2], 'm')
         b = variable([2, 3, 4], 'm')
         with self.assertRaises(Exception) as context:
             c = a < b
-        self.assertTrue("You cannot compare [1, 2] [m] and [2, 3, 4] [m] as they do not have the same length" in str(context.exception))
+        self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
             c = a <= b
-        self.assertTrue("You cannot compare [1, 2] [m] and [2, 3, 4] [m] as they do not have the same length" in str(context.exception))
+        self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
             c = a > b
-        self.assertTrue("You cannot compare [1, 2] [m] and [2, 3, 4] [m] as they do not have the same length" in str(context.exception))
+        self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
             c = a >= b
-        self.assertTrue("You cannot compare [1, 2] [m] and [2, 3, 4] [m] as they do not have the same length" in str(context.exception))
+        self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
             c = a == b
-        self.assertTrue("You cannot compare [1, 2] [m] and [2, 3, 4] [m] as they do not have the same length" in str(context.exception))
+        self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
             c = a != b
-        self.assertTrue("You cannot compare [1, 2] [m] and [2, 3, 4] [m] as they do not have the same length" in str(context.exception))
-
+        self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
+        
+        
         a = variable(1, 'm')
         b = variable(2, 'C')
         with self.assertRaises(Exception) as context:
@@ -1284,24 +1288,25 @@ class test(unittest.TestCase):
 
         a = variable([1, 2, 3], 'm')
         b = variable([2, 3, 4], 'm')
-        self.assertListEqual(a < b, [True, True, True])
-        self.assertEqual(a <= b, [True, True, True])
-        self.assertEqual(a > b, [False, False, False])
-        self.assertEqual(a >= b, [False, False, False])
-        self.assertEqual(a == b, [False, False, False])
-        self.assertEqual(a != b, [True, True, True])
+        np.testing.assert_equal(a < b, [True, True, True])
+        np.testing.assert_equal(a <= b, [True, True, True])
+        np.testing.assert_equal(a > b, [False, False, False])
+        np.testing.assert_equal(a >= b, [False, False, False])
+        np.testing.assert_equal(a == b, [False, False, False])
+        np.testing.assert_equal(a != b, [True, True, True])
         
         
         a = variable(10,'L/min')
         b = variable(1, 'm3/h')
-        self.assertEqual(a>b, False)
-        self.assertEqual(a<b, True)
-        self.assertEqual(a>=b, False)
-        self.assertEqual(a<=b, True)
-        self.assertEqual(a==b, False)
-        self.assertEqual(a!=b, True)
+        np.testing.assert_equal(a>b, False)
+        np.testing.assert_equal(a<b, True)
+        np.testing.assert_equal(a>=b, False)
+        np.testing.assert_equal(a<=b, True)
+        np.testing.assert_equal(a==b, False)
+        np.testing.assert_equal(a!=b, True)
 
 
 if __name__ == '__main__':
     unittest.main()
+    # test().testCompare()
     
