@@ -1305,6 +1305,53 @@ class test(unittest.TestCase):
         np.testing.assert_equal(a==b, False)
         np.testing.assert_equal(a!=b, True)
 
+    def testSetitem(self):
+        A = variable(12.3, 'L/min', uncert=2.6)
+        B = variable(45, 'Pa', 1.2)
+        A_vec = variable([12.3, 54.3, 91.3], 'L/min', uncert=[2.6, 5.4, 10.56])
+
+        A_vec[1] = A
+        np.testing.assert_equal(A_vec.value, [12.3, 12.3, 91.3])
+        self.assertEqual(A_vec.unit, 'L/min')
+        np.testing.assert_equal(A_vec.uncert, [2.6, 2.6, 10.56])
+        
+        with self.assertRaises(Exception) as context:
+            A_vec[0] = B
+        self.assertTrue("You can not set an element of [12, 12, 90] +/- [3, 3, 10] [L/min] with 45 +/- 1 [Pa] as they do not have the same unit" in str(context.exception))
+
+        with self.assertRaises(Exception) as context:
+            A_vec[0] = A_vec
+        self.assertTrue("You can only set an element with a scalar variable" in str(context.exception))
+
+        with self.assertRaises(Exception) as context:
+            A[0] = B
+        self.assertTrue("'scalarVariable' object does not support item assignment" in str(context.exception))
+        
+        
+    def testAppend(self):
+        A = variable(12.3, 'L/min', uncert=2.6)
+        B = variable(45, 'Pa', 1.2)
+        A_vec = variable([12.3, 54.3, 91.3], 'L/min', uncert=[2.6, 5.4, 10.56])
+
+        A_vec.append(A)
+        np.testing.assert_equal(A_vec.value, [12.3, 54.3, 91.3, 12.3])
+        self.assertEqual(A_vec.unit, 'L/min')
+        np.testing.assert_equal(A_vec.uncert, [2.6, 5.4, 10.56, 2.6])
+        
+        with self.assertRaises(Exception) as context:
+            A_vec.append(B)
+        self.assertTrue("You can not set an element of [12, 54, 90, 12] +/- [3, 5, 10, 3] [L/min] with 45 +/- 1 [Pa] as they do not have the same unit" in str(context.exception))
+
+        A_vec.append(A_vec)
+        np.testing.assert_equal(A_vec.value, [12.3, 54.3, 91.3, 12.3] * 2)
+        self.assertEqual(A_vec.unit, 'L/min')
+        np.testing.assert_equal(A_vec.uncert, [2.6, 5.4, 10.56, 2.6] * 2)
+        
+        with self.assertRaises(Exception) as context:
+            A.append(B)
+        self.assertTrue("'scalarVariable' object has no attribute 'append'" in str(context.exception))
+        
+        
 
 if __name__ == '__main__':
     unittest.main()

@@ -145,6 +145,13 @@ kinematicViscosity = {
     'St': _unitConversion(1e-4)
 }
 
+logrithmicUnits = {## TODO logarithmic units
+    'Np' : _unitConversion(1), 
+    'B': _unitConversion(1/2 * np.log(10)),
+    'octave': _unitConversion(1),
+    'decade': _unitConversion(1)
+}
+
 _knownUnitsDict = {
     'kg-m/s2': force,
     'kg/m-s2': pressure,
@@ -162,7 +169,8 @@ _knownUnitsDict = {
     'Hz': frequency,
     'rad': angle,
     'kg-m2/s3-A2' : resistance,
-    'm2/s' : kinematicViscosity
+    'm2/s' : kinematicViscosity,
+    'Np': logrithmicUnits
 }
 
 _knownPrefixes = {

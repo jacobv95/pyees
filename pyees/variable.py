@@ -5,6 +5,7 @@ try:
 except ImportError:
     from unit import unit
     
+    
 
 class scalarVariable():
     def __init__(self, value, unitStr, uncert, nDigits) -> None:
@@ -622,6 +623,16 @@ class arrayVariable(scalarVariable):
         self._value[i] = elem.value
         self._uncert[i] = elem.uncert
     
+    def append(self, elem):
+        if not (isinstance(elem, scalarVariable)):
+            raise ValueError(f'You can only set an element with a variable')
+        if (elem.unit != self.unit):
+            raise ValueError(f'You can not set an element of {self} with {elem} as they do not have the same unit')
+        
+        self._value = np.append(self._value, elem.value)
+        self._uncert = np.append(self._uncert, elem.uncert)
+    
+       
  
     def __str__(self, pretty=None) -> str:
         unitStr = self._unitObject.__str__(pretty=pretty)
@@ -737,6 +748,8 @@ class arrayVariable(scalarVariable):
     def mean(self):
         return sum(self) / len(self)
 
+
+
 class scalarTemperatureVariable(scalarVariable):
     def __init__(self):
         super(scalarTemperatureVariable, self).__init__()
@@ -748,6 +761,21 @@ class arrayTemperatureVariable(arrayVariable):
         super(arrayTemperatureVariable, self).__init__()
 
     ## TODO overload methods
+
+
+
+class scalarSoundLevelVariable(scalarVariable):
+    def __init__(self):
+        super(scalarTemperatureVariable, self).__init__()
+
+    ## TODO overload methods
+
+class arraySoundLevelVariable(arrayVariable):
+    def __init__(self):
+        super(arrayTemperatureVariable, self).__init__()
+
+    ## TODO overload methods
+
 
 
 def variable(value, unit = '', uncert = None, nDigits = 3):
@@ -792,5 +820,5 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 
 
-
-## TODO create subclasses for sound level variables and overload specific functios 
+## TODO add the use of parenthesis in the units
+## TODO add a method to add custom units
