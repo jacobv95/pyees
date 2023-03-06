@@ -162,7 +162,7 @@ class test(unittest.TestCase):
         B = variable(745.1, 'K', uncert=53.9)
         C = A - B
         self.assertAlmostEqual(C.value, 12.3 + 273.15 - 745.1)
-        self.assertEqual(C.unit, 'K')
+        self.assertEqual(C.unit, 'DELTAK')
         self.assertAlmostEqual(C.uncert, np.sqrt(2.6**2 + 53.9**2))
 
         A = variable(12.3, 'C', uncert=2.6)
@@ -1351,9 +1351,121 @@ class test(unittest.TestCase):
             A.append(B)
         self.assertTrue("'scalarVariable' object has no attribute 'append'" in str(context.exception))
         
+
+    def testAddBel(self):
+        a = variable(11,'dB', 0.1)
+        b = variable(19,'dB',1.2)
+        c = a + b
+        self.assertEqual(c.value, 19.638920341433795986775635083534144311728776386508569289294)
+        self.assertEqual(c.unit, 'dB')
+        gradA = (10**(11/10)) / (10**(19/10) + 10**(11/10))
+        gradB = (10**(19/10)) / (10**(19/10) + 10**(11/10))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
         
+        a = variable(11,'B', 0.1)
+        b = variable(19,'B',1.2)
+        c = a + b
+        self.assertEqual(c.value, 19.000000004342944797317794326113524021957351355250018803653068412)
+        self.assertEqual(c.unit, 'B')
+        gradA = (10**(11)) / (10**(19) + 10**(11))
+        gradB = (10**(19)) / (10**(19) + 10**(11))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(1.1,'B', 0.1)
+        b = variable(19,'dB',1.2)
+        c = a + b
+        self.assertAlmostEqual(c.value, 1.9638920341433795986775635083534144311728776386508569289294)
+        self.assertEqual(c.unit, 'B')
+        gradA = 10**1.1 / (10**(19/10) + 10**1.1)
+        gradB = 10**(19/10-1) / (10**(19/10) + 10**1.1)
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+    def testSubtractBel(self):
+        a = variable(11,'dB', 0.1)
+        b = variable(19,'dB',1.2)
+        c = b - a
+        self.assertEqual(c.value, 18.250596325673850704123951198937009709734608031896818185442)
+        self.assertEqual(c.unit, 'dB')
+        gradA = -(10**(11/10)) / (10**(19/10) - 10**(11/10))
+        gradB = (10**(19/10)) / (10**(19/10) - 10**(11/10))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(11,'B', 0.1)
+        b = variable(19,'B',1.2)
+        c = b - a
+        self.assertEqual(c.value, 18.99999999565705515925275748356129104145734723683018994643533534)
+        self.assertEqual(c.unit, 'B')
+        gradA = -(10**(11)) / (10**(19) - 10**(11))
+        gradB = (10**(19)) / (10**(19) - 10**(11))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(1.1,'B', 0.1)
+        b = variable(19,'dB',1.2)
+        c = b-a
+        self.assertAlmostEqual(c.value, 18.250596325673850704123951198937009709734608031896818185442)
+        self.assertEqual(c.unit, 'dB')
+        gradA = -10**(1.1+1) / (10**(19/10) - 10**1.1)
+        gradB = 10**(19/10) / (10**(19/10) - 10**1.1)
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+
+    def testAddNeper(self):
+        a = variable(1.1,'Np', 1.2)
+        b = variable(1.9,'Np', 0.1)
+        c = a + b
+        gradA =np.exp(2*1.1) / (np.exp(2*1.1) + np.exp(2*1.9))
+        gradB = np.exp(2*1.9) / (np.exp(2*1.1) + np.exp(2*1.9))
+        self.assertAlmostEqual(c.value, 1.9919503704442)
+        self.assertEqual(c.unit, 'Np')
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * 1.2)**2 + (gradB * 0.1)**2))
+        
+        a = variable(11,'dNp', 0.1)
+        b = variable(19,'dNp', 1.2)
+        c = a + b
+        self.assertEqual(c.value, 19.919503704441694148537476059644226712824512622876065)
+        self.assertEqual(c.unit, 'dNp')
+        gradA = np.exp(11/5) / ((np.exp(11/5) + np.exp(19/5)))
+        gradB = np.exp(19/5) / ((np.exp(11/5) + np.exp(19/5)))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(1.1,'B', 0.2)
+        b = variable(1.9,'Np',0.1)
+        c = a + b
+        self.assertAlmostEqual(c.value, 1.758082147187876468991064264007183585955484366785)
+        self.assertEqual(c.unit, 'B')
+        gradA = 10**1.1 / (np.exp(2*1.9) + 10**1.1)
+        gradB = 2 * np.exp(2*1.9) / (np.log(10) * (10**1.1 + np.exp(2*1.9)))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+
+    def testSubtractNeper(self):
+        a = variable(1.1,'Np', 1.2)
+        b = variable(1.9,'Np', 0.1)
+        c = b - a
+        gradA = -np.exp(2*1.1) / (-np.exp(2*1.1) + np.exp(2*1.9))
+        gradB = np.exp(2*1.9) / (-np.exp(2*1.1) + np.exp(2*1.9))
+        self.assertAlmostEqual(c.value, 1.7872414933794011376350282497774605052189199203232206053472)
+        self.assertEqual(c.unit, 'Np')
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * 1.2)**2 + (gradB * 0.1)**2))
+        
+        a = variable(11,'dNp', 0.1)
+        b = variable(19,'dNp', 1.2)
+        c = b - a
+        self.assertEqual(c.value, 17.872414933794011376350282497774605052189199203232206053472)
+        self.assertEqual(c.unit, 'dNp')
+        gradA = -np.exp(11/5) / ((-np.exp(11/5) + np.exp(19/5)))
+        gradB = np.exp(19/5) / ((-np.exp(11/5) + np.exp(19/5)))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(1.1,'B', 0.2)
+        b = variable(1.9,'Np',0.1)
+        c = b - a
+        self.assertAlmostEqual(c.value, 1.7346138119351200779277098049685724168821500468817797823749)
+        self.assertEqual(c.unit, 'Np')
+        gradA = - (2**(1.1-1) * 5**1.1 * np.log(10)) / (np.exp(2 * 1.9) - 10**1.1)
+        gradB =  np.exp(2*1.9) / (-10**1.1 + np.exp(2*1.9))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+
 
 if __name__ == '__main__':
     unittest.main()
-    # test().testCompare()
     

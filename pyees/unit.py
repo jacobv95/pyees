@@ -402,7 +402,7 @@ class unit():
         # test if the units are identical
         if self._assertEqual(other):
             if self._SIBaseUnit == 'K':
-                return True, 'DELTA' + self.unitStr
+                return True, 'DELTAK'
             return True, self._SIBaseUnit
 
         # test if the SI base units are identical
@@ -506,8 +506,17 @@ class unit():
         
         return self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
 
-    def _getConverter(self, otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp):
+    def getUnitWithoutPrefix(self):
+        return self._removePrefixFromUnit(self.unitStr)[0]
 
+    def getLogarithmicConverter(self, unitStr = None):
+        if unitStr is None:
+            unitStr = self.unitStr
+        u, p = self._removePrefixFromUnit(unitStr)
+        return knownUnits[u][1]
+   
+    def _getConverter(self, otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp):
+        
         # initialize the scale and offset
         out = _unitConversion(1, 0)
 
@@ -521,12 +530,13 @@ class unit():
         prefixes = self.upperPrefix + self.lowerPrefix
         exponents = self.upperExp + self.lowerExp
         for i, (conv, prefix, exp) in enumerate(zip(conversions, prefixes, exponents)):
+            if exp > 1: conv = conv ** exp
             if not prefix is None:
                 conv *= knownPrefixes[prefix]
             if i < nUpper:
-                out *= (conv ** exp)
+                out *= conv
             else:
-                out /= (conv ** exp)
+                out /= conv
 
         # get all conversions from the upper and lower units in the new unit
         upperConversions = [knownUnits[elem][1] for elem in otherUpper]
@@ -538,12 +548,13 @@ class unit():
         prefixes = otherUpperPrefix + otherLowerPrefix
         exponents = otherUpperExp + otherLowerExp
         for i, (conv, prefix, exp) in enumerate(zip(conversions, prefixes, exponents)):
+            if exp > 1: conv = conv ** exp
             if not prefix is None:
                 conv *= knownPrefixes[prefix]
             if i < nUpper:
-                out /= (conv ** exp)
+                out /= conv
             else:
-                out *= (conv ** exp)
+                out *= conv
 
         return out
 

@@ -5,7 +5,202 @@ try:
 except ImportError:
     from unit import unit
     
+
+class temperatureVariable:
+    def __init__(self):
+        pass
     
+    @staticmethod
+    def addTemperatures(a, b):
+
+        # convert self and other to the SI unit system
+        selfUnit = deepcopy(a.unit)
+        otherUnit = deepcopy(b.unit)
+        a.convert(a._unitObject._SIBaseUnit)
+        b.convert(b._unitObject._SIBaseUnit)
+
+        # determine the value and gradients
+        val = a._value + b._value
+        grad = [1, 1]
+        vars = [a, b]
+
+        # create the new variable
+        var = variable(val, 'K')
+        var._addDependents(vars, grad)
+        var._calculateUncertanty()
+
+        # convert self and other back
+        a.convert(selfUnit)
+        b.convert(otherUnit)
+        
+        SIBaseUnits = [a._unitObject._SIBaseUnit, b._unitObject._SIBaseUnit]
+        if 'DELTAK' in SIBaseUnits:
+            outputUnit = [a.unit, b.unit][SIBaseUnits.index('K')]
+            var.convert(outputUnit)
+        
+        return var
+
+    
+    def subtractTemperatures(a,b):
+
+        # convert self and other to the SI unit system
+        aUnit = deepcopy(a.unit)
+        bUnit = deepcopy(b.unit)
+        
+        SIBaseUnits = [a._unitObject._SIBaseUnit, b._unitObject._SIBaseUnit]
+        outputUnit = 'K' if 'DELTAK' in SIBaseUnits else 'DELTAK'
+        
+        a.convert(a._unitObject._SIBaseUnit)
+        b.convert(b._unitObject._SIBaseUnit)
+
+        # determine the value and gradients
+        val = a.value - b.value
+        grad = [1, -1]
+        vars = [a, b]
+
+        # create the new variable
+        var = variable(val, outputUnit)
+        var._addDependents(vars, grad)
+        var._calculateUncertanty()
+
+        # convert self and other back
+        a.convert(aUnit)
+        b.convert(bUnit)
+
+        # convert the output variable
+        if 'DELTAK' in SIBaseUnits:
+            outputUnit = [a.unit, b.unit][SIBaseUnits.index('K')]
+            var.convert(outputUnit)
+        elif aUnit == bUnit:
+            var.convert('DELTA' + aUnit)
+        
+        return var
+    
+class logarithmicVariables:
+    def __init__(self):
+        pass
+    
+    @staticmethod
+    def __add__(a,b):
+        aUnit = str(a.unit)
+        bUnit =str(b.unit)
+        
+        aUnitWithoutPrefix = a._unitObject.getUnitWithoutPrefix()
+        a.convert(aUnitWithoutPrefix)
+
+        aConverter = a._unitObject.getLogarithmicConverter()
+        a._unitStr = '1'
+        a._unitObject = unit('')
+        aConverter.convertToSignal(a)
+       
+        bUnitWithoutPrefix = b._unitObject.getUnitWithoutPrefix()
+        b.convert(bUnitWithoutPrefix)
+        bConverter = b._unitObject.getLogarithmicConverter()
+        b._unitStr = '1'
+        b._unitObject = unit('')
+        bConverter.convertToSignal(b)
+
+        c = a + b
+     
+        aConverter.convertFromSignal(a)
+        a._unitStr = aUnitWithoutPrefix
+        a._unitObject = unit(aUnitWithoutPrefix)
+        a.convert(aUnit)
+        
+        bConverter.convertFromSignal(b)
+        b._unitStr = bUnitWithoutPrefix
+        b._unitObject = unit(bUnitWithoutPrefix)
+        b.convert(bUnit)
+        
+        
+        aConverter.convertFromSignal(c)
+        c._unitStr = aUnitWithoutPrefix
+        c._unitObject = unit(aUnitWithoutPrefix)
+        c.convert(aUnit)
+
+        return c
+
+    @staticmethod
+    def __sub__(a,b):
+        aUnit = str(a.unit)
+        bUnit =str(b.unit)
+        
+        aUnitWithoutPrefix = a._unitObject.getUnitWithoutPrefix()
+        a.convert(aUnitWithoutPrefix)
+
+        aConverter = a._unitObject.getLogarithmicConverter()
+        a._unitStr = '1'
+        a._unitObject = unit('')
+        aConverter.convertToSignal(a)
+       
+        bUnitWithoutPrefix = b._unitObject.getUnitWithoutPrefix()
+        b.convert(bUnitWithoutPrefix)
+        bConverter = b._unitObject.getLogarithmicConverter()
+        b._unitStr = '1'
+        b._unitObject = unit('')
+        bConverter.convertToSignal(b)
+
+        c = a - b
+     
+        aConverter.convertFromSignal(a)
+        a._unitStr = aUnitWithoutPrefix
+        a._unitObject = unit(aUnitWithoutPrefix)
+        a.convert(aUnit)
+        
+        bConverter.convertFromSignal(b)
+        b._unitStr = bUnitWithoutPrefix
+        b._unitObject = unit(bUnitWithoutPrefix)
+        b.convert(bUnit)
+        
+        
+        aConverter.convertFromSignal(c)
+        c._unitStr = aUnitWithoutPrefix
+        c._unitObject = unit(aUnitWithoutPrefix)
+        c.convert(aUnit)
+
+        return c
+
+    @staticmethod
+    def __mul__(a,b):
+        ## TODO 
+        raise NotImplementedError()
+
+    @staticmethod
+    def __truediv__(a,b):
+        ## TODO 
+        raise NotImplementedError()
+
+    @staticmethod
+    def __pow__(a,b):
+        ## TODO 
+        raise NotImplementedError()
+
+    @staticmethod
+    def log(a,b):
+        ## TODO 
+        raise NotImplementedError()
+    
+    @staticmethod
+    def log10(a,b):
+        ## TODO 
+        raise NotImplementedError()
+    
+    
+    @staticmethod
+    def sin(a,b):
+        ## TODO 
+        raise NotImplementedError()
+    
+    @staticmethod
+    def cos(a,b):
+        ## TODO 
+        raise NotImplementedError()
+    
+    @staticmethod
+    def tan(a,b):
+        ## TODO 
+        raise NotImplementedError()   
+
 
 class scalarVariable():
     def __init__(self, value, unitStr, uncert, nDigits) -> None:
@@ -158,7 +353,7 @@ class scalarVariable():
         for var, grad in self.dependsOn.items():
             # the gradient is scaled with the inverse of the conversion of the unit to SI units.
             # This is necessary if the variable "var" has been converted after the dependency has been noted
-            scale = var._converterToSI.convert(1, useOffset=False) / selfScaleToSI
+            scale = var._converterToSI.convert(1, useOffset=False) / selfScaleToSI           
             variance += (grad * scale * var.uncert)**2
 
         # variance from the corralation between measurements
@@ -185,8 +380,16 @@ class scalarVariable():
 
         # determine if the two variable can be added
         addBool, outputUnit = self._unitObject + other._unitObject
+        
         if not addBool:
             raise ValueError(f'You tried to add a variable in [{self.unit}] to a variable in [{other.unit}], but the units do not have the same SI base unit')
+
+        ## handle temperatures diferently
+        if outputUnit == 'K':
+            return temperatureVariable.addTemperatures(self, other)
+        
+        if outputUnit == 'Np':
+            return logarithmicVariables.__add__(self, other)
 
         # convert self and other to the SI unit system
         selfUnit = deepcopy(self.unit)
@@ -204,18 +407,15 @@ class scalarVariable():
         var._addDependents(vars, grad)
         var._calculateUncertanty()
 
-        # convert self and other back
+        # convert all units back to their original units
         self.convert(selfUnit)
         other.convert(otherUnit)
-
-        # convert the output variable
-        if outputUnit == 'K':
-            SIBaseUnits = [self._unitObject._SIBaseUnit, other._unitObject._SIBaseUnit]
-            if 'DELTAK' in SIBaseUnits:
-                outputUnit = [self.unit, other.unit][SIBaseUnits.index('K')]
-                var.convert(outputUnit)
-        if self.unit == other.unit:
-            var.convert(self.unit)
+        
+        ## convert the variable in to the original unit if self and other has the same original unit
+        ## otherwise keep the variable in the SI unit system
+        if (selfUnit == otherUnit):
+            var.convert(selfUnit)
+        
         return var
 
     def __radd__(self, other):
@@ -227,8 +427,17 @@ class scalarVariable():
 
         # determine if the variables can be subtracted
         subBool, outputUnit = self._unitObject - other._unitObject
+        
         if not subBool:
             raise ValueError(f'You tried to subtract a variable in [{other.unit}] from a variable in [{self.unit}], but the units do not have the same SI base unit')
+
+        ## handle temperatures diferently
+        if outputUnit == 'DELTAK' or outputUnit == 'K':
+            return temperatureVariable.subtractTemperatures(self, other)
+
+        if outputUnit == 'Np':
+            return logarithmicVariables.__sub__(self, other)
+
 
         # convert self and other to the SI unit system
         selfUnit = deepcopy(self.unit)
@@ -250,13 +459,7 @@ class scalarVariable():
         self.convert(selfUnit)
         other.convert(otherUnit)
 
-        # convert the output variable
-        if outputUnit == 'K':
-            SIBaseUnits = [self._unitObject._SIBaseUnit, other._unitObject._SIBaseUnit]
-            if 'DELTAK' in SIBaseUnits:
-                outputUnit = [self.unit, other.unit][SIBaseUnits.index('K')]
-                var.convert(outputUnit)
-        if self.unit == other.unit and 'DELTA' not in outputUnit:
+        if self.unit == other.unit:
             var.convert(self.unit)
 
         return var
@@ -310,7 +513,7 @@ class scalarVariable():
         gradSelf = np.vectorize(gradSelf, otypes=[float])(self._value, other._value)
         grad = [gradSelf, gradOther]
         vars = [self, other]
-
+                
         var = variable(val, outputUnit)
         var._addDependents(vars, grad)
         var._calculateUncertanty()
@@ -328,7 +531,7 @@ class scalarVariable():
 
         grad = [1 / other._value, -self._value / (other._value**2)]
         vars = [self, other]
-
+        
         var = variable(val, outputUnit)
         var._addDependents(vars, grad)
         var._calculateUncertanty()
@@ -750,33 +953,6 @@ class arrayVariable(scalarVariable):
 
 
 
-class scalarTemperatureVariable(scalarVariable):
-    def __init__(self):
-        super(scalarTemperatureVariable, self).__init__()
-
-    ## TODO overload methods
-
-class arrayTemperatureVariable(arrayVariable):
-    def __init__(self):
-        super(arrayTemperatureVariable, self).__init__()
-
-    ## TODO overload methods
-
-
-
-class scalarSoundLevelVariable(scalarVariable):
-    def __init__(self):
-        super(scalarTemperatureVariable, self).__init__()
-
-    ## TODO overload methods
-
-class arraySoundLevelVariable(arrayVariable):
-    def __init__(self):
-        super(arrayTemperatureVariable, self).__init__()
-
-    ## TODO overload methods
-
-
 
 def variable(value, unit = '', uncert = None, nDigits = 3):
     # store the value and the uncertaty
@@ -822,3 +998,4 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 ## TODO add the use of parenthesis in the units
 ## TODO add a method to add custom units
+

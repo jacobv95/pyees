@@ -26,32 +26,15 @@ class _unitConversion():
 
         return _unitConversion(scale, offset)
 
-    def __imul__(self, other):
-        if isinstance(other, _unitConversion):
-            scale = self.scale * other.scale
-            offset = self.offset * other.scale + other.offset
-        else:
-            scale = self.scale * other
-            offset = self.offset
-        return _unitConversion(scale, offset)
-
     def __truediv__(self, other):
         if isinstance(other, _unitConversion):
             scale = self.scale / other.scale
             offset = self.offset - other.offset / other.scale
         else:
-            scale = self.scale / other.scale
+            scale = self.scale / other
             offset = self.offset
         return _unitConversion(scale, offset)
 
-    def __itruediv__(self, other):
-        if isinstance(other, _unitConversion):
-            scale = self.scale / other.scale
-            offset = self.offset - other.offset / other.scale
-        else:
-            scale = self.scale / other.scale
-            offset = self.offset
-        return _unitConversion(scale, offset)
 
     def convert(self, value, useOffset=True):
         if useOffset:
@@ -59,7 +42,48 @@ class _unitConversion():
         else:
             return self.scale * value
 
+class neperConversion():
+    def __init__(self):
+        self.scale = 1
+        self.offset = 0
+    @staticmethod
+    def convertToSignal(var):
+        var._uncert = 2*np.exp(2*var.value) * var.uncert
+        var._value = np.exp(2*var.value)
+    @staticmethod
+    def convertFromSignal(var):
+        var._uncert = 1 / (2*var.value) * var.uncert
+        var._value = 1/2 * np.log(var.value)
+    def __mul__(self, other):
+        return 1 * other
+    def __rmul__(self, other):
+        return self * other
+    def __truediv__(self, other):
+        return 1 / other
+    def __rtruediv__(self, other):
+        return other / 1
 
+class bellConversion():
+    def __init__(self):
+        self.scale = 1
+        self.offset = 0
+    @staticmethod
+    def convertToSignal(var):
+        var._uncert = 10**var.value * np.log(10) * var.uncert
+        var._value = 10**var.value
+    @staticmethod
+    def convertFromSignal(var):
+        var._uncert = 1 / (var.value * np.log(10)) * var.uncert
+        var._value = np.log10(var.value)
+    def __mul__(self, other):
+        return 1 * other
+    def __rmul__(self, other):
+        return self * other
+    def __truediv__(self, other):
+        return 1 / other
+    def __rtruediv__(self, other):
+        return other / 1
+    
 _baseUnit = {
     '1': _unitConversion(1),
     '': _unitConversion(1),
@@ -90,10 +114,7 @@ pressure = {
 temperature = {
     'K': _unitConversion(1),
     'C': _unitConversion(1, 273.15),
-    # '°C': _unitConversion(1, 273.15),
-    'F': _unitConversion(5 / 9, 273.15 - 32 * 5 / 9),
-    # '°F': _unitConversion(5 / 9, 273.15 - 32 * 5 / 9)
-
+    'F': _unitConversion(5 / 9, 273.15 - 32 * 5 / 9)
 }
 
 temperatureDifference = {
@@ -145,9 +166,9 @@ kinematicViscosity = {
     'St': _unitConversion(1e-4)
 }
 
-logrithmicUnits = {## TODO logarithmic units
-    'Np' : _unitConversion(1), 
-    'B': _unitConversion(1/2 * np.log(10)),
+logrithmicUnits = {
+    'Np' : neperConversion(),
+    'B': bellConversion(),
     'octave': _unitConversion(1),
     'decade': _unitConversion(1)
 }
@@ -166,7 +187,7 @@ _knownUnitsDict = {
     'A': current,
     'kg-m2/s3-A': voltage,
     '1': _baseUnit,
-    'Hz': frequency,
+    '1/s': frequency,
     'rad': angle,
     'kg-m2/s3-A2' : resistance,
     'm2/s' : kinematicViscosity,
