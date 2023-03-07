@@ -85,7 +85,7 @@ The following units are known:
  - Angles: rad, deg
  - Resistance: ohm
  - kinematic viscosity: St
- - logarithmic units: B, Np, octave, decade
+ - logarithmic units: B, Np, oct, dec
 
 
 The following prefixes are known:
