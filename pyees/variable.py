@@ -50,7 +50,11 @@ class temperatureVariable:
         bUnit = deepcopy(b.unit)
         
         SIBaseUnits = [a._unitObject._SIBaseUnit, b._unitObject._SIBaseUnit]
-        outputUnit = 'K' if 'DELTAK' in SIBaseUnits else 'DELTAK'
+        if (SIBaseUnits == ['DELTAK', 'K']):
+            raise ValueError('You can not subtract a temperature from a tempeature difference')
+        
+        nTemp = sum([1 for elem in SIBaseUnits if elem == 'K'])
+        outputUnit = 'K' if nTemp == 1 else 'DELTAK'
         
         a.convert(a._unitObject._SIBaseUnit)
         b.convert(b._unitObject._SIBaseUnit)
@@ -70,11 +74,14 @@ class temperatureVariable:
         b.convert(bUnit)
 
         # convert the output variable
-        if 'DELTAK' in SIBaseUnits:
+        if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
             outputUnit = [a.unit, b.unit][SIBaseUnits.index('K')]
             var.convert(outputUnit)
         elif aUnit == bUnit:
-            var.convert('DELTA' + aUnit)
+            if SIBaseUnits[0] == 'DELTAK':
+                var.convert(aUnit)
+            else:
+                var.convert('DELTA' + aUnit)
         
         return var
     
@@ -957,14 +964,3 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 
 ## TODO add a method to add custom units
-if __name__ == "__main__":
-    t1 = variable(20,'C')
-    t2 = variable(30, 'C')
-    t_avg = (t1 + t2) / 2
-    print(t_avg)
-    
-    dt = (t2 - t1)
-    
-    c = t1 + dt / 2
-
-    print(c)

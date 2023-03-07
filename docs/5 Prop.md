@@ -6,7 +6,7 @@ A wrapper has been built around the pyfluids library. The wrapper creates a data
 from dataUncert import variable, prop
 T = variable(30,'C',0.1)
 P = variable(1,'bar', 0.01)
-mu = prop('mu', 'water', T, P)
+mu = prop('dynamic_viscosity', 'water', T=T, P=P)
 print(mu)
 >> 0.000797 +/- 2e-06 [Pa-s]
 ```
@@ -17,8 +17,8 @@ The following fluids are included in this project
  - Air
 
 The following properties are included in this project
- - 'rho' (density)
- - 'cp' (specific heat capacity)
- - 'mu' (kinematic viscosity)
+ - 'density' (density)
+ - 'specific_heat' (specific heat capacity)
+ - 'dynamic_viscosity' (kinematic viscosity)
 
 

@@ -90,6 +90,9 @@ class bellConversion():
         return 1** other
     def __rpow__(self, other):
         return other ** 1
+
+## TODO octave
+## TODO decade
     
 _baseUnit = {
     '1': _unitConversion(1),
