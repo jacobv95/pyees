@@ -958,10 +958,13 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 ## TODO add a method to add custom units
 if __name__ == "__main__":
-    a = variable(20,'C')
-    b = variable(30, 'C')
-    dt = (b - a)/2
+    t1 = variable(20,'C')
+    t2 = variable(30, 'C')
+    t_avg = (t1 + t2) / 2
+    print(t_avg)
     
-    c = a + dt
+    dt = (t2 - t1)
+    
+    c = t1 + dt / 2
 
     print(c)
