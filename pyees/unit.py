@@ -268,7 +268,7 @@ class unit():
             parts = [unitStr[i+1:j] for i,j in zip(splits, splits[1:]+[None])]
             parts = [unit._formatUnit(part) for part in parts]
             if isinstance(parts, list):
-                return '/'.join(parts)
+                parts = unit(parts[0]) / unit(parts[1])
             return parts
         
         parts = unit._formatUnit(unitStr[order[0][0]+1: order[0][1]])
@@ -681,4 +681,10 @@ class unit():
         otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
         self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
 
+
+  ## TODO support of parenthesis with multiple slashes
+
+if __name__ == "__main__":
+    a = unit('(m/s2)2/Hz')
+    print(a)
 
