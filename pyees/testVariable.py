@@ -1326,8 +1326,7 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             A[0] = B
         self.assertTrue("'scalarVariable' object does not support item assignment" in str(context.exception))
-        
-        
+           
     def testAppend(self):
         A = variable(12.3, 'L/min', uncert=2.6)
         B = variable(45, 'Pa', 1.2)
@@ -1351,7 +1350,6 @@ class test(unittest.TestCase):
             A.append(B)
         self.assertTrue("'scalarVariable' object has no attribute 'append'" in str(context.exception))
         
-
     def testAddBel(self):
         a = variable(11,'dB', 0.1)
         b = variable(19,'dB',1.2)
@@ -1407,8 +1405,7 @@ class test(unittest.TestCase):
         gradA = -10**(1.1+1) / (10**(19/10) - 10**1.1)
         gradB = 10**(19/10) / (10**(19/10) - 10**1.1)
         self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
-        
-
+    
     def testAddNeper(self):
         a = variable(1.1,'Np', 1.2)
         b = variable(1.9,'Np', 0.1)
@@ -1465,6 +1462,118 @@ class test(unittest.TestCase):
         gradB =  np.exp(2*1.9) / (-10**1.1 + np.exp(2*1.9))
         self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
 
+    def testAddOctave(self):
+        a = variable(11,'oct', 0.1)
+        b = variable(19,'oct',1.2)
+        c = a + b
+        self.assertEqual(c.value, 19.005624549193878106919859102674066601721109681538352035907295778)
+        self.assertEqual(c.unit, 'oct')
+        gradA = (2**(11)) / (2**(19) + 2**(11))
+        gradB = (2**(19)) / (2**(19) + 2**(11))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(11,'doct', 0.1)
+        b = variable(19,'doct',1.2)
+        c = a + b
+        self.assertEqual(c.value, 25.547555540454389776996741016863742223173494327085729223977)
+        self.assertEqual(c.unit, 'doct')
+        gradA = (2**(11/10)) / (2**(19/10) + 2**(11/10))
+        gradB = (2**(19/10)) / (2**(19/10) + 2**(11/10))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(1.1,'oct', 0.1)
+        b = variable(19,'doct',1.2)
+        c = a + b
+        self.assertAlmostEqual(c.value, 2.5547555540454389776996741016863742223173494327085729223977)
+        self.assertEqual(c.unit, 'oct')
+        gradA = 2**1.1 / (2**(19/10) + 2**1.1)
+        gradB = 1 / (10*(2**(1.1 - 19/10) + 1))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+    def testSubtractOctave(self):
+        a = variable(11,'oct', 0.1)
+        b = variable(19,'oct',1.2)
+        c = b - a
+        self.assertEqual(c.value, 18.994353436858857937578124384247611038635913083061882360637118114)
+        self.assertEqual(c.unit, 'oct')
+        gradA = -(2**(11)) / (2**(19) - 2**(11))
+        gradB = (2**(19)) / (2**(19) - 2**(11))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(11,'doct', 0.1)
+        b = variable(19,'doct',1.2)
+        c = b - a
+        self.assertAlmostEqual(c.value, 6.677423233234791893663882614756435176500756327730140063397)
+        self.assertEqual(c.unit, 'doct')
+        gradA = -(2**(11/10)) / (2**(19/10) - 2**(11/10))
+        gradB = (2**(19/10)) / (2**(19/10) - 2**(11/10))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(1.1,'oct', 0.1)
+        b = variable(19,'doct',1.2)
+        c = b - a
+        self.assertAlmostEqual(c.value, 6.677423233234791893663882614756435176500756327730140063397)
+        self.assertEqual(c.unit, 'doct')
+        gradA = -5 * 2**(1.1+1) / (2**(19/10) - 2**1.1) 
+        gradB = 2**(19/10) / (2**(19/10) - 2**1.1)
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+          
+    def testAddDecade(self):
+        a = variable(11,'ddec', 0.1)
+        b = variable(19,'ddec',1.2)
+        c = a + b
+        self.assertEqual(c.value, 19.638920341433795986775635083534144311728776386508569289294)
+        self.assertEqual(c.unit, 'ddec')
+        gradA = (10**(11/10)) / (10**(19/10) + 10**(11/10))
+        gradB = (10**(19/10)) / (10**(19/10) + 10**(11/10))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(11,'dec', 0.1)
+        b = variable(19,'dec',1.2)
+        c = a + b
+        self.assertEqual(c.value, 19.000000004342944797317794326113524021957351355250018803653068412)
+        self.assertEqual(c.unit, 'dec')
+        gradA = (10**(11)) / (10**(19) + 10**(11))
+        gradB = (10**(19)) / (10**(19) + 10**(11))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(1.1,'dec', 0.1)
+        b = variable(19,'ddec',1.2)
+        c = a + b
+        self.assertAlmostEqual(c.value, 1.9638920341433795986775635083534144311728776386508569289294)
+        self.assertEqual(c.unit, 'dec')
+        gradA = 10**1.1 / (10**(19/10) + 10**1.1)
+        gradB = 10**(19/10-1) / (10**(19/10) + 10**1.1)
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+    def testSubtractDecade(self):
+        a = variable(11,'ddec', 0.1)
+        b = variable(19,'ddec',1.2)
+        c = b - a
+        self.assertEqual(c.value, 18.250596325673850704123951198937009709734608031896818185442)
+        self.assertEqual(c.unit, 'ddec')
+        gradA = -(10**(11/10)) / (10**(19/10) - 10**(11/10))
+        gradB = (10**(19/10)) / (10**(19/10) - 10**(11/10))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(11,'dec', 0.1)
+        b = variable(19,'dec',1.2)
+        c = b - a
+        self.assertEqual(c.value, 18.99999999565705515925275748356129104145734723683018994643533534)
+        self.assertEqual(c.unit, 'dec')
+        gradA = -(10**(11)) / (10**(19) - 10**(11))
+        gradB = (10**(19)) / (10**(19) - 10**(11))
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+        
+        a = variable(1.1,'dec', 0.1)
+        b = variable(19,'ddec',1.2)
+        c = b-a
+        self.assertAlmostEqual(c.value, 18.250596325673850704123951198937009709734608031896818185442)
+        self.assertEqual(c.unit, 'ddec')
+        gradA = -10**(1.1+1) / (10**(19/10) - 10**1.1)
+        gradB = 10**(19/10) / (10**(19/10) - 10**1.1)
+        self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
+      
 
 if __name__ == '__main__':
     unittest.main()

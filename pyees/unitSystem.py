@@ -66,6 +66,7 @@ class neperConversion():
         return 1** other
     def __rpow__(self, other):
         return other ** 1
+
 class bellConversion():
     def __init__(self):
         self.scale = 1
@@ -91,8 +92,31 @@ class bellConversion():
     def __rpow__(self, other):
         return other ** 1
 
-## TODO octave
-## TODO decade
+class octaveConversion():
+    def __init__(self):
+        self.scale = 1
+        self.offset = 0
+    @staticmethod
+    def convertToSignal(var):
+        var._uncert = 2**var.value * np.log(2) * var.uncert
+        var._value = 2**var.value
+    @staticmethod
+    def convertFromSignal(var):
+        var._uncert = 1 / (var.value * np.log(2)) * var.uncert
+        var._value = np.log2(var.value)
+    def __mul__(self, other):
+        return 1 * other
+    def __rmul__(self, other):
+        return self * other
+    def __truediv__(self, other):
+        return 1 / other
+    def __rtruediv__(self, other):
+        return other / 1
+    def __pow__ (self, other):
+        return 1** other
+    def __rpow__(self, other):
+        return other ** 1
+
     
 _baseUnit = {
     '1': _unitConversion(1),
@@ -179,8 +203,8 @@ kinematicViscosity = {
 logrithmicUnits = {
     'Np' : neperConversion(),
     'B': bellConversion(),
-    'octave': _unitConversion(1),
-    'decade': _unitConversion(1)
+    'oct': octaveConversion(),
+    'dec': bellConversion()
 }
 
 _knownUnitsDict = {
