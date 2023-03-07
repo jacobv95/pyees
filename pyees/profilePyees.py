@@ -2,9 +2,9 @@ import cProfile
 import pstats
 import io
 try:
-    from .variable import variable
-except ImportError:
     from variable import variable
+except ImportError:
+    from pyees.variable import variable
     
 pr = cProfile.Profile()
 pr.enable()

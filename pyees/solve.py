@@ -2,9 +2,9 @@ from scipy.optimize import minimize
 import numpy as np
 import warnings
 try:
-    from .variable import scalarVariable
-except ImportError:
     from variable import scalarVariable
+except ImportError:
+    from pyees.variable import scalarVariable
 
 
 

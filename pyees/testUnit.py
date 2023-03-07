@@ -1,8 +1,8 @@
 import unittest
 try:
-    from .unit import unit
-except ImportError:
     from unit import unit
+except ImportError:
+    from pyees.unit import unit
 
 class test(unittest.TestCase):
 

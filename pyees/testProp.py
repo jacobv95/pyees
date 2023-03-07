@@ -1,10 +1,10 @@
 import unittest
 try:
-    from .prop import prop
-    from .variable import variable
-except ImportError:
     from prop import prop
     from variable import variable
+except ImportError:
+    from pyees.prop import prop
+    from pyees.variable import variable
 
 class test(unittest.TestCase):
 

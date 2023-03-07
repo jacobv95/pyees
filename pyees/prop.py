@@ -1,11 +1,10 @@
 from pyfluids import Fluid, FluidsList, Input, HumidAir, InputHumidAir
 try:
-    from .variable import variable, scalarVariable, arrayVariable
-    from .unit import unit
-except ImportError:
     from variable import variable, scalarVariable, arrayVariable
     from unit import unit
-    
+except ImportError:
+    from pyees.unit import unit
+    from pyees.variable import variable, scalarVariable, arrayVariable
 dx = 0.000001
 
 def prop(property, fluid, **kwargs):

@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
 try:
-    from .fit import *
-except ImportError:
     from fit import *
+except ImportError:
+    from pyees.fit import *
 
 
 class test(unittest.TestCase):

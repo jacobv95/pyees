@@ -1,13 +1,13 @@
 import unittest
 import numpy as np
 try:
-    from .solve import solve
-    from .variable import variable
-    from .prop import prop
-except ImportError:
     from solve import solve
     from variable import variable
     from prop import prop
+except ImportError:
+    from pyees.solve import solve
+    from pyees.variable import variable
+    from pyees.prop import prop
     
 tol = 1e-5
 solveTol = 1e-12
@@ -16,8 +16,6 @@ class test(unittest.TestCase):
     
     def assertRelativeDifference(self, a, b, r):
         assert abs(a-b) < abs(b * r), f"The value {a} and {b} has a greater relative difference than {r}. The difference was {abs(a-b)} and was allowed to be {b*r}"
-      
-      
       
     def testSolveOneLinearEquation(self):
         a = variable(23.7, '', 0.1)

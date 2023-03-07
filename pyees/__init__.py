@@ -1,19 +1,8 @@
 # import the necessary modules
-try:
-    from .variable import variable
-    from .fit import dummy_fit, pol_fit, lin_fit, exp_fit, pow_fit, logistic_fit, logistic_100_fit
-    from .readData import readData
-    from .prop import prop
-    from .solve import solve
-    from .unitSystem import getDicts
-except ImportError:
-    from variable import variable
-    from fit import dummy_fit, pol_fit, lin_fit, exp_fit, pow_fit, logistic_fit, logistic_100_fit
-    from readData import readData
-    from prop import prop
-    from solve import solve
-    from unitSystem import getDicts
+from pyees.variable import variable
+from pyees.fit import dummy_fit, pol_fit, lin_fit, exp_fit, pow_fit, logistic_fit, logistic_100_fit
+from pyees.readData import readData
+from pyees.prop import prop
+from pyees.solve import solve
 
-
-knownUnits, knownCharacters, knownUnitsDict, knownPrefixes, baseUnit = getDicts()
     

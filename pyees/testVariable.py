@@ -2,9 +2,9 @@ import unittest
 import numpy as np
 from random import uniform
 try:
-    from .variable import variable
-except ImportError:
     from variable import variable
+except ImportError:
+    from pyees.variable import variable
 
 class test(unittest.TestCase): 
 

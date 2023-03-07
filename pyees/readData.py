@@ -5,9 +5,9 @@ import os.path
 import re
 import string
 try:
-    from .variable import variable
-except ImportError:
     from variable import variable
+except ImportError:
+    from pyees.variable import variable
 
 
 def readData(xlFile, dataRange, uncertRange=None):

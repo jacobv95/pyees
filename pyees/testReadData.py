@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
 try:
-    from .readData import readData
-except ImportError:
     from readData import readData
+except ImportError:
+    from pyees.readData import readData
 
 class test(unittest.TestCase):
 

@@ -1,9 +1,9 @@
 from copy import deepcopy
 import numpy as np
 try:
-    from .unit import unit
-except ImportError:
     from unit import unit
+except ImportError:
+    from pyees.unit import unit
     
 
 class temperatureVariable:
@@ -964,3 +964,7 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 
 ## TODO add a method to add custom units
+
+if __name__ == "__main__":
+    ## TODO support of parenthesis with multiple slashes
+    a = variable(10, '(m-s2)2/Hz')

@@ -2,11 +2,11 @@ import numpy as np
 import scipy.odr as odr
 import string
 try:
-    from .variable import variable, arrayVariable
-    from .unit import unit
-except ImportError:
     from variable import variable, arrayVariable
     from unit import unit
+except ImportError:
+    from pyees.variable import variable, arrayVariable
+    from pyees.unit import unit
     
     
 class _fit():

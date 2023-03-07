@@ -1,10 +1,8 @@
 import numpy as np
 try:
-    from .unitSystem import _unitConversion
-    from .__init__ import knownPrefixes, knownUnits, knownCharacters, knownUnitsDict, baseUnit
+    from unitSystem import _unitConversion, knownUnits, knownCharacters, knownUnitsDict, knownPrefixes, baseUnit
 except ImportError:
-    from unitSystem import _unitConversion, getDicts
-    knownUnits, knownCharacters, knownUnitsDict, knownPrefixes, baseUnit = getDicts()
+    from pyees.unitSystem import _unitConversion, knownUnits, knownCharacters, knownUnitsDict, knownPrefixes, baseUnit
 
 hyphen = '-'
 slash = '/'
@@ -682,10 +680,5 @@ class unit():
         self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
         otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
         self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
-
-if __name__ == "__main__":
-    a = unit._formatUnit('(m-s2)2 / Hz')
-    print(a)
-    
 
 
