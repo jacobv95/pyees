@@ -3,7 +3,7 @@ EES is a nice program with a lot of uses. However, the syntax is poor and the it
 
 
 # How to install
-Just run ```pip install dataUncert```
+Just run ```pip install pyees```
 
 ## Scope of this package
 These computations quickly becomes very difficult for more complicated equations than the one used in this example. This packages is designed to easily perform such computations. Furthermore a few features is added to the packages
