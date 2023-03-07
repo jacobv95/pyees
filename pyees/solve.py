@@ -1,10 +1,10 @@
 from scipy.optimize import minimize
-import warnings
 import numpy as np
+import warnings
 try:
-    from .variable import variable, scalarVariable
+    from .variable import scalarVariable
 except ImportError:
-    from variable import variable, scalarVariable
+    from variable import scalarVariable
 
 
 
@@ -128,10 +128,9 @@ def solve(func, x, *args, bounds = None,**kwargs):
 
         return sum([(e[0].value - e[1].value)**2 * s for e,s in zip(out, scales)])
 
-    
     ## run the minimization
     if callable(bounds): keepVariablesFeasible()
-    warnings.filterwarnings("ignore")
+    warnings.filterwarnings('ignore')
     out = minimize(
         minimizationProblem,
         [elem.value for elem in x],
@@ -140,7 +139,7 @@ def solve(func, x, *args, bounds = None,**kwargs):
         bounds = bounds if not callable(bounds) else None,
         callback=keepVariablesFeasible if callable(bounds) else None
         )
-    warnings.filterwarnings("default")
+    warnings.filterwarnings('default')
     if callable(bounds): keepVariablesFeasible()
 
     ## loop over all equations and create a list of the residuals and create the jacobian matrix
@@ -148,7 +147,9 @@ def solve(func, x, *args, bounds = None,**kwargs):
     for i, equation in enumerate(ffunc(*x)):
 
         ## add the residual
-        residuals.append(equation[0] - equation[1])
+        res = equation[0] - equation[1]
+        res.convert(res._unitObject._SIBaseUnit)
+        residuals.append(res)
 
         ## loop over the variables
         for j, xj in enumerate(x):
@@ -168,22 +169,24 @@ def solve(func, x, *args, bounds = None,**kwargs):
 
 
 
-
-if __name__ =="__main__":
-    def func(x,y):
-        equation_1 = [x**2 + y, variable(2.3)]
-        equation_2 = [y**2 + x, variable(-1.3)]
-        equations = [equation_1, equation_2]
-        return equations
-
-    x0 = [variable(1), variable(2)]
-
-    x,y = solve(func, x0)
-
-    print(x)
+if __name__=="__main__":
+    from variable import variable
+    from prop import prop
     
-    print(y)
+    p = variable(1,'bar', 0.01)
+    c = variable(50,'%')
+    t_in = variable(60,'C', 1.2)
+    phi = variable(120, 'kW', 2.3)
+    flow = variable(350, 'L/min', 9.1)
     
-    out = func(x,y)
-    for equations in out:
-        print(*equations)
+    def func(t):
+        t_avg = t_in + (t - t_in) / 2
+        rho = prop('density', 'MEG', P = p, T = t_avg, C = c)
+        cp = prop('specific_heat', 'MEG', P = p, T = t_avg, C = c)
+        phi_calc = rho * cp * flow * (t_in - t)
+        phi_calc.convert('kW')
+        return [phi, phi_calc]
+
+    x0 = variable(20, 'C')
+    t_out = solve(func, x0)
+

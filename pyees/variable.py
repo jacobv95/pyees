@@ -33,13 +33,15 @@ class temperatureVariable:
         a.convert(selfUnit)
         b.convert(otherUnit)
         
+
         SIBaseUnits = [a._unitObject._SIBaseUnit, b._unitObject._SIBaseUnit]
         if 'DELTAK' in SIBaseUnits:
             outputUnit = [a.unit, b.unit][SIBaseUnits.index('K')]
             var.convert(outputUnit)
-        
+        else:
+            if selfUnit == otherUnit:
+                var.convert(selfUnit)
         return var
-
     
     def subtractTemperatures(a,b):
 
@@ -955,3 +957,11 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 
 ## TODO add a method to add custom units
+if __name__ == "__main__":
+    a = variable(20,'C')
+    b = variable(30, 'C')
+    dt = (b - a)/2
+    
+    c = a + dt
+
+    print(c)

@@ -529,13 +529,13 @@ class unit():
         return unit._multiply(self.unitStr, other.unitStr)
 
     def __truediv__(self, other):
-
-        if self._SIBaseUnit == 'K':
+        
+        if self._SIBaseUnit == 'K' and other._SIBaseUnit != '1':
             a = 'DELTA' + self.unitStr
         else:
             a = self.unitStr
 
-        if other._SIBaseUnit == 'K':
+        if other._SIBaseUnit == 'K' and self._SIBaseUnit != '1':
             b = 'DELTA' + other.unitStr
         else:
             b = other.unitStr

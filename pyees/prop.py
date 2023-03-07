@@ -6,7 +6,7 @@ except ImportError:
     from variable import variable, scalarVariable, arrayVariable
     from unit import unit
     
-dx = 0.00001
+dx = 0.000001
 
 def prop(property, fluid, **kwargs):
 
@@ -46,8 +46,8 @@ def differentialsBrine(fluid : Fluid, fluidName,  property, C, parameters):
         return  vars, grads
 
 
-    y1 = getattr(Fluid(fluidName,C.value*(1 + dx)).with_state(*fluid._inputs), knownProperties[property])
-    y2 = getattr(Fluid(fluidName,C.value*(1 - dx)).with_state(*fluid._inputs), knownProperties[property])
+    y1 = getattr(Fluid(fluidName,C.value*(1 + dx)).with_state(*fluid._inputs), property)
+    y2 = getattr(Fluid(fluidName,C.value*(1 - dx)).with_state(*fluid._inputs), property)
 
     grads.append((y2-y1) / (2*dx * C.value))
     vars.append(C)
@@ -75,11 +75,11 @@ def differentials(fluid : Fluid, property : str, parameters):
         
         inputs[i] = i1
         fluid.update(*inputs)
-        y1 = getattr(fluid, knownProperties[property])
+        y1 = getattr(fluid, property)
         
         inputs[i] = i2
         fluid.update(*inputs)
-        y2 = getattr(fluid, knownProperties[property])
+        y2 = getattr(fluid, property)
         
         inputs[i] = i0
         fluid.update(*inputs)
@@ -150,7 +150,7 @@ def propWaterScalar(property, T,P):
     fluid = fluid.with_state(Input.temperature(T.value), Input.pressure(P.value))
     
     ## create a variable from the fluid
-    var = getattr(fluid, knownProperties[property])
+    var = getattr(fluid, property)
     var = variable(var, propertyUnits[property])
     vars, grads = differentials(fluid, property, [T, P])
     var._addDependents(vars, grads)
@@ -200,7 +200,7 @@ def propMEGScalar(property, T,P,C):
     fluid = fluid.with_state(Input.temperature(T.value), Input.pressure(P.value))
     
     ## create a variable from the fluid
-    var = getattr(fluid, knownProperties[property])
+    var = getattr(fluid, property)
     var = variable(var, propertyUnits[property])
     vars, grads = differentialsBrine(fluid, FluidsList.MEG, property, C, [T, P])
     var._addDependents(vars, grads)
@@ -274,7 +274,7 @@ def propHumidAirScalar(property, T,Rh,H = None, P = None):
     fluid = fluid.with_state(*inputs)
     
     ## create a variable from the fluid
-    var = getattr(fluid, knownProperties[property])
+    var = getattr(fluid, property)
     var = variable(var, propertyUnits[property])
     Vars, grads = differentials(fluid, property, vars)
     var._addDependents(Vars, grads)
@@ -283,16 +283,16 @@ def propHumidAirScalar(property, T,Rh,H = None, P = None):
     return var 
 
 propertyUnits = {
-    'rho': 'kg/m3',
-    'cp': 'J/kg-K',
-    'mu': 'Pa-s'
+    'density': 'kg/m3',
+    'specific_heat': 'J/kg-K',
+    'dynamic_viscosity': 'Pa-s'
 }
 
-knownProperties = {
-    'rho' : "density",
-    'cp' : "specific_heat",
-    'mu': "dynamic_viscosity"
-}
+knownProperties = [
+    "density",
+    "specific_heat",
+    "dynamic_viscosity"
+]
 
 knownFluids = {
     'water': [propWater],
@@ -302,6 +302,6 @@ knownFluids = {
 
 
 if __name__ == '__main__':
-    rho = prop('rho', 'air', P = variable(1,'bar'), T = variable([30,40,50,60,70,80],'C', [3,4,5,6,7,8]), Rh = variable(50,'%'))
-    
+    rho = prop('density', 'water', P = variable(1,'bar'), T = variable(30,'C'))
+    print(rho)
     

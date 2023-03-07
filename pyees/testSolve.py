@@ -3,9 +3,11 @@ import numpy as np
 try:
     from .solve import solve
     from .variable import variable
+    from .prop import prop
 except ImportError:
     from solve import solve
     from variable import variable
+    from prop import prop
     
 tol = 1e-5
 solveTol = 1e-12
@@ -324,10 +326,34 @@ class test(unittest.TestCase):
         
         self.assertRelativeDifference(x.value, correct.value, tol)
 
+    def testSolveOneEquationUsingProp(self):
+        
+        p = variable(1,'bar', 0.01)
+        c = variable(50,'%')
+        t_in = variable(60,'C', 1.2)
+        phi = variable(120, 'kW', 2.3)
+        flow = variable(350, 'L/min', 9.1)
+        
+        def func(t_out):
+            dt = t_in - t_out
+            t_avg = t_in + dt / 2
+            rho = prop('density', 'MEG', P = p, T = t_avg, C = c)
+            cp = prop('specific_heat', 'MEG', P = p, T = t_avg, C = c)
+            phi_calc = rho * cp * flow * (t_in - t_out)
+            phi_calc.convert('kW')
+            return [phi, phi_calc]
+
+        x0 = variable(20, 'C')
+        t_out = solve(func, x0, tol = solveTol)
+        
+        self.assertRelativeDifference(t_out.value, 54.36480373585032900, tol)
+        self.assertEqual(t_out.unit, 'C')
+        self.assertRelativeDifference(t_out.uncert, 1.217157659256291610, tol)
+     
+
+
 
 
 if __name__ == '__main__':
     unittest.main()
     
-    
-## TODO 	test solve med prop imod ees
