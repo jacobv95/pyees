@@ -29,7 +29,7 @@ The lower and upper most acceptable values can be a function of the input. There
 The bounds does not have to return 1 "inequality" for each variable in x0.
 
 ## Example
-´´´
+```
 from pyees import variable, solve
 
 ## solve:
@@ -57,4 +57,4 @@ for equations in out:
     print(*equations)
 >> 2.3  2.3
 >> -1.3  -1.3
-´´´
+```

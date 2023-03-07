@@ -383,3 +383,5 @@ class _Sheet():
 
     def __iter__(self):
         return iter(self.measurements)
+## TODO 	read data vælg ark
+## TODO vælg område for hvert ark seperat
