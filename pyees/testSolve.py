@@ -217,7 +217,7 @@ class test(unittest.TestCase):
             return [lmdt, (dt1 - dt2) / (np.log(dt1) - np.log(dt2))]
         
         def bounds(too):
-            return [tio, too, variable(np.inf)]
+            return [tio + 1e-6, too, variable(np.inf)]
         
         x0 = variable(-16,'')
         x = solve(func, x0, tol = 1e-10, bounds = bounds)
@@ -283,7 +283,7 @@ class test(unittest.TestCase):
             return [lmdt, (dt1 - dt2) / (np.log(dt1) - np.log(dt2))]
         
         def bounds(tii):
-            return [toi, tii, variable(np.inf)]
+            return [toi + 1e-6, tii, variable(np.inf)]
         
         x0 = variable(-16,'')
         x = solve(func, x0, tol = 1e-10, bounds = bounds)

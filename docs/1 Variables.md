@@ -66,7 +66,7 @@ a.len()
 
 
 ## Units
-The unit is a string.The denominator and the numerator of the unit is seperated using a dash (/). The units in the denominator or numerator are sperated using a hyphen (-). All spaces are removed from the unit string.
+The unit is a string. The unit uses 4 special characters: the hyphen "-", the slash "/" and the open parenthesis "(", and the close parenthesis ")". The denominator and numenator of the unit is seperated using the slash. All units multiplied with each other are seperated using the hyphen. Furthermore, the parenthesis is used to make the unit more readable. The parenthesis are unpacked when creating a variable. This means that the parenthesis are no longer visible when printing the variable.
 
 The following units are known:
  - unitless: 1, '', %, None
@@ -85,6 +85,7 @@ The following units are known:
  - Angles: rad, deg
  - Resistance: ohm
  - kinematic viscosity: St
+ - logarithmic units: B, Np, octave, decade
 
 
 The following prefixes are known:
@@ -101,7 +102,9 @@ The following prefixes are known:
  - n: 1e-9
  - p: 1e-12
 
-The unit is used to determine which computations can be performed:
+Any combination of unit and prefix can be used.
+
+The unit is used to determine which computations can be performed on the variable:
  - Two variables can be added together or subtracted from each other if their units are identical
  - Any two units can be multiplied or divided
  - Exponents cannot have any units
@@ -109,7 +112,7 @@ The unit is used to determine which computations can be performed:
  - The n'th root of a variable can be taken if the exponent of the unit of the variable is divisible by n
 
 
-## Conversion of units
+## Conversion of the variable
 A variable can be converted in to any other unit with the same SI base unit using the convert-method
 
 ```

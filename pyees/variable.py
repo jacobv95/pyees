@@ -159,48 +159,7 @@ class logarithmicVariables:
         c.convert(aUnit)
 
         return c
-
-    @staticmethod
-    def __mul__(a,b):
-        ## TODO 
-        raise NotImplementedError()
-
-    @staticmethod
-    def __truediv__(a,b):
-        ## TODO 
-        raise NotImplementedError()
-
-    @staticmethod
-    def __pow__(a,b):
-        ## TODO 
-        raise NotImplementedError()
-
-    @staticmethod
-    def log(a,b):
-        ## TODO 
-        raise NotImplementedError()
-    
-    @staticmethod
-    def log10(a,b):
-        ## TODO 
-        raise NotImplementedError()
-    
-    
-    @staticmethod
-    def sin(a,b):
-        ## TODO 
-        raise NotImplementedError()
-    
-    @staticmethod
-    def cos(a,b):
-        ## TODO 
-        raise NotImplementedError()
-    
-    @staticmethod
-    def tan(a,b):
-        ## TODO 
-        raise NotImplementedError()   
-
+   
 
 class scalarVariable():
     def __init__(self, value, unitStr, uncert, nDigits) -> None:
@@ -995,7 +954,4 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return scalarVariable(value, unit, uncert, nDigits)
 
 
-
-## TODO add the use of parenthesis in the units
 ## TODO add a method to add custom units
-

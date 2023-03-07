@@ -107,7 +107,7 @@ def solve(func, x, *args, bounds = None,**kwargs):
                     for elem in bound:
                         elem.convert(elem._unitObject._SIBaseUnit)
                 var = np.min([np.max(bound[0], bound[1]), bound[2]])
-                x[boundIndexes[i]]._value = np.array([var.value], dtype = float)
+                x[boundIndexes[i]]._value = var.value
                     
     
     ## define the minimization problem
@@ -115,7 +115,7 @@ def solve(func, x, *args, bounds = None,**kwargs):
        
         ## update the values of the variables
         for xi, xxi in zip(x,xx):
-            xi._value = np.array([xxi],dtype=float)
+            xi._value = xxi
       
         ## evaluate the function
         out = ffunc(*x)
@@ -169,3 +169,21 @@ def solve(func, x, *args, bounds = None,**kwargs):
 
 
 
+if __name__ =="__main__":
+    def func(x,y):
+        equation_1 = [x**2 + y, variable(2.3)]
+        equation_2 = [y**2 + x, variable(-1.3)]
+        equations = [equation_1, equation_2]
+        return equations
+
+    x0 = [variable(1), variable(2)]
+
+    x,y = solve(func, x0)
+
+    print(x)
+    
+    print(y)
+    
+    out = func(x,y)
+    for equations in out:
+        print(*equations)

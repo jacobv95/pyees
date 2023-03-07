@@ -16,7 +16,7 @@ class unit():
     def __init__(self, unitStr) -> None:
         if unitStr == '':
             unitStr = '1'
-
+        
         # remove any unknown characters
         unitStr = self._formatUnit(unitStr)
 

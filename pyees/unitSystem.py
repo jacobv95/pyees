@@ -62,7 +62,10 @@ class neperConversion():
         return 1 / other
     def __rtruediv__(self, other):
         return other / 1
-
+    def __pow__ (self, other):
+        return 1** other
+    def __rpow__(self, other):
+        return other ** 1
 class bellConversion():
     def __init__(self):
         self.scale = 1
@@ -83,6 +86,10 @@ class bellConversion():
         return 1 / other
     def __rtruediv__(self, other):
         return other / 1
+    def __pow__ (self, other):
+        return 1** other
+    def __rpow__(self, other):
+        return other ** 1
     
 _baseUnit = {
     '1': _unitConversion(1),
