@@ -226,6 +226,7 @@ def getDicts():
     _knownCharacters = ''.join(_knownCharacters)
     _knownCharacters += '-/'
     _knownCharacters += '0123456789'
+    _knownCharacters += '()'
     _knownCharacters = ''.join(list(set(_knownCharacters)))
 
     # check if all unit and prefix combinations can be distiguished

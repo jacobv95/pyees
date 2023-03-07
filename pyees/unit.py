@@ -189,8 +189,116 @@ class unit():
             if s not in knownCharacters:
                 raise ValueError(f'The character {s} is not used within the unitsystem')
 
-        return unitStr
+        ## find start parenthesis is the unit string
+        startParenIndexes = [i for i, s in enumerate(unitStr) if s == '(']
+        stopParenIndexes = [i for i, s in enumerate(unitStr) if s == ')']
 
+        ## return if no parenthesis where found
+        if not startParenIndexes and not stopParenIndexes:
+            return unitStr
+      
+        ## check that the number of start and stop parenthesis are equal
+        if len(startParenIndexes) != len(stopParenIndexes):
+            raise ValueError('The unit string has to have an equal number of open parenthesis and clsoe parenthesis')
+        
+        ## find all parenthesis pairs
+        allIndexes = startParenIndexes + stopParenIndexes
+        allIndexes.sort()
+        isStartParen = [elem in startParenIndexes for elem in allIndexes]
+        done, iter, maxIter, order  = False, 0, len(allIndexes), []
+        while not done:
+            for i in range(len(allIndexes)-1):
+                if isStartParen[i] and (isStartParen[i] + isStartParen[i+1] == 1):
+                    order.append([allIndexes[i], allIndexes[i+1]])
+                    allIndexes.pop(i+1)
+                    allIndexes.pop(i)
+                    isStartParen.pop(i+1)
+                    isStartParen.pop(i)
+                    break
+
+            if len(allIndexes) == 0: break
+            
+            iter += 1
+            if iter > maxIter:
+                raise ValueError('An order to evaluate the parenthesis could not be found')
+        
+
+        ## find the outer most parenthesis        
+        done, maxIter, iter = False, len(order), 0
+        while not done:
+            changesMade = False
+            for i in range(len(order)):
+                iLow = order[i][0]
+                iHigh = order[i][1]
+                for j in range(len(order)):
+                    jLow = order[j][0]
+                    jHigh = order[j][1]
+                    if iLow < jLow and iHigh > jHigh:
+                        order.pop(j)
+                        changesMade = True
+                        break
+                if changesMade:
+                    break
+            if not changesMade:
+                break
+            iter += 1
+            if iter > maxIter:
+                raise ValueError('An order to evaluate the parenthesis could not be found')
+        
+        ## find all slashes outside the outer most parenthesis
+        slashes = [i for i, s in enumerate(unitStr) if s == slash]
+
+        iter, maxIter, done = 0, len(slashes), False
+        while not done:
+            done = True
+            for s in slashes:    
+                for part in order:
+                    if part[0] < s < part[1]:
+                        done = False
+                        slashes.remove(s)
+                        break                
+            if done: break
+            iter += 1
+            if iter > maxIter:
+                raise ValueError('An order to evaluate the parenthesis could not be found')
+
+        if len(slashes) > 1:
+            raise ValueError('You have more than one slash ("/") outside the outer most parenthesis. This makes the unit ambiguis')
+        
+        if slashes:
+            splits = [-1] + slashes
+            parts = [unitStr[i+1:j] for i,j in zip(splits, splits[1:]+[None])]
+            parts = [unit._formatUnit(part) for part in parts]
+            if isinstance(parts, list):
+                return '/'.join(parts)
+            return parts
+        
+        parts = unit._formatUnit(unitStr[order[0][0]+1: order[0][1]])
+        if order[0][1] != len(unitStr) - 1:
+            remaining = unitStr[order[0][1]+1:]
+            parts = parts.split('/')
+            if len(parts) > 1:
+                upper, lower = parts
+                lower = lower.split('-')
+            else:
+                upper, lower = parts[0], []
+            upper = upper.split('-')
+            try: 
+                exponent = int(remaining)
+                for i, up in enumerate(upper):
+                    u, e = unit._removeExponentFromUnit(up)
+                    upper[i] = u + str(e * exponent)
+                for i, low in enumerate(lower):
+                    u, e = unit._removeExponentFromUnit(low)
+                    lower[i] = u + str(e * exponent)
+                out = '-'.join(upper)
+                if lower:
+                    out += '/' + '-'.join(lower)
+                return out
+            except TypeError:
+                raise TypeError()
+        return parts
+    
     @ staticmethod
     def _splitCompositeUnit(compositeUnit):
         lower = []
@@ -576,8 +684,8 @@ class unit():
         self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
 
 if __name__ == "__main__":
+    a = unit._formatUnit('(m-s2)2 / Hz')
+    print(a)
     
-    a = unit('L-C/min')
-    b = unit('m3/s')
-    unit._assertEqual(a, b)
+
 
