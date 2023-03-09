@@ -11,15 +11,15 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             A**1.5
         self.assertEqual('The power has to be an integer', str(context.exception))
-        a = A**2
+        a, _ = A**2
         self.assertEqual(str(a), 'L2-kg2/min2')
 
         B = unit('m/s2')
-        b = B**0
+        b, _ = B**0
         self.assertEqual(str(b), '1')
 
         C = unit('L2/h2')
-        c = C**0.5
+        c, _ = C**0.5
         self.assertEqual(str(c), 'L/h')
 
     def testMultiply(self):

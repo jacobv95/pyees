@@ -552,15 +552,14 @@ class unit():
         return unit._multiply(a, b)
 
     def __pow__(self, power):
-
         if power == 0:
-            return '1'
+            return '1', False
 
         elif power > 1:
 
             if self.unitStr == '1':
                 # self is '1'. Therefore the power does not matter
-                return self.unitStr
+                return self.unitStr, False
 
             else:
                 # self is not '1'. Therefore all exponents are multiplied by the power
@@ -571,7 +570,7 @@ class unit():
                 upperExp = [int(elem * power) for elem in self.upperExp]
                 lowerExp = [int(elem * power) for elem in self.lowerExp]
 
-                return self._combineUpperAndLower(self.upper, self.upperPrefix, upperExp, self.lower, self.lowerPrefix, lowerExp)
+                return self._combineUpperAndLower(self.upper, self.upperPrefix, upperExp, self.lower, self.lowerPrefix, lowerExp) , False
 
         else:
             # the power is smaller than 1.
@@ -579,7 +578,7 @@ class unit():
 
             if self.unitStr == '1':
                 # self is '1'. Therefore the power does not matter
-                return self.unitStr
+                return self.unitStr, False
             else:
                 # self is not '1'.
                 # Therefore it is necessary to determine if all exponents are divisible by the recibricol of the power
@@ -587,16 +586,32 @@ class unit():
                 def isCloseToInteger(a, rel_tol=1e-9, abs_tol=0.0):
                     b = np.around(a)
                     return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
-
+                
                 # Test if the exponent of all units is divisible by the power
-                for exp in self.upperExp + self.lowerExp:
-                    if not isCloseToInteger(exp * power):
-                        raise ValueError(f'You can not raise a variable with the unit {self.unitStr} to the power of {power}')
+                try:
+                    for exp in self.upperExp + self.lowerExp:
+                        if not isCloseToInteger(exp * power):
+                            raise ValueError(f'You can not raise a variable with the unit {self.unitStr} to the power of {power}')
 
-                upperExp = [int(elem * power) for elem in self.upperExp]
-                lowerExp = [int(elem * power) for elem in self.lowerExp]
+                    upperExp = [int(elem * power) for elem in self.upperExp]
+                    lowerExp = [int(elem * power) for elem in self.lowerExp]
 
-                return self._combineUpperAndLower(self.upper, self.upperPrefix, upperExp, self.lower, self.lowerPrefix, lowerExp)
+                    return self._combineUpperAndLower(self.upper, self.upperPrefix, upperExp, self.lower, self.lowerPrefix, lowerExp), False
+                
+                except ValueError:                
+                    ## the exponents of the unit was not divisible by the power
+                    ## test if the exponents of the SIBaseunit is divisible by the power 
+                    
+                    siUpper, siUpperPrefix, siUpperExp, siLower, siLowerPrefix, siLowerExp = self._getLists(self._SIBaseUnit)
+                    for exp in siUpperExp + siLowerExp:
+                        if not isCloseToInteger(exp * power):
+                            raise ValueError(f'You can not raise a variable with the unit {self.unitStr} to the power of {power}')
+
+                    siUpperExp = [int(elem * power) for elem in siUpperExp]
+                    siLowerExp = [int(elem * power) for elem in siLowerExp]
+
+                    return self._combineUpperAndLower(siUpper, siUpperPrefix, siUpperExp, siLower, siLowerPrefix, siLowerExp), True
+
 
     def getConverter(self, newUnit):
         newUnit = unit._formatUnit(newUnit)
@@ -680,11 +695,4 @@ class unit():
         self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
         otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
         self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
-
-
-  ## TODO support of parenthesis with multiple slashes
-
-if __name__ == "__main__":
-    a = unit('(m/s2)2/Hz')
-    print(a)
 

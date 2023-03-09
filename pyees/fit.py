@@ -321,7 +321,8 @@ class pol_fit(_fit):
                 uncert = self.uPopt[index]
                 u = self.yUnit
                 if i != n:
-                    u /= unit(self.xUnit ** (n - i))
+                    ui, _ = self.xUnit ** (n - i)
+                    u /= unit(ui)
                 var = variable(value, u, uncert)
                 popt.append(var)
                 index += 1

@@ -464,8 +464,13 @@ class scalarVariable():
         if str(other.unit) != '1':
             raise ValueError('The exponent can not have a unit')
 
+        selfUnit = deepcopy(self.unit)
+        outputUnit, hasToBeScaledToSI = self._unitObject ** other.value
+
+        if hasToBeScaledToSI:
+            self.convert(self._unitObject._SIBaseUnit)
+        
         val = self._value ** other.value
-        outputUnit = self._unitObject ** other.value
 
         def gradSelf(valSelf, valOTher):
             if valSelf != 0:
@@ -485,6 +490,10 @@ class scalarVariable():
         var = variable(val, outputUnit)
         var._addDependents(vars, grad)
         var._calculateUncertanty()
+        
+        if hasToBeScaledToSI:
+            self.convert(selfUnit)
+        
         return var
 
     def __rpow__(self, other):
@@ -637,6 +646,7 @@ class scalarVariable():
                 return self.min()
             case np.mean:
                 return self.mean()
+        raise NotImplementedError()
     
     def max(self):
         return self
@@ -804,7 +814,6 @@ class arrayVariable(scalarVariable):
         self._uncert = np.append(self._uncert, elem.uncert)
     
        
- 
     def __str__(self, pretty=None) -> str:
         unitStr = self._unitObject.__str__(pretty=pretty)
 
@@ -863,6 +872,7 @@ class arrayVariable(scalarVariable):
             return out
     
     def __pow__(self, other):
+        
         if not (isinstance(other, scalarVariable) or isinstance(other, arrayVariable)):
             return self ** variable(other)
     
@@ -907,7 +917,9 @@ class arrayVariable(scalarVariable):
                 return self.cos()
             case np.tan:
                 return self.tan()
-
+            case np.sqrt:
+                return self.sqrt()
+        raise NotImplementedError()
     def min(self):
         index = np.argmin(self.value)
         return variable(self.value[index], self.unit, self.uncert[index])
@@ -966,4 +978,4 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 ## TODO add a method to add custom units
 
 
-
+    

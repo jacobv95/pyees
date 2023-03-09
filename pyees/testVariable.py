@@ -853,6 +853,17 @@ class test(unittest.TestCase):
             np.sqrt(A)
         self.assertTrue('You can not raise a variable with the unit L2/m to the power of 0.5' in str(context.exception))
 
+        dP = variable(10, 'Pa')
+        rho = variable(2.5, 'kg/m3')
+        v = np.sqrt(2 * dP / rho)
+        self.assertEqual(v.value, np.sqrt(2 * 10 / 2.5))
+        
+        dP = variable(1, 'bar')
+        rho = variable(2.5, 'kg/L')
+        v = np.sqrt(2 * dP / rho)
+        self.assertEqual(v.value, 8.9442719099991585541)
+
+
     def testLargerUncertThenValue(self):
 
         A = variable(0.003, 'L/min', 0.2)
