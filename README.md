@@ -18,6 +18,7 @@ These computations quickly becomes very difficult for more complicated equations
 The documentation is split to parts:
  - 1 variables
    - Temperature
+   - Add new unit
  - 3 Importing data
  - 4 Fitting
  - 5 Prop
