@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
     name='pyees',
     packages=['pyees'],
-    version='1.1.0',
+    version='1.1.1',
     license='MIT',
     description='EES but for python',
     author='Jacob Vestergaard',

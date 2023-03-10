@@ -17,7 +17,6 @@ pyees/testSolve.py
 pyees/testUnit.py
 pyees/testVariable.py
 pyees/unit.py
-pyees/unitSystem.py
 pyees/variable.py
 pyees.egg-info/PKG-INFO
 pyees.egg-info/SOURCES.txt

@@ -1,8 +1,8 @@
 import unittest
 try:
-    from unit import unit
+    from unit import unit, addNewUnit
 except ImportError:
-    from pyees.unit import unit
+    from pyees.unit import unit, addNewUnit
 
 class test(unittest.TestCase):
 
@@ -157,6 +157,44 @@ class test(unittest.TestCase):
             a = unit('m/s/bar')
         self.assertEqual('A unit can only have a single slash (/)', str(context.exception))
 
+    def testAddNewUnit(self):
+        addNewUnit('gnA', 9.81, 'm/s2')
+        converter = unit('gnA').getConverter('m/s2')
+        self.assertEqual(converter.convert(1), 9.81)
+        
+        addNewUnit('gnB', 9.81, 'm/s2', 0)
+        converter = unit('gnB').getConverter('m/s2')
+        self.assertEqual(converter.convert(1), 9.81)
+
+        converter = unit('gnB').getConverter('mm/h2')
+        self.assertEqual(converter.convert(1), 127137600000)
+        
+        addNewUnit('Rø', 40/21, 'C', -7.5 * 40/21)
+        converter = unit('Rø').getConverter('C')
+        self.assertAlmostEqual(converter.convert(100), 176.190476190476190476)
+        
+        converter = unit('Rø').getConverter('F')
+        self.assertAlmostEqual(converter.convert(100), 349.142857142857142857142857142857)
+            
+        converter = unit('Rø').getConverter('K')
+        self.assertAlmostEqual(converter.convert(100), 449.340476190476190476 )
+        
+        addNewUnit('Ra', 5/9 ,'C', -491.67 * 5 / 9)
+        converter = unit('Ra').getConverter('C')
+        self.assertAlmostEqual(converter.convert(83.1), -226.98333333333333333333333)
+        
+        converter = unit('Ra').getConverter('F')
+        self.assertAlmostEqual(converter.convert(83.1), -376.57)
+        
+        converter = unit('Ra').getConverter('K')
+        self.assertAlmostEqual(converter.convert(83.1), 46.1666666666666666666667)
+        
+        converter = unit('Ra').getConverter('Rø')
+        self.assertAlmostEqual(converter.convert(83.1), -111.66625)
+        
+        
+        
+        
 
 if __name__ == '__main__':
     unittest.main()

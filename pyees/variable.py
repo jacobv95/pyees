@@ -975,7 +975,15 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return scalarVariable(value, unit, uncert, nDigits)
 
 
-## TODO add a method to add custom units
 
 
+if __name__ == "__main__":
+    from unit import addNewUnit
+            
+    addNewUnit('Rø', 40/21, 'C', -7.5 * 40/21)
+    c = variable(143.6, 'mRø')
+    c.convert('K')
+    print(c)  
+    
+    
     

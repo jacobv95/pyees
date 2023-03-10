@@ -4,5 +4,6 @@ from pyees.fit import dummy_fit, pol_fit, lin_fit, exp_fit, pow_fit, logistic_fi
 from pyees.readData import readData
 from pyees.prop import prop
 from pyees.solve import solve
+from pyees.unit import addNewUnit
 
     
