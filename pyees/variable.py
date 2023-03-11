@@ -5,85 +5,7 @@ try:
 except ImportError:
     from pyees.unit import unit
     
-
-class temperatureVariable:
-    def __init__(self):
-        pass
-    
-    @staticmethod
-    def addTemperatures(a, b):
-
-        # convert self and other to the SI unit system
-        selfUnit = deepcopy(a.unit)
-        otherUnit = deepcopy(b.unit)
-        a.convert(a._unitObject._SIBaseUnit)
-        b.convert(b._unitObject._SIBaseUnit)
-
-        # determine the value and gradients
-        val = a._value + b._value
-        grad = [1, 1]
-        vars = [a, b]
-
-        # create the new variable
-        var = variable(val, 'K')
-        var._addDependents(vars, grad)
-        var._calculateUncertanty()
-
-        # convert self and other back
-        a.convert(selfUnit)
-        b.convert(otherUnit)
         
-
-        SIBaseUnits = [a._unitObject._SIBaseUnit, b._unitObject._SIBaseUnit]
-        if 'DELTAK' in SIBaseUnits:
-            outputUnit = [a.unit, b.unit][SIBaseUnits.index('K')]
-            var.convert(outputUnit)
-        else:
-            if selfUnit == otherUnit:
-                var.convert(selfUnit)
-        return var
-    
-    def subtractTemperatures(a,b):
-
-        # convert self and other to the SI unit system
-        aUnit = deepcopy(a.unit)
-        bUnit = deepcopy(b.unit)
-        
-        SIBaseUnits = [a._unitObject._SIBaseUnit, b._unitObject._SIBaseUnit]
-        if (SIBaseUnits == ['DELTAK', 'K']):
-            raise ValueError('You can not subtract a temperature from a tempeature difference')
-        
-        nTemp = sum([1 for elem in SIBaseUnits if elem == 'K'])
-        outputUnit = 'K' if nTemp == 1 else 'DELTAK'
-        
-        a.convert(a._unitObject._SIBaseUnit)
-        b.convert(b._unitObject._SIBaseUnit)
-
-        # determine the value and gradients
-        val = a.value - b.value
-        grad = [1, -1]
-        vars = [a, b]
-
-        # create the new variable
-        var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
-        var._calculateUncertanty()
-
-        # convert self and other back
-        a.convert(aUnit)
-        b.convert(bUnit)
-
-        # convert the output variable
-        if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
-            outputUnit = [a.unit, b.unit][SIBaseUnits.index('K')]
-            var.convert(outputUnit)
-        elif aUnit == bUnit:
-            if SIBaseUnits[0] == 'DELTAK':
-                var.convert(aUnit)
-            else:
-                var.convert('DELTA' + aUnit)
-        
-        return var
     
 class logarithmicVariables:
     def __init__(self):
@@ -169,7 +91,6 @@ class logarithmicVariables:
 
         return c
    
-
 class scalarVariable():
     def __init__(self, value, unitStr, uncert, nDigits) -> None:
         
@@ -203,6 +124,7 @@ class scalarVariable():
     @property
     def uncert(self):
         return self._uncert
+
 
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
@@ -352,37 +274,39 @@ class scalarVariable():
         if not addBool:
             raise ValueError(f'You tried to add a variable in [{self.unit}] to a variable in [{other.unit}], but the units do not have the same SI base unit')
 
-        ## handle temperatures diferently
-        if outputUnit == 'K':
-            return temperatureVariable.addTemperatures(self, other)
-        
+       
         if outputUnit == 'Np':
             return logarithmicVariables.__add__(self, other)
 
         # convert self and other to the SI unit system
         selfUnit = deepcopy(self.unit)
         otherUnit = deepcopy(other.unit)
-        self.convert(self._unitObject._SIBaseUnit)
-        other.convert(other._unitObject._SIBaseUnit)
+        hasToBeConverted = selfUnit != otherUnit
+        if hasToBeConverted:
+            self.convert(self._unitObject._SIBaseUnit)
+            other.convert(other._unitObject._SIBaseUnit)
+        else:
+            outputUnit = selfUnit
 
         # determine the value and gradients
         val = self._value + other._value
         grad = [1, 1]
         vars = [self, other]
-
+        
         # create the new variable
         var = variable(val, outputUnit)
         var._addDependents(vars, grad)
         var._calculateUncertanty()
 
-        # convert all units back to their original units
-        self.convert(selfUnit)
-        other.convert(otherUnit)
-        
-        ## convert the variable in to the original unit if self and other has the same original unit
-        ## otherwise keep the variable in the SI unit system
-        if (selfUnit == otherUnit):
-            var.convert(selfUnit)
+        if hasToBeConverted:
+            # convert all units back to their original units
+            self.convert(selfUnit)
+            other.convert(otherUnit)
+            
+            ## convert the variable in to the original unit if self and other has the same original unit
+            ## otherwise keep the variable in the SI unit system
+            if (selfUnit == otherUnit):
+                var.convert(selfUnit)
         
         return var
 
@@ -399,10 +323,6 @@ class scalarVariable():
         if not subBool:
             raise ValueError(f'You tried to subtract a variable in [{other.unit}] from a variable in [{self.unit}], but the units do not have the same SI base unit')
 
-        ## handle temperatures diferently
-        if outputUnit == 'DELTAK' or outputUnit == 'K':
-            return temperatureVariable.subtractTemperatures(self, other)
-
         if outputUnit == 'Np':
             return logarithmicVariables.__sub__(self, other)
 
@@ -410,9 +330,13 @@ class scalarVariable():
         # convert self and other to the SI unit system
         selfUnit = deepcopy(self.unit)
         otherUnit = deepcopy(other.unit)
-        self.convert(self._unitObject._SIBaseUnit)
-        other.convert(other._unitObject._SIBaseUnit)
-
+        hasToBeConverted = selfUnit != otherUnit
+        if hasToBeConverted:
+            self.convert(self._unitObject._SIBaseUnit)
+            other.convert(other._unitObject._SIBaseUnit)
+        else:
+            outputUnit = selfUnit
+            
         # determine the value and gradients
         val = self.value - other.value
         grad = [1, -1]
@@ -423,12 +347,14 @@ class scalarVariable():
         var._addDependents(vars, grad)
         var._calculateUncertanty()
 
+        
         # convert self and other back
-        self.convert(selfUnit)
-        other.convert(otherUnit)
+        if hasToBeConverted:
+            self.convert(selfUnit)
+            other.convert(otherUnit)
 
-        if self.unit == other.unit:
-            var.convert(self.unit)
+            if self.unit == other.unit:
+                var.convert(self.unit)
 
         return var
 
@@ -777,6 +703,7 @@ class scalarVariable():
     def __hash__(self):
         return id(self)
 
+   
 class arrayVariable(scalarVariable):
    
     def __len__(self):
@@ -920,6 +847,7 @@ class arrayVariable(scalarVariable):
             case np.sqrt:
                 return self.sqrt()
         raise NotImplementedError()
+    
     def min(self):
         index = np.argmin(self.value)
         return variable(self.value[index], self.unit, self.uncert[index])
@@ -978,12 +906,10 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 
 if __name__ == "__main__":
-    from unit import addNewUnit
-            
-    addNewUnit('Rø', 40/21, 'C', -7.5 * 40/21)
-    c = variable(143.6, 'mRø')
-    c.convert('K')
-    print(c)  
     
-    
+    a = variable(1,'C')
+    b = variable(2, 'K')
+    c = a + b
+    d = a - b
+    print(c, d)
     

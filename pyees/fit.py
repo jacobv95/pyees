@@ -2,10 +2,10 @@ import numpy as np
 import scipy.odr as odr
 import string
 try:
-    from variable import variable, arrayVariable
+    from variable import variable, arrayVariable, scalarVariable
     from unit import unit
 except ImportError:
-    from pyees.variable import variable, arrayVariable
+    from pyees.variable import variable, arrayVariable, scalarVariable
     from pyees.unit import unit
     
     
@@ -108,12 +108,12 @@ class _fit():
         ax.plot(self.xVal, self.yVal, label=label, **kwargs)
 
     def predict(self, x):
-        if not isinstance(x, arrayVariable):
+        if not isinstance(x, arrayVariable) or isinstance(x, scalarVariable):
             x = variable(x, self.xUnit)
         return self.func(self.popt, x)
 
     def predictDifferential(self, x):
-        if not isinstance(x, arrayVariable):
+        if not isinstance(x, arrayVariable) or isinstance(x, scalarVariable):
             x = variable(x, self.xUnit)
         return self.d_func(self.popt, x)
 
@@ -335,7 +335,7 @@ class pol_fit(_fit):
         index = 0
         for i in range(n + 1):
             if self.terms[i]:
-                out += B[index] * x**(n - i)
+                out +=  B[index] * x**(n - i)
                 index += 1
         return out
 
@@ -516,3 +516,13 @@ class logistic_100_fit(_fit):
         out += f'\quad x_0={x0}$'
         return out
 
+if __name__ == "__main__":
+    
+    
+    x = variable([1,5], 'C')
+    y = variable([1,3], 'C')
+    
+    f = lin_fit(x,y)
+    print(f)
+    
+    print(f.predict(1))

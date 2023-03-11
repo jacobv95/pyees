@@ -148,12 +148,6 @@ temperature = {
     'F': _unitConversion(5 / 9, 273.15 - 32 * 5 / 9)
 }
 
-temperatureDifference = {
-    'DELTAK': _unitConversion(1),
-    'DELTAC': _unitConversion(1),
-    'DELTAF': _unitConversion(5 / 9)
-}
-
 time = {
     's': _unitConversion(1),
     'min': _unitConversion(60),
@@ -209,7 +203,6 @@ knownUnitsDict = {
     'kg/m-s2': pressure,
     's': time,
     'K': temperature,
-    'DELTAK': temperatureDifference,
     'm3': volume,
     'm': length,
     'kg-m2/s2': energy,
@@ -508,10 +501,6 @@ class unit():
 
         upper, upperPrefix, upperExp = unit._splitUnitExponentAndPrefix(upper)
         lower, lowerPrefix, lowerExp = unit._splitUnitExponentAndPrefix(lower)
-
-        if lower:
-            upper = ['DELTA' + elem if elem in temperature else elem for elem in upper]
-            lower = ['DELTA' + elem if elem in temperature else elem for elem in lower]
 
         return upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp
 
@@ -834,47 +823,20 @@ class unit():
         if self._SIBaseUnit == other._SIBaseUnit:
             return True, self._SIBaseUnit
 
-        # test if one is a temperature, and the other is a temperature difference
-        SIBaseUnits = [self._SIBaseUnit, other._SIBaseUnit]
-        if 'K' in SIBaseUnits and 'DELTAK' in SIBaseUnits:
-            return True, 'K'
-
         # return false
         return False, None
 
     def __sub__(self, other):
-        # test if the units are identical
-        if self._assertEqual(other):
-            if self._SIBaseUnit == 'K':
-                return True, 'DELTAK'
-            return True, self._SIBaseUnit
+        return self + other
 
-        # test if the SI base units are identical
-        if self._SIBaseUnit == other._SIBaseUnit:
-            return True, self._SIBaseUnit
-
-        # test if one is a temperature, and the other is a temperature difference
-        SIBaseUnits = [self._SIBaseUnit, other._SIBaseUnit]
-        if 'K' in SIBaseUnits and 'DELTAK' in SIBaseUnits:
-            return True, 'K'
-
-        # return false
-        return False, None
 
     def __mul__(self, other):
         return unit._multiply(self.unitStr, other.unitStr)
 
     def __truediv__(self, other):
         
-        if self._SIBaseUnit == 'K' and other._SIBaseUnit != '1':
-            a = 'DELTA' + self.unitStr
-        else:
-            a = self.unitStr
-
-        if other._SIBaseUnit == 'K' and self._SIBaseUnit != '1':
-            b = 'DELTA' + other.unitStr
-        else:
-            b = other.unitStr
+        a = self.unitStr
+        b = other.unitStr
 
         bUpper, bUpperPrefix, bUpperExp, bLower, bLowerPrefix, bLowerExp = unit._getLists(b)
 

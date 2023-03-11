@@ -131,10 +131,10 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(C.uncert, np.sqrt(2.6**2 + 53.9**2))
 
         A = variable(12.3, 'C', uncert=2.6)
-        B = variable(745.1, 'DELTAK', uncert=53.9)
+        B = variable(745.1, 'K', uncert=53.9)
         C = A + B
-        self.assertAlmostEqual(C.value, 12.3 + 745.1)
-        self.assertEqual(C.unit, 'C')
+        self.assertAlmostEqual(C.value, 12.3 + 273.15+ 745.1)
+        self.assertEqual(C.unit, 'K')
         self.assertAlmostEqual(C.uncert, np.sqrt(2.6**2 + 53.9**2))
 
         A = variable(12.3, 'L/min', uncert=2.6)
@@ -162,21 +162,21 @@ class test(unittest.TestCase):
         B = variable(745.1, 'K', uncert=53.9)
         C = A - B
         self.assertAlmostEqual(C.value, 12.3 + 273.15 - 745.1)
-        self.assertEqual(C.unit, 'DELTAK')
+        self.assertEqual(C.unit, 'K')
         self.assertAlmostEqual(C.uncert, np.sqrt(2.6**2 + 53.9**2))
 
         A = variable(12.3, 'C', uncert=2.6)
-        B = variable(745.1, 'DELTAK', uncert=53.9)
+        B = variable(745.1, 'K', uncert=53.9)
         C = A - B
-        self.assertAlmostEqual(C.value, 12.3 - 745.1)
-        self.assertEqual(C.unit, 'C')
+        self.assertAlmostEqual(C.value, 12.3 + 273.15 - 745.1)
+        self.assertEqual(C.unit, 'K')
         self.assertAlmostEqual(C.uncert, np.sqrt(2.6**2 + 53.9**2))
         
         A = variable(12.3, 'C', uncert=2.6)
         B = variable(745.1, 'C', uncert=53.9)
         C = A - B
         self.assertAlmostEqual(C.value, 12.3 - 745.1)
-        self.assertEqual(C.unit, 'DELTAC')
+        self.assertEqual(C.unit, 'C')
         self.assertAlmostEqual(C.uncert, np.sqrt(2.6**2 + 53.9**2))
 
 
