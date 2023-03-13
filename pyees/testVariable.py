@@ -162,21 +162,21 @@ class test(unittest.TestCase):
         B = variable(745.1, 'K', uncert=53.9)
         C = A - B
         self.assertAlmostEqual(C.value, 12.3 + 273.15 - 745.1)
-        self.assertEqual(C.unit, 'K')
+        self.assertEqual(C.unit, 'DELTAK')
         self.assertAlmostEqual(C.uncert, np.sqrt(2.6**2 + 53.9**2))
 
         A = variable(12.3, 'C', uncert=2.6)
         B = variable(745.1, 'K', uncert=53.9)
         C = A - B
         self.assertAlmostEqual(C.value, 12.3 + 273.15 - 745.1)
-        self.assertEqual(C.unit, 'K')
+        self.assertEqual(C.unit, 'DELTAK')
         self.assertAlmostEqual(C.uncert, np.sqrt(2.6**2 + 53.9**2))
         
         A = variable(12.3, 'C', uncert=2.6)
         B = variable(745.1, 'C', uncert=53.9)
         C = A - B
         self.assertAlmostEqual(C.value, 12.3 - 745.1)
-        self.assertEqual(C.unit, 'C')
+        self.assertEqual(C.unit, 'DELTAC')
         self.assertAlmostEqual(C.uncert, np.sqrt(2.6**2 + 53.9**2))
 
 
@@ -367,8 +367,6 @@ class test(unittest.TestCase):
         self.assertEqual(G_vec.unit, '1')
         self.assertAlmostEqual(G_vec.uncert[0], np.sqrt((2.54**0.34 * np.log(2.54) * 0.01)**2))
 
-        
-        
     def test_log(self):
         A = variable(12.3, 'L/min', uncert=2.6)
         C = variable(745.1, '1', uncert=53.9)
@@ -1585,6 +1583,133 @@ class test(unittest.TestCase):
         gradB = 10**(19/10) / (10**(19/10) - 10**1.1)
         self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
       
+
+    def testTemperatureArithmatic(self):
+        a = variable(20,'C')
+        b = variable(30,'C')
+        c = a + b
+        self.assertEqual(c.value, 50)
+        self.assertEqual(c.unit, 'C')
+        
+        a = variable(20,'C')
+        b = variable(30,'DELTAC')
+        c = a + b
+        self.assertEqual(c.value, 50)
+        self.assertEqual(c.unit, 'C')
+        
+        a = variable(20,'DELTAC')
+        b = variable(30,'C')
+        c = a + b
+        self.assertEqual(c.value, 50)
+        self.assertEqual(c.unit, 'C')
+        
+        a = variable(20,'DELTAC')
+        b = variable(30,'DELTAC')
+        c = a + b
+        self.assertEqual(c.value, 50)
+        self.assertEqual(c.unit, 'DELTAC')
+        
+        
+        a = variable(20,'C')
+        b = variable(30,'C')
+        c = a - b
+        self.assertEqual(c.value, -10)
+        self.assertEqual(c.unit, 'DELTAC')
+        
+        a = variable(20,'C')
+        b = variable(30,'DELTAC')
+        c = a - b
+        self.assertEqual(c.value, -10)
+        self.assertEqual(c.unit, 'C')
+        
+        a = variable(20,'DELTAC')
+        b = variable(30,'C')
+        with self.assertRaises(Exception) as context:
+            c = a - b
+        self.assertTrue("You tried to subtract a temperature from a temperature differnce. This is not possible." in str(context.exception))
+
+        
+        a = variable(20,'DELTAC')
+        b = variable(30,'DELTAC')
+        c = a - b
+        self.assertEqual(c.value, -10)
+        self.assertEqual(c.unit, 'DELTAC')
+        
+        
+        
+        
+        a = variable(100,'K')
+        b = variable(20, 'C')
+        c = a + b 
+        self.assertEqual(c.value, 100 + 273.15 + 20)
+        self.assertEqual(c.unit, 'K')
+        
+        a = variable(100,'DELTAK')
+        b = variable(20, 'C')
+        c = a + b 
+        self.assertEqual(c.value, 100 + 20)
+        self.assertEqual(c.unit, 'C')
+        
+        a = variable(100,'K')
+        b = variable(20, 'DELTAC')
+        c = a + b 
+        self.assertEqual(c.value, 120)
+        self.assertEqual(c.unit, 'K')
+        
+        a = variable(100,'DELTAK')
+        b = variable(20, 'DELTAC')
+        c = a + b 
+        self.assertEqual(c.value, 120)
+        self.assertEqual(c.unit, 'DELTAK')
+        
+        
+        
+        a = variable(100,'K')
+        b = variable(20, 'C')
+        c = a - b 
+        self.assertEqual(c.value, 100 - ( 273.15 + 20))
+        self.assertEqual(c.unit, 'DELTAK')
+        
+        a = variable(20, 'C')
+        b = variable(100,'DELTAK')
+        c = a-b
+        self.assertEqual(c.value, 20 - 100)
+        self.assertEqual(c.unit, 'C')
+        
+        a = variable(100,'DELTAK')
+        b = variable(20, 'C')
+        with self.assertRaises(Exception) as context:
+            c = a - b
+        self.assertTrue("You tried to subtract a temperature from a temperature differnce. This is not possible." in str(context.exception))
+
+        
+        a = variable(100,'K')
+        b = variable(20, 'DELTAC')
+        c = a - b 
+        self.assertEqual(c.value, 80)
+        self.assertEqual(c.unit, 'K')
+        
+        a = variable(100,'DELTAK')
+        b = variable(20, 'DELTAC')
+        c = a - b 
+        self.assertEqual(c.value, 100 - 20)
+        self.assertEqual(c.unit, 'DELTAK')
+        
+        
+        a = variable(20,'C')
+        b = variable(30,'C')
+        c = np.mean([a,b])
+        self.assertEqual(c.value, 25)
+        self.assertEqual(c.unit, 'C')
+        
+
+        a = variable([20,30], 'C')
+        c = np.mean(a)
+        self.assertEqual(c.value, 25)
+        self.assertEqual(c.unit, 'C')
+                
+        
+        
 
 if __name__ == '__main__':
     unittest.main()

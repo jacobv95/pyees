@@ -65,28 +65,34 @@ class test(unittest.TestCase):
     def testAdd(self):
         a = unit('L/min')
         b = unit('kg-m/L')
-        cBool, cUnit = a + b
-        self.assertEqual(cBool, False)
+
+        with self.assertRaises(Exception) as context:
+            a + b
+        self.assertTrue('You tried to add a variable in [L/min] to a variable in [kg-m/L], but the units do not have the same SI base unit' in str(context.exception))
+        
         a = unit('L/min')
         b = unit('L/min')
-        cBool, cUnit = a + b
-        self.assertEqual(str(cUnit), 'm3/s')
+        _,cUnit,_,_,_ = a + b
+        self.assertEqual(cUnit, 'L/min')
 
         a = unit('m-K/L-bar')
         b = unit('K-m/bar-L')
-        cBool, cUnit = a + b
-        self.assertEqual(cBool, True)
-        self.assertTrue(unit._assertEqualStatic(cUnit, 'K-s2/kg-m'))
+        _,cUnit,_,_,_ = a + b
+        self.assertTrue(unit._assertEqualStatic(cUnit, 'DELTAK-m/bar-L'))
 
     def testSub(self):
         a = unit('L/min')
         b = unit('kg-m/L')
-        cBool, cUnit = a - b
-        self.assertEqual(cBool, False)
+        
+        with self.assertRaises(Exception) as context:
+            a-b
+        self.assertTrue('You tried to subtract a variable in [kg-m/L] from a variable in [L/min], but the units do not have the same SI base unit' in str(context.exception))
+
+        
         a = unit('L/min')
         b = unit('L/min')
-        cBool, cUnit = a - b
-        self.assertEqual(str(cUnit), 'm3/s')
+        _,cUnit,_,_,_ = a - b
+        self.assertEqual(str(cUnit), 'L/min')
 
     def testConvert(self):
         a = unit('L/min')

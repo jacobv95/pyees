@@ -89,6 +89,7 @@ def differentials(fluid : Fluid, property : str, parameters):
     
 
 def outputFromParameters(scalarMethod, property, params):
+
     
     
     if (all([type(elem) == scalarVariable for elem in params if not elem is None])):
@@ -108,17 +109,17 @@ def outputFromParameters(scalarMethod, property, params):
     if not (all([ns[0] == n] for n in ns)):
         raise ValueError('All parameters has to have the same length')
     
-    
-    n = ns[0]
-    for i, param in enumerate(params):
-        if isinstance(param, scalarVariable):
-            paramVecs[i] = variable([param.value] * n, param.unit, [param.uncert] * n)
-    
-    for i in range(n):
-        params = [elem[i] for elem in paramVecs]
-        out.append(scalarMethod(property, *params))
-    
-    return variable([elem.value for elem in out], out[0].unit, [elem.uncert for elem in out])
+    if ns:
+        n = ns[0]
+        for i, param in enumerate(params):
+            if isinstance(param, scalarVariable):
+                paramVecs[i] = variable([param.value] * n, param.unit, [param.uncert] * n)
+        for i in range(n):
+            params = [elem[i] for elem in paramVecs]
+            out.append(scalarMethod(property, *params))
+        return variable([elem.value for elem in out], out[0].unit, [elem.uncert for elem in out])
+        
+    return scalarMethod(property, *params)
 
 def propWater(property, arguments):
     

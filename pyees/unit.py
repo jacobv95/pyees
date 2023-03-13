@@ -148,6 +148,12 @@ temperature = {
     'F': _unitConversion(5 / 9, 273.15 - 32 * 5 / 9)
 }
 
+temperatureDifference = {
+    'DELTAK': _unitConversion(1),
+    'DELTAC': _unitConversion(1),
+    'DELTAF': _unitConversion(5 / 9)
+}
+
 time = {
     's': _unitConversion(1),
     'min': _unitConversion(60),
@@ -215,7 +221,8 @@ knownUnitsDict = {
     'rad': angle,
     'kg-m2/s3-A2' : resistance,
     'm2/s' : kinematicViscosity,
-    'Np': logrithmicUnits
+    'Np': logrithmicUnits,
+    'DELTAK': temperatureDifference
 }
 
 knownPrefixes = {
@@ -502,6 +509,10 @@ class unit():
         upper, upperPrefix, upperExp = unit._splitUnitExponentAndPrefix(upper)
         lower, lowerPrefix, lowerExp = unit._splitUnitExponentAndPrefix(lower)
 
+        if lower:
+            upper = ['DELTA' + elem if elem in temperature else elem for elem in upper]
+            lower = ['DELTA' + elem if elem in temperature else elem for elem in lower]
+
         return upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp
 
     @ staticmethod
@@ -705,7 +716,7 @@ class unit():
         
         for p in knownPrefixes.keys():
             index = unit.find(p)
-            if index == -1:
+            if index != 0:
                 continue
             u = unit[len(p):]
             if not u in knownUnits:
@@ -815,19 +826,97 @@ class unit():
         return self._assertEqualStatic(self.unitStr, other)
 
     def __add__(self, other):
-        # test if the units are identical
-        if self._assertEqual(other):
-            return True, self._SIBaseUnit
-
+        
+        ## output 1: are the units a logarithmic unit
+        ## output 2: outputUnit
+        ## output 3: scaleToSI. If true, then scale both self and other to SI and neglect output 2 and 3
+        ## output 4: scaleSelf. If true then scale self to remove the prefix
+        ## output 5: scaleOther. If true then scale other to remove the prefix
+        
+        
+        selfWithoutPrefixes = unit(unit._combineUpperAndLower(self.upper, [None] * len(self.upperPrefix), self.upperExp, self.lower, [None] * len(self.lowerPrefix), self.lowerExp))
+        otherWithoutPrefixes = unit(unit._combineUpperAndLower(other.upper, [None] * len(other.upperPrefix), other.upperExp, other.lower, [None] * len(other.lowerPrefix), other.lowerExp))
+        aStr = str(selfWithoutPrefixes)
+        bStr = str(otherWithoutPrefixes)
+        
+        isLogarithmicUnit = aStr in logrithmicUnits.keys()
+                
+        scaleSelf = str(self) != aStr
+        scaleOther = str(other) != bStr
+        
+        if unit._assertEqualStatic(aStr, bStr):
+            return isLogarithmicUnit, aStr, False, scaleSelf, scaleOther
+        
         # test if the SI base units are identical
         if self._SIBaseUnit == other._SIBaseUnit:
-            return True, self._SIBaseUnit
+            return isLogarithmicUnit, self._SIBaseUnit, True, False, False
+        
+        
+        SIBaseUnits = [selfWithoutPrefixes._SIBaseUnit,  otherWithoutPrefixes._SIBaseUnit]        
+        if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
+            
+            indexTemp = SIBaseUnits.index('K')
+            indexDiff = 0 if indexTemp == 1 else 1
+            
+            units = [aStr, bStr]
 
-        # return false
-        return False, None
+            if units[indexTemp] == units[indexDiff][-1]:        
+                return isLogarithmicUnit, units[indexTemp], False, scaleSelf, scaleOther
+            
+            return isLogarithmicUnit, 'K', True, False, False
+
+        raise ValueError(f'You tried to add a variable in [{self}] to a variable in [{other}], but the units do not have the same SI base unit')
 
     def __sub__(self, other):
-        return self + other
+        ## output 1: are the units a logarithmic unit
+        ## output 2: outputUnit
+        ## output 3: scaleToSI. If true, then scale both self and other to SI and neglect output 2 and 3
+        ## output 4: scaleSelf. If true then scale self to remove the prefix
+        ## output 5: scaleOther. If true then scale other to remove the prefix
+        
+        
+        selfWithoutPrefixes = unit(unit._combineUpperAndLower(self.upper, [None] * len(self.upperPrefix), self.upperExp, self.lower, [None] * len(self.lowerPrefix), self.lowerExp))
+        otherWithoutPrefixes = unit(unit._combineUpperAndLower(other.upper, [None] * len(other.upperPrefix), other.upperExp, other.lower, [None] * len(other.lowerPrefix), other.lowerExp))
+        aStr = str(selfWithoutPrefixes)
+        bStr = str(otherWithoutPrefixes)
+        
+        isLogarithmicUnit = aStr in logrithmicUnits.keys()
+                
+        scaleSelf = str(self) != aStr
+        scaleOther = str(other) != bStr
+
+        SIBaseUnits = [self._SIBaseUnit, other._SIBaseUnit]
+        if SIBaseUnits[0] == 'K' and SIBaseUnits[1] == 'K':
+            if self._assertEqual(other):
+                return isLogarithmicUnit, 'DELTA' + str(self), False, scaleSelf, scaleOther
+            return isLogarithmicUnit,'DELTAK', True, False, False
+
+        if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
+
+            
+            indexTemp = SIBaseUnits.index('K')
+            if indexTemp != 0:
+                raise ValueError('You tried to subtract a temperature from a temperature differnce. This is not possible.')
+            indexDiff = 0 if indexTemp == 1 else 1
+            
+            units = [aStr, bStr]
+
+
+            if units[indexTemp] == units[indexDiff][-1]:        
+                return isLogarithmicUnit, units[indexTemp], False, scaleSelf, scaleOther
+            
+            return isLogarithmicUnit, 'K', True, False, False
+        
+        if unit._assertEqualStatic(aStr, bStr):
+            return isLogarithmicUnit, aStr, False, scaleSelf, scaleOther
+        
+        # test if the SI base units are identical
+        if self._SIBaseUnit == other._SIBaseUnit:
+            return isLogarithmicUnit, self._SIBaseUnit, True, False, False
+        
+        
+        
+        raise ValueError(f'You tried to subtract a variable in [{other}] from a variable in [{self}], but the units do not have the same SI base unit')
 
 
     def __mul__(self, other):
@@ -958,7 +1047,7 @@ class unit():
                 out *= conv
             else:
                 out /= conv
-
+                        
         # get all conversions from the upper and lower units in the new unit
         upperConversions = [knownUnits[elem][1] for elem in otherUpper]
         lowerConversions = [knownUnits[elem][1] for elem in otherLower]
@@ -995,3 +1084,10 @@ class unit():
         self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
         otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
         self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
+
+if __name__ == '__main__':
+    
+    a = unit('J-L-DELTAC/K-m3-min')
+    a.getConverter('kW')
+    print(a)
+    

@@ -2,8 +2,10 @@ from copy import deepcopy
 import numpy as np
 try:
     from unit import unit
+    from unit import logrithmicUnits
 except ImportError:
     from pyees.unit import unit
+    from pyees.unit import logrithmicUnits
     
         
     
@@ -124,7 +126,6 @@ class scalarVariable():
     @property
     def uncert(self):
         return self._uncert
-
 
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
@@ -269,24 +270,26 @@ class scalarVariable():
             return self + variable(other, self.unit)
 
         # determine if the two variable can be added
-        addBool, outputUnit = self._unitObject + other._unitObject
-        
-        if not addBool:
-            raise ValueError(f'You tried to add a variable in [{self.unit}] to a variable in [{other.unit}], but the units do not have the same SI base unit')
+        isLogarithmicUnit, outputUnit, scaleToSI, scaleSelf, scaleOther = self._unitObject + other._unitObject
 
-       
-        if outputUnit == 'Np':
+        if isLogarithmicUnit:
             return logarithmicVariables.__add__(self, other)
 
         # convert self and other to the SI unit system
         selfUnit = deepcopy(self.unit)
         otherUnit = deepcopy(other.unit)
-        hasToBeConverted = selfUnit != otherUnit
-        if hasToBeConverted:
+        
+        if scaleToSI:
             self.convert(self._unitObject._SIBaseUnit)
             other.convert(other._unitObject._SIBaseUnit)
         else:
-            outputUnit = selfUnit
+            if scaleSelf:
+                a, _ = self._unitObject._removePrefixFromUnit(self.unit)
+                self.convert(a)
+            if scaleOther:
+                a, _ = other._unitObject._removePrefixFromUnit(other.unit)
+                other.convert(a)
+        
 
         # determine the value and gradients
         val = self._value + other._value
@@ -298,16 +301,19 @@ class scalarVariable():
         var._addDependents(vars, grad)
         var._calculateUncertanty()
 
-        if hasToBeConverted:
-            # convert all units back to their original units
-            self.convert(selfUnit)
-            other.convert(otherUnit)
-            
-            ## convert the variable in to the original unit if self and other has the same original unit
-            ## otherwise keep the variable in the SI unit system
-            if (selfUnit == otherUnit):
-                var.convert(selfUnit)
+        # convert all units back to their original units
+        self.convert(selfUnit)
+        other.convert(otherUnit)
         
+        ## convert the variable in to the original unit if self and other has the same original unit
+        ## otherwise keep the variable in the SI unit system
+        if (selfUnit == otherUnit):
+            var.convert(selfUnit)
+        
+        if outputUnit == 'K':
+            SIBaseUnits = [self._unitObject._SIBaseUnit, other._unitObject._SIBaseUnit]
+            if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
+                var.convert([selfUnit, otherUnit][SIBaseUnits.index('K')]) 
         return var
 
     def __radd__(self, other):
@@ -318,50 +324,53 @@ class scalarVariable():
             return self - variable(other, self.unit)
 
         # determine if the variables can be subtracted
-        subBool, outputUnit = self._unitObject - other._unitObject
-        
-        if not subBool:
-            raise ValueError(f'You tried to subtract a variable in [{other.unit}] from a variable in [{self.unit}], but the units do not have the same SI base unit')
+        isLogarithmicUnit, outputUnit, scaleToSI, scaleSelf, scaleOther = self._unitObject - other._unitObject
 
-        if outputUnit == 'Np':
+        if isLogarithmicUnit:
             return logarithmicVariables.__sub__(self, other)
-
 
         # convert self and other to the SI unit system
         selfUnit = deepcopy(self.unit)
         otherUnit = deepcopy(other.unit)
-        hasToBeConverted = selfUnit != otherUnit
-        if hasToBeConverted:
+ 
+        if scaleToSI:
             self.convert(self._unitObject._SIBaseUnit)
             other.convert(other._unitObject._SIBaseUnit)
         else:
-            outputUnit = selfUnit
-            
+            if scaleSelf:
+                a, _ = self._unitObject._removePrefixFromUnit(self.unit)
+                self.convert(a)
+            if scaleOther:
+                a, _ = other._unitObject._removePrefixFromUnit(other.unit)
+                other.convert(a)
+
         # determine the value and gradients
         val = self.value - other.value
         grad = [1, -1]
         vars = [self, other]
-
         # create the new variable
         var = variable(val, outputUnit)
         var._addDependents(vars, grad)
         var._calculateUncertanty()
 
-        
+
         # convert self and other back
-        if hasToBeConverted:
-            self.convert(selfUnit)
-            other.convert(otherUnit)
+        self.convert(selfUnit)
+        other.convert(otherUnit)
 
-            if self.unit == other.unit:
-                var.convert(self.unit)
-
+        if self.unit == other.unit and outputUnit == self.unit:
+            var.convert(self.unit)
+        if outputUnit == 'K':
+            SIBaseUnits = [self._unitObject._SIBaseUnit, other._unitObject._SIBaseUnit]
+            if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
+                var.convert([selfUnit, otherUnit][SIBaseUnits.index('K')]) 
         return var
 
     def __rsub__(self, other):
         return - self + other
 
     def __mul__(self, other):
+
         if not isinstance(other, scalarVariable):
             return self * variable(other)
 
@@ -902,14 +911,3 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
-
-
-
-if __name__ == "__main__":
-    
-    a = variable(1,'C')
-    b = variable(2, 'K')
-    c = a + b
-    d = a - b
-    print(c, d)
-    
