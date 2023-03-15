@@ -234,7 +234,12 @@ class scalarVariable():
                     self.dependsOn[var] = grad
 
     def _addCovariance(self, var, covariance):
+        try:
+            float(covariance)
+        except TypeError:
+            raise ValueError(f'You tried to set the covariance between {self} and {var} with a non scalar value')
         self.covariance[var] = covariance
+        var.covariance[self] = covariance
 
     def _calculateUncertanty(self):
 
@@ -248,18 +253,19 @@ class scalarVariable():
             variance += (grad * scale * var.uncert)**2
 
         # variance from the corralation between measurements
-        n = len(self.dependsOn.keys())
+        listDependsOn = list(self.dependsOn.keys())
+        n = len(listDependsOn)
         for i in range(n):
-            var_i = list(self.dependsOn.keys())[i]
+            var_i = list(listDependsOn)[i]
             for j in range(i + 1, n):
-                var_j = list(self.dependsOn.keys())[j]
+                var_j = list(listDependsOn)[j]
                 if var_j in var_i.covariance.keys():
                     if not var_i in var_j.covariance.keys():
                         raise ValueError(
                             f'The variable {var_i} is correlated with the varaible {var_j}. However the variable {var_j} not not correlated with the variable {var_i}. Something is wrong.')
                     scale_i = var_i._converterToSI.convert(1, useOffset=False) / selfScaleToSI
                     scale_j = var_j._converterToSI.convert(1, useOffset=False) / selfScaleToSI
-                    varianceContribution = 2 * scale_i * self.dependsOn[var_i] * scale_j * self.dependsOn[var_j] * var_i.covariance[var_j][0]
+                    varianceContribution = 2 * scale_i * self.dependsOn[var_i] * scale_j * self.dependsOn[var_j] * var_i.covariance[var_j]
                     variance += varianceContribution
 
         self._uncert = np.sqrt(variance)
@@ -868,6 +874,11 @@ class arrayVariable(scalarVariable):
     def mean(self):
         return sum(self) / len(self)
 
+    def _addCovariance(self, var, covariance):
+        if len(var) != len(self) or len(covariance) != len(self):
+            raise ValueError(f'The lengths of {self}, {var}, and {covariance} are not equal')
+        self.covariance[var] = covariance
+        var.covariance[self] = covariance
 
 
 
@@ -911,3 +922,10 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
+if __name__ == "__main__":
+    a = variable([1, 2, 3], '1', [0.1, 0.2 ,0.3])
+    b = variable([93, 97, 102], '1', [1.2, 2.4, 4.7])
+    a._addCovariance(b, [2, 3, 4])
+    c = a * b
+    
+    print(c)

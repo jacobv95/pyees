@@ -150,6 +150,21 @@ class test(unittest.TestCase):
             A_vec + B_vec
         self.assertTrue('You tried to add a variable in [L/min] to a variable in [m], but the units do not have the same SI base unit' in str(context.exception))
 
+        a = variable(10, 'L', 1.2)
+        b = variable(100, 'mL', 3.9)
+        c = a + b
+        self.assertEqual(c.value, 10.1)
+        self.assertEqual(c.unit, 'L')
+        self.assertEqual(c.uncert, np.sqrt((1 * 1.2)**2 + (1 * 3.9/1000)**2))
+        
+        
+        a = variable(10, 'C', 1.2)
+        b = variable(100, 'muC', 3.9)
+        c = a + b
+        self.assertEqual(c.value, 10 + 100 * 1e-6)
+        self.assertEqual(c.unit, 'C')
+        self.assertEqual(c.uncert, np.sqrt((1 * 1.2)**2 + (1 * 3.9*1e-6)**2))
+
     def test_sub_with_different_units(self):
         A = variable(12.3, 'm3/s', uncert=2.6)
         B = variable(745.1, 'L/min', uncert=53.9)
@@ -192,6 +207,20 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             A_vec - B_vec
         self.assertTrue('You tried to subtract a variable in [m] from a variable in [L/min], but the units do not have the same SI base unit' in str(context.exception))
+
+        a = variable(10, 'L', 1.2)
+        b = variable(100, 'mL', 3.9)
+        c = a - b
+        self.assertEqual(c.value, 10 - 100 / 1000)
+        self.assertEqual(c.unit, 'L')
+        self.assertEqual(c.uncert, np.sqrt((1 * 1.2)**2 + (1 * 3.9/1000)**2))
+        
+        a = variable(10, 'C', 1.2)
+        b = variable(100, 'muC', 3.9)
+        c = a - b
+        self.assertAlmostEqual(c.value, 10 - 100 * 1e-6)
+        self.assertEqual(c.unit, 'DELTAC')
+        self.assertEqual(c.uncert, np.sqrt((1 * 1.2)**2 + (1 * 3.9*1e-6)**2))
 
     def test_multiply(self):
         A = variable(12.3, 'L/min', uncert=2.6)
@@ -1200,8 +1229,7 @@ class test(unittest.TestCase):
     def testCovariance(self):
         a = variable(123, 'L/min', 9.7)
         b = variable(93, 'Pa', 1.2)
-        a._addCovariance(b, [23])
-        b._addCovariance(a, [23])
+        a._addCovariance(b, 23)
         c = a * b
         self.assertEqual(c.value, 123 * 93)
         self.assertTrue(c._unitObject._assertEqual('L-Pa/min'))
@@ -1209,13 +1237,27 @@ class test(unittest.TestCase):
 
         a = variable(123, 'L/min', 9.7)
         b = variable(93, 'Pa', 1.2)
-        a._addCovariance(b, [23])
-        b._addCovariance(a, [23])
+        a._addCovariance(b, 23)
         a.convert('m3/s')
         c = a * b
         self.assertEqual(c.value, 123 * 93 / 1000 / 60)
         self.assertTrue(c._unitObject._assertEqual('m3-Pa/s'))
         self.assertEqual(c.uncert, np.sqrt((123 / 1000 / 60 * 1.2)**2 + (93 * 9.7 / 1000 / 60)**2 + 2 * 93 * 123 / 1000 / 60 * 23))
+        
+        a = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
+        b = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
+        a._addCovariance(b, [2, 3, 4])
+        c = a * b
+        np.testing.assert_equal(c.value, [1*93, 2*97, 3*102])
+        self.assertTrue(c._unitObject._assertEqual('L-Pa/min'))
+        dcda = np.array([93, 97, 102], dtype = float)
+        dcdb = np.array([1, 2, 3], dtype = float)
+        ua = np.array([0.1, 0.2, 0.3], dtype = float)
+        ub = np.array([1.2, 2.4, 4.7], dtype = float)
+        uab = np.array([2, 3, 4], dtype = float)
+
+        uc = np.sqrt((dcda * ua)**2 + (dcdb * ub)**2 + 2 * dcda * dcdb * uab)
+        np.testing.assert_equal(c.uncert, uc)
 
     def testConvert(self):
         a = variable(1, 'km')
@@ -1335,6 +1377,20 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             A[0] = B
         self.assertTrue("'scalarVariable' object does not support item assignment" in str(context.exception))
+          
+        a = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
+        b = a**2
+        a[1] = variable(5,'m',0.5)
+        c = b * a
+        
+        a1 = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
+        a2 = variable([1,5,3], 'm', [0.1, 0.5, 0.3])
+        cc = a1*a1 * a2
+        np.testing.assert_equal(c.value, cc.value)
+        self.assertEqual(c.unit, cc.unit)          
+        np.testing.assert_equal(c.uncert, cc.uncert)
+          
+          
            
     def testAppend(self):
         A = variable(12.3, 'L/min', uncert=2.6)

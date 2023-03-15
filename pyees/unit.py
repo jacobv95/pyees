@@ -289,9 +289,6 @@ for elem in unitPrefixCombinations:
         raise ValueError(f'The unit {elem} can be interpreted as a {unitType1} or a {unitType2} with the prefix {prefix}. The cannot be distiguished.')
 
 
-
-
-
 def addNewUnit(newUnit: str, scale: float, existingUnit: str, offset : float = 0):
         
     if newUnit in unitPrefixCombinations:
@@ -338,9 +335,6 @@ def addNewUnit(newUnit: str, scale: float, existingUnit: str, offset : float = 0
     for s in newUnit:
         knownCharacters.add(s)
 
-    
-    
-    
     
 hyphen = '-'
 slash = '/'
@@ -887,12 +881,11 @@ class unit():
 
         SIBaseUnits = [self._SIBaseUnit, other._SIBaseUnit]
         if SIBaseUnits[0] == 'K' and SIBaseUnits[1] == 'K':
-            if self._assertEqual(other):
+            if aStr == bStr:
                 return isLogarithmicUnit, 'DELTA' + str(self), False, scaleSelf, scaleOther
             return isLogarithmicUnit,'DELTAK', True, False, False
 
         if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
-
             
             indexTemp = SIBaseUnits.index('K')
             if indexTemp != 0:
@@ -1084,10 +1077,3 @@ class unit():
         self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
         otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
         self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
-
-if __name__ == '__main__':
-    
-    a = unit('J-L-DELTAC/K-m3-min')
-    a.getConverter('kW')
-    print(a)
-    
