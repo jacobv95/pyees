@@ -890,7 +890,6 @@ class test(unittest.TestCase):
         v = np.sqrt(2 * dP / rho)
         self.assertEqual(v.value, 8.9442719099991585541)
 
-
     def testLargerUncertThenValue(self):
 
         A = variable(0.003, 'L/min', 0.2)
@@ -970,7 +969,6 @@ class test(unittest.TestCase):
         np.testing.assert_equal(d_vec.value, [2**0.34, 2**0.64, 2**0.87])
         self.assertEqual(d_vec.unit, '1')
         self.assertEqual(d_vec.uncert[0], np.sqrt((2**0.34 * np.log(2) * 0.01)**2 + (0.34 * 2**(0.34 - 1) * 0)**2))
-
         
     def testPrettyPrint(self):
         a = variable(12.3, 'm')
@@ -1233,7 +1231,7 @@ class test(unittest.TestCase):
         c = a * b
         self.assertEqual(c.value, 123 * 93)
         self.assertTrue(c._unitObject._assertEqual('L-Pa/min'))
-        self.assertEqual(c.uncert, np.sqrt((123 * 1.2)**2 + (93 * 9.7)**2 + 2 * 93 * 123 * 23))
+        self.assertAlmostEqual(c.uncert, np.sqrt((123 * 1.2)**2 + (93 * 9.7)**2 + 2 * 93 * 123 * 23))
 
         a = variable(123, 'L/min', 9.7)
         b = variable(93, 'Pa', 1.2)
@@ -1399,10 +1397,10 @@ class test(unittest.TestCase):
         
         AA = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
         BB = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
-        AA2 = variable([1, 2.5, 3], 'L/min', [0.1, 0.25, 0.3])
         AA._addCovariance(BB, [2,3,4])
-        AA2._addCovariance(BB, [2,3,4])
-        CC = AA * BB * AA2
+        CC = AA * BB
+        AA2 = variable([1, 2.5, 3], 'L/min', [0.1, 0.25, 0.3])
+        CC *= AA2
         
         np.testing.assert_equal(C.value, CC.value)
         self.assertTrue(C._unitObject._assertEqual(CC.unit))

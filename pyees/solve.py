@@ -154,9 +154,9 @@ def solve(func, x, *args, bounds = None,**kwargs):
         ## loop over the variables
         for j, xj in enumerate(x):
             ## add the gradient d(residual)/d(xj) to the jacobian matrix
-            for dependency in res.dependsOn:
-                if id(xj) == id(dependency[0]):
-                    J[i,j] += dependency[3]
+            if xj in res.dependsOn:
+                for dependency in res.dependsOn[xj].values():
+                    J[i,j] += dependency[2]
 
 
 
