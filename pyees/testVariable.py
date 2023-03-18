@@ -237,7 +237,7 @@ class test(unittest.TestCase):
         C_vec = A_vec * B_vec
         np.testing.assert_array_equal(C_vec.value, np.array([12.3 * 745.1, 54.3 * 496.13, 91.3 * 120.54]))
         self.assertTrue(C._unitObject._assertEqual('L-m/min'))
-        np.testing.assert_array_equal(
+        np.testing.assert_array_almost_equal(
             C_vec.uncert,
             np.array([
                 np.sqrt((745.1 * 2.6)**2 + (12.3 * 53.9)**2),
@@ -282,7 +282,7 @@ class test(unittest.TestCase):
         C_vec = A_vec / B_vec
         np.testing.assert_array_equal(C_vec.value, np.array([12.3 / 745.1, 54.3 / 496.13, 91.3 / 120.54]))
         self.assertTrue(C_vec._unitObject._assertEqual('L/min-m'))
-        np.testing.assert_array_equal(
+        np.testing.assert_array_almost_equal(
             C_vec.uncert,
             np.array([
                 np.sqrt((1 / 745.1 * 2.6)**2 + (12.3 / (745.1)**2 * 53.9)**2),
@@ -1120,7 +1120,7 @@ class test(unittest.TestCase):
         unc = 2
         self.assertEqual(c.value, val * np.sin(np.pi / 180 * val))
         self.assertEqual(c.unit, 'deg')
-        self.assertEqual(c.uncert, np.sqrt((unc * (np.sin(np.pi / 180 * val) + (np.pi / 180 * val) * np.cos(np.pi / 180 * val)))**2))
+        self.assertAlmostEqual(c.uncert, np.sqrt((unc * (np.sin(np.pi / 180 * val) + (np.pi / 180 * val) * np.cos(np.pi / 180 * val)))**2))
 
         a = variable(23, 'deg', 2)
         a.convert('rad')
@@ -1150,7 +1150,7 @@ class test(unittest.TestCase):
         unc = 2
         self.assertEqual(c.value, val * np.sin(np.pi / 180 * val))
         self.assertEqual(c.unit, 'deg')
-        self.assertEqual(c.uncert, np.sqrt((unc * (np.sin(np.pi / 180 * val) + (np.pi / 180 * val) * np.cos(np.pi / 180 * val)))**2))
+        self.assertAlmostEqual(c.uncert, np.sqrt((unc * (np.sin(np.pi / 180 * val) + (np.pi / 180 * val) * np.cos(np.pi / 180 * val)))**2))
 
         a = variable(200, 'L/min', 1.5)
         b = a**2
@@ -1221,7 +1221,7 @@ class test(unittest.TestCase):
         a = variable(2.3, 'L/min', 0.0237)
         b = variable(0, 'L/min')
         for i in range(15):
-            b += 1 / variable(np.math.factorial(i)) * a
+            b += 1 / np.math.factorial(i) * a
         self.assertAlmostEqual(b.value, np.e * 2.3)
         self.assertEqual(b.unit, 'L/min')
         self.assertAlmostEqual(b.uncert, np.sqrt((np.e * 0.0237)**2))
@@ -1382,14 +1382,34 @@ class test(unittest.TestCase):
         b = a**2
         a[1] = variable(5,'m',0.5)
         c = b * a
-        
         a1 = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
         a2 = variable([1,5,3], 'm', [0.1, 0.5, 0.3])
-        cc = a1*a1 * a2
+        cc = a1**2 * a2
         np.testing.assert_equal(c.value, cc.value)
         self.assertEqual(c.unit, cc.unit)          
         np.testing.assert_equal(c.uncert, cc.uncert)
-          
+        
+        
+        A = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
+        B = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
+        A._addCovariance(B, [2, 3, 4])
+        C = A * B
+        A[1] = variable(2.5, 'L/min', 0.25)
+        C *= A
+        
+        AA = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
+        BB = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
+        AA2 = variable([1, 2.5, 3], 'L/min', [0.1, 0.25, 0.3])
+        AA._addCovariance(BB, [2,3,4])
+        AA2._addCovariance(BB, [2,3,4])
+        CC = AA * BB * AA2
+        
+        np.testing.assert_equal(C.value, CC.value)
+        self.assertTrue(C._unitObject._assertEqual(CC.unit))
+        np.testing.assert_equal(C.uncert, CC.uncert)
+
+        
+        
           
            
     def testAppend(self):

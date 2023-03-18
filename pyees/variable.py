@@ -109,7 +109,7 @@ class scalarVariable():
         self._getConverterToSI()
 
         # uncertanty
-        self.dependsOn = {}
+        self.dependsOn = []
         self.covariance = {}
 
     def _getConverterToSI(self):
@@ -204,35 +204,28 @@ class scalarVariable():
                 return rf'{value} {pm} {uncert}{space}{unitStr}'
 
     def _addDependents(self, vars, grads):
-        # copy the gradients
-        # this prevents a pointer error as the gradients often are set to the value of a variable
-        # when the gradients are scaled this causes problems
         grads = [deepcopy(elem) for elem in grads]
-
+        selfScaleToSI = self._converterToSI.convert(1, useOffset=False)
+        
         # loop over the variables and their gradients
         for var, grad in zip(vars, grads):
+            
             # scale the gradient to SI units. This is necessary if one of the variables are converted after the dependency has been noted
-            scale = self._converterToSI.convert(1, useOffset=False) / var._converterToSI.convert(1, useOffset=False)
-            grad *= scale
+            grad *= selfScaleToSI / var._converterToSI.convert(1, useOffset=False)
 
-            # check if the variable depends on other variables
             if var.dependsOn:
-
+                # the variable depends on other variables
                 # loop over the dependencies of the variables and add them to the dependencies of self.
                 # this ensures that the product rule is used
-                for key, item in var.dependsOn.items():
-                    if key in self.dependsOn:
-                        self.dependsOn[key] += item * grad
-                    else:
-                        self.dependsOn[key] = item * grad
-            else:
-
+                for dependency in var.dependsOn:
+                    self.dependsOn.append([dependency[0], dependency[1], dependency[2], dependency[3] * grad])
+        
+            else:    
                 # the variable did not have any dependecies. Therefore the the varaible is added to the dependencies of self
-                if var in self.dependsOn:
-                    self.dependsOn[var] += grad
-                else:
-                    self.dependsOn[var] = grad
-
+                val = var._converterToSI.convert(var.value)
+                unc = var._converterToSI.convert(var.uncert, useOffset = False)
+                self.dependsOn.append([var,val, unc, grad])           
+                
     def _addCovariance(self, var, covariance):
         try:
             float(covariance)
@@ -245,27 +238,45 @@ class scalarVariable():
 
         # variance from each measurement
         variance = 0
+                
+        hasBeenUsed = [False] * len(self.dependsOn)
+        dependencies = []
+        for i, dependency_i in enumerate(self.dependsOn):
+            
+            if hasBeenUsed[i]: continue
+            hasBeenUsed[i] = True
+            grad = dependency_i[3]
+            
+            for j, dependency_j in enumerate(self.dependsOn):
+                if i == j: continue
+                if not id(dependency_i[0]) == id(dependency_j[0]): continue
+                if not np.array_equal(dependency_i[1], dependency_j[1]): continue
+                if not np.array_equal(dependency_i[2], dependency_j[2]): continue
+                hasBeenUsed[j] = True
+                grad += dependency_j[3]
+                
+            dependencies.append([dependency_i[0], dependency_i[1], dependency_i[2], grad])
+        
         selfScaleToSI = self._converterToSI.convert(1, useOffset=False)
-        for var, grad in self.dependsOn.items():
+        for dependency in dependencies:    
+            uncert, grad = dependency[2], dependency[3]
             # the gradient is scaled with the inverse of the conversion of the unit to SI units.
             # This is necessary if the variable "var" has been converted after the dependency has been noted
-            scale = var._converterToSI.convert(1, useOffset=False) / selfScaleToSI           
-            variance += (grad * scale * var.uncert)**2
+            scale = 1 / selfScaleToSI      
+            variance += (grad * scale * uncert)**2
 
         # variance from the corralation between measurements
-        listDependsOn = list(self.dependsOn.keys())
-        n = len(listDependsOn)
+        n = len(dependencies)
         for i in range(n):
-            var_i = list(listDependsOn)[i]
+            var_i = dependencies[i][0]
             for j in range(i + 1, n):
-                var_j = list(listDependsOn)[j]
+                var_j = dependencies[j][0]
                 if var_j in var_i.covariance.keys():
                     if not var_i in var_j.covariance.keys():
-                        raise ValueError(
-                            f'The variable {var_i} is correlated with the varaible {var_j}. However the variable {var_j} not not correlated with the variable {var_i}. Something is wrong.')
+                        raise ValueError(f'The variable {var_i} is correlated with the varaible {var_j}. However the variable {var_j} not not correlated with the variable {var_i}. Something is wrong.')
                     scale_i = var_i._converterToSI.convert(1, useOffset=False) / selfScaleToSI
                     scale_j = var_j._converterToSI.convert(1, useOffset=False) / selfScaleToSI
-                    varianceContribution = 2 * scale_i * self.dependsOn[var_i] * scale_j * self.dependsOn[var_j] * var_i.covariance[var_j]
+                    varianceContribution = 2 * scale_i * dependencies[i][3] * scale_j * dependencies[j][3] * var_i.covariance[var_j]
                     variance += varianceContribution
 
         self._uncert = np.sqrt(variance)
@@ -591,8 +602,10 @@ class scalarVariable():
     
     def max(self):
         return self
+    
     def min(self):
         return self
+    
     def mean(self):
         return self
 
@@ -923,9 +936,19 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return scalarVariable(value, unit, uncert, nDigits)
 
 if __name__ == "__main__":
-    a = variable([1, 2, 3], '1', [0.1, 0.2 ,0.3])
-    b = variable([93, 97, 102], '1', [1.2, 2.4, 4.7])
-    a._addCovariance(b, [2, 3, 4])
-    c = a * b
+    A = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
+    B = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
+    A._addCovariance(B, [2, 3, 4])
+    C = A * B
+    A[1] = variable(2.5, 'L/min', 0.25)
+    C *= A
     
-    print(c)
+    AA = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
+    BB = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
+    AA2 = variable([1, 2.5, 3], 'L/min', [0.1, 0.25, 0.3])
+    AA._addCovariance(BB, [2,3,4])
+    AA2._addCovariance(BB, [2,3,4])
+    CC = AA * BB * AA2
+    
+    print(C.value, CC.value)
+    print(C.uncert, CC.uncert)

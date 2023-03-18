@@ -150,12 +150,15 @@ def solve(func, x, *args, bounds = None,**kwargs):
         res = equation[0] - equation[1]
         res.convert(res._unitObject._SIBaseUnit)
         residuals.append(res)
-
+        
         ## loop over the variables
         for j, xj in enumerate(x):
             ## add the gradient d(residual)/d(xj) to the jacobian matrix
-            if xj in residuals[i].dependsOn.keys():
-                J[i,j] = residuals[i].dependsOn[xj]
+            for dependency in res.dependsOn:
+                if id(xj) == id(dependency[0]):
+                    J[i,j] += dependency[3]
+
+
 
     # inverse the jacobian
     Jinv = np.linalg.inv(J)
