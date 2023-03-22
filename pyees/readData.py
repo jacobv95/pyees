@@ -246,7 +246,7 @@ class _readData():
                         for j in range(self.nCols):
                             if i != j:
                                 cov = [elem[j] for elem in covariance]
-                                vars[i]._addCovariance(vars[j], cov)
+                                vars[i].addCovariance(vars[j], cov)
 
                     for head, var in zip(headers, vars):
                         sheetData._addMeasurement(head, var)
@@ -324,7 +324,6 @@ class _Sheet():
         return sheet
 
     def append(self, other):
-
         if not isinstance(other, _Sheet):
             raise ValueError('You can only append two sheets together')
 
@@ -333,54 +332,15 @@ class _Sheet():
             if elem not in other.measurementNames:
                 raise ValueError('You can only append sheets with the excact same measurements. The names did not match')
 
-        # get the measurements in the same order
-        measA = self.measurements
-        measB = []
-        for elem in self.measurementNames:
-            index = other.measurementNames.index(elem)
-            measB.append(other.measurements[index])
+        for elem in other.measurementNames:
+            if elem not in self.measurementNames:
+                raise ValueError('You can only append sheets with the excact same measurements. The names did not match')
 
-        # test if all units are the same
-        for elemA, elemB in zip(measA, measB):
-            if str(elemA.unit) != str(elemB.unit):
-                raise ValueError('You can only append sheets with the excact same measurements. The units did not match')
-
-        # append the data
-        for i in range(len(self.measurements)):
-            meas_i = measB[i]
-            self.measurements[i]._value = np.append(self.measurements[i].value, meas_i.value)
-            self.measurements[i]._uncert = np.append(self.measurements[i].uncert, meas_i.uncert)
-            if len(self.measurements[i].covariance) == 0:
-                if len(meas_i.covariance) == 0:
-                    # do nothing
-                    pass
-                else:
-                    # create covarinace for self.measurements[i] and fill it with zeros
-                    nData = int(len(self.measurements[i].value) / 2)
-                    for j in range(len(self.measurements)):
-                        if i != j:
-                            self.measurements[i].covariance[self.measurements[j]] = [0] * nData
-
-                    # append the covariance from meas_i
-                    keys = list(self.measurements[i].covariance.keys())
-                    keys_i = list(meas_i.covariance.keys())
-                    for key_i, name in zip(keys_i, other.measurementNames):
-                        index = self.measurementNames.index(name)
-                        self.measurements[i].covariance[keys[index]] = np.append(self.measurements[i].covariance[keys[index]], meas_i.covariance[key_i])
-            else:
-                if len(meas_i.covariance) == 0:
-                    # append zeros to the covariance of self.measurements[i]
-                    nData = int(len(self.measurements[i].value) / 2)
-                    for key in self.measurements[i].covariance.keys():
-                        self.measurements[i].covariance[key] = np.append(self.measurements[i].covariance[key], [0] * nData)
-                else:
-                    # append the covariance of meas_i to the covariance of self.measurements[i]
-                    keys = list(self.measurements[i].covariance.keys())
-                    keys_i = list(meas_i.covariance.keys())
-                    for key_i, name in zip(keys_i, other.measurementNames):
-                        index = self.measurementNames.index(name)
-                        self.measurements[i].covariance[keys[index]] = np.append(self.measurements[i].covariance[keys[index]], meas_i.covariance[key_i])
-
+        # append the measurements from other to self
+        for elem, elemNames in zip(self.measurements, self.measurementNames):
+            index = other.measurementNames.index(elemNames)
+            elem.append(other.measurements[index])    
+        
     def __iter__(self):
         return iter(self.measurements)
 

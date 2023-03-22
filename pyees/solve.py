@@ -193,3 +193,4 @@ if __name__=="__main__":
     x0 = variable(20, 'C')
     t_out = solve(func, x0)
 
+## TODO solve with vectors as inputs

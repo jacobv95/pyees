@@ -1227,7 +1227,7 @@ class test(unittest.TestCase):
     def testCovariance(self):
         a = variable(123, 'L/min', 9.7)
         b = variable(93, 'Pa', 1.2)
-        a._addCovariance(b, 23)
+        a.addCovariance(b, 23, 'L-Pa/min')
         c = a * b
         self.assertEqual(c.value, 123 * 93)
         self.assertTrue(c._unitObject._assertEqual('L-Pa/min'))
@@ -1235,7 +1235,16 @@ class test(unittest.TestCase):
 
         a = variable(123, 'L/min', 9.7)
         b = variable(93, 'Pa', 1.2)
-        a._addCovariance(b, 23)
+        a.addCovariance(b, 23, 'L-Pa/min')
+        a.convert('m3/s')
+        c = a * b
+        self.assertEqual(c.value, 123 * 93 / 1000 / 60)
+        self.assertTrue(c._unitObject._assertEqual('m3-Pa/s'))
+        self.assertEqual(c.uncert, np.sqrt((123 / 1000 / 60 * 1.2)**2 + (93 * 9.7 / 1000 / 60)**2 + 2 * 93 * 123 / 1000 / 60 * 23 / 1000 / 60))
+        
+        a = variable(123, 'L/min', 9.7)
+        b = variable(93, 'Pa', 1.2)
+        a.addCovariance(b, 23, 'm3-Pa/s')
         a.convert('m3/s')
         c = a * b
         self.assertEqual(c.value, 123 * 93 / 1000 / 60)
@@ -1244,7 +1253,7 @@ class test(unittest.TestCase):
         
         a = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
         b = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
-        a._addCovariance(b, [2, 3, 4])
+        a.addCovariance(b, [2, 3, 4], 'L-Pa/min')
         c = a * b
         np.testing.assert_equal(c.value, [1*93, 2*97, 3*102])
         self.assertTrue(c._unitObject._assertEqual('L-Pa/min'))
@@ -1390,14 +1399,14 @@ class test(unittest.TestCase):
         
         A = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
         B = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
-        A._addCovariance(B, [2, 3, 4])
+        A.addCovariance(B, [2, 3, 4], 'L-Pa/min')
         C = A * B
         A[1] = variable(2.5, 'L/min', 0.25)
         C *= A
         
         AA = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
         BB = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
-        AA._addCovariance(BB, [2,3,4])
+        AA.addCovariance(BB, [2,3,4], 'L-Pa/min')
         CC = AA * BB
         AA2 = variable([1, 2.5, 3], 'L/min', [0.1, 0.25, 0.3])
         CC *= AA2
@@ -1406,10 +1415,7 @@ class test(unittest.TestCase):
         self.assertTrue(C._unitObject._assertEqual(CC.unit))
         np.testing.assert_equal(C.uncert, CC.uncert)
 
-        
-        
-          
-           
+              
     def testAppend(self):
         A = variable(12.3, 'L/min', uncert=2.6)
         B = variable(45, 'Pa', 1.2)
@@ -1432,6 +1438,43 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             A.append(B)
         self.assertTrue("'scalarVariable' object has no attribute 'append'" in str(context.exception))
+        
+        a = variable([1, 2, 3], 'm')
+        b = variable([4, 5, 6], 'm')
+        c = variable([10, 11, 12], 'Pa')
+        d = variable([13, 14, 15], 'Pa')
+        b.addCovariance(c, [0.1, 0.2, 0.3], 'm-Pa')
+        a.append(b)
+        c.append(d) 
+        d = a * c
+
+        aa = variable([1, 2, 3, 4, 5, 6], 'm')
+        cc = variable([10, 11, 12, 13, 14, 15], 'Pa')
+        cc.addCovariance(aa, [0, 0, 0, 0.1, 0.2, 0.3], 'm-Pa')
+        dd = aa*cc
+        np.testing.assert_equal(d.value, dd.value)
+        self.assertEqual(d.unit, dd.unit)
+        np.testing.assert_equal(d.uncert, dd.uncert)
+        
+        
+        a = variable([1, 2, 3], 'm')
+        b = variable([4, 5, 6], 'm')
+        c = variable([10, 11, 12], 'Pa')
+        d = variable([13, 14, 15], 'Pa')
+        a.addCovariance(c, [0.1, 0.2, 0.3], 'm-Pa')
+        a.append(b)
+        c.append(d) 
+        d = a * c
+
+        aa = variable([1, 2, 3, 4, 5, 6], 'm')
+        cc = variable([10, 11, 12, 13, 14, 15], 'Pa')
+        cc.addCovariance(aa, [0.1, 0.2, 0.3, 0, 0, 0], 'm-Pa')
+        dd = aa*cc
+        np.testing.assert_equal(d.value, dd.value)
+        self.assertEqual(d.unit, dd.unit)
+        np.testing.assert_equal(d.uncert, dd.uncert)
+        
+        
         
     def testAddBel(self):
         a = variable(11,'dB', 0.1)

@@ -1077,3 +1077,14 @@ class unit():
         self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
         otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
         self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
+
+
+if __name__ == "__main__":
+    a = unit('L/min')
+    b = unit('Pa')
+    
+    c = unit(a * b)
+    
+    print(c)
+    d = unit('m3-Pa/s')
+    print(unit._assertEqualStatic(c._SIBaseUnit, d._SIBaseUnit))
