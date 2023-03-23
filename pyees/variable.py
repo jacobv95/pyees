@@ -94,7 +94,6 @@ class logarithmicVariables:
         return c
    
 class scalarVariable():
-    ## TODO rename the scalarvariable class to "variableElement"
     def __init__(self, value, unitStr, uncert, nDigits) -> None:
         
         self._value = value
@@ -809,7 +808,6 @@ class scalarVariable():
         return id(self)
 
 class arrayVariable(scalarVariable):
-    ## TODO rename the arrayvariable class to "variable"
         
     def __len__(self):
         return len(self._value)
@@ -1115,7 +1113,6 @@ class arrayVariable(scalarVariable):
 
 
 def variable(value, unit = '', uncert = None, nDigits = 3):
-    ## TODO make this a part of the arrayVariable class
     # store the value and the uncertaty
     def evaluateInput(input):
         if input is None:
@@ -1124,8 +1121,6 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
             return input
         else:
             if isinstance(input, list):
-                if len(input) == 1:
-                    return input[0]
                 return np.array(input, dtype=float)
             else:
                 return float(input)
@@ -1153,21 +1148,3 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
-
-if __name__ == "__main__":
-   
-    a1 = variable([1,2,3,4,5], '1')
-    b1 = variable([5,6,7,8,9], '1')
-    a1.addCovariance(b1, [0.025, 0.06, 0.105, 0.16, 0.225])
-    
-    a2 = variable([1,2,3,4,5], '1')
-    b2 = variable([5,6,7,8,9], '1')
-    a2.addCovariance(b2, [0.025, 0.06, 0.105, 0.16, 0.225])
-    
-    a1.append(a2)
-    b1.append(b2)
-    
-    print(a1.covariance[b1][0][6])
-
-    
-## TODO write in the docs, that setitem and append affectivle changes the variable. This influences how covariance and uncertanties are delt with

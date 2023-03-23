@@ -2,13 +2,27 @@ from scipy.optimize import minimize
 import numpy as np
 import warnings
 try:
-    from variable import scalarVariable
+    from variable import scalarVariable, arrayVariable
 except ImportError:
-    from pyees.variable import scalarVariable
+    from pyees.variable import scalarVariable, arrayVariable
 
 
+def solve(func, x, *args, bounds = None, **kwargs):
+    
+    
+    variablesAreArrays = False
+    if isinstance(x, list):
+        variablesAreArrays =  isinstance(x[0], arrayVariable)
+    else:
+        variablesAreArrays =  isinstance(x, arrayVariable)
 
-def solve(func, x, *args, bounds = None,**kwargs):
+    if not variablesAreArrays:
+        return _solve(func, x, *args, bounds = bounds, **kwargs)
+
+    ## TODO solve vector problems
+    raise NotImplementedError()
+
+def _solve(func, x, *args, bounds, **kwargs):
     ## find the number of variables
     isVariableList = isinstance(x,list)
     if not isVariableList: x = [x]
@@ -174,23 +188,13 @@ def solve(func, x, *args, bounds = None,**kwargs):
 
 if __name__=="__main__":
     from variable import variable
-    from prop import prop
+    a = variable([23.7, 12.3], '', [0.1, 0.05])
+    b = variable([943, 793], '', [12.5, 9.4])
+        
+    def func(x):
+        return [a * x, b]
     
-    p = variable(1,'bar', 0.01)
-    c = variable(50,'%')
-    t_in = variable(60,'C', 1.2)
-    phi = variable(120, 'kW', 2.3)
-    flow = variable(350, 'L/min', 9.1)
-    
-    def func(t):
-        t_avg = t_in + (t - t_in) / 2
-        rho = prop('density', 'MEG', P = p, T = t_avg, C = c)
-        cp = prop('specific_heat', 'MEG', P = p, T = t_avg, C = c)
-        phi_calc = rho * cp * flow * (t_in - t)
-        phi_calc.convert('kW')
-        return [phi, phi_calc]
+    x = solve(func, variable([1,1],''), tol = 1e-6)
 
-    x0 = variable(20, 'C')
-    t_out = solve(func, x0)
-
-## TODO solve with vectors as inputs
+    correct = b / a
+    print(x, correct)

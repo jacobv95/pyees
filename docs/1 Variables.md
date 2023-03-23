@@ -61,6 +61,7 @@ numpy.min(a), numpy.min([a,b])
 numpy.max(a), numpy.max([a,b])
 a[0]
 a.len()
+a.append(b)
 ```
 
 
@@ -141,5 +142,40 @@ Here <img src="https://render.githubusercontent.com/render/math?math=\sigma_{AB}
 When using variables from pyees these calculations happen automatically.
 
 
+## array methods
+The arraymehtods such as append, __setitem__, __len__, etc. are only avaible for arrayVariables. These are variables initialized with a list-like-object.
 
+Any arraymethod which alters the variable affectivle creates a new variable. The variable is still the same object, however any other variable sees the variable as a new variable. This requires an example:
+
+```
+## create a variable
+a = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
+
+## use the variable 'a' to create the variable 'b'
+b = a**2
+
+## change the variable a using the __setitem__ method
+a[1] = variable(5,'m',0.5)
+
+## modify 'b' using 'a'
+b *= a
+print(b)
+>> [1.0, 20, 27] +/- [0.2, 4, 6] [m3]
+
+
+## create a new variable 'A1' which is identical to 'a'
+A1 = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
+
+## create a new variable 'A2' which is identical to 'a' after the variable 'a' has been modified using the __setitem__ method
+A2 = variable([1,5,3], 'm', [0.1, 0.5, 0.3])
+
+## use the variable 'A1' and 'A2' to create the variable 'B'
+B = A1**2 * A2
+print(B)
+>> [1.0, 20, 27] +/- [0.2, 4, 6] [m3]
+```
+
+If the variable 'a' had not been treated as a new variable, then the uncertanty of 'b' would have been different from the uncertanty of 'B'. This is because the variable productrule would have to have been used when multiplying 'b' with 'a' again after the __setitem__ method had been used. However, this is handled internally, and the variable 'a' acts as a new variable on the variable 'b' after the __setitem__ method has been used on 'a'.
+
+This is valid for all arraymethods, which alteres a variable
 
