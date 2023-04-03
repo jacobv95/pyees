@@ -366,3 +366,5 @@ class test(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
     
+## TODO test solve with vectors
+## TODO test solve with vectors and bounds

@@ -1,4 +1,4 @@
-from copy import deepcopy
+from copy import copy, deepcopy
 import numpy as np
 try:
     from unit import unit
@@ -819,12 +819,18 @@ class arrayVariable(scalarVariable):
             if len(self) == 1:
                 if index != 0:
                     raise IndexError('Index out of bound')
-                return variable(self.value, self._unitObject, self.uncert)
-            return variable(self.value[index], self._unitObject, self.uncert[index])
+                var = variable(self.value, self._unitObject, self.uncert)
+                var.dependsOn = copy(self.dependsOn)
+                return var
+            var =  variable(self.value[index], self._unitObject, self.uncert[index])
+            var.dependsOn = copy(self.dependsOn)
+            return var
         else:
             val = [self.value[elem]for elem in index]
             unc = [self.uncert[elem]for elem in index]
-            return variable(val, self._unitObject, unc)
+            var = variable(val, self._unitObject, unc)
+            var.dependsOn = copy(self.dependsOn)
+            return var
  
     def __setitem__(self, i, elem):
         if (type(elem) != scalarVariable):
@@ -891,10 +897,7 @@ class arrayVariable(scalarVariable):
        
         for cov in covariancesToAdd:
             var1, var2, cov = cov[0], cov[1], cov[2]           
-            var1._addCovariance(var2, cov)
-       
-        
-            
+            var1._addCovariance(var2, cov)     
        
     def printUncertanty(self, value, uncert):
         # function to print number
@@ -1148,3 +1151,11 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
+
+
+if __name__ == "__main__":
+    
+    a = variable([1,2,3])
+    b = variable([2,3,4])
+    b._addDependents(a, [1,2,3])
+    print(b.dependsOn)
