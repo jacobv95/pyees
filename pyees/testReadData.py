@@ -44,14 +44,14 @@ class test(unittest.TestCase):
         np.testing.assert_array_equal(dat.s1.a.value, [1, 2, 3, 4, 5])
         self.assertEqual(str(dat.s1.a.unit), 'L/min')
         np.testing.assert_array_equal(dat.s1.a.uncert, [0.05, 0.1, 0.15, 0.2, 0.25])
-        np.testing.assert_almost_equal([elem[6] for elem in dat.s1.a.covariance[dat.s1.b]][0], np.array([0.025, 0.06, 0.105, 0.16, 0.225])/1000 / 60 / 1000)
+        np.testing.assert_almost_equal([elemA.covariance[elemB] for elemA, elemB in zip(dat.s1.a, dat.s1.b)], np.array([0.025, 0.06, 0.105, 0.16, 0.225])/1000 / 60 / 1000)
         np.testing.assert_array_equal(dat.s1.b.value, [5, 6, 7, 8, 9])
         self.assertEqual(str(dat.s1.b.unit), 'mA')
         np.testing.assert_array_equal(dat.s1.b.uncert, [0.5, 0.6, 0.7, 0.8, 0.9])
-        np.testing.assert_almost_equal([elem[6] for elem in dat.s1.b.covariance[dat.s1.a]][0], np.array([0.025, 0.06, 0.105, 0.16, 0.225])/1000 / 60 / 1000)
+        np.testing.assert_almost_equal([elemB.covariance[elemA] for elemA, elemB in zip(dat.s1.a, dat.s1.b)], np.array([0.025, 0.06, 0.105, 0.16, 0.225])/1000 / 60 / 1000)
 
         with self.assertRaises(Exception) as context:
-            dat6 = readData('testData/data6.xlsx', 'A-B', 'C-D')
+            readData('testData/data6.xlsx', 'A-B', 'C-D')
         self.assertTrue("The covariances has to be symmetric" in str(context.exception))
 
     def testAppend(self):
@@ -86,9 +86,13 @@ class test(unittest.TestCase):
         np.testing.assert_array_equal(dat2.s1.b.value, [5, 6, 7, 8, 9, 5, 6, 7, 8, 9])
         self.assertEqual(str(dat2.s1.b.unit), 'mA')
         np.testing.assert_array_equal(dat2.s1.b.uncert, [0.5, 0.6, 0.7, 0.8, 0.9, 0.5, 0.6, 0.7, 0.8, 0.9])
-        np.testing.assert_almost_equal([elem[6] for elem in dat2.s1.a.covariance[dat2.s1.b]][0], np.array([0, 0, 0, 0, 0, 0.025, 0.06, 0.105, 0.16, 0.225]) / 1000 / 60 / 1000)
-        np.testing.assert_almost_equal([elem[6] for elem in dat2.s1.b.covariance[dat2.s1.a]][0], np.array([0, 0, 0, 0, 0, 0.025, 0.06, 0.105, 0.16, 0.225]) / 1000 / 60 / 1000)
-
+        cov = np.array([0, 0, 0, 0, 0, 0.025, 0.06, 0.105, 0.16, 0.225]) / 1000 / 60 / 1000
+        for i, (elemA, elemB) in enumerate(zip(dat2.s1.a, dat2.s1.b)):
+            if elemB in elemA.covariance:
+                self.assertAlmostEqual(elemA.covariance[elemB], cov[i])
+                self.assertAlmostEqual(elemB.covariance[elemA], cov[i])
+                
+            
         dat2 = readData('testData/data2.xlsx', 'A-B', 'C-D')
         dat4 = readData('testData/data4.xlsx', 'A-B', 'C-D')
         dat4.s1.append(dat2.s1)
@@ -98,9 +102,12 @@ class test(unittest.TestCase):
         np.testing.assert_array_equal(dat4.s1.b.value, [5, 6, 7, 8, 9, 5, 6, 7, 8, 9])
         self.assertEqual(str(dat4.s1.b.unit), 'mA')
         np.testing.assert_array_equal(dat4.s1.b.uncert, [0.5, 0.6, 0.7, 0.8, 0.9, 0.5, 0.6, 0.7, 0.8, 0.9])
-        np.testing.assert_almost_equal([elem[6] for elem in dat4.s1.a.covariance[dat4.s1.b]][0], np.array([0.025, 0.06, 0.105, 0.16, 0.225, 0, 0, 0, 0, 0]) / 1000 / 60 / 1000)
-        np.testing.assert_almost_equal([elem[6] for elem in dat4.s1.b.covariance[dat4.s1.a]][0], np.array([0.025, 0.06, 0.105, 0.16, 0.225, 0, 0, 0, 0, 0]) / 1000 / 60 / 1000)
-
+        cov = np.array([0.025, 0.06, 0.105, 0.16, 0.225, 0, 0, 0, 0, 0]) / 1000 / 60 / 1000
+        for i, (elemA, elemB) in enumerate(zip(dat4.s1.a, dat4.s1.b)):
+            if elemB in elemA.covariance:
+                self.assertAlmostEqual(elemA.covariance[elemB], cov[i])
+                self.assertAlmostEqual(elemB.covariance[elemA], cov[i])
+       
         dat4_1 = readData('testData/data4.xlsx', 'A-B', 'C-D')
         dat4_2 = readData('testData/data4.xlsx', 'A-B', 'C-D')
         dat4_1.s1.append(dat4_2.s1)
@@ -110,8 +117,8 @@ class test(unittest.TestCase):
         np.testing.assert_array_equal(dat4_1.s1.b.value, [5, 6, 7, 8, 9, 5, 6, 7, 8, 9])
         self.assertEqual(str(dat4_1.s1.b.unit), 'mA')
         np.testing.assert_array_equal(dat4_1.s1.b.uncert, [0.5, 0.6, 0.7, 0.8, 0.9, 0.5, 0.6, 0.7, 0.8, 0.9])
-        np.testing.assert_almost_equal([elem[6] for elem in dat4_1.s1.a.covariance[dat4_1.s1.b]][0], np.array([0.025, 0.06, 0.105, 0.16, 0.225, 0.025, 0.06, 0.105, 0.16, 0.225]) / 1000 / 60 / 6000)
-        np.testing.assert_almost_equal([elem[6] for elem in dat4_1.s1.b.covariance[dat4_1.s1.a]][0], np.array([0.025, 0.06, 0.105, 0.16, 0.225, 0.025, 0.06, 0.105, 0.16, 0.225]) / 1000 / 60 / 6000)
+        np.testing.assert_almost_equal([elemA.covariance[elemB] for elemA, elemB in zip(dat4_1.s1.a, dat4_1.s1.b)], np.array([0.025, 0.06, 0.105, 0.16, 0.225, 0.025, 0.06, 0.105, 0.16, 0.225]) / 1000 / 60 / 6000)
+        np.testing.assert_almost_equal([elemB.covariance[elemA] for elemA, elemB in zip(dat4_1.s1.a, dat4_1.s1.b)], np.array([0.025, 0.06, 0.105, 0.16, 0.225, 0.025, 0.06, 0.105, 0.16, 0.225]) / 1000 / 60 / 6000)
 
     def testIndex(self):
         dat = readData('testData/data1.xlsx', 'A-B')

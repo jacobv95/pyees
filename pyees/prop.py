@@ -153,7 +153,8 @@ def propWaterScalar(property, T,P):
     var = getattr(fluid, property)
     var = variable(var, propertyUnits[property])
     vars, grads = differentials(fluid, property, [T, P])
-    var._addDependents(vars, grads)
+    for v, g in zip(vars, grads):
+        var._addDependent(v,g)
     var._calculateUncertanty()
     
     ## return the variable
@@ -203,7 +204,8 @@ def propMEGScalar(property, T,P,C):
     var = getattr(fluid, property)
     var = variable(var, propertyUnits[property])
     vars, grads = differentialsBrine(fluid, FluidsList.MEG, property, C, [T, P])
-    var._addDependents(vars, grads)
+    for v, g in zip(vars, grads):
+        var._addDependent(v,g)
     var._calculateUncertanty()
     
     ## convert the arguments back in to the original units
@@ -276,8 +278,9 @@ def propHumidAirScalar(property, T,Rh,H = None, P = None):
     ## create a variable from the fluid
     var = getattr(fluid, property)
     var = variable(var, propertyUnits[property])
-    Vars, grads = differentials(fluid, property, vars)
-    var._addDependents(Vars, grads)
+    vars, grads = differentials(fluid, property, vars)
+    for v, g in zip(vars, grads):
+        var._addDependent(v,g)
     var._calculateUncertanty()
     
     return var 
@@ -300,8 +303,3 @@ knownFluids = {
     'air': [propHumidAir]
 }
 
-
-if __name__ == '__main__':
-    rho = prop('density', 'water', P = variable(1,'bar'), T = variable(30,'C'))
-    print(rho)
-    

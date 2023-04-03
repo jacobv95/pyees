@@ -1,4 +1,4 @@
-from copy import copy, deepcopy
+from copy import copy
 import numpy as np
 try:
     from unit import unit
@@ -100,7 +100,7 @@ class scalarVariable():
         self._uncert = uncert
 
         # create a unit object
-        self._unitObject = unitStr if isinstance(unitStr, unit) else unit(unitStr)
+        self._unitObject = copy(unitStr) if isinstance(unitStr, unit) else unit(unitStr)
 
         # number of digits to show
         self.nDigits = nDigits
@@ -203,119 +203,59 @@ class scalarVariable():
         else:
                 return rf'{value} {pm} {uncert}{space}{unitStr}'
 
-    def _addDependents(self, vars, grads):
-        grads = [deepcopy(elem) for elem in grads]
-        selfScaleToSI = self._converterToSI.convert(1, useOffset=False)
-
-        # loop over the variables and their gradients
-        for var, grad in zip(vars, grads):
-            
-            # scale the gradient to SI units. This is necessary if one of the variables are converted after the dependency has been noted
-            grad *= selfScaleToSI / var._converterToSI.convert(1, useOffset=False)
-            
-            if var.dependsOn:
-                # the variable depends on other variables
-                # loop over the dependencies of the variables and add them to the dependencies of self.
-                # this ensures that the product rule is used
-                for vvar, dependencies in var.dependsOn.items():
-                    for dependency in dependencies.values():
-                        self.__addDependency(vvar, dependency[0], dependency[1], dependency[2] * grad)
-            else:    
-                val = var._converterToSI.convert(var.value)
-                unc = var._converterToSI.convert(var.uncert, useOffset = False)
-                self.__addDependency(var, val, unc, grad)
+    def _addDependent(self, var, grad):
+        # scale the gradient to SI units. This is necessary if one of the variables are converted after the dependency has been noted
+        grad *= self._converterToSI.convert(1, useOffset=False) / var._converterToSI.convert(1, useOffset=False)
+        
+        if var.dependsOn:
+            # the variable depends on other variables
+            # loop over the dependencies of the variables and add them to the dependencies of self.
+            # this ensures that the product rule is used
+            for vvar, dependency in var.dependsOn.items():
+                self.__addDependency(vvar, dependency[0], dependency[1], dependency[2] * grad)
+        else:    
+            val = var._converterToSI.convert(var.value)
+            unc = var._converterToSI.convert(var.uncert, useOffset = False)
+            self.__addDependency(var, val, unc, grad)
                  
     def __addDependency(self, var, val, unc, grad):
 
         if not var in self.dependsOn:
-            self.dependsOn[var] = {0 : [val, unc, grad]}
-            return      
-        
-        ## self is already dependent on the variable
-        indexes = [i  for i, elem in enumerate(self.dependsOn[var].values()) if np.array_equal(elem[0], val) and np.array_equal(elem[1], unc) ]
-        if len(indexes) > 1:
-            raise ValueError(f'Any error occured when adding {var} to the dependencies of {self}')
-        if indexes:
-            self.dependsOn[var][indexes[0]][2] += grad
-        else:
-            n = len(list(self.dependsOn[var].keys()))
-            self.dependsOn[var][n] = [val, unc, grad]
-    
-    def addCovariance(self, var, covariance: float, unitStr: str = None):
+            self.dependsOn[var] = [val, unc, grad]
+        else:        
+            self.dependsOn[var][2] += grad
+  
+    def addCovariance(self, var, covariance: float, unitStr: str):
         try:
             float(covariance)
         except TypeError:
             raise ValueError(f'You tried to set the covariance between {self} and {var} with a non scalar value')
         
-        if not unitStr is None:
-            covUnit = unit(unitStr)
-            selfVarUnit = unit(self._unitObject * var._unitObject)
-            if not unit._assertEqualStatic(covUnit._SIBaseUnit, selfVarUnit._SIBaseUnit):
-                raise ValueError(f'The covariance of {covariance} [{unitStr}] does not match the units of {self} and {var}')
-            
-            covariance = covUnit._converterToSI.convert(covariance, useOffset=False)
-        else:
-            covariance = self._converterToSI.convert(covariance, useOffset=False)
-            covariance = var._converterToSI.convert(covariance, useOffset=False)
-            
-        selfVal = self._converterToSI.convert(self.value, useOffset = False)
-        selfUnc = self._converterToSI.convert(self.uncert, useOffset = False)
-        otherVal = var._converterToSI.convert(var.value, useOffset = False)
-        otherUnc = var._converterToSI.convert(var.uncert, useOffset = False)
+        covUnit = unit(unitStr)
+        selfVarUnit = unit(self._unitObject * var._unitObject)
+        if not unit._assertEqualStatic(covUnit._SIBaseUnit, selfVarUnit._SIBaseUnit):
+            raise ValueError(f'The covariance of {covariance} [{unitStr}] does not match the units of {self} and {var}')
         
-        if not var in self.covariance:
-            self.covariance[var] = [[self, selfVal, selfUnc, var, otherVal, otherUnc, covariance]]
-        else:
-            changed = False
-            for i, listOfCovariance in enumerate(self.covariance[var]):
-                if not id(listOfCovariance[0]) == id(self): continue
-                if not id(listOfCovariance[3]) == id(var): continue
-                if not np.array_equal(listOfCovariance[1], selfVal): continue
-                if not np.array_equal(listOfCovariance[2], selfUnc): continue
-                if not np.array_equal(listOfCovariance[4], otherVal): continue
-                if not np.array_equal(listOfCovariance[5], otherUnc): continue
-                
-                self.covariance[var][i][6] = covariance
-                changed = True
-                break
-             
-            if not changed:
-                self.covariance[var] = [[self, selfVal, selfUnc, var, otherVal, otherUnc, covariance]]
-                
-        if not self in var.covariance:
-            var.covariance[self] = [[var, otherVal, otherUnc, self, selfVal, selfUnc, covariance]]
-        else:
-            changed = False
-            for i, listOfCovariance in enumerate(var.covariance[self]):
-                if not id(listOfCovariance[0]) == id(var): continue
-                if not id(listOfCovariance[3]) == id(self): continue
-                if not np.array_equal(listOfCovariance[1], otherVal): continue
-                if not np.array_equal(listOfCovariance[2], otherUnc): continue
-                if not np.array_equal(listOfCovariance[4], selfVal): continue
-                if not np.array_equal(listOfCovariance[5], selfUnc): continue
-                
-                var.covariance[self][i][6] = covariance
-                changed = True
-                break
-            if not changed:
-                var.covariance[self] = [[var, otherVal, otherUnc, self, selfVal, selfUnc, covariance]] 
-
+        covariance = covUnit._converterToSI.convert(covariance, useOffset=False)
+        
+        self.covariance[var] = covariance        
+        var.covariance[self] = covariance
+        
     def _calculateUncertanty(self):
  
         # variance from each measurement
         variance = 0
 
         # loop over each different variable object in the dependency dict
-        for variableDependency in self.dependsOn.values():
+        for dependency in self.dependsOn.values():
             
             ## loop over each "instance" of the variable
             ## an instance occurs when the variable has been changed using methods as __setitem__
             ## this affectively makes the variable a "new" variable in the eyes of other variables
-            for dependency in variableDependency.values():
-                
-                ## add the variance constribution to the variance
-                unc, grad1 = dependency[1], dependency[2]
-                variance += (unc * grad1) ** 2
+    
+            ## add the variance constribution to the variance
+            unc, grad = dependency[1], dependency[2]
+            variance += (unc * grad) ** 2
         
         ## scale the variance back in to the currenct unit
         ## the scaling is raised to a power of 2, as the above line should be
@@ -330,30 +270,9 @@ class scalarVariable():
         for var1 in self.dependsOn.keys():
             for var2 in var1.covariance.keys():
                 if var2 in self.dependsOn:
-                    for covariance in var1.covariance[var2]:
-                        var1Val, var1Unc = covariance[1], covariance[2]
-                        var2Val, var2Unc = covariance[4], covariance[5]
-                        
-                        found1 = False
-                        for elem in self.dependsOn[var1].values():
-                            if np.array_equal(elem[0], var1Val) and np.array_equal(elem[1], var1Unc):
-                                grad1 = elem[2]
-                                found1 = True
-                                break
-                        if not found1:
-                            break
-                        
-                        found2 = False
-                        for elem in self.dependsOn[var2].values():
-                            if np.array_equal(elem[0], var2Val) and np.array_equal(elem[1], var2Unc):
-                                grad2 = elem[2]
-                                found2 = True
-                                break
-                        if not found2:
-                            break
-
-                    
-                        variance += scale**2 * grad1 * grad2 * covariance[6]
+                    grad1 = self.dependsOn[var1][2]
+                    grad2 = self.dependsOn[var2][2]
+                    variance += scale**2 * grad1 * grad2 * var1.covariance[var2]
 
         self._uncert = np.sqrt(variance)
         
@@ -369,8 +288,8 @@ class scalarVariable():
             return logarithmicVariables.__add__(self, other)
 
         # convert self and other to the SI unit system
-        selfUnit = deepcopy(self.unit)
-        otherUnit = deepcopy(other.unit)
+        selfUnit = copy(self.unit)
+        otherUnit = copy(other.unit)
         
         if scaleToSI:
             self.convert(self._unitObject._SIBaseUnit)
@@ -385,13 +304,12 @@ class scalarVariable():
         
 
         # determine the value and gradients
-        val = self._value + other._value
-        grad = [1, 1]
-        vars = [self, other]
+        val = self.value + other.value
         
         # create the new variable
         var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
+        var._addDependent(self, 1)
+        var._addDependent(other, 1)
         var._calculateUncertanty()
 
         # convert all units back to their original units
@@ -423,8 +341,8 @@ class scalarVariable():
             return logarithmicVariables.__sub__(self, other)
 
         # convert self and other to the SI unit system
-        selfUnit = deepcopy(self.unit)
-        otherUnit = deepcopy(other.unit)
+        selfUnit = copy(self.unit)
+        otherUnit = copy(other.unit)
  
         if scaleToSI:
             self.convert(self._unitObject._SIBaseUnit)
@@ -439,11 +357,11 @@ class scalarVariable():
 
         # determine the value and gradients
         val = self.value - other.value
-        grad = [1, -1]
-        vars = [self, other]
+
         # create the new variable
         var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
+        var._addDependent(self, 1)
+        var._addDependent(other, -1)
         var._calculateUncertanty()
 
 
@@ -470,11 +388,9 @@ class scalarVariable():
         val = self.value * other.value
         outputUnit = self._unitObject * other._unitObject
 
-        grad = [other._value, self._value]
-        vars = [self, other]
-
         var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
+        var._addDependent(self, other.value)
+        var._addDependent(other, self.value)
         var._calculateUncertanty()
 
         if var._unitObject._SIBaseUnit == '1' and var._unitObject != '1':
@@ -492,13 +408,13 @@ class scalarVariable():
         if str(other.unit) != '1':
             raise ValueError('The exponent can not have a unit')
 
-        selfUnit = deepcopy(self.unit)
+        selfUnit = copy(self.unit)
         outputUnit, hasToBeScaledToSI = self._unitObject ** other.value
 
         if hasToBeScaledToSI:
             self.convert(self._unitObject._SIBaseUnit)
         
-        val = self._value ** other.value
+        val = self.value ** other.value
 
         def gradSelf(valSelf, valOTher):
             if valSelf != 0:
@@ -510,13 +426,12 @@ class scalarVariable():
                 return valSelf ** valOther * np.log(valSelf)
             return 0
         
-        gradOther = np.vectorize(gradOther, otypes=[float])(self._value, other._value, other._uncert)
-        gradSelf = np.vectorize(gradSelf, otypes=[float])(self._value, other._value)
-        grad = [gradSelf, gradOther]
-        vars = [self, other]
-                
+        gradOther = np.vectorize(gradOther, otypes=[float])(self.value, other.value, other._uncert)
+        gradSelf = np.vectorize(gradSelf, otypes=[float])(self.value, other.value)
+        
         var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
+        var._addDependent(self, gradSelf)
+        var._addDependent(other, gradOther)
         var._calculateUncertanty()
         
         if hasToBeScaledToSI:
@@ -531,14 +446,12 @@ class scalarVariable():
         if not isinstance(other, scalarVariable):
             return self / variable(other)
 
-        val = self._value / other._value
+        val = self.value / other.value
         outputUnit = self._unitObject / other._unitObject
 
-        grad = [1 / other._value, -self._value / (other._value**2)]
-        vars = [self, other]
-        
         var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
+        var._addDependent(self, 1 / other.value)
+        var._addDependent(other, -self.value / (other.value**2))
         var._calculateUncertanty()
 
         if var._unitObject._SIBaseUnit == '1' and var._unitObject != '1':
@@ -550,14 +463,12 @@ class scalarVariable():
         if not isinstance(other, scalarVariable):
             return variable(other) / self
 
-        val = other._value / self._value
+        val = other.value / self.value
         outputUnit = other._unitObject / self._unitObject
-
-        grad = [-other._value / (self._value**2), 1 / (self._value)]
-        vars = [self, other]
-
+        
         var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
+        var._addDependent(self, -other.value / (self.value**2))
+        var._addDependent(other, 1 / (self.value))
         var._calculateUncertanty()
 
         if var._unitObject._SIBaseUnit == '1' and var._unitObject != '1':
@@ -574,11 +485,8 @@ class scalarVariable():
 
         val = np.log(self.value)
 
-        vars = [self]
-        grad = [1 / self.value]
-
         var = variable(val, '1')
-        var._addDependents(vars, grad)
+        var._addDependent(self, 1 / self.value)
         var._calculateUncertanty()
 
         return var
@@ -588,11 +496,8 @@ class scalarVariable():
             raise ValueError('You can only take the base 10 log of a variable if it has no unit')
         val = np.log10(self.value)
 
-        vars = [self]
-        grad = [1 / (self.value * np.log10(self.value))]
-
         var = variable(val, '1')
-        var._addDependents(vars, grad)
+        var._addDependent(self, 1 / (self.value * np.log10(self.value)))
         var._calculateUncertanty()
 
         return var
@@ -610,15 +515,13 @@ class scalarVariable():
         outputUnit = '1'
         if self._unitObject._assertEqual('rad'):
             val = np.sin(self.value)
-            grad = [np.cos(self.value)]
+            grad = np.cos(self.value)
         else:
             val = np.sin(np.pi / 180 * self.value)
-            grad = [np.pi / 180 * np.cos(np.pi / 180 * self.value)]
+            grad = np.pi / 180 * np.cos(np.pi / 180 * self.value)
         
-        vars = [self]
-
         var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
+        var._addDependent(self, grad)
         var._calculateUncertanty()
 
         return var
@@ -630,15 +533,13 @@ class scalarVariable():
         outputUnit = '1'
         if self.unit == 'rad':
             val = np.cos(self.value)
-            grad = [-np.sin(self.value)]
+            grad = -np.sin(self.value)
         else:
             val = np.cos(np.pi / 180 * self.value)
-            grad = [-np.pi / 180 * np.sin(np.pi / 180 * self.value)]
-
-        vars = [self]
-
+            grad = -np.pi / 180 * np.sin(np.pi / 180 * self.value)
+            
         var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
+        var._addDependent(self, grad)
         var._calculateUncertanty()
 
         return var
@@ -650,15 +551,13 @@ class scalarVariable():
         outputUnit = '1'
         if self.unit == 'rad':
             val = np.tan(self.value)
-            grad = [2 / (np.cos(2 * self.value) + 1)]
+            grad = 2 / (np.cos(2 * self.value) + 1)
         else:
             val = np.tan(np.pi / 180 * self.value)
-            grad = [np.pi / (90 * (np.cos(np.pi / 90 * self.value) + 1))]
-
-        vars = [self]
+            grad = np.pi / (90 * (np.cos(np.pi / 90 * self.value) + 1))
 
         var = variable(val, outputUnit)
-        var._addDependents(vars, grad)
+        var._addDependent(self, grad)
         var._calculateUncertanty()
 
         return var
@@ -692,8 +591,8 @@ class scalarVariable():
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
             raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
         
-        selfUnit = deepcopy(self.unit)
-        otherUnit = deepcopy(other.unit)
+        selfUnit = copy(self.unit)
+        otherUnit = copy(other.unit)
         
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
@@ -710,8 +609,8 @@ class scalarVariable():
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
             raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
         
-        selfUnit = deepcopy(self.unit)
-        otherUnit = deepcopy(other.unit)
+        selfUnit = copy(self.unit)
+        otherUnit = copy(other.unit)
         
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
@@ -729,8 +628,8 @@ class scalarVariable():
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
             raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
         
-        selfUnit = deepcopy(self.unit)
-        otherUnit = deepcopy(other.unit)
+        selfUnit = copy(self.unit)
+        otherUnit = copy(other.unit)
         
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
@@ -748,8 +647,8 @@ class scalarVariable():
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
             raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
         
-        selfUnit = deepcopy(self.unit)
-        otherUnit = deepcopy(other.unit)
+        selfUnit = copy(self.unit)
+        otherUnit = copy(other.unit)
         
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
@@ -767,8 +666,8 @@ class scalarVariable():
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
             raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
         
-        selfUnit = deepcopy(self.unit)
-        otherUnit = deepcopy(other.unit)
+        selfUnit = copy(self.unit)
+        otherUnit = copy(other.unit)
         
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
@@ -789,8 +688,8 @@ class scalarVariable():
         if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
             raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
         
-        selfUnit = deepcopy(self.unit)
-        otherUnit = deepcopy(other.unit)
+        selfUnit = copy(self.unit)
+        otherUnit = copy(other.unit)
         
         self.convert(self._unitObject._SIBaseUnit)
         other.convert(self._unitObject._SIBaseUnit)
@@ -807,97 +706,83 @@ class scalarVariable():
     def __hash__(self):
         return id(self)
 
+
+
+## TODO arrayVariables are quite slow. This is due to the units being evaluated for all scalarelements in the arrayVariable
+
 class arrayVariable(scalarVariable):
+    
+    def __init__(self, value, unitStr, uncert, nDigits) -> None:
+        self.nDigits = nDigits
         
+        # create a unit object
+        self._unitObject = unitStr if isinstance(unitStr, unit) else unit(unitStr)
+
+        # value and unit in SI. This is used when determining the gradient in the uncertanty expression
+        self._getConverterToSI()
+        
+        
+        self.scalarVariables = []
+        for v, u in zip(value, uncert):
+            self.scalarVariables.append(scalarVariable(v, self._unitObject, u, nDigits))
+    
+    def _calculateUncertanty(self):
+        for elem in self.scalarVariables:
+            elem._calculateUncertanty()
+    
+    def addCovariance(self, var, grad: np.ndarray, unitStr: str):
+        for elem, varElem, gradElem in zip(self.scalarVariables, var, grad):
+            elem.addCovariance(varElem, gradElem, unitStr)
+    
+    def _addDependent(self, var, grad):
+        isArrayVariable = isinstance(var, arrayVariable)
+        isArrayGradient = isinstance(grad, list) or isinstance(grad, np.ndarray)
+        
+
+        for i, elem in enumerate(self.scalarVariables):
+            v = var[i] if isArrayVariable else var
+            g = grad[i] if isArrayGradient else grad
+            elem._addDependent(v, g)
+                        
     def __len__(self):
-        return len(self._value)
+        return len(self.scalarVariables)
 
     def __getitem__(self, index):
-        if isinstance(index, int) or isinstance(index, slice):
-            if index >= len(self):
-                raise IndexError('Index out of bounds')
-            if len(self) == 1:
-                if index != 0:
-                    raise IndexError('Index out of bound')
-                var = variable(self.value, self._unitObject, self.uncert)
-                var.dependsOn = copy(self.dependsOn)
-                return var
-            var =  variable(self.value[index], self._unitObject, self.uncert[index])
-            var.dependsOn = copy(self.dependsOn)
-            return var
+        
+        if isinstance(index, int):
+            return self.scalarVariables[index]
+        elif isinstance(index, slice):
+            vals = [elem.value for elem in self.scalarVariables[index]]
+            unc = [elem.uncert for elem in self.scalarVariables[index]]
+            return variable(vals, self._unitObject, unc, self.nDigits)
         else:
-            val = [self.value[elem]for elem in index]
-            unc = [self.uncert[elem]for elem in index]
-            var = variable(val, self._unitObject, unc)
-            var.dependsOn = copy(self.dependsOn)
-            return var
+            raise NotImplementedError()
+ 
+    @property
+    def value(self):
+        return np.array([elem.value for elem in self.scalarVariables])       
+ 
+    @property
+    def uncert(self):
+        return np.array([elem.uncert for elem in self.scalarVariables])       
  
     def __setitem__(self, i, elem):
         if (type(elem) != scalarVariable):
             raise ValueError(f'You can only set an element with a scalar variable')
         if (elem.unit != self.unit):
             raise ValueError(f'You can not set an element of {self} with {elem} as they do not have the same unit')
-        self._value[i] = elem.value
-        self._uncert[i] = elem.uncert
+        
+        self.scalarVariables[i] = elem
    
     def append(self, elem):
         if (elem.unit != self.unit):
             raise ValueError(f'You can not set an element of {self} with {elem} as they do not have the same unit')
-        
-        elemValue = elem._converterToSI.convert(elem.value, useOffset = False)
-        elemUncert = elem._converterToSI.convert(elem.uncert, useOffset = False)
-        selfValue = self._converterToSI.convert(self.value, useOffset = False)
-        selfUncert = self._converterToSI.convert(self.uncert, useOffset = False)
-            
-        ## update the value and uncertanty of self
-        self._value = np.append(self._value, elem.value)
-        self._uncert = np.append(self._uncert, elem.uncert)
-        
-        covariancesToAdd = []
-        for key in elem.covariance.keys():      
-            if key in self.covariance.keys():
-                # both self and elem has covariance with key
-                # the covariances has to be merged
-                for i in range(len(self.covariance[key])):
-                    selfCov = self.covariance[key][i][6]
-                    for j in range(len(elem.covariance[key])):
-                        elemCov = elem.covariance[key][j][6]    
-                        if len(selfCov) != len(elemCov): continue
-                        cov = np.array(selfCov) + np.array(elemCov)
-                        covariancesToAdd.append([self, key, cov])
-        
-        variablesWichNeedNewCovariances = []
-        for key in elem.covariance.keys():   
-            if not key in self.covariance.keys():
-                variablesWichNeedNewCovariances.append(key)
-        
-        for var in variablesWichNeedNewCovariances:
-            for item in elem.covariance[var]:
-                if np.array_equal(item[1], elemValue) and np.array_equal(item[2], elemUncert):
-                    cov = item[6]
-                    break
-            if len(cov) != len(self):
-                cov = np.append(0 * elemValue, cov)
-            self._addCovariance(var, cov)    
-            
-        variablesWichNeedNewCovariances = []
-        for key in self.covariance.keys():
-            if not key in elem.covariance:
-                variablesWichNeedNewCovariances.append(key)
 
-        for var in variablesWichNeedNewCovariances:
-            for item in self.covariance[var]:
-                if np.array_equal(item[1], selfValue) and np.array_equal(item[2], selfUncert):
-                    cov = item[6]
-                    break
-            if len(cov) != len(self):
-                cov = np.append(cov, 0 * selfValue)
-
-            self._addCovariance(var, cov)        
-       
-        for cov in covariancesToAdd:
-            var1, var2, cov = cov[0], cov[1], cov[2]           
-            var1._addCovariance(var2, cov)     
+        if isinstance(elem, arrayVariable):
+            for e in elem:
+                self.scalarVariables.append(e)
+        else:
+            self.scalarVariables.append(elem) 
        
     def printUncertanty(self, value, uncert):
         # function to print number
@@ -929,7 +814,7 @@ class arrayVariable(scalarVariable):
             if digitsUncert > 0:
                 value += '.' + ''.join(['0'] * digitsUncert)
 
-        return value, uncert
+        return value, uncert 
     
     def __str__(self, pretty=None) -> str:
         unitStr = self._unitObject.__str__(pretty=pretty)
@@ -959,7 +844,7 @@ class arrayVariable(scalarVariable):
             valStr.append(v)
             uncStr.append(u)
 
-        if all(self._uncert == 0) or all(elem is None for elem in self._uncert):
+        if all(self.uncert == 0) or all(elem is None for elem in self.uncert):
             out = rf''
             out += rf'['
             for i, elem in enumerate(valStr):
@@ -1048,70 +933,12 @@ class arrayVariable(scalarVariable):
     
     def mean(self):
         return sum(self) / len(self)
-
-    def addCovariance(self, var, covariance, unitStr : str = None):
-        if len(var) != len(self) or len(covariance) != len(self):
-            raise ValueError(f'The lengths of {self}, {var}, and {covariance} are not equal')
-
-        self._addCovariance(var, covariance, unitStr)
     
-    def _addCovariance(self, var, covariance, unitStr : str = None):
-        if isinstance(covariance, list):
-            covariance = np.array(covariance)
+    def convert(self, newUnit):
+        self._unitObject.convert(newUnit)
+        for elem in self.scalarVariables:
+            elem.convert(newUnit)
         
-        if not unitStr is None:
-            covUnit = unit(unitStr)
-            selfVarUnit = unit(self._unitObject * var._unitObject)
-            if not unit._assertEqualStatic(covUnit._SIBaseUnit, selfVarUnit._SIBaseUnit):
-                raise ValueError(f'The covariance of {covariance} [{unitStr}] does not match the units of {self} and {var}')    
-            covariance = covUnit._converterToSI.convert(covariance, useOffset=False)
-        else:
-            covariance = self._converterToSI.convert(covariance, useOffset=False)
-            covariance = var._converterToSI.convert(covariance, useOffset=False)
-            
-        selfVal = self._converterToSI.convert(self.value, useOffset = False)
-        selfUnc = self._converterToSI.convert(self.uncert, useOffset = False)
-        otherVal = var._converterToSI.convert(var.value, useOffset = False)
-        otherUnc = var._converterToSI.convert(var.uncert, useOffset = False)
-        
-        if not var in self.covariance:
-            self.covariance[var] = [[self, selfVal, selfUnc, var, otherVal, otherUnc, covariance]]
-        else:
-            changed = False
-            for i, listOfCovariance in enumerate(self.covariance[var]):
-                if not id(listOfCovariance[0]) == id(self): continue
-                if not id(listOfCovariance[3]) == id(var): continue
-                if not np.array_equal(listOfCovariance[1], selfVal): continue
-                if not np.array_equal(listOfCovariance[2], selfUnc): continue
-                if not np.array_equal(listOfCovariance[4], otherVal): continue
-                if not np.array_equal(listOfCovariance[5], otherUnc): continue
-                
-                self.covariance[var][i][6] = covariance
-                changed = True
-                break
-             
-            if not changed:
-                self.covariance[var] = [[self, selfVal, selfUnc, var, otherVal, otherUnc, covariance]]
-                
-        if not self in var.covariance:
-            var.covariance[self] = [[var, otherVal, otherUnc, self, selfVal, selfUnc, covariance]]
-        else:
-            changed = False
-            for i, listOfCovariance in enumerate(var.covariance[self]):
-                if not id(listOfCovariance[0]) == id(var): continue
-                if not id(listOfCovariance[3]) == id(self): continue
-                if not np.array_equal(listOfCovariance[1], otherVal): continue
-                if not np.array_equal(listOfCovariance[2], otherUnc): continue
-                if not np.array_equal(listOfCovariance[4], selfVal): continue
-                if not np.array_equal(listOfCovariance[5], selfUnc): continue
-                
-                var.covariance[self][i][6] = covariance
-                changed = True
-                break
-            if not changed:
-                var.covariance[self] = [[var, otherVal, otherUnc, self, selfVal, selfUnc, covariance]]
-            
-
 
 
 
@@ -1154,8 +981,38 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 
 if __name__ == "__main__":
+            
+    A = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
+    B = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
+    A.addCovariance(B, [2, 3, 4], 'L-Pa/min')
+    C = A * B
+    A[1] = variable(2.5, 'L/min', 0.25)
+    C *= A
     
-    a = variable([1,2,3])
-    b = variable([2,3,4])
-    b._addDependents(a, [1,2,3])
-    print(b.dependsOn)
+    a0 = variable(1, 'L/min', 0.1)
+    b0 = variable(93, 'Pa', 1.2)
+    a0.addCovariance(b0, 2, 'L-Pa/min')
+    c0 = a0 * b0
+    c0 *= a0
+    
+    a1 = variable(2, 'L/min', 0.2)
+    b1 = variable(97, 'Pa', 2.4)
+    a1.addCovariance(b1, 3, 'L-Pa/min')
+    c1 = a1 * b1
+    a11 = variable(2.5, 'L/min', 0.25)
+    c1 *= a11
+    
+    
+    a2 = variable(3, 'L/min', 0.3)
+    b2 = variable(102, 'Pa', 4.7)
+    a2.addCovariance(b2, 4, 'L-Pa/min')
+    c2 = a2 * b2
+    c2 *= a2
+    
+    print(C[0].uncert, c0.uncert)
+    print(C[1].uncert, c1.uncert)
+    print(C[2].uncert, c2.uncert)
+    
+    
+    
+    

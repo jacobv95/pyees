@@ -246,7 +246,7 @@ class _readData():
                         for j in range(self.nCols):
                             if i != j:
                                 cov = [elem[j] for elem in covariance]
-                                vars[i].addCovariance(vars[j], cov)
+                                vars[i].addCovariance(vars[j], cov, str(vars[i]._unitObject * vars[j]._unitObject))
 
                     for head, var in zip(headers, vars):
                         sheetData._addMeasurement(head, var)
@@ -350,3 +350,5 @@ class _Sheet():
 ## TODOread data vælg ark
 ## TODO vælg område for hvert ark seperat
 ## TODO save sheet as new file
+
+

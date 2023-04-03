@@ -10,7 +10,12 @@ except ImportError:
 
 def solve(func, x, *args, bounds = None, **kwargs):
     ## find the number of variables
-    isVariableList = isinstance(x,list)
+    if isinstance(x, arrayVariable):
+        isArrayVariable = True
+        isVariableList = False
+    else:
+        isVariableList = isinstance(x,list)
+        isArrayVariable = False
     if not isVariableList: x = [x]
     
     ## create a wrapper around the function
@@ -150,7 +155,8 @@ def solve(func, x, *args, bounds = None, **kwargs):
         currentIndex = 0
         for i, xi in enumerate(x):
             if isArrayVariables[i]:
-                xi._value = xx[currentIndex : currentIndex + len(xi)]
+                for ii in range(len(xi)):
+                    xi[ii]._value = xx[currentIndex + ii]
                 currentIndex += len(xi)
             else:
                 xi._value = xx[currentIndex]
@@ -200,11 +206,10 @@ def solve(func, x, *args, bounds = None, **kwargs):
 
         if isArrayEquations[i]:
             for elem in res:
-                residuals.append(res)
+                residuals.append(elem)
         else:
             residuals.append(res)
 
-    ## TODO the jacobian matrix is not made properly, when solving vector equations. This is because, variable.__getitem__ does not affect variable.dependsOn
     ## create the jacobian matrix from the residual
     for i, res in enumerate(residuals):
         ## loop over the variables
@@ -212,28 +217,36 @@ def solve(func, x, *args, bounds = None, **kwargs):
         for j, xj in enumerate(x):
             if isArrayVariables[j]:
                 n = len(xj)
+                for jj, xjj in enumerate(xj):
+                    if xjj in res.dependsOn:               
+                        ## add the gradient d(residual)/d(xj) to the jacobian matrix
+                        J[i, currentIndex + jj : currentIndex + jj + 1] += res.dependsOn[xjj][2] 
             else:
                 n = 1
-            ## add the gradient d(residual)/d(xj) to the jacobian matrix
-            if xj in res.dependsOn:
-                for dependency in res.dependsOn[xj].values():
-                    J[i, currentIndex : currentIndex + n] += dependency[2]
+                if xj in res.dependsOn:
+                        ## add the gradient d(residual)/d(xj) to the jacobian matrix
+                        J[i, currentIndex : currentIndex + 1] += res.dependsOn[xj][2]
             currentIndex += n
             
     # inverse the jacobian
-    print('J')
-    print(J)
-    print()
     Jinv = np.linalg.inv(J)
-    print('Jinv')
-    print(Jinv)
-    print()
+
     ## add the residuals and a row of the inverse jacobian to each variable and calculate the uncertanty
     for i, xi in enumerate(x):
-        xi._addDependents(residuals, Jinv[i,:])
+        currentIndex = i
+        if isArrayVariables[i]:
+            for ii, xii in enumerate(xi):
+                for j, rj in enumerate(residuals):
+                    xii._addDependent(rj, Jinv[currentIndex,j])
+                currentIndex+=1
+        else:    
+            for j, rj in enumerate(residuals):
+                xi._addDependent(rj, Jinv[currentIndex,j])
+            currentIndex += 1
         xi._calculateUncertanty()
         
-    if (nVariables == 1 and not isVariableList): x = x[0]
+    
+    if isArrayVariable or (nVariables == 1 and not isVariableList): x = x[0]
     return x
 
 
@@ -242,10 +255,10 @@ if __name__=="__main__":
     from variable import variable
 
     
-    a0 = variable(23.7)
-    a1 = variable(12.3)
-    b0 = variable(943)
-    b1 = variable(793)
+    a0 = variable(23.7, '', 0.1)
+    a1 = variable(12.3, '', 0.05)
+    b0 = variable(943, '', 12.5)
+    b1 = variable(793, '', 9.4)
     def func1(x0, x1):
         eq1 = [a0 * x0, b0]
         eq2 = [a1 * x1, b1]
@@ -253,7 +266,7 @@ if __name__=="__main__":
         return eqs
     
     x = solve(func1, [variable(1), variable(1)], tol = 1e-6)
-    print(*x)
+    print(x[0].uncert, x[1].uncert)
     
     a = variable([23.7, 12.3], '', [0.1, 0.05])
     b = variable([943, 793], '', [12.5, 9.4])    
@@ -264,4 +277,4 @@ if __name__=="__main__":
     x = solve(func, variable([1,1]), tol = 1e-6)
 
     correct = b / a
-    print(*x, correct)
+    print(x[0].uncert, x[1].uncert, correct[0].uncert, correct[1].uncert)
