@@ -220,14 +220,14 @@ def solve(func, x, *args, bounds = None, **kwargs):
                 for jj, xjj in enumerate(xj):
                     if xjj in res.dependsOn:               
                         ## add the gradient d(residual)/d(xj) to the jacobian matrix
-                        J[i, currentIndex + jj : currentIndex + jj + 1] += res.dependsOn[xjj][2] 
+                        J[i, currentIndex + jj : currentIndex + jj + 1] += res.dependsOn[xjj][2]
             else:
                 n = 1
                 if xj in res.dependsOn:
                         ## add the gradient d(residual)/d(xj) to the jacobian matrix
                         J[i, currentIndex : currentIndex + 1] += res.dependsOn[xj][2]
             currentIndex += n
-            
+           
     # inverse the jacobian
     Jinv = np.linalg.inv(J)
 
@@ -235,7 +235,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
     for i, xi in enumerate(x):
         currentIndex = i
         if isArrayVariables[i]:
-            for ii, xii in enumerate(xi):
+            for xii in xi:
                 for j, rj in enumerate(residuals):
                     xii._addDependent(rj, Jinv[currentIndex,j])
                 currentIndex+=1
@@ -260,21 +260,34 @@ if __name__=="__main__":
     b0 = variable(943, '', 12.5)
     b1 = variable(793, '', 9.4)
     def func1(x0, x1):
-        eq1 = [a0 * x0, b0]
-        eq2 = [a1 * x1, b1]
+        eq1 = [a0 * x0**2, b0]
+        eq2 = [a1 * x1**2, b1]
         eqs = [eq1, eq2]
         return eqs
     
+    print('scalar equations')
     x = solve(func1, [variable(1), variable(1)], tol = 1e-6)
-    print(x[0].uncert, x[1].uncert)
+    for elem in x:
+        print(elem.value, elem.uncert)
+    print()
     
     a = variable([23.7, 12.3], '', [0.1, 0.05])
     b = variable([943, 793], '', [12.5, 9.4])    
     def func(x):
-        return [a * x, b]
+        return [a * x**2, b]
 
+    
+    print('correct:')
+    correct = np.sqrt(b / a)
+    for elem in correct:
+        print(elem.value, elem.uncert)
+    print()
  
+ 
+    
     x = solve(func, variable([1,1]), tol = 1e-6)
-
-    correct = b / a
-    print(x[0].uncert, x[1].uncert, correct[0].uncert, correct[1].uncert)
+    
+    print('array equations')
+    for elem in x:
+        print(elem.value, elem.uncert)
+    print()

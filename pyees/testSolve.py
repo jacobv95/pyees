@@ -349,22 +349,23 @@ class test(unittest.TestCase):
         self.assertRelativeDifference(t_out.uncert, 1.217157659256291610, tol)
      
 
-    # def testSolveOneNonlinearEquationWithVectors(self):
-    #     a = variable([23.7, 12.3], '', [0.1, 0.05])
-    #     b = variable([943, 793], '', [12.5, 9.4])
+    def testSolveOneNonlinearEquationWithVectors(self):
+        a = variable([23.7, 12.3], '', [0.1, 0.05])
+        b = variable([943, 793], '', [12.5, 9.4])
         
-    #     def func(x):
-    #         return [a * x**2, b]
+        def func(x):
+            return [a * x**2, b]
         
-    #     x = solve(func, variable([1,1],''), tol = solveTol)
-    #     correct = (b / a)**(1/2)
+        x = solve(func, variable([10, 10],''), tol = solveTol)
+        correct = (b / a)**(1/2)
         
-    #     self.assertRelativeDifference(x.value, correct.value, tol)
-    #     self.assertRelativeDifference(x.uncert, correct.uncert, tol)
+        for i in range(len(x)):
+            self.assertRelativeDifference(x[i].value, correct[i].value, tol)
+            self.assertRelativeDifference(x[i].uncert, correct[i].uncert, tol)
 
 
 if __name__ == '__main__':
     unittest.main()
     
-## TODO test solve with vectors
+
 ## TODO test solve with vectors and bounds

@@ -1374,12 +1374,25 @@ class test(unittest.TestCase):
         b = a**2
         a[1] = variable(5,'m',0.5)
         c = b * a
-        a1 = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
-        a2 = variable([1,5,3], 'm', [0.1, 0.5, 0.3])
-        cc = a1**2 * a2
-        np.testing.assert_equal(c.value, cc.value)
-        self.assertEqual(c.unit, cc.unit)          
-        np.testing.assert_equal(c.uncert, cc.uncert)
+        
+        a0 = variable(1, 'm', 0.1)
+        a1 = variable(2, 'm', 0.2)
+        a2 = variable(3, 'm', 0.3)
+        b0 = a0**2
+        b1 = a1**2
+        b2 = a2**2
+        a1 = variable(5,'m', 0.5)
+        c0 = b0 * a0
+        c1 = b1 * a1
+        c2 = b2 * a2
+        
+        self.assertEqual(c[0].value, c0.value)
+        self.assertEqual(c[1].value, c1.value)
+        self.assertEqual(c[2].value, c2.value)
+        self.assertEqual(c.unit, c0.unit)
+        self.assertEqual(c[0].uncert, c0.uncert)
+        self.assertEqual(c[1].uncert, c1.uncert)
+        self.assertEqual(c[2].uncert, c2.uncert)
         
         
         A = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
@@ -1435,10 +1448,10 @@ class test(unittest.TestCase):
             A_vec.append(B)
         self.assertTrue("You can not set an element of [12, 54, 90, 12] +/- [3, 5, 10, 3] [L/min] with 45 +/- 1 [Pa] as they do not have the same unit" in str(context.exception))
 
-        # A_vec.append(A_vec)
-        # np.testing.assert_equal(A_vec.value, [12.3, 54.3, 91.3, 12.3] * 2)
-        # self.assertEqual(A_vec.unit, 'L/min')
-        # np.testing.assert_equal(A_vec.uncert, [2.6, 5.4, 10.56, 2.6] * 2)
+        A_vec.append(A_vec)
+        np.testing.assert_equal(A_vec.value, [12.3, 54.3, 91.3, 12.3] * 2)
+        self.assertEqual(A_vec.unit, 'L/min')
+        np.testing.assert_equal(A_vec.uncert, [2.6, 5.4, 10.56, 2.6] * 2)
         
         with self.assertRaises(Exception) as context:
             A.append(B)

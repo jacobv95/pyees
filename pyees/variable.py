@@ -212,19 +212,21 @@ class scalarVariable():
             # loop over the dependencies of the variables and add them to the dependencies of self.
             # this ensures that the product rule is used
             for vvar, dependency in var.dependsOn.items():
-                self.__addDependency(vvar, dependency[0], dependency[1], dependency[2] * grad)
+                if not vvar in self.dependsOn:
+                    val = vvar._converterToSI.convert(vvar.value)
+                    unc = vvar._converterToSI.convert(vvar.uncert, useOffset = False)
+                    self.dependsOn[vvar] = [val ,unc, grad * dependency[2]]
+                else:
+                    self.dependsOn[vvar][2] += grad * dependency[2]
         else:    
-            val = var._converterToSI.convert(var.value)
-            unc = var._converterToSI.convert(var.uncert, useOffset = False)
-            self.__addDependency(var, val, unc, grad)
+            if not var in self.dependsOn:
+                val = var._converterToSI.convert(var.value)
+                unc = var._converterToSI.convert(var.uncert, useOffset = False)
+                self.dependsOn[var] = [val, unc, grad]
+            else:
+                self.dependsOn[var][2] += grad
                  
-    def __addDependency(self, var, val, unc, grad):
-
-        if not var in self.dependsOn:
-            self.dependsOn[var] = [val, unc, grad]
-        else:        
-            self.dependsOn[var][2] += grad
-  
+   
     def addCovariance(self, var, covariance: float, unitStr: str):
         try:
             float(covariance)
@@ -723,8 +725,9 @@ class arrayVariable(scalarVariable):
         
         
         self.scalarVariables = []
-        for v, u in zip(value, uncert):
-            self.scalarVariables.append(scalarVariable(v, self._unitObject, u, nDigits))
+        if not value is None:
+            for v, u in zip(value, uncert):
+                self.scalarVariables.append(scalarVariable(v, self._unitObject, u, nDigits))
     
     def _calculateUncertanty(self):
         for elem in self.scalarVariables:
@@ -738,7 +741,6 @@ class arrayVariable(scalarVariable):
         isArrayVariable = isinstance(var, arrayVariable)
         isArrayGradient = isinstance(grad, list) or isinstance(grad, np.ndarray)
         
-
         for i, elem in enumerate(self.scalarVariables):
             v = var[i] if isArrayVariable else var
             g = grad[i] if isArrayGradient else grad
@@ -775,11 +777,13 @@ class arrayVariable(scalarVariable):
         self.scalarVariables[i] = elem
    
     def append(self, elem):
+        
         if (elem.unit != self.unit):
             raise ValueError(f'You can not set an element of {self} with {elem} as they do not have the same unit')
 
         if isinstance(elem, arrayVariable):
-            for e in elem:
+            elemsToAppend = [e for e in elem]
+            for e in elemsToAppend:
                 self.scalarVariables.append(e)
         else:
             self.scalarVariables.append(elem) 
@@ -886,7 +890,10 @@ class arrayVariable(scalarVariable):
             out = [a**other for a in self]
 
         if all([out[0].unit == elem.unit for elem in out]):
-            return variable([elem.value for elem in out], out[0].unit, [elem.uncert for elem in out])
+            oout = arrayVariable(None, out[0].unit, None, out[0].nDigits)
+            for o in out:
+                oout.append(o)
+            return oout
         
         return out
      
@@ -982,37 +989,13 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 if __name__ == "__main__":
             
-    A = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
-    B = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
-    A.addCovariance(B, [2, 3, 4], 'L-Pa/min')
-    C = A * B
-    A[1] = variable(2.5, 'L/min', 0.25)
-    C *= A
+    a = variable([1])
+    b = variable([2])
     
-    a0 = variable(1, 'L/min', 0.1)
-    b0 = variable(93, 'Pa', 1.2)
-    a0.addCovariance(b0, 2, 'L-Pa/min')
-    c0 = a0 * b0
-    c0 *= a0
+    c = a + b
     
-    a1 = variable(2, 'L/min', 0.2)
-    b1 = variable(97, 'Pa', 2.4)
-    a1.addCovariance(b1, 3, 'L-Pa/min')
-    c1 = a1 * b1
-    a11 = variable(2.5, 'L/min', 0.25)
-    c1 *= a11
-    
-    
-    a2 = variable(3, 'L/min', 0.3)
-    b2 = variable(102, 'Pa', 4.7)
-    a2.addCovariance(b2, 4, 'L-Pa/min')
-    c2 = a2 * b2
-    c2 *= a2
-    
-    print(C[0].uncert, c0.uncert)
-    print(C[1].uncert, c1.uncert)
-    print(C[2].uncert, c2.uncert)
-    
-    
-    
-    
+    d = c**2 
+    print(d)
+    for dd in d:
+        for key, item in dd.dependsOn.items():
+            print(key, item) 
