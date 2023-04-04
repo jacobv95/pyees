@@ -989,13 +989,12 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 if __name__ == "__main__":
             
-    a = variable([1])
-    b = variable([2])
+    a = variable([23.7, 12.3], '', [0.1, 0.05])
+    b = variable([943, 793], '', [12.5, 9.4])
     
-    c = a + b
+    def func(x):
+        return [a * x**2, b]
     
-    d = c**2 
-    print(d)
-    for dd in d:
-        for key, item in dd.dependsOn.items():
-            print(key, item) 
+
+    correct = (b / a)**(1/2)
+    print(correct)

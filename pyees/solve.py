@@ -9,6 +9,8 @@ except ImportError:
 
 
 def solve(func, x, *args, bounds = None, **kwargs):
+
+    
     ## find the number of variables
     if isinstance(x, arrayVariable):
         isArrayVariable = True
@@ -27,7 +29,10 @@ def solve(func, x, *args, bounds = None, **kwargs):
         return out
     
     ## determine if the equaions are arrayVariables
-    A = _func(*x)
+    try:
+        A = _func(*x)
+    except Exception:
+        raise ValueError('The function returned an exception when supplied the initial guesses. Somtehing is wrong.')
     isArrayEquations = []
     for elem in A:
         isArrayEquations.append(isinstance(elem[0], arrayVariable))
@@ -108,6 +113,15 @@ def solve(func, x, *args, bounds = None, **kwargs):
                 if (o[0]._unitObject._SIBaseUnit != o[1]._unitObject._SIBaseUnit or o[1]._unitObject._SIBaseUnit != o[2]._unitObject._SIBaseUnit):
                     raise ValueError('The units of the bounds does not match')
                 
+                lower = o[0]
+                var = o[1]
+                upper = o[2]
+                if isinstance(var, arrayVariable):
+                    try:
+                        if not (len(lower) == len(var) == len(upper)):
+                            raise ValueError('Each element of the bounds has to have the same length')
+                    except TypeError:
+                        raise ValueError('Each element of the bounds has to have the same length')
                 doesUnitsOfBoundsMatch.append([o[0].unit == o[1].unit, o[1].unit == o[2].unit])
                 
                 if not o[1] in x:
@@ -128,6 +142,8 @@ def solve(func, x, *args, bounds = None, **kwargs):
     ## define the scalings of each equation. This is only valid if there are more than 1 equaiton
     scales = np.ones(nVariables)
     if nVariables != 1:
+        out = ffunc(*x)
+        currentIndex = 0
         for i,o in enumerate(out):
             for elem in o:
                 elem.convert(elem._unitObject._SIBaseUnit) 
@@ -137,15 +153,28 @@ def solve(func, x, *args, bounds = None, **kwargs):
         bbounds = fbounds(*x)
         for i, bound in enumerate(bbounds):
             bound0, bound1, bound2 = bound
-            if isArrayVariables[i]:
-                bound0 = [bound0] * len(bound1)
-                bound2 = [bound2] * len(bound1)
-            if not bound0 < bound1 < bound2:
-                if not doesUnitsOfBoundsMatch[i]:
-                    for elem in bound:
-                        elem.convert(elem._unitObject._SIBaseUnit)
-                var = np.min([np.max(bound0, bound1), bound2])
-                x[boundIndexes[i]]._value = var.value
+            if isinstance(bound1, arrayVariable):
+                vals = []
+                for b0, b1, b2 in zip(bound0, bound1, bound2):
+                    if not b0 < b1 < b2:
+                        if not doesUnitsOfBoundsMatch[i]:
+                            b0.convert(b0._unitObject._SIBaseUnit)
+                            b1.convert(b1._unitObject._SIBaseUnit)
+                            b2.convert(b2._unitObject._SIBaseUnit)
+                        var = np.min([np.max(b0, b1), b2])
+                        vals.append(var.value)
+                    else:
+                        vals.append(b1.value)
+                for xi, val in zip(x[boundIndexes[i]], vals):
+                    xi._value = val
+            else:
+                if not bound0 < bound1 < bound2:
+                    if not doesUnitsOfBoundsMatch[i]:
+                        bound0.convert(bound0._unitObject._SIBaseUnit)
+                        bound1.convert(bound0._unitObject._SIBaseUnit)
+                        bound2.convert(bound0._unitObject._SIBaseUnit)
+                    var = np.min([np.max(bound0, bound1), bound2])
+                    x[boundIndexes[i]]._value = var.value
                     
     
     ## define the minimization problem
@@ -248,46 +277,3 @@ def solve(func, x, *args, bounds = None, **kwargs):
     
     if isArrayVariable or (nVariables == 1 and not isVariableList): x = x[0]
     return x
-
-
-
-if __name__=="__main__":
-    from variable import variable
-
-    
-    a0 = variable(23.7, '', 0.1)
-    a1 = variable(12.3, '', 0.05)
-    b0 = variable(943, '', 12.5)
-    b1 = variable(793, '', 9.4)
-    def func1(x0, x1):
-        eq1 = [a0 * x0**2, b0]
-        eq2 = [a1 * x1**2, b1]
-        eqs = [eq1, eq2]
-        return eqs
-    
-    print('scalar equations')
-    x = solve(func1, [variable(1), variable(1)], tol = 1e-6)
-    for elem in x:
-        print(elem.value, elem.uncert)
-    print()
-    
-    a = variable([23.7, 12.3], '', [0.1, 0.05])
-    b = variable([943, 793], '', [12.5, 9.4])    
-    def func(x):
-        return [a * x**2, b]
-
-    
-    print('correct:')
-    correct = np.sqrt(b / a)
-    for elem in correct:
-        print(elem.value, elem.uncert)
-    print()
- 
- 
-    
-    x = solve(func, variable([1,1]), tol = 1e-6)
-    
-    print('array equations')
-    for elem in x:
-        print(elem.value, elem.uncert)
-    print()
