@@ -249,12 +249,12 @@ def solve(func, x, *args, bounds = None, **kwargs):
                 for jj, xjj in enumerate(xj):
                     if xjj in res.dependsOn:               
                         ## add the gradient d(residual)/d(xj) to the jacobian matrix
-                        J[i, currentIndex + jj : currentIndex + jj + 1] += res.dependsOn[xjj][2]
+                        J[i, currentIndex + jj : currentIndex + jj + 1] += res.dependsOn[xjj][1]
             else:
                 n = 1
                 if xj in res.dependsOn:
                         ## add the gradient d(residual)/d(xj) to the jacobian matrix
-                        J[i, currentIndex : currentIndex + 1] += res.dependsOn[xj][2]
+                        J[i, currentIndex : currentIndex + 1] += res.dependsOn[xj][1]
             currentIndex += n
            
     # inverse the jacobian
@@ -277,3 +277,6 @@ def solve(func, x, *args, bounds = None, **kwargs):
     
     if isArrayVariable or (nVariables == 1 and not isVariableList): x = x[0]
     return x
+
+
+## TODO you can iterate through scalarVariables - use this to make the code easier to read

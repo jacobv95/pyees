@@ -94,26 +94,24 @@ class logarithmicVariables:
         return c
    
 class scalarVariable():
-    def __init__(self, value, unitStr, uncert, nDigits) -> None:
+    def __init__(self, value, unitObject : str | unit, uncert, nDigits) -> None:
         
         self._value = value
         self._uncert = uncert
 
         # create a unit object
-        self._unitObject = copy(unitStr) if isinstance(unitStr, unit) else unit(unitStr)
+        self._unitObject = unitObject if isinstance(unitObject, unit) else unit(unitObject)
 
         # number of digits to show
         self.nDigits = nDigits
-
-        # value and unit in SI. This is used when determining the gradient in the uncertanty expression
-        self._getConverterToSI()
 
         # uncertanty
         self.dependsOn = {}
         self.covariance = {}
 
-    def _getConverterToSI(self):
-        self._converterToSI = self._unitObject._converterToSI
+    @property
+    def _converterToSI(self):
+        return self._unitObject._converterToSI
 
     @property
     def value(self):
@@ -132,9 +130,6 @@ class scalarVariable():
         self._value = converter.convert(self._value, useOffset=not self._unitObject.isCombinationUnit())
         self._uncert = converter.convert(self._uncert, useOffset=False)
         self._unitObject.convert(newUnit)
-
-        # update the converter to SI
-        self._getConverterToSI()
  
     def printUncertanty(self, value, uncert):
         # function to print number
@@ -213,19 +208,28 @@ class scalarVariable():
             # this ensures that the product rule is used
             for vvar, dependency in var.dependsOn.items():
                 if not vvar in self.dependsOn:
-                    val = vvar._converterToSI.convert(vvar.value)
                     unc = vvar._converterToSI.convert(vvar.uncert, useOffset = False)
-                    self.dependsOn[vvar] = [val ,unc, grad * dependency[2]]
+                    self.dependsOn[vvar] = [unc, grad * dependency[1]]
                 else:
-                    self.dependsOn[vvar][2] += grad * dependency[2]
+                    self.dependsOn[vvar][1] += grad * dependency[1]
         else:    
+            ## the variable does not depend on other variables
+            ## add the variable to the dependencies of self
             if not var in self.dependsOn:
-                val = var._converterToSI.convert(var.value)
                 unc = var._converterToSI.convert(var.uncert, useOffset = False)
-                self.dependsOn[var] = [val, unc, grad]
+                self.dependsOn[var] = [unc, grad]
             else:
-                self.dependsOn[var][2] += grad
-                 
+                self.dependsOn[var][1] += grad
+
+    def __iter__(self):
+        self.n = 0
+        return self
+
+    def __next__(self):
+        if self.n == 0:
+            self.n += 1
+            return self
+        raise StopIteration           
    
     def addCovariance(self, var, covariance: float, unitStr: str):
         try:
@@ -256,7 +260,7 @@ class scalarVariable():
             ## this affectively makes the variable a "new" variable in the eyes of other variables
     
             ## add the variance constribution to the variance
-            unc, grad = dependency[1], dependency[2]
+            unc, grad = dependency[0], dependency[1]
             variance += (unc * grad) ** 2
         
         ## scale the variance back in to the currenct unit
@@ -272,8 +276,8 @@ class scalarVariable():
         for var1 in self.dependsOn.keys():
             for var2 in var1.covariance.keys():
                 if var2 in self.dependsOn:
-                    grad1 = self.dependsOn[var1][2]
-                    grad2 = self.dependsOn[var2][2]
+                    grad1 = self.dependsOn[var1][1]
+                    grad2 = self.dependsOn[var2][1]
                     variance += scale**2 * grad1 * grad2 * var1.covariance[var2]
 
         self._uncert = np.sqrt(variance)
@@ -709,20 +713,13 @@ class scalarVariable():
         return id(self)
 
 
-
-## TODO arrayVariables are quite slow. This is due to the units being evaluated for all scalarelements in the arrayVariable
-
 class arrayVariable(scalarVariable):
     
     def __init__(self, value, unitStr, uncert, nDigits) -> None:
         self.nDigits = nDigits
         
         # create a unit object
-        self._unitObject = unitStr if isinstance(unitStr, unit) else unit(unitStr)
-
-        # value and unit in SI. This is used when determining the gradient in the uncertanty expression
-        self._getConverterToSI()
-        
+        self._unitObject = unitStr if isinstance(unitStr, unit) else unit(unitStr)        
         
         self.scalarVariables = []
         if not value is None:
@@ -942,12 +939,23 @@ class arrayVariable(scalarVariable):
         return sum(self) / len(self)
     
     def convert(self, newUnit):
-        self._unitObject.convert(newUnit)
+        converter = self._unitObject.getConverter(newUnit)
         for elem in self.scalarVariables:
-            elem.convert(newUnit)
-        
+            elem._value = converter.convert(elem._value, useOffset=not self._unitObject.isCombinationUnit())
+            elem._uncert = converter.convert(elem._uncert, useOffset=False)
+        self._unitObject.convert(newUnit)
 
+    def __iter__(self):
+        self.n = 0
+        return self
 
+    def __next__(self):
+        if self.n < len(self):
+            out = self.scalarVariables[self.n]
+            self.n += 1
+            return out
+
+        raise StopIteration
 
 def variable(value, unit = '', uncert = None, nDigits = 3):
     # store the value and the uncertaty
@@ -986,15 +994,4 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return scalarVariable(value, unit, uncert, nDigits)
 
 
-
-if __name__ == "__main__":
-            
-    a = variable([23.7, 12.3], '', [0.1, 0.05])
-    b = variable([943, 793], '', [12.5, 9.4])
     
-    def func(x):
-        return [a * x**2, b]
-    
-
-    correct = (b / a)**(1/2)
-    print(correct)

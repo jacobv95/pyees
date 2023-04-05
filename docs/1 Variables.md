@@ -141,41 +141,94 @@ Here <img src="https://render.githubusercontent.com/render/math?math=\sigma_{AB}
 
 When using variables from pyees these calculations happen automatically.
 
+## scalar variables vs array variables
+The return type is either "scalarVariable" or "arrayVariable" when initializing a variable. This depends on the supplied value is a list-like object or not. The arrayVariable is basically a list which holds scalarVariables. 
 
-## array methods
-The arraymehtods such as append, __setitem__, __len__, etc. are only avaible for arrayVariables. These are variables initialized with a list-like-object.
+The array variable also includes some array methods:
+ - __setitem__
+ - __len__
+ - __getitem__
 
-Any arraymethod which alters the variable affectivle creates a new variable. The variable is still the same object, however any other variable sees the variable as a new variable. This requires an example:
+It should be noted, that the method __setitem__ changes some of the scalarVariables in the arrayVariable. This will have consequences for uncertanty propagations.
 
+
+Three methods are defined which returns the same output. These three methods are created in order to show how changing a scalarVariable in an arrayVariable will affect the uncertanty propagation.
+
+``` 
+def arrayMethod():
+    ## create a variable
+    a = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
+
+    ## use the variable 'a' to create the variable 'b'
+    b = a**2
+
+    ## change the variable a using the __setitem__ method
+    a[1] = variable(5,'m',0.5)
+
+    ## modify 'b' using 'a'
+    b *= a
+    return b.value, b.uncert
+
+
+
+def scalarMethod1():
+    ## Lets calculate each term on by one using scalarVariables
+    a0 = variable(1,'m', 0.1)
+    a1 = variable(2,'m', 0.2)
+    a2 = variable(3,'m', 0.3)
+
+    ## use the variablea a0, a1 and a2 to create the variables b0, b1 and b2
+    b0 = a0**2
+    b1 = a1**2
+    b2 = a2**2
+
+    ## change the variable a1
+    a1 = variable(5, 'm', 0.5)
+
+    ## modify b0, b1 and b2 using a0, a1 and a2
+    b0 *= a0
+    b1 *= a1
+    b2 *= a2
+
+    ## return values of b0, b1 and b2 wrapped in a numpy array
+    ## this makes comparing the result from the arrayVariable-method and the scalarVariable-method easy
+    values = np.array([elem.value for elem in [b0,b1,b2]])
+    uncerts = np.array([elem.uncert for elem in [b0,b1,b2]])
+    return values, uncerts
+
+
+def scalarMethod2():
+    ## lets calculate each term in a slightly faster way
+    ## as the scalarVariables a0 and a2 are not overwritten, then b0 and b2 is simply a0**3 and b0**3
+    ## furthermore, we will not overwrite a1 but rather create two seperate variables
+    a0 = variable(1,'m', 0.1)
+    a1_1 = variable(2,'m', 0.2)
+    a1_2 = variable(5, 'm', 0.5)
+    a2 = variable(3,'m', 0.3)
+
+    b0 = a0**3
+    b1 = a1_1**2 * a1_2
+    b2 = a2**3
+
+    ## return values of b0, b1 and b2 wrapped in a numpy array
+    ## this makes comparing the result from the arrayVariable-method and the scalarVariable-method easy
+    values = np.array([elem.value for elem in [b0,b1,b2]])
+    uncerts = np.array([elem.uncert for elem in [b0,b1,b2]])
+    return values, uncerts
+
+
+
+## run and compare the three methods
+print(arrayMethod())
+>> (array([ 1., 20., 27.]), array([0.3       , 4.47213595, 8.1       ]))
+
+print(scalarMethod1())
+>> (array([ 1., 20., 27.]), array([0.3       , 4.47213595, 8.1       ]))
+
+print(scalarMethod2())
+>> (array([ 1., 20., 27.]), array([0.3       , 4.47213595, 8.1       ]))
+
+## All methods return the same result
 ```
-## create a variable
-a = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
 
-## use the variable 'a' to create the variable 'b'
-b = a**2
-
-## change the variable a using the __setitem__ method
-a[1] = variable(5,'m',0.5)
-
-## modify 'b' using 'a'
-b *= a
-print(b)
->> [1.0, 20, 27] +/- [0.2, 4, 6] [m3]
-
-
-## create a new variable 'A1' which is identical to 'a'
-A1 = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
-
-## create a new variable 'A2' which is identical to 'a' after the variable 'a' has been modified using the __setitem__ method
-A2 = variable([1,5,3], 'm', [0.1, 0.5, 0.3])
-
-## use the variable 'A1' and 'A2' to create the variable 'B'
-B = A1**2 * A2
-print(B)
->> [1.0, 20, 27] +/- [0.2, 4, 6] [m3]
-```
-
-If the variable 'a' had not been treated as a new variable, then the uncertanty of 'b' would have been different from the uncertanty of 'B'. This is because the variable productrule would have to have been used when multiplying 'b' with 'a' again after the __setitem__ method had been used. However, this is handled internally, and the variable 'a' acts as a new variable on the variable 'b' after the __setitem__ method has been used on 'a'.
-
-This is valid for all arraymethods, which alteres a variable
 
