@@ -361,8 +361,7 @@ class test(unittest.TestCase):
             self.assertRelativeDifference(x[i].value, correct[i].value, tol)
             self.assertRelativeDifference(x[i].uncert, correct[i].uncert, tol)
 
-
-    def testSolveOneNonlinearEquationWithVectorsWithBounds(self):
+    def testSolveOneNonlinearEquationWithVectorsWithBounds1(self):
         a = variable([23.7, 12.3], '', [0.1, 0.05])
         b = variable([943, 793], '', [12.5, 9.4])
         
@@ -383,7 +382,29 @@ class test(unittest.TestCase):
         for i in range(len(x)):
             self.assertRelativeDifference(x[i].value, correct[i].value, tol)
 
-    def testBoundInputs(self):
+    def testSolveOneNonlinearEquationWithVectorsWithBounds2(self):
+        a = variable([23.7, 12.3], '', [0.1, 0.05])
+        b = variable([943, 793], '', [12.5, 9.4])
+        
+        def func(x):
+            return [a * x**2, b]
+        
+        lower = variable([10,10])
+        upper = variable([np.inf, np.inf])
+        bounds = [lower, upper]
+            
+        x = solve(func, variable([20, 20],''), tol = solveTol, bounds=bounds)
+        correct = (b / a)**(1/2)
+        
+        for c, l in zip(correct, lower):
+            if c < l:
+                c._value = l.value
+        
+        for i in range(len(x)):
+            self.assertRelativeDifference(x[i].value, correct[i].value, tol)
+
+
+    def testCallableBoundInputs(self):
         a = variable([23.7, 12.3], '', [0.1, 0.05])
         b = variable([943, 793], '', [12.5, 9.4])
         
@@ -397,7 +418,7 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             solve(func, variable([20, 20],''), tol = solveTol, bounds=bounds)
         self.assertTrue("The units of the bounds does not match" in str(context.exception))
-                
+                              
         lower = variable([10])
         def bounds(x):
             return [lower, x, upper]
@@ -444,6 +465,64 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             solve(func, variable(20,''), tol = solveTol, bounds=bounds)
         self.assertTrue("You supplied 2 equations but 1 variables. The number of equations and the vairables has to match" in str(context.exception))
+
+    def testNonCallableBoundInputs(self):
+        a = variable([23.7, 12.3], '', [0.1, 0.05])
+        b = variable([943, 793], '', [12.5, 9.4])
+        
+        def func(x):
+            return [a * x**2, b]
+        
+        upper = variable([np.inf, np.inf])
+        lower = variable([10,10],'m')
+        bounds = [lower,upper]
+        with self.assertRaises(Exception) as context:
+            solve(func, variable([20, 20],''), tol = solveTol, bounds=bounds)
+        self.assertTrue("The units of the bounds does not match" in str(context.exception))
+                              
+        lower = variable([10])
+        bounds = [lower,upper]  
+        with self.assertRaises(Exception) as context:
+            solve(func, variable([20, 20],''), tol = solveTol, bounds=bounds)
+        self.assertTrue("Each element of the bounds has to have the same length" in str(context.exception))
+        
+        lower = variable(10)
+        bounds = [lower,upper]  
+        with self.assertRaises(Exception) as context:
+            solve(func, variable([20, 20],''), tol = solveTol, bounds=bounds)
+        self.assertTrue("Each element of the bounds has to have the same length" in str(context.exception))
+   
+    
+        lower = variable([-np.inf, -np.inf])
+        upper = variable([10,10],'m')
+        bounds = [lower,upper]  
+        with self.assertRaises(Exception) as context:
+            solve(func, variable([20, 20],''), tol = solveTol, bounds=bounds)
+        self.assertTrue("The units of the bounds does not match" in str(context.exception))
+                
+        upper = variable([10])
+        bounds = [lower,upper]  
+        with self.assertRaises(Exception) as context:
+            solve(func, variable([20, 20],''), tol = solveTol, bounds=bounds)
+        self.assertTrue("Each element of the bounds has to have the same length" in str(context.exception))
+        
+        upper = variable(10)
+        bounds = [lower,upper]  
+        with self.assertRaises(Exception) as context:
+            solve(func, variable([20, 20],''), tol = solveTol, bounds=bounds)
+        self.assertTrue("Each element of the bounds has to have the same length" in str(context.exception))
+        
+        lower = variable([-np.inf, -np.inf])
+        upper = variable([np.inf, np.inf])
+        bounds = [lower,upper]  
+        with self.assertRaises(Exception) as context:
+            solve(func, variable([20],''), tol = solveTol, bounds=bounds)
+        self.assertTrue("The function returned an exception when supplied the initial guesses. Somtehing is wrong." in str(context.exception))
+        
+        with self.assertRaises(Exception) as context:
+            solve(func, variable(20,''), tol = solveTol, bounds=bounds)
+        self.assertTrue("You supplied 2 equations but 1 variables. The number of equations and the vairables has to match" in str(context.exception))
+
 
 if __name__ == '__main__':
     unittest.main()

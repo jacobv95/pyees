@@ -10,8 +10,8 @@ except ImportError:
 
 def solve(func, x, *args, bounds = None, **kwargs):
 
-    
-    ## find the number of variables
+    ## determine if the input is a list and if the input is an arrayVariable
+    ## this will affect the return type of solve
     if isinstance(x, arrayVariable):
         isArrayVariable = True
         isVariableList = False
@@ -28,28 +28,20 @@ def solve(func, x, *args, bounds = None, **kwargs):
         if not isinstance(out[0], list): out = [out]        
         return out
     
-    ## determine if the equaions are arrayVariables
+    ## determine if the funciton is properly defined 
     try:
-        A = _func(*x)
+        _func(*x)
     except Exception:
         raise ValueError('The function returned an exception when supplied the initial guesses. Somtehing is wrong.')
-    isArrayEquations = []
-    for elem in A:
-        isArrayEquations.append(isinstance(elem[0], arrayVariable))
-    
-    
+
     ## create another wrapper around the funciton, which will flatten the equations
     def ffunc(*x):
-        out = _func(*x)
-        oout = []
-        for elem, isArrayEquation in zip(out, isArrayEquations):
-            if not isArrayEquation:
-                oout.append(elem)
-            else:
-                side1, side2 = elem
-                for sside1, sside2 in zip(side1, side2):
-                    oout.append([sside1, sside2])
-        return oout
+        out = []
+        for equation in _func(*x):
+            side1, side2 = equation
+            for elemSide1, elemSide2 in zip(side1, side2):
+                out.append([elemSide1, elemSide2])
+        return out
     
     ## test if the right number of variables were supplied for the function
     try:
@@ -62,8 +54,8 @@ def solve(func, x, *args, bounds = None, **kwargs):
     for o in out:
         if (len(o) != 2):
             raise ValueError('Each equation has to be a list of 2 elements')
-        for elem in o:
-            if not isinstance(elem, scalarVariable):
+        for bound in o:
+            if not isinstance(bound, scalarVariable):
                 raise ValueError('Each side of each equation has to be a variable')        
         ## test if the units match
         if (o[0]._unitObject._SIBaseUnit != o[1]._unitObject._SIBaseUnit):
@@ -72,15 +64,10 @@ def solve(func, x, *args, bounds = None, **kwargs):
     
     
     ## determine the number of variables and if the variables are arrayVariables
-    isArrayVariables = []
     nVariables = 0
-    for elem in x:
-        if isinstance(elem, arrayVariable):
-            nVariables += len(elem)
-            isArrayVariables.append(True)
-        else:
-            nVariables += 1
-            isArrayVariables.append(False)
+    for xi in x:
+        for bound in xi:
+            nVariables += 1 
 
 
     ## check the number of equations and variables
@@ -93,10 +80,10 @@ def solve(func, x, *args, bounds = None, **kwargs):
         return out
 
     # check the bounds
-    doesUnitsOfBoundsMatch = []
-    boundIndexes = []
     if not bounds is None:
         if callable(bounds):
+            ## the bounds are callable
+            
             ## test if the right number of variables were supplied for the function
             try:
                 out = fbounds(*x)
@@ -104,39 +91,65 @@ def solve(func, x, *args, bounds = None, **kwargs):
                 raise ValueError('The bounds takes the wrong number of variables')
             
             for o in out:
+                ## check the length of the bound
                 if len(o) != 3:
                     raise ValueError('Each bound has to have 3 elements')
-                for elem in o:
-                    if not isinstance(elem, scalarVariable):
+                
+                ## check that all elements of the bounds are variables
+                for bound in o:
+                    if not isinstance(bound, scalarVariable):
                         raise ValueError('Each side of the bounds has to be a variable')         
-                ## check the bounds
+                
+                ## check the units bounds
                 if (o[0]._unitObject._SIBaseUnit != o[1]._unitObject._SIBaseUnit or o[1]._unitObject._SIBaseUnit != o[2]._unitObject._SIBaseUnit):
                     raise ValueError('The units of the bounds does not match')
                 
-                lower = o[0]
-                var = o[1]
-                upper = o[2]
-                if isinstance(var, arrayVariable):
-                    try:
-                        if not (len(lower) == len(var) == len(upper)):
-                            raise ValueError('Each element of the bounds has to have the same length')
-                    except TypeError:
-                        raise ValueError('Each element of the bounds has to have the same length')
-                doesUnitsOfBoundsMatch.append([o[0].unit == o[1].unit, o[1].unit == o[2].unit])
+                ## chekc that all elements in the bounds have the same length
+                try:
+                    for _,_,_ in zip(o[0], o[1], o[2], strict = True): pass
+                except ValueError:
+                    raise ValueError('Each element of the bounds has to have the same length')
                 
+                ## check that the middle element is a part of the variables
                 if not o[1] in x:
                     raise ValueError('The middle element in each bound has to be one of the variable.')
                 
-                boundIndexes.append(x.index(o[1]))            
+                ## then covert the upper and lower to the unit of the variable
+                o[0].convert(o[1].unit)
+                o[2].convert(o[1].unit)
+                
+                     
         else:
+            ## the bounds are not callable
+            
             if not isinstance(bounds[0],list): bounds = [bounds]
-            bbounds = []
-            for i, elem in enumerate(bounds):
-                for e in elem:
-                    if not isinstance(e, scalarVariable):
+            
+            ## create a matrix to hold the bounds
+            bbounds = np.zeros([nVariables,2])
+            
+            currentIndex = 0
+            for i, bound in enumerate(bounds):
+                
+                for elem in bound:
+                    ## check that the elements are variables
+                    if not isinstance(elem, scalarVariable):
                         raise ValueError('All bounds has to be variables')
-                    e.convert(x[i].unit)
-                bbounds.append([e.value for e in elem])
+                     ## check the units bounds
+                    if (elem._unitObject._SIBaseUnit != x[i]._unitObject._SIBaseUnit):
+                        raise ValueError('The units of the bounds does not match with the corresponding variable')
+                    
+                    ## convert the bounds to the units of the corresponding variable
+                    elem.convert(x[i].unit)
+                
+                ## collect the bounds in bbounds
+                try:
+                    for low, up, _ in zip(bound[0], bound[1], x[i], strict = True):
+                        bbounds[currentIndex,:] = [low.value, up.value]
+                        currentIndex+=1
+                except ValueError:
+                    raise ValueError('Each element of the bounds has to have the same length as the corresponding variable')
+                
+            ## update the object "bound"
             bounds = bbounds
 
     ## define the scalings of each equation. This is only valid if there are more than 1 equaiton
@@ -145,50 +158,30 @@ def solve(func, x, *args, bounds = None, **kwargs):
         out = ffunc(*x)
         currentIndex = 0
         for i,o in enumerate(out):
-            for elem in o:
-                elem.convert(elem._unitObject._SIBaseUnit) 
+            for bound in o:
+                bound.convert(bound._unitObject._SIBaseUnit) 
             scales[i] = 1/(o[0].value - o[1].value)**2
     
+    
+    ## method to keep the variables within the bounda
+    ## the method will be given a single input during the minimzation. 
+    ## Therefore a single input argument is defined which is never used
     def keepVariablesFeasible(_ = None):
         bbounds = fbounds(*x)
-        for i, bound in enumerate(bbounds):
-            bound0, bound1, bound2 = bound
-            if isinstance(bound1, arrayVariable):
-                vals = []
-                for b0, b1, b2 in zip(bound0, bound1, bound2):
-                    if not b0 < b1 < b2:
-                        if not doesUnitsOfBoundsMatch[i]:
-                            b0.convert(b0._unitObject._SIBaseUnit)
-                            b1.convert(b1._unitObject._SIBaseUnit)
-                            b2.convert(b2._unitObject._SIBaseUnit)
-                        var = np.min([np.max(b0, b1), b2])
-                        vals.append(var.value)
-                    else:
-                        vals.append(b1.value)
-                for xi, val in zip(x[boundIndexes[i]], vals):
-                    xi._value = val
-            else:
-                if not bound0 < bound1 < bound2:
-                    if not doesUnitsOfBoundsMatch[i]:
-                        bound0.convert(bound0._unitObject._SIBaseUnit)
-                        bound1.convert(bound0._unitObject._SIBaseUnit)
-                        bound2.convert(bound0._unitObject._SIBaseUnit)
-                    var = np.min([np.max(bound0, bound1), bound2])
-                    x[boundIndexes[i]]._value = var.value
-                    
+        for bound in bbounds:
+            for b0, b1, b2 in zip(*bound):
+                if not b0 < b1 < b2:
+                    b1._value = np.min([np.max([b0.value, b1.value]), b2.value])
+
     
     ## define the minimization problem
     def minimizationProblem(xx):
        
         ## update the values of the variables
         currentIndex = 0
-        for i, xi in enumerate(x):
-            if isArrayVariables[i]:
-                for ii in range(len(xi)):
-                    xi[ii]._value = xx[currentIndex + ii]
-                currentIndex += len(xi)
-            else:
-                xi._value = xx[currentIndex]
+        for xi in x:
+            for xii in xi:
+                xii._value = xx[currentIndex]
                 currentIndex += 1
       
         ## evaluate the function
@@ -202,17 +195,21 @@ def solve(func, x, *args, bounds = None, **kwargs):
 
         return sum([(e[0].value - e[1].value)**2 * s for e,s in zip(out, scales)])
 
-    ## run the minimization
+
+    ## move the initial guess in to the feasible area if the bounds are callable
     if callable(bounds): keepVariablesFeasible()
     
-    x0 = []
-    for i, elem in enumerate(x):
-        if isArrayVariables[i]:
-            for eelem in elem:
-                x0.append(eelem.value)
-        else:
-            x0.append(elem.value)
     
+    ## create a vector of the initial values
+    x0 = np.zeros(nVariables)
+    currentIndex = 0
+    for xi in x:
+        for xii in xi:
+            x0[currentIndex] = xii.value
+            currentIndex+=1
+    
+    
+    ## minimize the minimizationproblem
     warnings.filterwarnings('ignore')
     out = minimize(
         minimizationProblem,
@@ -225,58 +222,45 @@ def solve(func, x, *args, bounds = None, **kwargs):
     warnings.filterwarnings('default')
     if callable(bounds): keepVariablesFeasible()
 
+
     ## loop over all equations and create a list of the residuals
     residuals, J = [], np.zeros([nVariables,nVariables])
     for i, equation in enumerate(_func(*x)):
-
-        ## add the residual
         res = equation[0] - equation[1]
         res.convert(res._unitObject._SIBaseUnit)
+        for bound in res:
+            residuals.append(bound)
 
-        if isArrayEquations[i]:
-            for elem in res:
-                residuals.append(elem)
-        else:
-            residuals.append(res)
 
     ## create the jacobian matrix from the residual
     for i, res in enumerate(residuals):
         ## loop over the variables
         currentIndex = 0
-        for j, xj in enumerate(x):
-            if isArrayVariables[j]:
-                n = len(xj)
-                for jj, xjj in enumerate(xj):
-                    if xjj in res.dependsOn:               
-                        ## add the gradient d(residual)/d(xj) to the jacobian matrix
-                        J[i, currentIndex + jj : currentIndex + jj + 1] += res.dependsOn[xjj][1]
-            else:
-                n = 1
-                if xj in res.dependsOn:
-                        ## add the gradient d(residual)/d(xj) to the jacobian matrix
-                        J[i, currentIndex : currentIndex + 1] += res.dependsOn[xj][1]
-            currentIndex += n
+        for xj in x:
+            for xjj in xj:
+                if xjj in res.dependsOn:               
+                    ## add the gradient d(residual)/d(xj) to the jacobian matrix
+                    J[i, currentIndex] += res.dependsOn[xjj][1]
+                currentIndex += 1
            
     # inverse the jacobian
     Jinv = np.linalg.inv(J)
 
-    ## add the residuals and a row of the inverse jacobian to each variable and calculate the uncertanty
-    for i, xi in enumerate(x):
-        currentIndex = i
-        if isArrayVariables[i]:
+    ## add the dependency from the residual to the variables
+    for i, res in enumerate(residuals):
+        currentIndex = 0
+        for xi in x:
             for xii in xi:
-                for j, rj in enumerate(residuals):
-                    xii._addDependent(rj, Jinv[currentIndex,j])
-                currentIndex+=1
-        else:    
-            for j, rj in enumerate(residuals):
-                xi._addDependent(rj, Jinv[currentIndex,j])
-            currentIndex += 1
-        xi._calculateUncertanty()
-        
+                if xii in res.dependsOn:
+                    xii._addDependent(res, Jinv[currentIndex, i])
+                currentIndex +=1
+    
+    ## calculate the uncertanty of all variables
+    for xi in x:
+        for xii in xi:
+            xii._calculateUncertanty()
     
     if isArrayVariable or (nVariables == 1 and not isVariableList): x = x[0]
     return x
 
 
-## TODO you can iterate through scalarVariables - use this to make the code easier to read

@@ -994,4 +994,14 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return scalarVariable(value, unit, uncert, nDigits)
 
 
+if __name__ == "__main__":
+    a = variable([1,2,3])
+    print(len(a))
+    
+    a = variable([1])
+    print(len(a))
+    
+    a = variable(1,'m')
+    print(len(a))
+    
     
