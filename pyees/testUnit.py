@@ -79,7 +79,17 @@ class test(unittest.TestCase):
         b = unit('K-m/bar-L')
         _,cUnit,_,_,_ = a + b
         self.assertTrue(unit._assertEqualStatic(cUnit, 'DELTAK-m/bar-L'))
-
+        
+        a = unit('J/kg-DELTAK')
+        b = unit('J/kg-DELTAK')
+        _,cUnit,_,_,_ = a + b
+        self.assertTrue(unit._assertEqualStatic(cUnit, 'J/kg-DELTAK'))
+        
+        a = unit('J/g-DELTAK')
+        b = unit('J/kg-DELTAK')
+        _,cUnit,_,_,_ = a + b
+        self.assertTrue(unit._assertEqualStatic(cUnit, 'J/g-DELTAK'))
+        
     def testSub(self):
         a = unit('L/min')
         b = unit('kg-m/L')
@@ -87,12 +97,21 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             a-b
         self.assertTrue('You tried to subtract a variable in [kg-m/L] from a variable in [L/min], but the units do not have the same SI base unit' in str(context.exception))
-
         
         a = unit('L/min')
         b = unit('L/min')
         _,cUnit,_,_,_ = a - b
         self.assertEqual(str(cUnit), 'L/min')
+        
+        a = unit('J/kg-DELTAK')
+        b = unit('J/kg-DELTAK')
+        _,cUnit,_,_,_ = a - b
+        self.assertTrue(unit._assertEqualStatic(cUnit, 'J/kg-DELTAK'))
+        
+        a = unit('J/g-DELTAK')
+        b = unit('J/kg-DELTAK')
+        _,cUnit,_,_,_ = a - b
+        self.assertTrue(unit._assertEqualStatic(cUnit, 'J/g-DELTAK'))
 
     def testConvert(self):
         a = unit('L/min')
@@ -162,6 +181,17 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             a = unit('m/s/bar')
         self.assertEqual('A unit can only have a single slash (/)', str(context.exception))
+
+        self.assertEqual(str(unit(' ')), '1')
+        self.assertEqual(str(unit('-')), '1')
+        self.assertEqual(str(unit('')), '1')
+        self.assertEqual(str(unit('--')), '1')
+        self.assertEqual(str(unit('()')), '1')
+        self.assertEqual(str(unit('( )')), '1')
+        self.assertEqual(str(unit('(  )')), '1')  
+        self.assertEqual(str(unit('(-)')), '1')
+        self.assertEqual(str(unit('(--)')), '1')
+        self.assertEqual(str(unit('( -)')), '1')
 
     def testAddNewUnit(self):
         addNewUnit('gnA', 9.81, 'm/s2')

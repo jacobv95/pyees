@@ -511,6 +511,8 @@ class unit():
 
     @ staticmethod
     def _formatUnit(unitStr):
+        ## TODO this is a mess - remake this
+
         # Removing any spaces
         unitStr = unitStr.replace(' ', '')
 
@@ -624,7 +626,6 @@ class unit():
                 out = '-'.join(upper)
                 if lower:
                     out += '/' + '-'.join(lower)
-                return out
             except TypeError:
                 raise TypeError()
         return parts
@@ -827,32 +828,41 @@ class unit():
         ## output 4: scaleSelf. If true then scale self to remove the prefix
         ## output 5: scaleOther. If true then scale other to remove the prefix
         
-        
+        ## determine the units of self without any prefixes and convert this to a string
         selfWithoutPrefixes = unit(unit._combineUpperAndLower(self.upper, [None] * len(self.upperPrefix), self.upperExp, self.lower, [None] * len(self.lowerPrefix), self.lowerExp))
+        selfWithoutPrefixesString = str(selfWithoutPrefixes)
+        
+        ## determine if self is a part of the logarithmic units
+        isLogarithmicUnit = selfWithoutPrefixesString in logrithmicUnits.keys()
+        
+        ## determine if self is the same as other - then no conversions are necessary
+        if unit._assertEqualStatic(str(self), str(other)):
+            return isLogarithmicUnit, str(self), False, False, False   
+        
+        ## determine the units of other without any prefixes and convert this to a string
         otherWithoutPrefixes = unit(unit._combineUpperAndLower(other.upper, [None] * len(other.upperPrefix), other.upperExp, other.lower, [None] * len(other.lowerPrefix), other.lowerExp))
-        aStr = str(selfWithoutPrefixes)
-        bStr = str(otherWithoutPrefixes)
+        otherWithoutPrefixesString = str(otherWithoutPrefixes)
         
-        isLogarithmicUnit = aStr in logrithmicUnits.keys()
-                
-        scaleSelf = str(self) != aStr
-        scaleOther = str(other) != bStr
+        ## determine if self and/or other has to be scaled in order to remove any prefixes
+        scaleSelf = str(self) != selfWithoutPrefixesString
+        scaleOther = str(other) != otherWithoutPrefixesString
         
-        if unit._assertEqualStatic(aStr, bStr):
-            return isLogarithmicUnit, aStr, False, scaleSelf, scaleOther
+        ## determine if the self and other are identical once any prefixes has been removed
+        if unit._assertEqualStatic(selfWithoutPrefixesString, otherWithoutPrefixesString):
+            return isLogarithmicUnit, selfWithoutPrefixesString, False, scaleSelf, scaleOther
         
-        # test if the SI base units are identical
+        # determine if the SI base units of self and other are equal
         if self._SIBaseUnit == other._SIBaseUnit:
             return isLogarithmicUnit, self._SIBaseUnit, True, False, False
         
-        
+        ## determine if "DELTAK" and "K" are the SI Baseunits of self and other
         SIBaseUnits = [selfWithoutPrefixes._SIBaseUnit,  otherWithoutPrefixes._SIBaseUnit]        
         if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
             
             indexTemp = SIBaseUnits.index('K')
             indexDiff = 0 if indexTemp == 1 else 1
             
-            units = [aStr, bStr]
+            units = [selfWithoutPrefixesString, otherWithoutPrefixesString]
 
             if units[indexTemp] == units[indexDiff][-1]:        
                 return isLogarithmicUnit, units[indexTemp], False, scaleSelf, scaleOther
@@ -868,20 +878,25 @@ class unit():
         ## output 4: scaleSelf. If true then scale self to remove the prefix
         ## output 5: scaleOther. If true then scale other to remove the prefix
         
-        
+        ## determine the units of self without any prefixes and convert this to a string
         selfWithoutPrefixes = unit(unit._combineUpperAndLower(self.upper, [None] * len(self.upperPrefix), self.upperExp, self.lower, [None] * len(self.lowerPrefix), self.lowerExp))
-        otherWithoutPrefixes = unit(unit._combineUpperAndLower(other.upper, [None] * len(other.upperPrefix), other.upperExp, other.lower, [None] * len(other.lowerPrefix), other.lowerExp))
-        aStr = str(selfWithoutPrefixes)
-        bStr = str(otherWithoutPrefixes)
+        selfWithoutPrefixesString = str(selfWithoutPrefixes)
         
-        isLogarithmicUnit = aStr in logrithmicUnits.keys()
-                
-        scaleSelf = str(self) != aStr
-        scaleOther = str(other) != bStr
+        ## determine if self is a part of the logarithmic units
+        isLogarithmicUnit = selfWithoutPrefixesString in logrithmicUnits.keys()
+        
+        ## determine the units of other without any prefixes and convert this to a string
+        otherWithoutPrefixes = unit(unit._combineUpperAndLower(other.upper, [None] * len(other.upperPrefix), other.upperExp, other.lower, [None] * len(other.lowerPrefix), other.lowerExp))
+        otherWithoutPrefixesString = str(otherWithoutPrefixes)
+        
+        ## determine if self and/or other has to be scaled in order to remove any prefixes
+        scaleSelf = str(self) != selfWithoutPrefixesString
+        scaleOther = str(other) != otherWithoutPrefixesString
 
+        ## determine if "DELTAK" and "K" are the SI Baseunits of self and other
         SIBaseUnits = [self._SIBaseUnit, other._SIBaseUnit]
         if SIBaseUnits[0] == 'K' and SIBaseUnits[1] == 'K':
-            if aStr == bStr:
+            if selfWithoutPrefixesString == otherWithoutPrefixesString:
                 return isLogarithmicUnit, 'DELTA' + str(self), False, scaleSelf, scaleOther
             return isLogarithmicUnit,'DELTAK', True, False, False
 
@@ -892,7 +907,7 @@ class unit():
                 raise ValueError('You tried to subtract a temperature from a temperature differnce. This is not possible.')
             indexDiff = 0 if indexTemp == 1 else 1
             
-            units = [aStr, bStr]
+            units = [selfWithoutPrefixesString, otherWithoutPrefixesString]
 
 
             if units[indexTemp] == units[indexDiff][-1]:        
@@ -900,8 +915,14 @@ class unit():
             
             return isLogarithmicUnit, 'K', True, False, False
         
-        if unit._assertEqualStatic(aStr, bStr):
-            return isLogarithmicUnit, aStr, False, scaleSelf, scaleOther
+                
+        ## determine if self is the same as other - then no conversions are necessary
+        if unit._assertEqualStatic(str(self), str(other)):
+            return isLogarithmicUnit, str(self), False, False, False
+           
+        ## determine if the self and other are identical once any prefixes has been removed
+        if unit._assertEqualStatic(selfWithoutPrefixesString, otherWithoutPrefixesString):
+            return isLogarithmicUnit, selfWithoutPrefixesString, False, scaleSelf, scaleOther
         
         # test if the SI base units are identical
         if self._SIBaseUnit == other._SIBaseUnit:
@@ -1080,11 +1101,11 @@ class unit():
 
 
 if __name__ == "__main__":
-    a = unit('L/min')
-    b = unit('Pa')
+    a = unit(' ')
+    print(a)
+    a = unit('-')
+    print(a)
+    a = unit('')
+    print(a)
     
-    c = unit(a * b)
     
-    print(c)
-    d = unit('m3-Pa/s')
-    print(unit._assertEqualStatic(c._SIBaseUnit, d._SIBaseUnit))

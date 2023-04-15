@@ -139,16 +139,18 @@ class _readData():
                 head = head[0:-1]
 
             # add a number to the end of the unit if the unit exists
-            i, imax, done = 0, 100, False
-            while not done and i <= imax:
-                if i > 0:
-                    h = head + f'_{i+2}'
-                else:
-                    h = head
-                if h not in out:
-                    out.append(h)
-                    done = True
-
+            if head not in out:
+                out.append(head)
+            else:
+                i, imax, done = 1, 100, False
+                while not done and i <= imax:
+                    h = head + f'_{i+1}'
+                    if h not in out:
+                        out.append(h)
+                        done = True
+                    i += 1
+                if not done:
+                    raise ValueError(f'The header {head} could not be added to the sheet')
         return out
 
     def readData(self):
@@ -345,10 +347,14 @@ class _Sheet():
         return iter(self.measurements)
 
 
+## TODO change the name of "import data.md" to "sheet.md"
+## TODO remove the _Data class. instead return a list of Sheets
+## TODO change the name of "_Sheet" to "Sheet"
+## TODO change the name of "readData" to "sheetFromFile"
+## TODO read data vælg ark
+## TODO the inputs of "sheetFromFile" has to be able to take list-list inputs and return a list of Sheets
+## TODO save Sheet as xlFile
 
-
-## TODOread data vælg ark
-## TODO vælg område for hvert ark seperat
-## TODO save sheet as new file
-
+## TODO error when reading from multiple sheets with different number of rows
+## TODO allow for nonetype in the unit
 

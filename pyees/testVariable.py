@@ -490,6 +490,26 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             A_vec[23]
         self.assertTrue('list index out of range' in str(context.exception))
+        
+        a_vec = A_vec[0]
+        self.assertEqual(a_vec.value, 12.3)
+        self.assertEqual(a_vec.unit, 'L/min')
+        self.assertEqual(a_vec.uncert, 2.6)
+        
+        a_vec = A_vec[0:2]
+        np.testing.assert_array_equal(a_vec.value, [12.3, 54.3])
+        self.assertEqual(a_vec.unit, 'L/min')
+        np.testing.assert_array_equal(a_vec.uncert, [2.6, 5.4])
+        
+        a_vec = A_vec[1:3]
+        np.testing.assert_array_equal(a_vec.value, [54.3, 91.3])
+        self.assertEqual(a_vec.unit, 'L/min')
+        np.testing.assert_array_equal(a_vec.uncert, [5.4, 10.56])
+        
+        a_vec = A_vec[[0,2]]
+        np.testing.assert_array_equal(a_vec.value, [12.3, 91.3])
+        self.assertEqual(a_vec.unit, 'L/min')
+        np.testing.assert_array_equal(a_vec.uncert, [2.6, 10.56])
 
     def testAddEqual(self):
         A = variable(12.3, 'L/min', uncert=2.6)

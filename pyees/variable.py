@@ -715,17 +715,26 @@ class scalarVariable():
 
 class arrayVariable(scalarVariable):
     
-    def __init__(self, value, unitStr, uncert, nDigits) -> None:
-        self.nDigits = nDigits
+    def __init__(self, value = None, unitStr = None, uncert= None, nDigits= None, scalarVariables = None) -> None:
         
-        # create a unit object
-        self._unitObject = unitStr if isinstance(unitStr, unit) else unit(unitStr)        
+        if not (value is None) and not (scalarVariables is None):
+            raise ValueError('You cannot supply both values and scalarVariables')
         
-        self.scalarVariables = []
         if not value is None:
-            for v, u in zip(value, uncert):
-                self.scalarVariables.append(scalarVariable(v, self._unitObject, u, nDigits))
-    
+            self.nDigits = nDigits
+            
+            # create a unit object
+            self._unitObject = unitStr if isinstance(unitStr, unit) else unit(unitStr)        
+            
+            self.scalarVariables = []
+            if not value is None:
+                for v, u in zip(value, uncert):
+                    self.scalarVariables.append(scalarVariable(v, self._unitObject, u, nDigits))
+        else:
+            self.scalarVariables = scalarVariables
+            self._unitObject = self.scalarVariables[0]._unitObject
+            self.nDigits = self.scalarVariables[0].nDigits
+            
     def _calculateUncertanty(self):
         for elem in self.scalarVariables:
             elem._calculateUncertanty()
@@ -751,9 +760,9 @@ class arrayVariable(scalarVariable):
         if isinstance(index, int):
             return self.scalarVariables[index]
         elif isinstance(index, slice):
-            vals = [elem.value for elem in self.scalarVariables[index]]
-            unc = [elem.uncert for elem in self.scalarVariables[index]]
-            return variable(vals, self._unitObject, unc, self.nDigits)
+            return arrayVariable(scalarVariables = self.scalarVariables[index])
+        if isinstance(index, list):
+            return arrayVariable(scalarVariables = [self.scalarVariables[elem] for elem in index])
         else:
             raise NotImplementedError()
  
@@ -887,10 +896,7 @@ class arrayVariable(scalarVariable):
             out = [a**other for a in self]
 
         if all([out[0].unit == elem.unit for elem in out]):
-            oout = arrayVariable(None, out[0].unit, None, out[0].nDigits)
-            for o in out:
-                oout.append(o)
-            return oout
+            return arrayVariable(scalarVariables=out)
         
         return out
      
@@ -989,19 +995,13 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
                 raise ValueError('The lenght of the value has to be equal to the lenght of the uncertanty')      
     
     if isinstance(value, np.ndarray):
-        return arrayVariable(value, unit, uncert, nDigits)
+        return arrayVariable(value = value, unitStr = unit, uncert = uncert, nDigits = nDigits)
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
 
 if __name__ == "__main__":
-    a = variable([1,2,3])
-    print(len(a))
-    
-    a = variable([1])
-    print(len(a))
-    
-    a = variable(1,'m')
-    print(len(a))
+    a = variable(1)
+    print(a)    
     
     
