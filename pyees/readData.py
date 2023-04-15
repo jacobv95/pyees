@@ -356,5 +356,4 @@ class _Sheet():
 ## TODO save Sheet as xlFile
 
 ## TODO error when reading from multiple sheets with different number of rows
-## TODO allow for nonetype in the unit
 

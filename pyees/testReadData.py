@@ -67,6 +67,7 @@ class test(unittest.TestCase):
 
         dat4 = readData('testData/data4.xlsx', 'A-B')
         dat5 = readData('testData/data5.xlsx', 'A-B')
+    
         with self.assertRaises(Exception) as context:
             dat4.s1.append(dat5.s1)
         self.assertTrue("You can only append sheets with the excact same measurements. The names did not match" in str(context.exception))
@@ -151,6 +152,11 @@ class test(unittest.TestCase):
                     self.assertEqual(str(meas.unit), 'mA')
                     np.testing.assert_array_equal(meas.uncert, [0, 0, 0, 0, 0])
 
+    def testNontypeInput(self):
+        dat = readData("testData/data7.xlsx", "A-F")
+        for sheet in dat:
+            for elem in sheet:
+                self.assertEqual(elem.unit, '1')
 
 if __name__ == '__main__':
     unittest.main()

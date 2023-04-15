@@ -254,7 +254,7 @@ for key, d in knownUnitsDict.items():
 # determine the known characters within the unit system
 knownCharacters = list(knownUnits.keys()) + list(knownPrefixes.keys())
 knownCharacters = ''.join(knownCharacters)
-knownCharacters += '-/'
+knownCharacters += '-/ '
 knownCharacters += '0123456789'
 knownCharacters += '()'
 knownCharacters = set(knownCharacters)
@@ -511,11 +511,10 @@ class unit():
 
     @ staticmethod
     def _formatUnit(unitStr):
-        ## TODO this is a mess - remake this
-
-        # Removing any spaces
-        unitStr = unitStr.replace(' ', '')
-
+        
+        if unitStr is None:
+            return '1'
+        
         # Removing any illegal symbols
         for s in unitStr:
             if s not in knownCharacters:
@@ -527,21 +526,24 @@ class unit():
 
         ## return if no parenthesis where found
         if not startParenIndexes and not stopParenIndexes:
-            return unitStr
-      
+            return unit.__formatUnit(unitStr)
+        
         ## check that the number of start and stop parenthesis are equal
         if len(startParenIndexes) != len(stopParenIndexes):
-            raise ValueError('The unit string has to have an equal number of open parenthesis and clsoe parenthesis')
+            raise ValueError('The unit string has to have an equal number of open parenthesis and close parenthesis')
+        
+        if len(startParenIndexes) == 1 and startParenIndexes[0] == 0 and stopParenIndexes[0] == len(unitStr) -1:
+            return unit._formatUnit(unitStr[startParenIndexes[0]+1:stopParenIndexes[0]])
         
         ## find all parenthesis pairs
         allIndexes = startParenIndexes + stopParenIndexes
         allIndexes.sort()
         isStartParen = [elem in startParenIndexes for elem in allIndexes]
-        done, iter, maxIter, order  = False, 0, len(allIndexes), []
+        done, iter, maxIter, parenOrder  = False, 0, len(allIndexes), []
         while not done:
             for i in range(len(allIndexes)-1):
                 if isStartParen[i] and (isStartParen[i] + isStartParen[i+1] == 1):
-                    order.append([allIndexes[i], allIndexes[i+1]])
+                    parenOrder.append([allIndexes[i], allIndexes[i+1]])
                     allIndexes.pop(i+1)
                     allIndexes.pop(i)
                     isStartParen.pop(i+1)
@@ -554,81 +556,126 @@ class unit():
             if iter > maxIter:
                 raise ValueError('An order to evaluate the parenthesis could not be found')
         
+        parenOrder.append([0,len(unitStr)])
+        
+        for i in range(len(parenOrder)-1):
+            currentParens = parenOrder[i]
+            nextParens = parenOrder[i+1]
+            end = currentParens[1]
+            
+            _unitStr = unitStr[currentParens[0]+1:currentParens[1]]
+            _unitStrLenOriginal = len(_unitStr)
+            _unitStr = unit._formatUnitStringWithParenthesis(_unitStr)
+            if nextParens[0] <= currentParens[0] and nextParens[1]>=currentParens[1]:
+                nextBit = unitStr[currentParens[1]+1:nextParens[1]]
+                exponent = nextBit.split('/')[0]
+                exponent = exponent.split('-')[0]
+                
+                try:
+                    exponent = int(exponent)
+                    upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp = unit._getLists(_unitStr)
+                    siBaseUnit = unit._getSIBaseUnit(upper, upperExp ,lower, lowerExp)
+                    _unitStr = unit.__staticPow(_unitStr, upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp, siBaseUnit, exponent)[0]
+                    end += len(str(exponent))
+                except ValueError: pass
+            
+            _unitStrLenUpdate = len(_unitStr)
+            
+            dLen = _unitStrLenUpdate - _unitStrLenOriginal
+            for j in range(i, len(parenOrder)):
+                if parenOrder[j][0] >= currentParens[1]: parenOrder[j][0] += dLen
+                if parenOrder[j][1] >= currentParens[1]: parenOrder[j][1] += dLen-1
+            
+            unitStr = unitStr[0:currentParens[0]] + '(' + _unitStr + ')' + unitStr[end+1:]
 
-        ## find the outer most parenthesis        
-        done, maxIter, iter = False, len(order), 0
+    
+        unitStr = unit._formatUnitStringWithParenthesis(unitStr)
+        
+        ## find start parenthesis is the unit string
+        startParenIndexes = [i for i, s in enumerate(unitStr) if s == '(']
+        stopParenIndexes = [i for i, s in enumerate(unitStr) if s == ')']
+        
+        ## check that the number of start and stop parenthesis are equal
+        if len(startParenIndexes) != len(stopParenIndexes):
+            raise ValueError('The unit string has to have an equal number of open parenthesis and close parenthesis')
+        
+        if len(startParenIndexes) == 0:
+            return unitStr
+        
+        done = False
         while not done:
-            changesMade = False
-            for i in range(len(order)):
-                iLow = order[i][0]
-                iHigh = order[i][1]
-                for j in range(len(order)):
-                    jLow = order[j][0]
-                    jHigh = order[j][1]
-                    if iLow < jLow and iHigh > jHigh:
-                        order.pop(j)
-                        changesMade = True
-                        break
-                if changesMade:
-                    break
-            if not changesMade:
-                break
-            iter += 1
-            if iter > maxIter:
-                raise ValueError('An order to evaluate the parenthesis could not be found')
-        
-        ## find all slashes outside the outer most parenthesis
-        slashes = [i for i, s in enumerate(unitStr) if s == slash]
-
-        iter, maxIter, done = 0, len(slashes), False
-        while not done:
-            done = True
-            for s in slashes:    
-                for part in order:
-                    if part[0] < s < part[1]:
-                        done = False
-                        slashes.remove(s)
-                        break                
-            if done: break
-            iter += 1
-            if iter > maxIter:
-                raise ValueError('An order to evaluate the parenthesis could not be found')
-
-        if len(slashes) > 1:
-            raise ValueError('You have more than one slash ("/") outside the outer most parenthesis. This makes the unit ambiguis')
-        
-        if slashes:
-            splits = [-1] + slashes
-            parts = [unitStr[i+1:j] for i,j in zip(splits, splits[1:]+[None])]
-            parts = [unit._formatUnit(part) for part in parts]
-            if isinstance(parts, list):
-                parts = unit(parts[0]) / unit(parts[1])
-            return parts
-        
-        parts = unit._formatUnit(unitStr[order[0][0]+1: order[0][1]])
-        if order[0][1] != len(unitStr) - 1:
-            remaining = unitStr[order[0][1]+1:]
-            parts = parts.split('/')
-            if len(parts) > 1:
-                upper, lower = parts
-                lower = lower.split('-')
+            if unitStr[0] == '(' and unitStr[len(unitStr)-1] == ')':
+                unitStr = unitStr[1:len(unitStr)-1]
             else:
-                upper, lower = parts[0], []
-            upper = upper.split('-')
-            try: 
-                exponent = int(remaining)
-                for i, up in enumerate(upper):
-                    u, e = unit._removeExponentFromUnit(up)
-                    upper[i] = u + str(e * exponent)
-                for i, low in enumerate(lower):
-                    u, e = unit._removeExponentFromUnit(low)
-                    lower[i] = u + str(e * exponent)
-                out = '-'.join(upper)
-                if lower:
-                    out += '/' + '-'.join(lower)
-            except TypeError:
-                raise TypeError()
-        return parts
+                break
+        
+        if '(' in unitStr or ')' in unitStr:    
+            raise ValueError('The unit could not be parsed')
+        
+        return unitStr
+
+    
+    @staticmethod
+    def _formatUnitStringWithParenthesis(unitStr):
+        
+        ## determine if there is a slash outside of a parenthesis pair
+        tally = 0
+        for i, s in enumerate(unitStr):
+            if s == '/' and tally == 0:
+                
+                a = unitStr[0:i]
+                b = unitStr[i+1:]
+                a = unit._formatUnit(a)
+                b = unit._formatUnit(b)
+                
+                aUpper, aUpperPrefix, aUpperExp, aLower, aLowerPrefix, aLowerExp = unit._getLists(a)
+                bUpper, bUpperPrefix, bUpperExp, bLower, bLowerPrefix, bLowerExp = unit._getLists(b)
+                
+                upper = aUpper + bLower
+                upperPrefix = aUpperPrefix + bLowerPrefix
+                upperExp = aUpperExp + bLowerExp
+                lower = aLower + bUpper
+                lowerPrefix = aLowerPrefix + bUpperPrefix
+                lowerExp = aLowerExp + bUpperExp
+                
+                return unit._combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix ,lowerExp)
+            
+            if s == '(':
+                tally += 1
+            if s == ')':
+                tally -= 1
+      
+        
+        return unit.__formatUnit(unitStr)
+        
+    
+            
+    @staticmethod
+    def __formatUnit(unitStr):
+        # Removing any spaces
+        unitStr = unitStr.replace(' ', '')
+        unitStr = unitStr.split('/')
+        
+        if len(unitStr)>2:
+            raise ValueError('A unit can only have a single slash (/)')
+        
+        if len(unitStr) > 1:
+            upper, lower = unitStr
+            lower = [elem for elem in lower.split('-') if elem != '']
+        else:
+            upper, lower = unitStr[0], []
+        
+        upper = [elem for elem in upper.split('-') if elem != '']
+        
+        if upper:
+            out = '-'.join(upper)
+        else:
+            out = '1'
+        
+        if lower:
+            out += '/' + '-'.join(lower)
+            
+        return out
     
     @ staticmethod
     def _splitCompositeUnit(compositeUnit):
@@ -932,7 +979,6 @@ class unit():
         
         raise ValueError(f'You tried to subtract a variable in [{other}] from a variable in [{self}], but the units do not have the same SI base unit')
 
-
     def __mul__(self, other):
         return unit._multiply(self.unitStr, other.unitStr)
 
@@ -955,14 +1001,18 @@ class unit():
         return unit._multiply(a, b)
 
     def __pow__(self, power):
+        return self.__staticPow(self.unitStr, self.upper, self.upperPrefix, self.upperExp, self.lower, self.lowerPrefix, self.lowerExp, self._SIBaseUnit, power)
+    
+    @staticmethod
+    def __staticPow(unitStr, upper, upperPrefix, upperExp ,lower, lowerPrefix, lowerExp, _SIBaseUnit, power):
         if power == 0:
             return '1', False
 
         elif power > 1:
 
-            if self.unitStr == '1':
+            if unitStr == '1':
                 # self is '1'. Therefore the power does not matter
-                return self.unitStr, False
+                return unitStr, False
 
             else:
                 # self is not '1'. Therefore all exponents are multiplied by the power
@@ -970,18 +1020,18 @@ class unit():
                 if not (isinstance(power, int) or power.is_integer()):
                     raise ValueError('The power has to be an integer')
 
-                upperExp = [int(elem * power) for elem in self.upperExp]
-                lowerExp = [int(elem * power) for elem in self.lowerExp]
+                upperExp = [int(elem * power) for elem in upperExp]
+                lowerExp = [int(elem * power) for elem in lowerExp]
 
-                return self._combineUpperAndLower(self.upper, self.upperPrefix, upperExp, self.lower, self.lowerPrefix, lowerExp) , False
+                return unit._combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp) , False
 
         else:
             # the power is smaller than 1.
             # Therefore it is necessary to determine if all exponents are divisible by the recibricol of the power
 
-            if self.unitStr == '1':
+            if unitStr == '1':
                 # self is '1'. Therefore the power does not matter
-                return self.unitStr, False
+                return unitStr, False
             else:
                 # self is not '1'.
                 # Therefore it is necessary to determine if all exponents are divisible by the recibricol of the power
@@ -992,29 +1042,28 @@ class unit():
                 
                 # Test if the exponent of all units is divisible by the power
                 try:
-                    for exp in self.upperExp + self.lowerExp:
+                    for exp in upperExp + lowerExp:
                         if not isCloseToInteger(exp * power):
-                            raise ValueError(f'You can not raise a variable with the unit {self.unitStr} to the power of {power}')
+                            raise ValueError(f'You can not raise a variable with the unit {unitStr} to the power of {power}')
 
-                    upperExp = [int(elem * power) for elem in self.upperExp]
-                    lowerExp = [int(elem * power) for elem in self.lowerExp]
+                    upperExp = [int(elem * power) for elem in upperExp]
+                    lowerExp = [int(elem * power) for elem in lowerExp]
 
-                    return self._combineUpperAndLower(self.upper, self.upperPrefix, upperExp, self.lower, self.lowerPrefix, lowerExp), False
+                    return unit._combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp), False
                 
                 except ValueError:                
                     ## the exponents of the unit was not divisible by the power
                     ## test if the exponents of the SIBaseunit is divisible by the power 
                     
-                    siUpper, siUpperPrefix, siUpperExp, siLower, siLowerPrefix, siLowerExp = self._getLists(self._SIBaseUnit)
+                    siUpper, siUpperPrefix, siUpperExp, siLower, siLowerPrefix, siLowerExp = unit._getLists(_SIBaseUnit)
                     for exp in siUpperExp + siLowerExp:
                         if not isCloseToInteger(exp * power):
-                            raise ValueError(f'You can not raise a variable with the unit {self.unitStr} to the power of {power}')
+                            raise ValueError(f'You can not raise a variable with the unit {unitStr} to the power of {power}')
 
                     siUpperExp = [int(elem * power) for elem in siUpperExp]
                     siLowerExp = [int(elem * power) for elem in siLowerExp]
 
-                    return self._combineUpperAndLower(siUpper, siUpperPrefix, siUpperExp, siLower, siLowerPrefix, siLowerExp), True
-
+                    return unit._combineUpperAndLower(siUpper, siUpperPrefix, siUpperExp, siLower, siLowerPrefix, siLowerExp), True
 
     def getConverter(self, newUnit):
         newUnit = unit._formatUnit(newUnit)
@@ -1101,11 +1150,8 @@ class unit():
 
 
 if __name__ == "__main__":
-    a = unit(' ')
-    print(a)
-    a = unit('-')
-    print(a)
-    a = unit('')
-    print(a)
+    
+    print(unit('((s/m6)2)'))
+
     
     

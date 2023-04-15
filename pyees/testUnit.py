@@ -171,6 +171,9 @@ class test(unittest.TestCase):
 
     def testInput(self):
 
+        a = unit(None)
+        self.assertEqual(str(a), '1')
+        
         a = unit('m / s')
         self.assertEqual(str(a), 'm/s')
 
@@ -186,12 +189,21 @@ class test(unittest.TestCase):
         self.assertEqual(str(unit('-')), '1')
         self.assertEqual(str(unit('')), '1')
         self.assertEqual(str(unit('--')), '1')
+        self.assertEqual(str(unit('- -')), '1')
+        
         self.assertEqual(str(unit('()')), '1')
         self.assertEqual(str(unit('( )')), '1')
         self.assertEqual(str(unit('(  )')), '1')  
         self.assertEqual(str(unit('(-)')), '1')
         self.assertEqual(str(unit('(--)')), '1')
+        self.assertEqual(str(unit('(- -)')), '1')
         self.assertEqual(str(unit('( -)')), '1')
+        self.assertEqual(str(unit('( - (- ))')), '1')
+        
+        
+        self.assertEqual(str(unit('(m/s2)2/Hz')), 'm2/s4-Hz')
+        self.assertEqual(str(unit('(m1/s2)2/Hz')), 'm2/s4-Hz')
+        self.assertEqual(str(unit('(m1/s2)1/Hz')), 'm/s2-Hz')
 
     def testAddNewUnit(self):
         addNewUnit('gnA', 9.81, 'm/s2')
@@ -228,9 +240,8 @@ class test(unittest.TestCase):
         converter = unit('Ra').getConverter('Rø')
         self.assertAlmostEqual(converter.convert(83.1), -111.66625)
         
-        
-        
-        
+
+    
 
 if __name__ == '__main__':
     unittest.main()
