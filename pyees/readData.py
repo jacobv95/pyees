@@ -9,60 +9,21 @@ try:
 except ImportError:
     from pyees.variable import variable
 
+def fileFromSheets(Sheets):
+    ## TODO save Sheet as xlFile
+    raise NotImplementedError()
 
-def readData(xlFile, dataRange, uncertRange=None):
-    dat = _readData(xlFile, dataRange, uncertRange)
+def sheetsFromFile(xlFile, dataRange: str | list[str], uncertRange: str | list[str] = None, sheets: int | list[int] = None):
+    dat = _SheetsFromFile(xlFile, dataRange, uncertRange, sheets)
+    if len(dat.dat) == 1:
+        return dat.dat[0]
     return dat.dat
 
 
-class _readData():
+class _SheetsFromFile():
 
-    def __init__(self, xlFile, dataRange, uncertRange=None) -> None:
+    def __init__(self, xlFile, dataRange, uncertRange=None, sheets = None) -> None:
 
-        if '-' in dataRange:
-            index = dataRange.find('-')
-            dataStartCol = dataRange[0:index]
-            dataEndCol = dataRange[index + 1:]
-        else:
-            dataStartCol = dataRange
-            dataEndCol = dataStartCol
-
-        if '-' in dataStartCol or '-' in dataEndCol:
-            raise ValueError('The data range can only include a singly hyphen (-)')
-
-        if not uncertRange is None:
-            if '-' in uncertRange:
-                index = uncertRange.find('-')
-                uncertStartCol = uncertRange[0:index]
-                uncertEndCol = uncertRange[index + 1:]
-            else:
-                uncertStartCol = uncertRange
-                uncertEndCol = uncertStartCol
-
-            if '-' in uncertStartCol or '-' in uncertEndCol:
-                raise ValueError('The data range can only include a singly hyphen (-)')
-        else:
-            uncertStartCol = None
-            uncertEndCol = None
-
-        # convert the coloumns
-        self.dataStartCol = self.colToIndex(dataStartCol)
-        self.dataEndCol = self.colToIndex(dataEndCol)
-        self.uncertStartCol = self.colToIndex(uncertStartCol)
-        self.uncertEndCol = self.colToIndex(uncertEndCol)
-
-        # check the uncertanty range
-        uncertCols = [self.uncertStartCol is None, self.uncertEndCol is None]
-        if sum(uncertCols) not in [0, 2]:
-            raise ValueError('You have provided one of the coloumn for the uncertanty but not the other')
-
-        # check the number of coloumns
-        nColsData = self.dataEndCol - self.dataStartCol + 1
-        if not self.uncertStartCol is None:
-            nColsUncert = self.uncertEndCol - self.uncertStartCol + 1
-            if nColsData != nColsUncert:
-                raise ValueError('The number of coloumns of the data is not equal to the number of coloumns for the uncertanty')
-        self.nCols = nColsData
 
         # check the extension
         extension = os.path.splitext(xlFile)[1]
@@ -73,7 +34,12 @@ class _readData():
         # parse functions for the specific extension and get all sheets
         if extension == '.xls':
             self.wb = xlrd.open_workbook(xlFile)
+            
             self.sheets = self.wb.sheets()
+            if not sheets is None:
+                if not isinstance(sheets, list):
+                    sheets = [sheets]
+                self.sheets = [elem for i,elem in enumerate(self.sheets) if i in sheets]
 
             def readCell(sheet, row, col):
                 return sheet.cell(row, col).value
@@ -87,7 +53,11 @@ class _readData():
         elif extension == '.xlsx':
             self.wb = openpyxl.load_workbook(xlFile, data_only=True)
             self.sheets = [self.wb[elem] for elem in self.wb.sheetnames]
-
+            if not sheets is None:
+                if not isinstance(sheets, list):
+                    sheets = [sheets]
+                self.sheets = [elem for i,elem in enumerate(self.sheets) if i in sheets]
+                
             def readCell(sheet, row, col):
                 return sheet.cell(row + 1, col + 1).value
 
@@ -101,6 +71,64 @@ class _readData():
         self.readRow = readRow
         self.readCol = readCol
 
+        if not isinstance(dataRange, list):
+            dataRange = [dataRange] * len(self.sheets)
+        if len(dataRange) != len(self.sheets):
+            raise ValueError('The length of the input "dataRange" has to be equal to the length of the intput "sheets"')
+        
+        if not uncertRange is None:
+            if not isinstance(uncertRange, list):
+                uncertRange = [uncertRange] * len(self.sheets)
+            if len(uncertRange) != len(self.sheets):
+                raise ValueError('The length of the input "uncertRange" has to be equal to the length of the intput "sheets"')
+        else:
+            uncertRange = [None] * len(self.sheets)
+            
+        
+        self.dataStartCol = []
+        self.dataEndCol = []
+        self.uncertStartCol = []
+        self.uncertEndCol = []    
+        for i in range(len(self.sheets)):
+            if '-' in dataRange[i]:
+                index = dataRange[i].find('-')
+                dataStartCol = dataRange[i][0:index]
+                dataEndCol = dataRange[i][index + 1:]
+            else:
+                dataStartCol = dataRange[i]
+                dataEndCol = dataStartCol
+
+            if '-' in dataStartCol or '-' in dataEndCol:
+                raise ValueError('The data range can only include a singly hyphen (-)')
+
+            if not uncertRange[i] is None:
+                if '-' in uncertRange[i]:
+                    index = uncertRange[i].find('-')
+                    uncertStartCol = uncertRange[i][0:index]
+                    uncertEndCol = uncertRange[i][index + 1:]
+                else:
+                    uncertStartCol = uncertRange[i]
+                    uncertEndCol = uncertStartCol
+
+                if '-' in uncertStartCol or '-' in uncertEndCol:
+                    raise ValueError('The data range can only include a singly hyphen (-)')
+            else:
+                uncertStartCol = None
+                uncertEndCol = None
+
+            # convert the coloumns
+            self.dataStartCol.append(self.colToIndex(dataStartCol))
+            self.dataEndCol.append(self.colToIndex(dataEndCol))
+            self.uncertStartCol.append(self.colToIndex(uncertStartCol))
+            self.uncertEndCol.append(self.colToIndex(uncertEndCol))
+
+            # check the number of coloumns
+            nColsData = self.dataEndCol[i] - self.dataStartCol[i] + 1
+            if not self.uncertStartCol[i] is None:
+                nColsUncert = self.uncertEndCol[i] - self.uncertStartCol[i] + 1
+                if nColsData != nColsUncert:
+                    raise ValueError('The number of coloumns of the data is not equal to the number of coloumns for the uncertanty')
+        
         # read the data
         self.readData()
 
@@ -118,7 +146,9 @@ class _readData():
     def formatHeaders(self, header):
         out = []
         for head in header:
-
+            if head is None:
+                out.append('')
+                continue
             # remove symbols and replace with _
             head = re.sub(r'[^\w]', '_', head.lower())
 
@@ -154,21 +184,25 @@ class _readData():
         return out
 
     def readData(self):
-        self.dat = _Data()
+        self.dat = []
 
         # Looping over the sheets in the data file
-        for i, sheet in enumerate(self.sheets):
-            sheetData = _Sheet(f's{i+1}')
-
+        for ii, sheet in enumerate(self.sheets):
+            
+            sheetData = Sheet()
+            
+            self.nCols = self.dataEndCol[ii] - self.dataStartCol[ii] + 1
+            
             # determine the number of variables
-            headers = self.readRow(sheet, 0)[0:self.nCols]
+            headers = self.readRow(sheet, 0)[self.dataStartCol[ii]-1:self.dataStartCol[ii] - 1 + self.nCols]
+
             headers = self.formatHeaders(headers)
-            units = self.readRow(sheet, 1)[0:self.nCols]
+            units = self.readRow(sheet, 1)[self.dataStartCol[ii]-1:self.dataStartCol[ii] - 1 + self.nCols]
 
             # determine the number of datapoints
             nDataPoints = []
             for i in range(self.nCols):
-                nDataPoint = self.readCol(sheet, i)[2:]
+                nDataPoint = self.readCol(sheet, self.dataStartCol[ii] + i - 1)[2:]
                 nDataPoint = sum([1 if elem not in ['', None] else 0 for elem in nDataPoint])
                 nDataPoints.append(nDataPoint)
             if not all(elem == nDataPoints[0] for elem in nDataPoints):
@@ -179,13 +213,13 @@ class _readData():
             data = np.zeros([nDataPoint, self.nCols])
             for i in range(nDataPoint):
                 for j in range(self.nCols):
-                    data[i, j] = float(self.readCell(sheet, 2 + i, j))
+                    data[i, j] = float(self.readCell(sheet, 2 + i, j+ self.dataStartCol[ii] - 1))
 
-            if not self.uncertStartCol is None:
+            if not self.uncertStartCol[ii] is None:
                 # determine the number of rows in the uncertanty
                 nUncertanties = []
                 for i in range(self.nCols):
-                    nUncertanty = self.readCol(sheet, self.nCols + i)[2:]
+                    nUncertanty = self.readCol(sheet, self.uncertStartCol[ii] - 1 + i)[2:]
                     nUncertanty = sum([1 if elem not in ['', None] else 0 for elem in nUncertanty])
                     nUncertanties.append(nUncertanty)
                 if not all(elem == nUncertanties[0] for elem in nUncertanties):
@@ -203,7 +237,7 @@ class _readData():
                     uncert = np.zeros([nDataPoint, self.nCols])
                     for i in range(nDataPoint):
                         for j in range(self.nCols):
-                            uncert[i, j] = float(self.readCell(sheet, 2 + i, self.nCols + j))
+                            uncert[i, j] = float(self.readCell(sheet, 2 + i, self.uncertStartCol[ii] - 1 + j))
 
                     # create the measurements uncertanties
                     for i in range(self.nCols):
@@ -223,7 +257,7 @@ class _readData():
                         u = np.zeros([self.nCols, self.nCols])
                         for j in range(self.nCols):
                             for k in range(self.nCols):
-                                u[j, k] = float(self.readCell(sheet, 2 + i * self.nCols + j, self.nCols + k))
+                                u[j, k] = float(self.readCell(sheet, 2 + i * self.nCols + j, self.uncertStartCol[ii] - 1 + k))
                         uncert.append(u)
 
                     # check if each element in the uncertanty is symmetric
@@ -263,37 +297,12 @@ class _readData():
                     var = variable(val, unit)
                     sheetData._addMeasurement(name, var)
 
-            self.dat._addSheet(sheetData.name, sheetData)
+            self.dat.append(sheetData)
 
 
-class _Data():
-    def __init__(self, name=''):
-        self.name = name
-        self.sheets = []
 
-    def _addSheet(self, name, sheet):
-        sheet.name = name
-        sheetNames = [elem.name for elem in self.sheets]
-        if name in sheetNames:
-            index = sheetNames.index(name)
-            self.sheets[index] = sheet
-            raise Warning(f'A sheet with the name {name} already existed in the object {self}. The first sheet with the same name is overwritten.')
-        else:
-            self.sheets.append(sheet)
-        setattr(self, name, sheet)
-
-    def printContents(self):
-        for sheet in self.sheets:
-            sheet.printContents(self.name)
-            print('')
-
-    def __iter__(self):
-        return iter(self.sheets)
-
-
-class _Sheet():
-    def __init__(self, name=''):
-        self.name = name
+class Sheet():
+    def __init__(self):
         self.measurements = []
         self.measurementNames = []
 
@@ -302,13 +311,9 @@ class _Sheet():
         self.measurementNames.append(name)
         setattr(self, name, var)
 
-    def printContents(self, suffix=None):
-
+    def printContents(self):
         for name in self.measurementNames:
-            if suffix is None:
-                print(f'{self.name}.{name}')
-            else:
-                print(f'{suffix}.{self.name}.{name}')
+            print(name)
 
     def __getitem__(self, index):
         measurements = []
@@ -318,7 +323,7 @@ class _Sheet():
             uncert = meas.uncert[index]
             measurements.append(variable(val, unit, uncert))
 
-        sheet = _Sheet(self.name)
+        sheet = Sheet()
 
         for measurement, measurementName in zip(measurements, self.measurementNames):
             sheet._addMeasurement(measurementName, measurement)
@@ -326,7 +331,7 @@ class _Sheet():
         return sheet
 
     def append(self, other):
-        if not isinstance(other, _Sheet):
+        if not isinstance(other, Sheet):
             raise ValueError('You can only append two sheets together')
 
         # Test if all names are the same
@@ -347,13 +352,7 @@ class _Sheet():
         return iter(self.measurements)
 
 
-## TODO change the name of "import data.md" to "sheet.md"
-## TODO remove the _Data class. instead return a list of Sheets
-## TODO change the name of "_Sheet" to "Sheet"
-## TODO change the name of "readData" to "sheetFromFile"
-## TODO read data vælg ark
-## TODO the inputs of "sheetFromFile" has to be able to take list-list inputs and return a list of Sheets
-## TODO save Sheet as xlFile
+    
+    
 
-## TODO error when reading from multiple sheets with different number of rows
 

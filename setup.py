@@ -2,9 +2,9 @@ from distutils.core import setup
 setup(
     name='pyees',
     packages=['pyees'],
-    version='1.1.5',
+    version='1.2.0',
     license='MIT',
-    description='EES but for python',
+    description='EES but for python. Pyees can be used do perform uncertanty (error) propagation. Furthermore, it can solve nonlinear systems of equations and look up material properties.',
     author='Jacob Vestergaard',
     author_email='jacobvestergaard95@gmail.com',
     url='https://github.com/jacobv95/pyees',

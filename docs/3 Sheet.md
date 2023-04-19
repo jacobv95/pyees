@@ -1,15 +1,17 @@
 
-# Importing data
+# Sheet
 
-Data can be imported using the function "readData"
+Data can be read from an excel-sheet in to a sheet-objects using the sheetsFromFile-method
 
 ```
-dat = readData(xlFile: str, dataRange: str, uncertRange=None: str)
+sheet = sheetsFromFile(xlFile: str, dataRange: str | list[str], uncertRange: None, str, list[str] = None, sheets: int, list[int] = None)
 ```
 
  - xlFile - path to the excel file to be read
  - dataRange - The coloumns with the data. The start coloumn and the end coloum has to be seperated with a hyphen (-)
  - uncertRange - The coloumns with the data. The start coloumn and the end coloum has to be seperated with a hyphen (-)
+ - sheets - the index of the sheets to read from
+ - return - a list of sheets or a sheet-object based on the length in the inputs
 
 The excel file has to follow the following structure:
  - The first row is the header
@@ -18,9 +20,7 @@ The excel file has to follow the following structure:
 
 The uncertanty can follow one of two structures:
  1. There is one row of uncertanty per row in the range of data.
- 2. There is one matrix of size nxn for each row in the range of data, where n is the number of different measurements
-
-Structure 1 is used if only the uncertanty of the measurement is known. Structure 2 is unsed if covariance between the measurements are known as well.
+ 2. The data includes covariance data. Therefore there is one matrix of size nxn for each row in the range of data, where n is the number of different measurements.
 
 Two examples are given:
 
@@ -28,35 +28,32 @@ Two examples are given:
 ![Example 2](/docs/examples/example2.png)
 
 ```
-from dataUncert import *
+from pyees import readData
 
-dat1 = readData('example1.xlsx', 'A-B', 'C-D')
-q1 = dat1.s1.a + dat1.s1.b
+sheet1 = sheetsFromFile('example1.xlsx', dataRange='A-B', uncertRange='C-D')
+q1 = sheet1.a + sheet1.b
 print(q1)
 >> [85.0] +/- [0.6] [m]
 
-dat2 = readData('example2.xlsx', 'A-B', 'C-D')
-q2 = dat2.s1.a + dat2.s1.b
+dat2 = sheetsFromFile('example2.xlsx', dataRange='A-B', uncertRange='C-D')
+q2 = sheet2.a + sheet2.b
 print(q2)
 >> [85] +/- [2] [m]
 ```
 
 Notice that the uncertanty of q2 is larger than the uncertanty of q1. This is because example1.xlsx includes information about the covariance of the measurement of a and b.
 
-Notice that both dat1 and dat2 has an object called s1. That is because the data for a and b are both located on sheet 1 of the .xlsx file.
-
-
 
 ## printContents
 
-It is possible to print the contents of a data-object. 
+It is possible to print the contents of a sheetobject. 
 
 ```
-from dataUncert import *
+from pyees import sheetsFromFile
 
-dat1 = readData('example1.xlsx', 'A-B', 'C-D')
-dat1.printContents()
->> .s1.a
->> .s1.b
+sheet = sheetsFromFile('example1.xlsx', dataRange='A-B', uncertRange'C-D')
+sheet.printContents()
+>> a
+>> b
 ```
 
