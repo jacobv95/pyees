@@ -90,8 +90,6 @@ def differentials(fluid : Fluid, property : str, parameters):
 
 def outputFromParameters(scalarMethod, property, params):
 
-    
-    
     if (all([type(elem) == scalarVariable for elem in params if not elem is None])):
         ## all inputs are scalars
         out = scalarMethod(property, *params)
@@ -112,7 +110,7 @@ def outputFromParameters(scalarMethod, property, params):
     if ns:
         n = ns[0]
         for i, param in enumerate(params):
-            if isinstance(param, scalarVariable):
+            if not type(param) == arrayVariable:
                 paramVecs[i] = variable([param.value] * n, param.unit, [param.uncert] * n)
         for i in range(n):
             params = [elem[i] for elem in paramVecs]
@@ -303,3 +301,10 @@ knownFluids = {
     'air': [propHumidAir]
 }
 
+
+if __name__ == "__main__":
+    
+    T = variable([20,30], 'C', [1,1])
+    P = variable(1, 'bar', 0.01)
+    C = variable(50,'%', 2)
+    

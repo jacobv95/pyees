@@ -916,7 +916,12 @@ class test(unittest.TestCase):
         self.assertEqual(str(A), '0.05 +/- 0.07 [L/min]')
 
         A = variable(0.0543, 'L/min', 0.7)
-        self.assertEqual(str(A), '0.0 +/- 0.7 [L/min]')
+        self.assertEqual(str(A), '0.1 +/- 0.7 [L/min]')
+        
+        A = variable(0.9, 'L/min', 3)
+        self.assertEqual(str(A), '1 +/- 3 [L/min]')
+        
+        
 
     def testUnitless(self):
         with self.assertRaises(Exception) as context:

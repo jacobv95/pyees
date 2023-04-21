@@ -35,20 +35,30 @@ class _fit():
 
         # create the regression
         data = odr.RealData(self.xVal, self.yVal, sx=sx, sy=sy)
-        regression = odr.ODR(data, odr.Model(self.func), beta0=p0)
+        regression = odr.ODR(data, odr.Model(self._func), beta0=p0)
         regression = regression.run()
         popt = regression.beta
         popt = [0.9 * elem for elem in popt]
-        regression = odr.ODR(data, odr.Model(self.func), beta0=popt)
+        regression = odr.ODR(data, odr.Model(self._func), beta0=popt)
         regression = regression.run()
-        self.popt = regression.beta
 
-        cov = np.sqrt(np.diag(regression.cov_beta))
-        self.uPopt = []
-        for i in range(len(cov)):
-            self.uPopt.append(np.sqrt(cov[i]**2 + regression.sd_beta[i]**2))
-
-        self.getPoptVariables()
+        ## create a list of coefficients
+        self.coefficients = []
+        units = self.getVariableUnits()
+        for i in range(len(regression.beta)):
+            var = variable(regression.beta[i], units[i], np.sqrt(regression.cov_beta[i,i]))
+            self.coefficients.append(var)
+        
+        ## add the covariance between the coefficients
+        for i in range(len(self.coefficients)):
+            for j in range(len(self.coefficients)):
+                if i == j:
+                    continue
+                self.coefficients[i].addCovariance(
+                    var = self.coefficients[j],
+                    covariance = regression.cov_beta[i,j],
+                    unitStr = str(self.coefficients[i]._unitObject * self.coefficients[j]._unitObject)
+                )
 
         # determine r-squared
         np.seterr('ignore')
@@ -110,7 +120,7 @@ class _fit():
     def predict(self, x):
         if not isinstance(x, arrayVariable) or isinstance(x, scalarVariable):
             x = variable(x, self.xUnit)
-        return self.func(self.popt, x)
+        return self.func(x)
 
     def predictDifferential(self, x):
         if not isinstance(x, arrayVariable) or isinstance(x, scalarVariable):
@@ -311,25 +321,24 @@ class pol_fit(_fit):
 
         _fit.__init__(self, self.func, x, y, p0=p0)
 
-    def getPoptVariables(self):
-        popt = []
+    def getVariableUnits(self):
+        units = []
         n = self.deg
         index = 0
         for i in range(n + 1):
             if self.terms[i]:
-                value = self.popt[index]
-                uncert = self.uPopt[index]
                 u = self.yUnit
                 if i != n:
                     ui, _ = self.xUnit ** (n - i)
                     u /= unit(ui)
-                var = variable(value, u, uncert)
-                popt.append(var)
+                units.append(u)
                 index += 1
+        return units
 
-        self.popt = popt
+    def func(self, x):
+        return self._func(self.coefficients, x)
 
-    def func(self, B, x):
+    def _func(self, B, x):
         out = 0
         n = self.deg
         index = 0
@@ -339,7 +348,10 @@ class pol_fit(_fit):
                 index += 1
         return out
 
-    def d_func(self, B, x):
+    def d_func(self, x):
+        return self._d_func(self.coefficients, x)
+
+    def _d_func(self, B, x):
         out = 0
         n = self.deg
         index = 0
@@ -391,7 +403,7 @@ class pol_fit(_fit):
         index = 0
         for i in range(n + 1):
             if self.terms[i]:
-                out += f', {string.ascii_lowercase[i]}={self.popt[index].__str__(pretty = True)}'
+                out += f', {string.ascii_lowercase[i]}={self.coefficients[index].__str__(pretty = True)}'
                 index += 1
         out += '$'
         return out
@@ -459,70 +471,22 @@ class logistic_fit(_fit):
         return out
 
 
-class logistic_100_fit(_fit):
-    def __init__(self, x, y, p0=[0, 0]):
-        
-        if len(p0) != 2:
-            raise ValueError('You have to provide initial guesses for 2 parameters')
-        if x.unit != '1':
-            raise ValueError('The variable "x" cannot have a unit')
-        _fit.__init__(self, self.func, x, y, p0=p0)
-
-    def getPoptVariables(self):
-        k = self.popt[0]
-        x0 = self.popt[1]
-
-        uK = self.uPopt[0]
-        uX0 = self.uPopt[1]
-
-        unitK = '1'
-        unitX0 = '1'
-
-        k = variable(k, unitK, uK)
-        x0 = variable(x0, unitX0, uX0)
-
-        self.popt = [k, x0]
-
-    def func(self, B, x):
-        k = B[0]
-        x0 = B[1]
-        if isinstance(k, variable):
-            L = variable(100, self.yUnit)
-        else:
-            L = 100
-        return L / (1 + np.exp(-k * (x - x0)))
-
-    def d_func(self, B, x):
-        L = 100
-        k = B[0]
-        x0 = B[1]
-        return k * L * np.exp(-k * (x - x0)) / ((np.exp(-k * (x - x0)) + 1)**2)
-
-    def d_func_name(self):
-        k = self.popt[0]
-        x0 = self.popt[1]
-
-        out = f'$\\frac{{k\cdot 100 \cdot e^{{-k\cdot (x-x_0)}}}}{{\\left(1 + e^{{-k\cdot (x-x_0)}}\\right)}}$'
-        out += f'$\quad k={k}$, '
-        out += f'$\quad x_0={x0}$'
-        return out
-
-    def func_name(self):
-        k = self.popt[0].__str__(pretty=True)
-        x0 = self.popt[1].__str__(pretty=True)
-
-        out = f'$\\frac{{100}}{{1 + e^{{-k\cdot (x-x_0)}}}}'
-        out += f'\quad k={k}'
-        out += f'\quad x_0={x0}$'
-        return out
-
 if __name__ == "__main__":
     
     
-    x = variable([1,5], 'C')
-    y = variable([1,3], 'C')
+    frequency = variable([10,20,30,40,50,60,70,80,90,100,110], 'C')
+    voltage = variable([16, 45, 64, 75,70,115, 142, 167, 183, 160, 221], 'C', [5,5,5,5,30,5,5,5,5,30,5])
     
-    f = lin_fit(x,y)
-    print(f)
+    fit = lin_fit(frequency, voltage)
     
-    print(f.predict(1))
+    print(fit) 
+    
+    
+
+
+
+## TODO fit - få det til at virke som i bogen - brug tests - mangler solutions
+## TODO fit - lav normalized residuals plot
+## TODO fit - evaluer, om 68% af datapunkterne ligger 1 standard afvigelse fra fittet
+
+## TODO fit - lås parametre

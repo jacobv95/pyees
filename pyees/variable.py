@@ -157,9 +157,9 @@ class scalarVariable():
             else:
                 value = int(np.around(value, - nDecimals + 1))
         else:
-            value = '0'
-            if digitsUncert > 0:
-                value += '.' + ''.join(['0'] * digitsUncert)
+            value = str(np.around(value, digitsUncert))
+            if '.' in value and digitsUncert <= 0:
+                value = value.split('.')[0]
 
         return value, uncert
 
@@ -1001,7 +1001,9 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 
 if __name__ == "__main__":
-    a = variable(1)
+    A = variable(0.003, 'L/min', 0.2)
+    print(A)
+    a = variable(0.9, '', 3)
     print(a)    
     
     
