@@ -118,7 +118,7 @@ class _fit():
         ax.plot(self.xVal, self.yVal, label=label, **kwargs)
 
     def predict(self, x):
-        if not isinstance(x, arrayVariable) or isinstance(x, scalarVariable):
+        if not isinstance(x, scalarVariable):
             x = variable(x, self.xUnit)
         return self.func(x)
 
