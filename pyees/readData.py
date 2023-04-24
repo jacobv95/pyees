@@ -273,7 +273,7 @@ class _SheetsFromFile():
                         name = headers[i]
                         unit = units[i]
                         val = np.array(data[:, i])
-                        u = np.array([elem[i, i] for elem in uncert])
+                        u = np.array([np.sqrt(elem[i, i]) for elem in uncert])
                         var = variable(val, unit, uncert=u)
                         vars.append(var)
 

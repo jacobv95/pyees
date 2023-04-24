@@ -242,7 +242,7 @@ class scalarVariable():
         if not unit._assertEqualStatic(covUnit._SIBaseUnit, selfVarUnit._SIBaseUnit):
             raise ValueError(f'The covariance of {covariance} [{unitStr}] does not match the units of {self} and {var}')
         
-        covariance = covUnit._converterToSI.convert(covariance, useOffset=False)
+        covariance *=  self._converterToSI.convert(1, useOffset=False) * var._converterToSI.convert(1, useOffset=False)
         
         self.covariance[var] = covariance        
         var.covariance[self] = covariance
@@ -278,7 +278,11 @@ class scalarVariable():
                 if var2 in self.dependsOn:
                     grad1 = self.dependsOn[var1][1]
                     grad2 = self.dependsOn[var2][1]
-                    variance += scale**2 * grad1 * grad2 * var1.covariance[var2]
+                    s = scale**2 
+                    cov = var1.covariance[var2]
+                    term = s * grad1 * grad2 * cov
+                    variance += term
+                    # variance += scale**2 * grad1 * grad2 * var1.covariance[var2]
 
         self._uncert = np.sqrt(variance)
         
@@ -1001,9 +1005,28 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 
 if __name__ == "__main__":
-    A = variable(0.003, 'L/min', 0.2)
-    print(A)
-    a = variable(0.9, '', 3)
-    print(a)    
+  
+    # value  
+    # [0.02994473968569557, 0.212143804427421, 1.8607179520279966]
+
+    # cov
+    # [[ 2.91453531e-06 -3.25319114e-04  7.98892818e-03]
+    #  [-3.25319114e-04  3.72796202e-02 -9.34366573e-01]
+    #  [ 7.98892818e-03 -9.34366573e-01  2.40059033e+01]]
+
+
+    b = variable(0.212143804427421, 'mbar-min/L', np.sqrt(3.72796202e-02))
+    c = variable(1.8607179520279966, 'mbar', np.sqrt(2.40059033e+01))
+    
+    b.addCovariance(c, -9.34366573e-01, 'mbar2-min/L')
+    
+    flow = variable(100,'L/min')
+    
+    dp = b*flow + c
+
+    print(dp)
     
     
+    
+
+## TODO major error - use sheet 1 in PS 2312-1: calculation flow1 - flow2. The covariance will create a negative varianace - and return an uncertanty of nan

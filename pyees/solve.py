@@ -158,8 +158,9 @@ def solve(func, x, *args, bounds = None, **kwargs):
         out = ffunc(*x)
         currentIndex = 0
         for i,o in enumerate(out):
-            for bound in o:
-                bound.convert(bound._unitObject._SIBaseUnit) 
+            if not doesUnitsOfEquationsMatch[i]:
+                for elem in o:
+                    elem.convert(elem._unitObject._SIBaseUnit) 
             scales[i] = 1/(o[0].value - o[1].value)**2
     
     
