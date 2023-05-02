@@ -242,7 +242,7 @@ class scalarVariable():
         if not unit._assertEqualStatic(covUnit._SIBaseUnit, selfVarUnit._SIBaseUnit):
             raise ValueError(f'The covariance of {covariance} [{unitStr}] does not match the units of {self} and {var}')
         
-        covariance *=  self._converterToSI.convert(1, useOffset=False) * var._converterToSI.convert(1, useOffset=False)
+        covariance *= covUnit._converterToSI.convert(1, useOffset=False)
         
         self.covariance[var] = covariance        
         var.covariance[self] = covariance
@@ -936,7 +936,7 @@ class arrayVariable(scalarVariable):
             case np.sqrt:
                 return self.sqrt()
         raise NotImplementedError()
-    
+        
     def min(self):
         index = np.argmin(self.value)
         return variable(self.value[index], self.unit, self.uncert[index])
@@ -1003,30 +1003,3 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
-
-if __name__ == "__main__":
-  
-    # value  
-    # [0.02994473968569557, 0.212143804427421, 1.8607179520279966]
-
-    # cov
-    # [[ 2.91453531e-06 -3.25319114e-04  7.98892818e-03]
-    #  [-3.25319114e-04  3.72796202e-02 -9.34366573e-01]
-    #  [ 7.98892818e-03 -9.34366573e-01  2.40059033e+01]]
-
-
-    b = variable(0.212143804427421, 'mbar-min/L', np.sqrt(3.72796202e-02))
-    c = variable(1.8607179520279966, 'mbar', np.sqrt(2.40059033e+01))
-    
-    b.addCovariance(c, -9.34366573e-01, 'mbar2-min/L')
-    
-    flow = variable(100,'L/min')
-    
-    dp = b*flow + c
-
-    print(dp)
-    
-    
-    
-
-## TODO major error - use sheet 1 in PS 2312-1: calculation flow1 - flow2. The covariance will create a negative varianace - and return an uncertanty of nan
