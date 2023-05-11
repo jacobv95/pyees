@@ -788,64 +788,35 @@ class unit():
     @staticmethod
     def _getSIBaseUnit(upper, upperExp, lower, lowerExp):    
                 
-        upup, upupExp, uplow, uplowExp = map(list, zip(*[unit._splitCompositeAndIncreaseExponent(up, exp) for up, exp in zip(upper, upperExp)]))
-        lowup, lowupExp, lowlow, lowlowExp = map(list, zip(*[unit._splitCompositeAndIncreaseExponent(low, exp) for low, exp in zip(lower, lowerExp)])) if lower else [[],[],[],[]]
+        nUpper = len(upper)
+        upperOut, lowerOut, upperExpOut, lowerExpOut = [], [], [], []
         
-        upper = [item for sublist in upup + lowlow for item in sublist]
-        upperExp = [item for sublist in upupExp + lowlowExp for item in sublist] 
-        lower = [item for sublist in uplow + lowup for item in sublist] 
-        lowerExp = [item for sublist in  uplowExp + lowupExp for item in sublist] 
-
-        
-        ## TODO optimize this
-        upperOut = list(set(upper))
-        lowerOut = list(set(lower))
-        upperExpOut = [0] * len(upperOut)
-        lowerExpOut = [0] * len(lowerOut)
-
-        for i,ui in enumerate(upperOut):
-            for j,uj in enumerate(upper):
-                if uj == ui:
-                    upperExpOut[i] += upperExp[j]
-        
-        for i,ui in enumerate(lowerOut):
-            for j,uj in enumerate(lower):
-                if uj == ui:
-                    lowerExpOut[i] += lowerExp[j]
-        
-
-        # # print(upper, upperExp, lower, lowerExp)
-        # # exit()
-
-        
-           
-        # nUpper = len(upper)
-        # upperOut = []
-        # lowerOut = []
-        # upperExpOut = []
-        # lowerExpOut = []
-        # for i, (elem, exp) in enumerate(zip(upper + lower, upperExp + lowerExp)):
-        #     up,low = unit._splitCompositeUnit(knownUnits[elem][0])
-        #     if (i >= nUpper):
-        #         up, low = low, up
-        #     for elem in up:
-        #         elem, elemExp = unit._removeExponentFromUnit(elem)
-        #         if not elem in upperOut:
-        #             upperOut.append(elem)
-        #             upperExpOut.append(elemExp * exp)
-        #         else:
-        #             index = upperOut.index(elem)
-        #             upperExpOut[index] += elemExp * exp
-        #     for elem in low:
-        #         elem, elemExp = unit._removeExponentFromUnit(elem)
-        #         if not elem in lowerOut:
-        #             lowerOut.append(elem)
-        #             lowerExpOut.append(elemExp * exp)
-        #         else:
-        #             index = lowerOut.index(elem)
-        #             lowerExpOut[index] += elemExp * exp
-        
-        
+        for i, (elem, exp) in enumerate(zip(upper + lower, upperExp + lowerExp)):
+            
+            up,low = unit._splitCompositeUnit(knownUnits[elem][0])
+            
+            if (i >= nUpper):
+                up, low = low, up
+            
+            for elem in up:
+                elem, elemExp = unit._removeExponentFromUnit(elem)
+                elemExp *= exp
+                if not elem in upperOut:
+                    upperOut.append(elem)
+                    upperExpOut.append(elemExp)
+                else:
+                    index = upperOut.index(elem)
+                    upperExpOut[index] += elemExp
+                    
+            for elem in low:
+                elem, elemExp = unit._removeExponentFromUnit(elem)
+                elemExp *= exp
+                if not elem in lowerOut:
+                    lowerOut.append(elem)
+                    lowerExpOut.append(elemExp)
+                else:
+                    index = lowerOut.index(elem)
+                    lowerExpOut[index] += elemExp
         
         
         upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp = unit._cancleUnits(
