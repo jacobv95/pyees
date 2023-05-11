@@ -3,3 +3,4 @@ scipy
 openpyxl
 xlrd
 pyfluids
+xlwt

@@ -1,26 +1,108 @@
 import numpy as np
 import openpyxl
 import xlrd
+import xlwt
 import os.path
 import re
 import string
 try:
-    from variable import variable
+    from variable import variable, scalarVariable
 except ImportError:
-    from pyees.variable import variable
+    from pyees.variable import variable, scalarVariable
 
-def fileFromSheets(Sheets):
-    ## TODO save Sheet as xlFile
-    raise NotImplementedError()
+
+
+def fileFromSheets(sheets, fileName):
+    _fileFromSheets(sheets, fileName)
+
+class _fileFromSheets():
+    def __init__(self, sheets, fileName) -> None:
+        
+        self.fileName = fileName
+        self.sheets = sheets
+        
+        extension = os.path.splitext(fileName)[1]
+        supportedExtensions = ['.xls', '.xlsx']
+        if extension not in supportedExtensions:
+            raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')
+            
+        if extension == '.xls':
+            self.wb = xlwt.Workbook()                            
+            
+            def createSheet():
+                return self.wb.add_sheet()
+        
+            def write(sheet, row, col, value):
+                sheet.write(row, col, value)
+            
+            def getSheet(index):
+                return self.wb.add_sheet(f'Sheet {index + 1}')
+                       
+            
+        elif extension == '.xlsx':
+            self.wb = openpyxl.Workbook()
+            
+            def createSheet():
+                return self.wb.create_sheet()
+        
+            def write(sheet, row, col, value):
+                sheet.cell(row+1, col+1, value)
+            
+            def getSheet(index):
+                if index > 0:
+                    worksheet = self.createSheet()
+                else:
+                    worksheet = self.wb.active
+                return worksheet
+            
+        self.createSheet = createSheet
+        self.write = write
+        self.getSheet = getSheet
+        
+        self.saveSheets()
+        
+    def saveSheets(self):
+        
+        for ii, sheet in enumerate(self.sheets):
+            
+            worksheet = self.getSheet(ii)
+            
+            col = 0
+            for objectName in dir(sheet):
+                object = getattr(sheet, objectName)
+                if isinstance(object, scalarVariable):
+                    meas = object
+ 
+                    self.write(worksheet, 0, col, objectName)
+                    self.write(worksheet, 1, col, meas.unit)
+                    
+                    u = meas.unit
+                    scale = variable(1, u)
+                    meas /= scale
+                    
+                    for row, val in enumerate(meas):
+                        self.write(worksheet, row + 2, col, str(val))
+                    
+                    meas *= scale
+                                                
+                    col += 1          
+                         
+        self.wb.save(self.fileName)
+        
+            
+            
+        
+        
+        
 
 def sheetsFromFile(xlFile, dataRange: str | list[str], uncertRange: str | list[str] = None, sheets: int | list[int] = None):
-    dat = _SheetsFromFile(xlFile, dataRange, uncertRange, sheets)
+    dat = _sheetsFromFile(xlFile, dataRange, uncertRange, sheets)
     if len(dat.dat) == 1:
         return dat.dat[0]
     return dat.dat
 
 
-class _SheetsFromFile():
+class _sheetsFromFile():
 
     def __init__(self, xlFile, dataRange, uncertRange=None, sheets = None) -> None:
 
@@ -187,22 +269,22 @@ class _SheetsFromFile():
         self.dat = []
 
         # Looping over the sheets in the data file
-        for ii, sheet in enumerate(self.sheets):
+        for ii, sh in enumerate(self.sheets):
             
-            sheetData = Sheet()
+            sheetData = sheet()
             
             self.nCols = self.dataEndCol[ii] - self.dataStartCol[ii] + 1
             
             # determine the number of variables
-            headers = self.readRow(sheet, 0)[self.dataStartCol[ii]-1:self.dataStartCol[ii] - 1 + self.nCols]
+            headers = self.readRow(sh, 0)[self.dataStartCol[ii]-1:self.dataStartCol[ii] - 1 + self.nCols]
 
             headers = self.formatHeaders(headers)
-            units = self.readRow(sheet, 1)[self.dataStartCol[ii]-1:self.dataStartCol[ii] - 1 + self.nCols]
+            units = self.readRow(sh, 1)[self.dataStartCol[ii]-1:self.dataStartCol[ii] - 1 + self.nCols]
 
             # determine the number of datapoints
             nDataPoints = []
             for i in range(self.nCols):
-                nDataPoint = self.readCol(sheet, self.dataStartCol[ii] + i - 1)[2:]
+                nDataPoint = self.readCol(sh, self.dataStartCol[ii] + i - 1)[2:]
                 nDataPoint = sum([1 if elem not in ['', None] else 0 for elem in nDataPoint])
                 nDataPoints.append(nDataPoint)
             if not all(elem == nDataPoints[0] for elem in nDataPoints):
@@ -213,13 +295,13 @@ class _SheetsFromFile():
             data = np.zeros([nDataPoint, self.nCols])
             for i in range(nDataPoint):
                 for j in range(self.nCols):
-                    data[i, j] = float(self.readCell(sheet, 2 + i, j+ self.dataStartCol[ii] - 1))
+                    data[i, j] = float(self.readCell(sh, 2 + i, j+ self.dataStartCol[ii] - 1))
 
             if not self.uncertStartCol[ii] is None:
                 # determine the number of rows in the uncertanty
                 nUncertanties = []
                 for i in range(self.nCols):
-                    nUncertanty = self.readCol(sheet, self.uncertStartCol[ii] - 1 + i)[2:]
+                    nUncertanty = self.readCol(sh, self.uncertStartCol[ii] - 1 + i)[2:]
                     nUncertanty = sum([1 if elem not in ['', None] else 0 for elem in nUncertanty])
                     nUncertanties.append(nUncertanty)
                 if not all(elem == nUncertanties[0] for elem in nUncertanties):
@@ -237,7 +319,7 @@ class _SheetsFromFile():
                     uncert = np.zeros([nDataPoint, self.nCols])
                     for i in range(nDataPoint):
                         for j in range(self.nCols):
-                            uncert[i, j] = float(self.readCell(sheet, 2 + i, self.uncertStartCol[ii] - 1 + j))
+                            uncert[i, j] = float(self.readCell(sh, 2 + i, self.uncertStartCol[ii] - 1 + j))
 
                     # create the measurements uncertanties
                     for i in range(self.nCols):
@@ -247,7 +329,8 @@ class _SheetsFromFile():
                         u = np.array(uncert[:, i])
                         var = variable(val, unit, uncert=u)
 
-                        sheetData._addMeasurement(name, var)
+                        setattr(sheetData, name, var)
+
                 else:
                     # There are covariance data in the sheet
 
@@ -257,7 +340,7 @@ class _SheetsFromFile():
                         u = np.zeros([self.nCols, self.nCols])
                         for j in range(self.nCols):
                             for k in range(self.nCols):
-                                u[j, k] = float(self.readCell(sheet, 2 + i * self.nCols + j, self.uncertStartCol[ii] - 1 + k))
+                                u[j, k] = float(self.readCell(sh, 2 + i * self.nCols + j, self.uncertStartCol[ii] - 1 + k))
                         uncert.append(u)
 
                     # check if each element in the uncertanty is symmetric
@@ -285,7 +368,7 @@ class _SheetsFromFile():
                                 vars[i].addCovariance(vars[j], cov, str(vars[i]._unitObject * vars[j]._unitObject))
 
                     for head, var in zip(headers, vars):
-                        sheetData._addMeasurement(head, var)
+                        setattr(sheetData, head, var)
             else:
                 # There are no uncertaty data in the sheet
 
@@ -295,64 +378,69 @@ class _SheetsFromFile():
                     unit = units[i]
                     val = np.array(data[:, i])
                     var = variable(val, unit)
-                    sheetData._addMeasurement(name, var)
+                    setattr(sheetData, name, var)
 
             self.dat.append(sheetData)
 
 
 
-class Sheet():
+class sheet():
     def __init__(self):
-        self.measurements = []
-        self.measurementNames = []
-
-    def _addMeasurement(self, name, var):
-        self.measurements.append(var)
-        self.measurementNames.append(name)
-        setattr(self, name, var)
+        pass
 
     def printContents(self):
-        for name in self.measurementNames:
-            print(name)
+        for key, item in self.__dict__.items():
+            if isinstance(item, scalarVariable):
+                print(key)
 
     def __getitem__(self, index):
-        measurements = []
-        for meas in self.measurements:
-            val = meas.value[index]
-            unit = meas.unit
-            uncert = meas.uncert[index]
-            measurements.append(variable(val, unit, uncert))
-
-        sheet = Sheet()
-
-        for measurement, measurementName in zip(measurements, self.measurementNames):
-            sheet._addMeasurement(measurementName, measurement)
-
-        return sheet
+        sh = sheet()
+        for key, item in self.__dict__.items():
+            if isinstance(item, scalarVariable):
+                setattr(sh, key, item[index])
+        return sh
 
     def append(self, other):
-        if not isinstance(other, Sheet):
+        if not isinstance(other, sheet):
             raise ValueError('You can only append two sheets together')
 
+        selfMeasurements = []
+        selfMeasurementNames = []
+        otherMeasurements = []
+        otherMeasurementNames = []
+        
+        for key,item in self.__dict__.items():
+            if isinstance(item,scalarVariable):
+                selfMeasurementNames.append(key)
+                selfMeasurements.append(item)
+
+        for key,item in other.__dict__.items():
+            if isinstance(item,scalarVariable):
+                otherMeasurementNames.append(key)
+                otherMeasurements.append(item)
+
         # Test if all names are the same
-        for elem in self.measurementNames:
-            if elem not in other.measurementNames:
+        for elem in selfMeasurementNames:
+            if elem not in otherMeasurementNames:
                 raise ValueError('You can only append sheets with the excact same measurements. The names did not match')
 
-        for elem in other.measurementNames:
-            if elem not in self.measurementNames:
+        for elem in otherMeasurementNames:
+            if elem not in selfMeasurementNames:
                 raise ValueError('You can only append sheets with the excact same measurements. The names did not match')
 
         # append the measurements from other to self
-        for elem, elemNames in zip(self.measurements, self.measurementNames):
-            index = other.measurementNames.index(elemNames)
-            elem.append(other.measurements[index])    
+        for measurement, measurementName in zip(selfMeasurements, selfMeasurementNames):
+            index = otherMeasurementNames.index(measurementName)
+            measurement.append(otherMeasurements[index])    
         
     def __iter__(self):
-        return iter(self.measurements)
-
-
+        
+        variables = []
+        for _, item in self.__dict__.items():
+            if isinstance(item, scalarVariable):
+                variables.append(item)
+        
+        return iter(variables)
     
     
-
-
+    
