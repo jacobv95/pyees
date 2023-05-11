@@ -110,7 +110,9 @@ def outputFromParameters(scalarMethod, property, params):
     if ns:
         n = ns[0]
         for i, param in enumerate(params):
-            if not type(param) == arrayVariable:
+            if param is None:
+                paramVecs[i] = [None] * n
+            elif not type(param) == arrayVariable:
                 paramVecs[i] = variable([param.value] * n, param.unit, [param.uncert] * n)
         for i in range(n):
             params = [elem[i] for elem in paramVecs]
@@ -245,7 +247,7 @@ def propHumidAir(property, arguments):
     for Var, desiredUnit in zip(vars, desiredUnits):
         Var.convert(desiredUnit)
     
-    out = outputFromParameters(propHumidAirScalar, property, [T, Rh, H, P])
+    out = outputFromParameters(propHumidAirScalar, property, [T,Rh, H, P])
     
     for Var, varUnit in zip(vars, varUnits):
         Var.convert(varUnit)

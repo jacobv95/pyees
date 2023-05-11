@@ -1003,3 +1003,10 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
+
+
+if __name__ == "__main__":
+    diameter = variable(40, 'cm')
+    area = np.pi / 4 * diameter ** 2
+    
+    print(area.value)

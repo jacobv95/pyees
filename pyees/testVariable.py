@@ -1281,6 +1281,14 @@ class test(unittest.TestCase):
         b = variable(1, 'm')
         c = a * b
         c.convert('mm2')
+        
+        
+        diameter = variable(40, 'cm')
+        area = np.pi / 4 * diameter ** 2
+        area.convert('m2')
+        self.assertEqual(area.value, 0.12566370614359172953850573)
+        self.assertEqual(area.unit, 'm2')       
+        
 
     def testCompare(self):
         a = variable(1, 'm')

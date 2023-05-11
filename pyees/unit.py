@@ -1110,7 +1110,7 @@ class unit():
 
         # determine if the SI bases are identical
         otherSIBase = self._getSIBaseUnit(otherUpper, otherUpperExp, otherLower, otherLowerExp)
-
+        
         if unit._assertEqualStatic(self._SIBaseUnit, otherSIBase) == False:
             raise ValueError(f'You tried to convert from {self} to {newUnit}. But these do not have the same base units')
         
@@ -1136,9 +1136,9 @@ class unit():
         exponents = self.upperExp + self.lowerExp
         for i, (unit, prefix, exp) in enumerate(zip(units, prefixes, exponents)):
             conv = knownUnits[unit][1]
-            if exp > 1: conv = conv ** exp
             if not prefix is None:
                 conv *= knownPrefixes[prefix]
+            if exp > 1: conv = conv ** exp
             out = out * conv if i < nUpper else out / conv
 
         nUpper = len(otherUpper)
@@ -1147,9 +1147,9 @@ class unit():
         exponents = otherUpperExp + otherLowerExp
         for i, (unit, prefix, exp) in enumerate(zip(units, prefixes, exponents)):
             conv = knownUnits[unit][1]
-            if exp > 1: conv = conv ** exp
             if not prefix is None:
                 conv *= knownPrefixes[prefix]
+            if exp > 1: conv = conv ** exp
             out = out / conv if i < nUpper else out * conv
 
         return out
@@ -1171,10 +1171,3 @@ class unit():
         otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
         self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
 
-
-if __name__ == "__main__":
-    
-    a = unit('m-km')
-    a = unit('L-DELTAC-J/DELTAK-m3-min')
-    
-    
