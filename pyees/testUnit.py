@@ -138,6 +138,11 @@ class test(unittest.TestCase):
         converter = a.getConverter('F')
         self.assertAlmostEqual(converter.convert(300, useOffset=True), 80.33)
 
+        a = unit('mm2')
+        converter = a.getConverter('m2')
+        self.assertAlmostEqual(converter.convert(1), 1/1000 * 1/1000)
+
+
         a = unit('A')
         b = unit('V')
         c = a * b
@@ -150,7 +155,7 @@ class test(unittest.TestCase):
         c = unit(c)
         converter = c.getConverter('V')
         
-        self.assertAlmostEqual(converter.convert(1, useOffset=True), 1)
+        self.assertEqual(converter.convert(1, useOffset=True), 1)
 
         with self.assertRaises(Exception) as context:
             a = unit('mu')

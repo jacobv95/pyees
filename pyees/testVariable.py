@@ -1277,17 +1277,25 @@ class test(unittest.TestCase):
         np.testing.assert_equal(c.uncert, uc)
 
     def testConvert(self):
-        a = variable(1, 'km')
-        b = variable(1, 'm')
+        a = variable(1, 'km', 0.1)
+        b = variable(1, 'm', 0.1)
         c = a * b
         c.convert('mm2')
+        self.assertEqual(c.value, 1e9)
+        self.assertEqual(c.unit, 'mm2')
+        self.assertEqual(c.uncert,  np.sqrt((1 * 1000 * 0.1 * 1000*1000)**2 + (1 * 1000*1000 * 0.1 * 1000)**2))
         
-        
-        diameter = variable(40, 'cm')
+        diameter = variable(40, 'cm', 0.2)
         area = np.pi / 4 * diameter ** 2
         area.convert('m2')
         self.assertEqual(area.value, 0.12566370614359172953850573)
-        self.assertEqual(area.unit, 'm2')       
+        self.assertEqual(area.unit, 'm2')
+        self.assertEqual(area.uncert, np.sqrt((2 * np.pi / 4 * 0.4 * 0.002)**2))
+        
+        
+        
+        
+         
         
 
     def testCompare(self):
