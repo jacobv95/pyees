@@ -6,7 +6,7 @@ pyees/__init__.py
 pyees/fit.py
 pyees/profilePyees.py
 pyees/prop.py
-pyees/readData.py
+pyees/sheet.py
 pyees/solve.py
 pyees/stackOverflowODR.py
 pyees/testFit.py

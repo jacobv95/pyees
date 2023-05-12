@@ -13,6 +13,8 @@ except ImportError:
 
 
 def fileFromSheets(sheets, fileName):
+    if not isinstance(sheets, list):
+        sheets = [sheets]
     _fileFromSheets(sheets, fileName)
 
 class _fileFromSheets():
