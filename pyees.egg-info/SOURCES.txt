@@ -12,7 +12,7 @@ pyees/stackOverflowODR.py
 pyees/testFit.py
 pyees/testProp.py
 pyees/testPyees.py
-pyees/testReadData.py
+pyees/testSheet.py
 pyees/testSolve.py
 pyees/testUnit.py
 pyees/testVariable.py

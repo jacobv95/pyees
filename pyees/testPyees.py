@@ -1,14 +1,14 @@
 import unittest
 try:
     from testFit import test as testFit
-    from testReadData import test as testReadData
+    from testSheet import test as testSheet
     from testUnit import test as testUnit
     from testVariable import test as testVariable
     from testProp import test as testProp
     from testSolve import test as testSolve
 except ImportError:
     from pyees.testFit import test as testFit
-    from pyees.testReadData import test as testReadData
+    from pyees.testSheet import test as testSheet
     from pyees.testUnit import test as testUnit
     from pyees.testVariable import test as testVariable
     from pyees.testProp import test as testProp
@@ -18,7 +18,7 @@ except ImportError:
 def main():
     tests = [
         testFit,
-        testReadData,
+        testSheet,
         testUnit, 
         testVariable,
         testProp,

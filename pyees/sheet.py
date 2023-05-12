@@ -234,7 +234,7 @@ class _sheetsFromFile():
                 out.append('')
                 continue
             # remove symbols and replace with _
-            head = re.sub(r'[^\w]', '_', head.lower())
+            head = re.sub(r'[^\w]', '_', head)
 
             # remove multiple consequtive _
             done = False
