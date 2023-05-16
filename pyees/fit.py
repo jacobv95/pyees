@@ -105,7 +105,7 @@ class _fit():
         else:
             ax.scatter(self.xVal, self.yVal, label=label, **kwargs)
 
-    def plotNormalizedResiduals(self, ax, label = True, **kwargs):
+    def scatterNormalizedResiduals(self, ax, label = True, **kwargs):
         
         # parse label
         if isinstance(label, str):
@@ -123,9 +123,9 @@ class _fit():
         scale = variable(np.array([1 / ((elemX**2 + elemY**2)**(1/2)) for elemX, elemY in zip(self._sx, self._sy)]))
         normRes = scale * self._residuals
         np.seterr('warn')
-        ax.plot(self.xVal, normRes.value, label=label, **kwargs)
+        ax.scatter(self.xVal, normRes.value, label=label, **kwargs)
 
-    def plotResiduals(self, ax, label = True, **kwargs):
+    def scatterResiduals(self, ax, label = True, **kwargs):
         
         # parse label
         if isinstance(label, str):
@@ -139,7 +139,7 @@ class _fit():
         else:
             raise ValueError('The label has to be a string, a bool or None')
         
-        ax.plot(self.xVal, self._residuals.value, label=label, **kwargs)
+        ax.scatter(self.xVal, self._residuals.value, label=label, **kwargs)
 
     def plotData(self, ax, label=True, **kwargs):
 
