@@ -1142,3 +1142,12 @@ class unit():
         otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
         self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
 
+
+
+
+if __name__ == "__main__":
+    a = unit('%')
+    b = unit('%')
+    
+    c = a + b
+    print(c)

@@ -293,7 +293,6 @@ class scalarVariable():
 
         # determine if the two variable can be added
         isLogarithmicUnit, outputUnit, scaleToSI, scaleSelf, scaleOther = self._unitObject + other._unitObject
-
         if isLogarithmicUnit:
             return logarithmicVariables.__add__(self, other)
 
@@ -346,7 +345,6 @@ class scalarVariable():
 
         # determine if the variables can be subtracted
         isLogarithmicUnit, outputUnit, scaleToSI, scaleSelf, scaleOther = self._unitObject - other._unitObject
-
         if isLogarithmicUnit:
             return logarithmicVariables.__sub__(self, other)
 
@@ -487,7 +485,9 @@ class scalarVariable():
         return var
 
     def __neg__(self):
-        return -1 * self
+        out = -1 * self
+        out.convert(self.unit)
+        return out
 
     def log(self):
         if self.unit != '1':
@@ -1006,7 +1006,6 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 
 if __name__ == "__main__":
-    diameter = variable(40, 'cm')
-    area = np.pi / 4 * diameter ** 2
-    
-    print(area.value)
+    A = variable(7, '%', 0.1)
+    B = -A
+    print(B)

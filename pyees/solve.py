@@ -72,7 +72,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
 
     ## check the number of equations and variables
     if (len(out) != nVariables):
-        raise ValueError(f'You supplied {len(out)} equations but {len(x)} variables. The number of equations and the vairables has to match')
+        raise ValueError(f'You supplied {len(out)} equations but {nVariables} variables. The number of equations and the vairables has to match')
 
     def fbounds(*x):
         out = bounds(*x)

@@ -88,6 +88,13 @@ class test(unittest.TestCase):
                 np.sqrt((1 * 10.56 * 1000 * 60)**2 + (1 * 6.4 * 1000 * 60)**2),
             ]))
 
+        A = variable(7, '%', 0.1)
+        B = 1 + A
+        self.assertAlmostEqual(B.value, 8)
+        self.assertEqual(B.unit, '%')
+        self.assertEqual(B.uncert, 0.1)
+
+
     def test_sub(self):
         A = variable(12.3, 'L/min', uncert=2.6)
         B = variable(745.1, 'L/min', uncert=53.9)
@@ -114,6 +121,12 @@ class test(unittest.TestCase):
                 np.sqrt((1 * 5.4)**2 + (1 * 24.75)**2),
                 np.sqrt((1 * 10.56)**2 + (1 * 6.4)**2),
             ]))
+
+        A = variable(7, '%', 0.1)
+        B = 1 - A
+        self.assertAlmostEqual(B.value, -6)
+        self.assertEqual(B.unit, '%')
+        self.assertEqual(B.uncert, 0.1)
 
     def test_add_with_different_units(self):
         A = variable(12.3, 'm3/s', uncert=2.6)
