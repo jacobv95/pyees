@@ -239,13 +239,11 @@ class _sheetsFromFile():
             
             # remove multiple consequtive _
             done = False
-            a = head
             while not done:
-                b = a.replace('__', '_')
-                if a == b:
+                head = head.replace('__', '_')
+                if not '__' in head:
                     done = True
-                a = b
-
+                         
             # add "_" to the begining of the name if the first letter is a digit
             if head[0].isnumeric():
                 head = '_' + head
@@ -445,6 +443,4 @@ class sheet():
                 variables.append(item)
         
         return iter(variables)
-    
-    
     
