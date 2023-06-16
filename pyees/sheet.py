@@ -228,6 +228,7 @@ class _sheetsFromFile():
         return num
 
     def formatHeaders(self, header):
+
         out = []
         for head in header:
             if head is None:
@@ -235,7 +236,7 @@ class _sheetsFromFile():
                 continue
             # remove symbols and replace with _
             head = re.sub(r'[^\w]', '_', head)
-
+            
             # remove multiple consequtive _
             done = False
             a = head
@@ -243,6 +244,7 @@ class _sheetsFromFile():
                 b = a.replace('__', '_')
                 if a == b:
                     done = True
+                a = b
 
             # add "_" to the begining of the name if the first letter is a digit
             if head[0].isnumeric():
