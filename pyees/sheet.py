@@ -444,3 +444,7 @@ class sheet():
         
         return iter(variables)
     
+    def pop(self, index = -1):
+        for key, item in self.__dict__.items():
+            if isinstance(item, scalarVariable):
+                item.pop(index)

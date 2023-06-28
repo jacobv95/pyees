@@ -265,8 +265,33 @@ class test(unittest.TestCase):
         np.testing.assert_array_equal(sheets[1].E.uncert, np.array([15,16,17,18,15,16,17,18])/100)
         self.assertEqual(sheets[1].E.unit, 'C')
         
+    def pop(self):
+
+        dat = sheetsFromFile('testData/data1.xlsx', 'A-B')
+        dat.pop(0)
+        np.testing.assert_array_equal(dat.A.value, [2, 3, 4, 5])
+        self.assertEqual(str(dat.A.unit), 'L/min')
+        np.testing.assert_array_equal(dat.A.uncert, [0, 0, 0, 0])
+        np.testing.assert_array_equal(dat.B.value, [6, 7, 8, 9])
+        self.assertEqual(str(dat.B.unit), 'mA')
+        np.testing.assert_array_equal(dat.B.uncert, [0, 0, 0, 0])
         
+        dat = sheetsFromFile('testData/data1.xlsx', 'A-B')
+        dat.pop(3)
+        np.testing.assert_array_equal(dat.A.value, [1, 2, 3, 5])
+        self.assertEqual(str(dat.A.unit), 'L/min')
+        np.testing.assert_array_equal(dat.A.uncert, [0, 0, 0, 0])
+        np.testing.assert_array_equal(dat.B.value, [5, 6, 7, 9])
+        self.assertEqual(str(dat.B.unit), 'mA')
+        np.testing.assert_array_equal(dat.B.uncert, [0, 0, 0, 0])
         
+        dat.pop(2)
+        np.testing.assert_array_equal(dat.A.value, [1, 2, 5])
+        self.assertEqual(str(dat.A.unit), 'L/min')
+        np.testing.assert_array_equal(dat.A.uncert, [0, 0, 0])
+        np.testing.assert_array_equal(dat.B.value, [5, 6, 9])
+        self.assertEqual(str(dat.B.unit), 'mA')
+        np.testing.assert_array_equal(dat.B.uncert, [0, 0, 0])
         
 if __name__ == '__main__':
     unittest.main()

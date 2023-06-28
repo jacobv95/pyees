@@ -967,6 +967,9 @@ class arrayVariable(scalarVariable):
 
         raise StopIteration
 
+    def pop(self,index = -1):
+        self.scalarVariables.pop(index)
+
 def variable(value, unit = '', uncert = None, nDigits = 3):
     # store the value and the uncertaty
     def evaluateInput(input):

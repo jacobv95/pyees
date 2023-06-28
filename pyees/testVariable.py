@@ -1887,7 +1887,25 @@ class test(unittest.TestCase):
         self.assertEqual(c.value, 25)
         self.assertEqual(c.unit, 'C')
                 
+    def testPop(self):
         
+        A_vec = variable([12.3, 54.3, 91.3], 'L/min', uncert=[2.6, 5.4, 10.56])
+        A_vec.pop(0)
+        np.testing.assert_equal(A_vec.value, [54.3, 91.3])
+        self.assertEqual(A_vec.unit,'L/min')
+        np.testing.assert_equal(A_vec.uncert, [5.4, 10.56])
+        
+        A_vec = variable([12.3, 54.3, 91.3], 'L/min', uncert=[2.6, 5.4, 10.56])
+        A_vec.pop(1)
+        np.testing.assert_equal(A_vec.value, [12.3, 91.3])
+        self.assertEqual(A_vec.unit,'L/min')
+        np.testing.assert_equal(A_vec.uncert, [2.6, 10.56])
+        
+        A_vec = variable([12.3, 54.3, 91.3], 'L/min', uncert=[2.6, 5.4, 10.56])
+        A_vec.pop(2)
+        np.testing.assert_equal(A_vec.value, [12.3, 54.3])
+        self.assertEqual(A_vec.unit,'L/min')
+        np.testing.assert_equal(A_vec.uncert, [2.6, 5.4])
         
 
 if __name__ == '__main__':

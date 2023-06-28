@@ -80,7 +80,7 @@ class _fit():
         return self.func_name() + ',  ' + self._r2_name()
 
     def _r2_name(self):
-        return f'$R^2 = {self.r_squared:.5f}$'
+        return f'$R^2 = {self.r_squared.value:.5f}$'
 
     def scatter(self, ax, label=True, showUncert=True, **kwargs):
 
