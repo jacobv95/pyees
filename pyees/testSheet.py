@@ -293,5 +293,26 @@ class test(unittest.TestCase):
         self.assertEqual(str(dat.B.unit), 'mA')
         np.testing.assert_array_equal(dat.B.uncert, [0, 0, 0])
         
+    def testReadNAN(self):
+        dat = sheetsFromFile('testData/data9.xls', 'A-B')
+        
+        np.testing.assert_equal(dat.A.value, [np.nan, 1])
+        self.assertEqual(dat.A.unit, '1')
+        np.testing.assert_equal(dat.A.uncert, [0, 0])
+        
+        np.testing.assert_equal(dat.B.value, [np.nan, 2])
+        self.assertEqual(dat.B.unit, '1')
+        np.testing.assert_equal(dat.B.uncert, [0, 0])
+        
+        dat = sheetsFromFile('testData/data10.xlsx', 'A-B')
+        np.testing.assert_equal(dat.A.value, [np.nan])
+        self.assertEqual(dat.A.unit, '1')
+        np.testing.assert_equal(dat.A.uncert, [0])
+        
+        np.testing.assert_equal(dat.B.value, [np.nan])
+        self.assertEqual(dat.B.unit, '1')
+        np.testing.assert_equal(dat.B.uncert, [0])
+        
+        
 if __name__ == '__main__':
     unittest.main()

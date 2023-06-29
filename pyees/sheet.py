@@ -120,7 +120,7 @@ class _sheetsFromFile():
 
         # parse functions for the specific extension and get all sheets
         if extension == '.xls':
-            self.wb = xlrd.open_workbook(xlFile)
+            self.wb = xlrd.open_workbook(xlFile, formatting_info=True)
             
             self.sheets = self.wb.sheets()
             if not sheets is None:
@@ -129,7 +129,11 @@ class _sheetsFromFile():
                 self.sheets = [elem for i,elem in enumerate(self.sheets) if i in sheets]
 
             def readCell(sheet, row, col):
-                return sheet.cell(row, col).value
+                cell = sheet.cell(row,col)
+                if cell.ctype == 2:
+                    return cell.value
+                else:
+                    return np.nan
 
             def readRow(sheet, row):
                 return [elem.value for elem in sheet.row(row)]
@@ -146,7 +150,12 @@ class _sheetsFromFile():
                 self.sheets = [elem for i,elem in enumerate(self.sheets) if i in sheets]
                 
             def readCell(sheet, row, col):
-                return sheet.cell(row + 1, col + 1).value
+                cell = sheet.cell(row+1,col+1)
+                try:
+                    float(cell.value)
+                    return cell.value
+                except ValueError:
+                    return np.nan
 
             def readRow(sheet, row):
                 return [elem.value for elem in list(sheet.iter_rows())[row]]
@@ -451,3 +460,5 @@ class sheet():
         for key, item in self.__dict__.items():
             if isinstance(item, scalarVariable):
                 item.pop(index)
+
+
