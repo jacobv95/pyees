@@ -76,14 +76,17 @@ class _fileFromSheets():
                     meas = object
  
                     self.write(worksheet, 0, col, objectName)
-                    self.write(worksheet, 1, col, meas.unit)
+                    unit = '-' if meas.unit == '1' else meas.unit
+                    self.write(worksheet, 1, col, unit)
                     
                     u = meas.unit
                     scale = variable(1, u)
                     meas /= scale
                     
                     for row, val in enumerate(meas):
-                        self.write(worksheet, row + 2, col, str(val))
+                        string = str(val)
+                        string = string.replace('+/-', '±\n')
+                        self.write(worksheet, row + 2, col, string)
                     
                     meas *= scale
                                                 
