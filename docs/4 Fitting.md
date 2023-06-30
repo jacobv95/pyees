@@ -9,7 +9,7 @@ The package includes a tool to produce fits. The following fits are known
  - Logistic fit
  - Logistic fit with a fixed maximum value of 100
 
-The dummy fit will always return a constant function with a value of 1. This fit is primarily used to easily plot the data.
+The dummy fit will always return a constant function with a value of 1. This "fit" is used to easily plot data.
 
 ```
 F_dummy = dummy_fit(x: variable, y: variable)
@@ -35,17 +35,10 @@ print(pol_fit) -> str
 ```
 
 ## Predict
-Once a fit has been made this can be used to create a prediction. The input can either be a float or a variable. If the float is a variable it is assued to have the same unit as the x-data used to generate the fit-object.
+Once a fit has been made this can be used to create a prediction. 
 
 ```
-pol_fit.predict(x: float | variable) -> variable
-```
-
-## Predict differential
-Once a fit has been made this can be used to create a prediction of the differential. The input can either be a float or a variable. If the float is a variable it is assued to have the same unit as the x-data used to generate the fit-object.
-
-```
-pol_fit.predictDifferential(x: float | variable) -> variable
+pol_fit.predict(x: variable) -> variable
 ```
 
 
@@ -59,22 +52,10 @@ fit.plot(ax, label=True, x=None, **kwargs)
 
 - ax is the axis object from matplotlib
 - label is either a bool or a string. If True, the regression function will be written in the legend
-- x is a numpy array of x values used to plot the regression. If None, then 100 points will be plotted
+- x is an arrayVariable of x values used to plot the regression. If None, then 100 points will be plotted within the range of the data used to create the fit.
 - **kwargs are key word arguments for matplotlib.pyplot.plot  
 
-### Plot differential
-The fit class has a function to plot the differential
-
-```
-fit.plotDifferential(ax, label=True, x=None, **kwargs)
-```
-
-- ax is the axis object from matplotlib
-- label is either a bool or a string. If True, the regression function will be written in the legend
-- x is a numpy array of x values used to plot the regression. If None, then 100 points will be plotted
-- **kwargs are key word arguments for matplotlib.pyplot.plot  
-
-### Scatter
+## Scatter
 The fit class has a function to scatter the data used to generate the fit.
 
 ```
@@ -86,7 +67,7 @@ fit.scatter(ax, label=True, showUncert=True, **kwargs)
 - showUncert is a bool. Errorbars are shown if true
 - **kwargs are key word arguments for matplotlib.pyplot.scatter  
 
-### plotData
+## plotData
 The fit class has a function to plot the data used to generate the fit.
 
 ```
@@ -95,9 +76,22 @@ fit.plotData(ax, label=True, **kwargs)
 
 - ax is the axis object from matplotlib
 - label is either a bool or a string. If True, the word "Data" is printed in the legend
-- **kwargs are key word arguments for matplotlib.pyplot.scatter  
+- **kwargs are key word arguments for matplotlib.pyplot.plot  
 
-### Axis labels
+
+## plotUncertanty
+The fit class has a function to plot the uncertanty bands of the regression
+
+```
+fit.plotUncertanty(ax, x = None, **kwargs)
+```
+
+- ax is the axis object from matplotlib
+- x is an arrayVariable of x values used to plot the regression. If None, then 100 points will be plotted within the range of the data used to create the fit.
+- **kwargs are key word arguments for matplotlib.pyplot.plot  
+
+
+## Axis labels
 The fit class has a function to set the units of the axis
 
 ```
@@ -109,7 +103,7 @@ F.addUnitToYLabel(ax)
 
 The unit of the data parsed when initializing the fit object will be appended to the axis labels
 
-### Example
+## Example
 ```
 from dataUncert import *
 import matplotlib.pyplot as plt

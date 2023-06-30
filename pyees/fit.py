@@ -67,13 +67,13 @@ class _fit():
                 )
 
         # determine r-squared
-        self._residuals = y - self.predict(x)
+        self._residuals = y - self._predict(x)
         ss_res = sum(self._residuals**2)
         ss_tot = sum((y - np.mean(y))**2)
         if ss_tot != 0:
             self.r_squared = 1 - (ss_res / ss_tot)
         else:
-            self.r_squared = 1
+            self.r_squared = variable(1)
         np.seterr('warn')
 
     def __str__(self):
@@ -159,8 +159,26 @@ class _fit():
 
     def predict(self, x):
         if not isinstance(x, scalarVariable):
+            raise ValueError('The input "x" has to be a variable')
+        return self.func(x)
+    
+    def _predict(self, x):
+        if not isinstance(x, scalarVariable):
             x = variable(x, self.xUnit)
         return self.func(x)
+
+    def plotUncertanty(self, ax, x = None, **kwargs):
+        
+        if x is None:
+            x = variable(np.linspace(np.min(self.xVal), np.max(self.xVal), 100), self.xUnit)
+        else:
+            if not isinstance(x, arrayVariable):
+                raise ValueError('The input "x" has to be a variable')
+            
+        y = self.predict(x)
+        y = list(y.value + y.uncert) + [np.nan] + list(y.value - y.uncert)
+        x = list(x.value) + [np.nan] + list(x.value)
+        ax.plot(x, y, **kwargs)
 
     def plot(self, ax, label=True, x=None, **kwargs):
 
@@ -177,8 +195,14 @@ class _fit():
             raise ValueError('The label has to be a string, a bool or None')
 
         if x is None:
-            x = np.linspace(np.min(self.xVal), np.max(self.xVal), 100)
+            x = variable(np.linspace(np.min(self.xVal), np.max(self.xVal), 100), self.xUnit)
+        else:
+            if not isinstance(x, arrayVariable):
+                raise ValueError('The input "x" has to be a variable')
+
         y = self.predict(x).value
+        x = x.value
+        
         ax.plot(x, y, label=label, **kwargs)
           
     def addUnitToLabels(self, ax):
@@ -205,7 +229,7 @@ class _fit():
     def evaluateFit(self):
         ## TODO evaluate the fit - use the degrees of freedom as in the book
         
-        pred = self.predict(self.xVal)
+        pred = self._predict(self.xVal)
         
         count = 0
         for yi, uyi, pi in zip(self.yVal, self.yUncert, pred):
