@@ -12,7 +12,7 @@ def prop(property, fluid, **kwargs):
     if not fluid in knownFluids:
         raise ValueError(f"The fluid {fluid} is unknown")
 
-    method = knownFluids[fluid][0]
+    method = knownFluids[fluid]
         
     return method(property, kwargs)
 
@@ -89,40 +89,50 @@ def differentials(fluid : Fluid, property : str, parameters):
     
 
 def outputFromParameters(scalarMethod, property, params):
-
-    if (all([type(elem) == scalarVariable for elem in params if not elem is None])):
-        ## all inputs are scalars
-        out = scalarMethod(property, *params)
-        return out
     
-    out = []
-    ns = []
-    paramVecs = [None] * len(params)
-
-    for i, param in enumerate(params):
-        if type(param) == arrayVariable:
-            paramVecs[i] = param
-            ns.append(len(param))
+    ## determine which of the parameters that are arrayVariables
+    isArrayVariable = [hasattr(param, '__len__') for param in params]
     
-    if not (all([ns[0] == n] for n in ns)):
-        raise ValueError('All parameters has to have the same length')
+    ## return the scalarmethod if all parameters are scalarvariables
+    if sum(isArrayVariable) == 0:
+        return scalarMethod(property, *params)
     
-    if ns:
-        n = ns[0]
-        for i, param in enumerate(params):
-            if param is None:
-                paramVecs[i] = [None] * n
-            elif not type(param) == arrayVariable:
-                paramVecs[i] = variable([param.value] * n, param.unit, [param.uncert] * n)
-        for i in range(n):
-            params = [elem[i] for elem in paramVecs]
-            out.append(scalarMethod(property, *params))
-        return variable([elem.value for elem in out], out[0].unit, [elem.uncert for elem in out])
+    ## make sure, that all arrayVariables have the same length
+    indexesOfArrayVariables = [i for i, elem in enumerate(isArrayVariable) if elem == True]
+    n = len(params[indexesOfArrayVariables[0]])
+    for i in indexesOfArrayVariables:
+        if len(params[i]) != n:
+            raise ValueError('All parameters has to have the same length')
+    
+    ## create a list of scalar variables. This list will have the same length as the arrayVariables supplied
+    listOfScalarVariables = []
+    
+    ## loop over the length of the arrayVariables
+    for i in range(n):
         
-    return scalarMethod(property, *params)
+        ## create a list of scalarparameter
+        scalarParams = []
+        
+        ## loop over the parameters
+        for ii, param in enumerate(params):
+            
+            ## if the current parameter is an arrayVariable, then append the i'th scalarVaraible of the arrayVariable to the list of the scalar parameters
+            if ii in indexesOfArrayVariables:
+                scalarParams.append(param[i])
+            
+            ## if the current parameter is a scalarvariable, then simply append the parameter to the scalarparameters
+            else:
+                scalarParams.append(param)
+                
+        ## append the output of the scalarmethods to the list of scalar variables
+        listOfScalarVariables.append(scalarMethod(property, *scalarParams))
+        
+    ## return an arrayVariable, which is created from a list of scalarvariables
+    return arrayVariable(scalarVariables=listOfScalarVariables)
+    
+    
 
 def propWater(property, arguments):
-    
     ## find the appropriate arguments from the list
     arguments, T = findArgument(arguments, 'T', 'K')
     arguments, P = findArgument(arguments, 'P', 'Pa')
@@ -137,7 +147,7 @@ def propWater(property, arguments):
     P.convert('Pa')
     
     out = outputFromParameters(propWaterScalar, property, [T,P])
-        
+
     ## convert the arguments back in to the original units
     T.convert(Tunit)
     P.convert(Punit)
@@ -215,7 +225,6 @@ def propMEGScalar(property, T,P,C):
     ## return the variable
     return var
     
-
 def propHumidAir(property, arguments):
 
 
@@ -298,15 +307,19 @@ knownProperties = [
 ]
 
 knownFluids = {
-    'water': [propWater],
-    'MEG': [propMEG],
-    'air': [propHumidAir]
+    'water': propWater,
+    'MEG': propMEG,
+    'air': propHumidAir
 }
 
 
 if __name__ == "__main__":
+
+    T = variable([20,25,30], 'C', [0.1, 0.2, 0.15])
+    P = variable([1, 1.1, 1.2], 'bar', [0.03, 0.04, 0.025])
     
-    T = variable([20,30], 'C', [1,1])
-    P = variable(1, 'bar', 0.01)
-    C = variable(50,'%', 2)
+    rho = prop('density', 'water', T = T, P = P)
+    for elem in rho:
+        for key, item in elem.dependsOn.items():
+            print(key, item[1])
     

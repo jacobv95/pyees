@@ -265,5 +265,26 @@ class test(unittest.TestCase):
         compareVariableAndEESData(mu_meg[0], row1, 2)
         compareVariableAndEESData(mu_meg[1], row2, 2)
 
+    def testDependscies(self):
+        T = variable([20,25,30], 'C', [0.1, 0.2, 0.15])
+        P = variable([100000, 110000, 90000], 'Pa', [2500, 3000, 4000])
+
+        rho = prop('density', 'water', T = T, P = P)
+        
+        flow = variable(0.0016, 'm3/s', 0.0001)
+        
+        massFlow = flow * rho
+        
+        dMassFlow_dFlow = [998.206543497641114, 997.05155024142658, 995.644405820880468]
+        dMassFlow_dP = [7.32946279081818364e-10, 7.21788150328467529e-10, 7.13326743322344253e-10]
+        dMassFlow_dT = [-0.000330293371618005199, -0.000410463892510075697, -0.000483157770611803349]
+        
+        for i, elem in enumerate(massFlow):
+            self.assertAlmostEqual(elem.dependsOn[flow][1], dMassFlow_dFlow[i], 6)
+            self.assertAlmostEqual(elem.dependsOn[T[i]][1], dMassFlow_dT[i], 6)
+            self.assertAlmostEqual(elem.dependsOn[P[i]][1], dMassFlow_dP[i], 6)
+        
+      
+
 if __name__ == '__main__':
     unittest.main()
