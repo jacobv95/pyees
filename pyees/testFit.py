@@ -148,12 +148,12 @@ class test(unittest.TestCase):
         y = variable([2.7331291071103,4.83637470698903,7.76023628649736,12.92164947233590,19.26005212361100,29.98037228450110,58.70407550133760,82.8915749115424,144.581793442337], 'kg/m3') 
         f = exp_fit(x,y)
         
-        a,b  = f.coefficients
+        a,b,c,d  = f.coefficients
 
         self.assertEqual(b.unit, '1')
         self.assertEqual(a.unit, y.unit)
-        self.assertRelativeDifference(a.value, 1.0754076064, 5e-2)
-        self.assertRelativeDifference(b.value, np.e ** 0.0488105475, 1e-3)
+        self.assertRelativeDifference(a.value, 0.9875635849080608, 5e-2)
+        self.assertRelativeDifference(b.value, 1.0515901240689571, 1e-3)
         
         x = variable([20, 30, 40, 50, 60, 70, 80, 90, 100], 'C')
         y = variable([2.7331291071103,4.83637470698903,7.76023628649736,12.92164947233590,19.26005212361100,29.98037228450110,58.70407550133760,82.8915749115424,144.581793442337], 'kg/m3') 

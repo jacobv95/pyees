@@ -299,23 +299,23 @@ class dummy_fit(_fit):
         return f'{self.popt[0]}'
 
 class exp_fit(_fit):
-    def __init__(self, x, y, p0=[1, 1]):
-        if len(p0) != 2:
-            raise ValueError('You have to provide initial guesses for 2 parameters')
+    def __init__(self, x, y, p0=[1, 1, 1, 1]):
+        if len(p0) != 4:
+            raise ValueError('You have to provide initial guesses for 4 parameters')
         if x.unit != '1':
             raise ValueError('The variable "x" cannot have a unit')
         _fit.__init__(self, self.func, x, y, p0=p0)
 
     def getVariableUnits(self):
-        return [self.yUnit, '']
+        return [self.yUnit, '', '', self.yUnit]
 
     def _func(self, B, x):
-        a = B[0]
-        b = B[1]
-        return a * b**x
+        a,b,c,d = B
+        return a * b**(x-c) + d
 
     def func_name(self):
-        return f'$a\cdot b^x,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
+        a,b,c,d = self.coefficients
+        return f'$a\cdot b^(x-c)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}, \quad d={d.__str__(pretty = True)}$'
 
 
 class pow_fit(_fit):
