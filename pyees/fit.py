@@ -346,8 +346,8 @@ class pol_fit(_fit):
             if self.terms[i]:
                 u = self.yUnit
                 if i != n:
-                    ui, _ = self.xUnit ** (n - i)
-                    u /= unit(ui)
+                    ui = self.xUnit ** (n - i)
+                    u /= ui
                 units.append(u)
                 index += 1
         return units

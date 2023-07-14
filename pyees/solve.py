@@ -58,7 +58,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
             if not isinstance(bound, scalarVariable):
                 raise ValueError('Each side of each equation has to be a variable')        
         ## test if the units match
-        if (o[0]._unitObject._SIBaseUnit != o[1]._unitObject._SIBaseUnit):
+        if (o[0]._unitObject.unitDictSI != o[1]._unitObject.unitDictSI):
                 raise ValueError('The units of the equations does not match')
         doesUnitsOfEquationsMatch.append(o[0].unit == o[1].unit)
     
@@ -101,7 +101,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
                         raise ValueError('Each side of the bounds has to be a variable')         
                 
                 ## check the units bounds
-                if (o[0]._unitObject._SIBaseUnit != o[1]._unitObject._SIBaseUnit or o[1]._unitObject._SIBaseUnit != o[2]._unitObject._SIBaseUnit):
+                if (o[0]._unitObject.unitDictSI != o[1]._unitObject.unitDictSI or o[1]._unitObject.unitDictSI != o[2]._unitObject.unitDictSI):
                     raise ValueError('The units of the bounds does not match')
                 
                 ## chekc that all elements in the bounds have the same length
@@ -135,7 +135,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
                     if not isinstance(elem, scalarVariable):
                         raise ValueError('All bounds has to be variables')
                      ## check the units bounds
-                    if (elem._unitObject._SIBaseUnit != x[i]._unitObject._SIBaseUnit):
+                    if (elem._unitObject.unitDictSI != x[i]._unitObject.unitDictSI):
                         raise ValueError('The units of the bounds does not match with the corresponding variable')
                     
                     ## convert the bounds to the units of the corresponding variable
@@ -160,7 +160,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
         for i,o in enumerate(out):
             if not doesUnitsOfEquationsMatch[i]:
                 for elem in o:
-                    elem.convert(elem._unitObject._SIBaseUnit) 
+                    elem.convert(elem._unitObject.unitStrSI) 
             scales[i] = 1/(o[0].value - o[1].value)**2
     
     
@@ -192,7 +192,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
         for b,o in zip(doesUnitsOfEquationsMatch, out):
             if not b:
                 for elem in o:
-                    elem.convert(elem._unitObject._SIBaseUnit)
+                    elem.convert(elem._unitObject.unitStrSI)
 
         return sum([(e[0].value - e[1].value)**2 * s for e,s in zip(out, scales)])
 
@@ -228,7 +228,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
     residuals, J = [], np.zeros([nVariables,nVariables])
     for i, equation in enumerate(_func(*x)):
         res = equation[0] - equation[1]
-        res.convert(res._unitObject._SIBaseUnit)
+        res.convert(res._unitObject.unitStrSI)
         for bound in res:
             residuals.append(bound)
 

@@ -1,13 +1,12 @@
 import numpy as np
-
+from fractions import Fraction
+from copy import copy
 
 class _unitConversion():
 
     def __init__(self, scale, offset=0) -> None:
         self.scale = scale
         self.offset = offset
-
-
 
     def __mul__(self, other):
         if isinstance(other, _unitConversion):
@@ -28,7 +27,6 @@ class _unitConversion():
             offset += self.offset
             
         return _unitConversion(scale, offset)
-
 
     def __truediv__(self, other):
         if isinstance(other, _unitConversion):
@@ -228,18 +226,18 @@ knownUnitsDict = {
 }
 
 knownPrefixes = {
-    'T': 1e12,
-    'G': 1e9,
-    'M': 1e6,
-    'k': 1e3,
-    'h': 1e2,
-    'da': 1e1,
-    'd': 1e-1,
-    'c': 1e-2,
-    'm': 1e-3,
-    'mu': 1e-6,
-    'n': 1e-9,
-    'p': 1e-12
+    'T':10**12,
+    'G':10**9,
+    'M':10**6,
+    'k':10**3,
+    'h':10**2,
+    'da':10**1,
+    'd':10**-1,
+    'c':10**-2,
+    'm':10**-3,
+    'mu':10**-6,
+    'n':10**-9,
+    'p':10**-12
 }
 
 
@@ -305,31 +303,28 @@ def addNewUnit(newUnit: str, scale: float, existingUnit: str, offset : float = 0
     conversion =  _unitConversion(scale, offset)
 
 
-    upper, upperPrefix,upperExp, lower, lowerPrefix, lowerExp = unit._getLists(existingUnit)
-    nUpper = len(upper)
-    units = upper + lower
-    exponents = upperExp + lowerExp
-    prefixes = upperPrefix + lowerPrefix
-    SIBaseUnitLists = [[],[]]
-    
-    for i, (u, exponent, prefix) in enumerate(zip(units, exponents, prefixes)):
-                
-        _SIBaseUnit, unitConversion = knownUnits[u]
-        unitConversion =  unitConversion ** exponent
-
-        if exponent != 1: _SIBaseUnit += str(exponent)
+    existingUnitDict = unit._getUnitDict(existingUnit)
+    existingUnitDictSI = unit._getUnitDictSI(existingUnitDict)
+    SIBaseUnit = unit._getUnitStrFromDict(existingUnitDictSI)
         
-        if not prefix is None: unitConversion *= knownPrefixes[prefix]
-
-        if i <= nUpper-1:
-            conversion = unitConversion * conversion
-            SIBaseUnitLists[0].append(_SIBaseUnit)
-        else:
-            conversion = _unitConversion(1) / unitConversion * conversion
-            SIBaseUnitLists[1].append(_SIBaseUnit)
+    
+    for key, item in existingUnitDict.items():
+        for pre, exp in item.items():    
+                    
+            unitConversion = knownUnits[key][1]
             
-    SIBaseUnit = '-'.join(SIBaseUnitLists[0])
-    if SIBaseUnitLists[1]: SIBaseUnit += '/' + '-'.join(SIBaseUnitLists[1])
+            isUpper = exp > 0
+            
+            if not isUpper: exp *= -1
+            
+            unitConversion =  unitConversion ** exp
+
+            if not pre is None: unitConversion *= knownPrefixes[pre]
+
+            if isUpper:
+                conversion = unitConversion * conversion
+            else:
+                conversion = _unitConversion(1) / unitConversion * conversion
     
     knownUnits[newUnit] = [SIBaseUnit, conversion]
         
@@ -345,143 +340,93 @@ integers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 class unit():
 
-    def __init__(self, unitStr) -> None:
-        if unitStr == '':
-            unitStr = '1'
+    def __init__(self, unitStr = None, unitDict = None):
+        if unitStr is None and unitDict is None:
+            unitStr = ''
         
-        # remove any unknown characters
-        unitStr = self._formatUnit(unitStr)
+        if not unitStr is None:
+            self.unitDict = self._getUnitDict(self._formatUnitStr(unitStr))
+        else:
+            self.unitDict = unitDict
+            
+        self.unitStr = self._getUnitStrFromDict(self.unitDict)
+        self.unitDictSI = self._getUnitDictSI(self.unitDict)
+        self.unitStrSI = self._getUnitStrFromDict(self.unitDictSI)
+        
+        # ## create a version of the self.unitDictSI that is formatted in the same way as a unitDict
+        # unitDictSI = {}
+        # for key, exp in self.unitDictSI.items():
+        #     u = knownUnits[key][0]
+        #     u,p,e = unit._splitUnitExponentAndPrefix(u)
+        #     unitDictSI[u] = {p: e*exp}
+        self._converterToSI = self.getConverterFromDict(self.unitDictSI)
 
-        # split the unit in upper and lower
-        self.upper, self.upperPrefix, self.upperExp, self.lower, self.lowerPrefix, self.lowerExp = self._getLists(unitStr)
-
-        # create the unit string
-        self.unitStr = self._createUnitString()
-
-        self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
-        self._converterToSI = self._getConverter(*self._getLists(self._SIBaseUnit))
-
-    def _createUnitString(self):
-        return self._combineUpperAndLower(self.upper, self.upperPrefix, self.upperExp, self.lower, self.lowerPrefix, self.lowerExp)
-
-    @staticmethod
-    def _cancleUnits(upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp):
-        # cancle the units
-        for indexUpper, up in enumerate(upper):
-            if up in lower:
-                indexLower = lower.index(up)
-
-                # only cancle units if they have the same prefix
-                if upperPrefix[indexUpper] == lowerPrefix[indexLower]:
-                    expUpper = upperExp[indexUpper]
-                    expLower = lowerExp[indexLower]
-
-                    # set the unit to '1'
-                    if expUpper == expLower:
-                        upper[indexUpper] = '1'
-                        lower[indexLower] = '1'
-                    elif expUpper < expLower:
-                        upper[indexUpper] = '1'
-                    else:
-                        lower[indexLower] = '1'
-
-                    # reduce the exponent
-                    minExp = np.min([expUpper, expLower])
-                    lowerExp[indexLower] -= minExp
-                    upperExp[indexUpper] -= minExp
-
-        # remove '1' if the upper or lower is longer than 1
-        if len(upper) > 1:
-            indexesToRemove = [i for i, elem in enumerate(upper) if elem == '1']
-            upper = [elem for i, elem in enumerate(upper) if i not in indexesToRemove]
-            upperPrefix = [elem for i, elem in enumerate(upperPrefix) if i not in indexesToRemove]
-            upperExp = [elem for i, elem in enumerate(upperExp) if i not in indexesToRemove]
-        if len(lower) > 1:
-            indexesToRemove = [i for i, elem in enumerate(lower) if elem == '1']
-            lower = [elem for i, elem in enumerate(lower) if i not in indexesToRemove]
-            lowerPrefix = [elem for i, elem in enumerate(lowerPrefix) if i not in indexesToRemove]
-            lowerExp = [elem for i, elem in enumerate(lowerExp) if i not in indexesToRemove]
-
-        # return the list ['1'] if there are no more units
-        if not upper:
-            upper = ['1']
-            upperExp = ['1']
-        if not lower:
-            lower = ['1']
-            lowerExp = ['1']
-        return upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp
 
     @staticmethod
-    def _combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp):
+    def _getUnitStrFromDict(unitDict):
+        upper, lower = [], []
+        for u, item in unitDict.items():    
+            for p, exp in item.items():
+                if p is None: p = ''
 
-        upperPrefix = [elem if not elem is None else "" for elem in upperPrefix]
-        lowerPrefix = [elem if not elem is None else "" for elem in lowerPrefix]
-        upperExp = [str(elem) if elem != 1 else "" for elem in upperExp]
-        lowerExp = [str(elem) if elem != 1 else "" for elem in lowerExp]
-        upper = [pre + up + exp for pre, up, exp in zip(upperPrefix, upper, upperExp) if up != "1"]
-        lower = [pre + low + exp for pre, low, exp in zip(lowerPrefix, lower, lowerExp) if low != "1"]
-
-        # create a unit string
-        u = hyphen.join(upper) if upper else "1"
+                up = exp > 0
+                
+                if not up:
+                    exp *= -1
+                
+                if exp == 1:
+                    exp = ''
+                
+                s = f'{p}{u}{exp}'
+                if up:
+                    upper.append(s)
+                else:
+                    lower.append(s)
+                                
+        upper = '-'.join(upper)
+        
         if lower:
-            lower = hyphen.join(lower)
-            u = u + '/' + lower
-
-        return u
-
-    @staticmethod
-    def _multiply(a, b):
-
-        aUpper, aUpperPrefix, aUpperExp, aLower, aLowerPrefix, aLowerExp = unit._getLists(a)
-        bUpper, bUpperPrefix, bUpperExp, bLower, bLowerPrefix, bLowerExp = unit._getLists(b)
-
-        upper = aUpper + bUpper
-        upperPrefix = [elem if not elem is None else '' for elem in aUpperPrefix + bUpperPrefix]
-        upperExp = aUpperExp + bUpperExp
-        lower = aLower + bLower
-        lowerPrefix = [elem if not elem is None else '' for elem in aLowerPrefix + bLowerPrefix]
-        lowerExp = aLowerExp + bLowerExp
-
-        def reduceLists(units, unitPrefixes, unitExponents):
-            # combine the prefix and the unit
-            units = [pre + u for u, pre in zip(units, unitPrefixes)]
-
-            # loop over all unique combinations of prefix and units
-            setUnits = set(units)
-            tmpUnits = [''] * len(setUnits)
-            for i, u in enumerate(setUnits):
-                indexes = [_ for _, elem in enumerate(units) if elem == u]
-                exponent = sum([unitExponents[elem] for elem in indexes])
-                tmpUnits[i] = u
-
-                # add the exponent
-                if exponent != 1 and u != '1':
-                    tmpUnits[i] += str(exponent)
-
-            # split in to lists againt
-            tmpUnits = [unit._removeExponentFromUnit(elem) for elem in tmpUnits]
-            exponents = [elem[1] for elem in tmpUnits]
-            tmpUnits = [elem[0]for elem in tmpUnits]
-            tmpUnits = [unit._removePrefixFromUnit(elem) for elem in tmpUnits]
-            prefixes = [elem[1] for elem in tmpUnits]
-            units = [elem[0]for elem in tmpUnits]
-            return units, prefixes, exponents
-
-        upper, upperPrefix, upperExp = reduceLists(upper, upperPrefix, upperExp)
-        lower, lowerPrefix, lowerExp = reduceLists(lower, lowerPrefix, lowerExp)
-
-        upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp = unit._cancleUnits(
-            upper,
-            upperPrefix,
-            upperExp,
-            lower,
-            lowerPrefix,
-            lowerExp
-        )
-
-        out = unit._combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp)
-
+            upper += '/' + '-'.join(lower)
+                
+        return upper
+      
+    def getUnitWithoutPrefix(self):
+        
+        upper, lower = [],[]
+        
+        for key, item in self.unitDict.items():
+            exp = sum(item.values())
+            isUpper = exp > 0
+            if not isUpper: exp *= -1
+            if exp == 1: exp = ''
+            s = f'{key}{exp}'
+            if isUpper:
+                upper.append(s)
+            else:
+                lower.append(s)
+        
+        out = '-'.join(upper)
+        if lower:
+            out += '/' + '-'.joing(lower)
+            
         return out
+        
+    @ staticmethod
+    def _splitCompositeUnit(compositeUnit):
+        lower = []
+        if not slash in compositeUnit:
+            upper = compositeUnit.split(hyphen)
+            return upper, lower
+    
+        compositeUnit = compositeUnit.split(slash)
+
+        if len(compositeUnit) > 2:
+            raise ValueError('A unit can only have a single slash (/)')
+
+        upper = compositeUnit[0].split(hyphen)
+        lower = compositeUnit[1].split(hyphen) if len(compositeUnit) > 1 else []
+
+        return upper, lower
 
     @staticmethod
     def _splitUnitExponentAndPrefix(unitStr):
@@ -489,49 +434,142 @@ class unit():
         u, prefix = unit._removePrefixFromUnit(prefixUnit)
         return u, prefix, exponent
 
+    @staticmethod
+    def _reduceDict(unitDict):
+        
+        ## loop over all units, and remove any prefixes, which has an exponenet of 0
+        for key, item in unitDict.items():
+            prefixesToRemove = []
+            for pre, exp in item.items():
+                if exp == 0:
+                    prefixesToRemove.append(pre)
+            for pre in prefixesToRemove:
+                unitDict[key].pop(pre)
+    
+        ## remove the units, which has no items in their dictionary
+        keysToRemove = []
+        for key, item in unitDict.items():
+            if not item:
+                keysToRemove.append(key)
+        for key in keysToRemove:
+            unitDict.pop(key)
+        
+        ## remove the unit '1' above the fraction line, if there are any other units above the fraction line
+        keys = list(unitDict.keys())
+        if len(keys) > 1 and '1' in keys:
+            otherUpper = False
+            for key, item in unitDict.items():
+                if key == '1':
+                    continue
+                for pre, exp in item.items():
+                    if exp > 0:
+                        otherUpper = True
+                        break
+                if otherUpper:
+                    break
+            if otherUpper:
+                unitDict.pop('1')
+                
+        ## add the units '1' if there are not other units
+        if not unitDict:
+            unitDict = {'1': {None: 1}}
+        
+        ## set the exponent of the unit '1' to 1
+        if '1' in unitDict:
+            unitDict['1'][None] = 1
+        
+        ## make temperature units in to temperature differences, if there are any other units in the dict
+        for temperatureUnit in temperature.keys():
+            if temperatureUnit in unitDict:
+                otherKeys = list(unitDict.keys())
+                otherKeys.remove(temperatureUnit)
+                if otherKeys:
+                    unitDict['DELTA' + temperatureUnit] = unitDict[temperatureUnit]
+                    unitDict.pop(temperatureUnit)
+        
+        
+        
+        return unitDict
+    
+    @staticmethod
+    def _getUnitDictSI(unitDict):
+        out = {}
+        for key, item in unitDict.items():
+            unitSI = knownUnits[key][0]
+            upper,lower = unit._splitCompositeUnit(unitSI)
+            nUpper = len(upper)
+            for exp in item.values():
+                for i, elem in enumerate(upper + lower):
+                    u,p,e = unit._splitUnitExponentAndPrefix(elem)
+                    if i > nUpper - 1:
+                        e *= -1
+                    if u in out:
+                        if p in out[u]:
+                            out[u][p] += e * exp
+                        else:
+                            out[u][p] = e * exp
+                    else:
+                        out[u] = {p: e * exp} 
+        out = unit._reduceDict(out)                 
+        return out
 
     @staticmethod
-    def _getLists(unitStr):
+    def _getUnitDict(unitStr):
         upper, lower = unit._splitCompositeUnit(unitStr)
-                
-        upper, upperPrefix, upperExp = map(list, zip(*[unit._splitUnitExponentAndPrefix(up) for up in upper]))
+
+        out = {}
         
-        if lower:
-            lower, lowerPrefix, lowerExp = map(list, zip(*[unit._splitUnitExponentAndPrefix(low) for low in lower]))
-            upper = ['DELTA' + elem if elem in temperature else elem for elem in upper]
-            lower = ['DELTA' + elem if elem in temperature else elem for elem in lower]
-        else:
-            lowerPrefix = []
-            lowerExp = []
+        nUpper = len(upper)
+        for i, elem in enumerate(upper + lower):
+            
+            u, p, e = unit._splitUnitExponentAndPrefix(elem)
 
-
-        return upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp
-
+            if i > nUpper - 1:
+                e *= -1
+            
+            if not u in out:
+                out[u] = {p: e}
+            else:
+                if not p in out[u]:
+                    out[u][p] = e
+                else:
+                    out[u][p] += e
+        
+        out = unit._reduceDict(out)
+        
+        return out
+   
     @ staticmethod
-    def _formatUnit(unitStr):
+    def _formatUnitStr(unitStr):
         
-        if unitStr is None:
-            return '1'
+        ## remove spaces
+        unitStr = unitStr.replace(' ', '')
         
-        # Removing any illegal symbols
+        # check for any illegal symbols
         for s in unitStr:
             if s not in knownCharacters:
                 raise ValueError(f'The character {s} is not used within the unitsystem')
+        
+        ## return the unity        
+        if unitStr is None or unitStr == '':
+            return '1'
 
         ## find start parenthesis is the unit string
         startParenIndexes = [i for i, s in enumerate(unitStr) if s == '(']
         stopParenIndexes = [i for i, s in enumerate(unitStr) if s == ')']
-
-        ## return if no parenthesis where found
+        
         if not startParenIndexes and not stopParenIndexes:
-            return unit.__formatUnit(unitStr)
+            unitStr = unitStr.split('-')
+            unitStr = [elem for elem in unitStr if not elem == '']
+            unitStr = '-'.join(unitStr) if unitStr else '1'
+            return unitStr
         
         ## check that the number of start and stop parenthesis are equal
         if len(startParenIndexes) != len(stopParenIndexes):
             raise ValueError('The unit string has to have an equal number of open parenthesis and close parenthesis')
         
         if len(startParenIndexes) == 1 and startParenIndexes[0] == 0 and stopParenIndexes[0] == len(unitStr) -1:
-            return unit._formatUnit(unitStr[startParenIndexes[0]+1:stopParenIndexes[0]])
+            return unit._formatUnitStr(unitStr[startParenIndexes[0]+1:stopParenIndexes[0]])
         
         ## find all parenthesis pairs
         allIndexes = startParenIndexes + stopParenIndexes
@@ -554,142 +592,81 @@ class unit():
             if iter > maxIter:
                 raise ValueError('An order to evaluate the parenthesis could not be found')
         
+        
+        ## find any slashes outside of parenthesis
+        slashOutsideParensFound = False
+        index = -1
+        parenLevel = 0
+        for i, s in enumerate(unitStr):
+            if s == '(':
+                parenLevel += 1
+            elif s== ')':
+                parenLevel -= 1
+            
+            if parenLevel == 0 and s == '/':
+                if not slashOutsideParensFound:
+                    index = i
+                    slashOutsideParensFound = True
+                else:
+                    raise ValueError("You can only have a signle slash ('/') outside of parenthesis")
+        
+        if slashOutsideParensFound:
+            ## there was a slash outside of the parenthesis.
+            ## split the unitStr at the slash and return the upper divided by the lower
+            upper = unitStr[0:index]
+            lower = unitStr[index+1:]
+            upper = unit._getUnitDict(unit._formatUnitStr(upper))
+            lower = unit._getUnitDict(unit._formatUnitStr(lower))
+            return unit._getUnitStrFromDict(unit.staticTruediv(upper, lower))
+            
+        ## there were no slashes outside of the parenthesis
+        ## append the entire unit as a "parenthesis"
         parenOrder.append([0,len(unitStr)])
         
+        ## loop over the parenthesis from the inner parenthesis to the outer parenthesis
         for i in range(len(parenOrder)-1):
             currentParens = parenOrder[i]
-            nextParens = parenOrder[i+1]
             end = currentParens[1]
+            nextParens = parenOrder[i+1]
             
+            ## get the unitDict from the stringwithin the current parentheses
             _unitStr = unitStr[currentParens[0]+1:currentParens[1]]
             _unitStrLenOriginal = len(_unitStr)
-            _unitStr = unit._formatUnitStringWithParenthesis(_unitStr)
+            _unitStr = unit._formatUnitStr(_unitStr)
+            _unitDict = unit._getUnitDict(_unitStr)
+
+            ## determine if the nextparenthesis encompasses the current parenthesis
             if nextParens[0] <= currentParens[0] and nextParens[1]>=currentParens[1]:
-                nextBit = unitStr[currentParens[1]+1:nextParens[1]]
-                exponent = nextBit.split('/')[0]
-                exponent = exponent.split('-')[0]
                 
+                ## get the string from the end of the current parenthesis to the end of the next parenthesis
+                nextBit = unitStr[currentParens[1]+1:nextParens[1]]
+                
+                ## A potential exponent of the current parenthis has to be
+                # above a potential slash (/) and before any potential hyphens (-)
+                exponent = nextBit.split('/')[0].split('-')[0]
+                
+                
+                ## try to cast the exponent to an integer
+                ## if this works, then raise the unitDict to the exponent
                 try:
                     exponent = int(exponent)
-                    upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp = unit._getLists(_unitStr)
-                    siBaseUnit = unit._getSIBaseUnit(upper, upperExp ,lower, lowerExp)
-                    _unitStr = unit.__staticPow(_unitStr, upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp, siBaseUnit, exponent)[0]
+                    _unitDict = unit.staticPow(_unitDict, None, _unitStr, exponent)
+                    _unitStr = unit._getUnitStrFromDict(_unitDict)
                     end += len(str(exponent))
                 except ValueError: pass
-            
-            _unitStrLenUpdate = len(_unitStr)
-            
-            dLen = _unitStrLenUpdate - _unitStrLenOriginal
-            for j in range(i, len(parenOrder)):
-                if parenOrder[j][0] >= currentParens[1]: parenOrder[j][0] += dLen
-                if parenOrder[j][1] >= currentParens[1]: parenOrder[j][1] += dLen-1
-            
-            unitStr = unitStr[0:currentParens[0]] + '(' + _unitStr + ')' + unitStr[end+1:]
+        
 
-    
-        unitStr = unit._formatUnitStringWithParenthesis(unitStr)
-        
-        ## find start parenthesis is the unit string
-        startParenIndexes = [i for i, s in enumerate(unitStr) if s == '(']
-        stopParenIndexes = [i for i, s in enumerate(unitStr) if s == ')']
-        
-        ## check that the number of start and stop parenthesis are equal
-        if len(startParenIndexes) != len(stopParenIndexes):
-            raise ValueError('The unit string has to have an equal number of open parenthesis and close parenthesis')
-        
-        if len(startParenIndexes) == 0:
-            return unitStr
-        
-        done = False
-        while not done:
-            if unitStr[0] == '(' and unitStr[len(unitStr)-1] == ')':
-                unitStr = unitStr[1:len(unitStr)-1]
-            else:
-                break
-        
-        if '(' in unitStr or ')' in unitStr:    
-            raise ValueError('The unit could not be parsed')
-        
+            ## update the next parenthesis based on the change of lengt of _unitStr
+            dLen = len(_unitStr) - _unitStrLenOriginal
+            for j in range(i+1, len(parenOrder)):
+                if parenOrder[j][0] >= currentParens[1]: parenOrder[j][0] += dLen-1
+                if parenOrder[j][1] >= currentParens[1]: parenOrder[j][1] += dLen-2
+                
+            ## update unitStr
+            unitStr = unitStr[0:currentParens[0]] + _unitStr + unitStr[end+1:]
+
         return unitStr
-
-    
-    @staticmethod
-    def _formatUnitStringWithParenthesis(unitStr):
-        
-        ## determine if there is a slash outside of a parenthesis pair
-        tally = 0
-        for i, s in enumerate(unitStr):
-            if s == '/' and tally == 0:
-                
-                a = unitStr[0:i]
-                b = unitStr[i+1:]
-                a = unit._formatUnit(a)
-                b = unit._formatUnit(b)
-                
-                aUpper, aUpperPrefix, aUpperExp, aLower, aLowerPrefix, aLowerExp = unit._getLists(a)
-                bUpper, bUpperPrefix, bUpperExp, bLower, bLowerPrefix, bLowerExp = unit._getLists(b)
-                
-                upper = aUpper + bLower
-                upperPrefix = aUpperPrefix + bLowerPrefix
-                upperExp = aUpperExp + bLowerExp
-                lower = aLower + bUpper
-                lowerPrefix = aLowerPrefix + bUpperPrefix
-                lowerExp = aLowerExp + bUpperExp
-                
-                return unit._combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix ,lowerExp)
-            
-            if s == '(':
-                tally += 1
-            if s == ')':
-                tally -= 1
-      
-        
-        return unit.__formatUnit(unitStr)
-            
-    @staticmethod
-    def __formatUnit(unitStr):
-        # Removing any spaces
-        unitStr = unitStr.replace(' ', '')
-        unitStr = unitStr.split('/')
-        
-        if len(unitStr)>2:
-            raise ValueError('A unit can only have a single slash (/)')
-        
-        if len(unitStr) > 1:
-            upper, lower = unitStr
-            lower = [elem for elem in lower.split('-') if elem != '']
-        else:
-            upper, lower = unitStr[0], []
-        
-        upper = [elem for elem in upper.split('-') if elem != '']
-        
-        if upper:
-            out = '-'.join(upper)
-        else:
-            out = '1'
-        
-        if lower:
-            out += '/' + '-'.join(lower)
-            
-        return out
-    
-    @ staticmethod
-    def _splitCompositeUnit(compositeUnit):
-        lower = []
-        if not slash in compositeUnit:
-            upper = compositeUnit.split(hyphen)
-            return upper, lower
-    
-        compositeUnit = compositeUnit.split(slash)
-
-        if len(compositeUnit) > 2:
-            raise ValueError('A unit can only have a single slash (/)')
-
-        upper = compositeUnit[0].split(hyphen)
-        lower = compositeUnit[1].split(hyphen) if len(compositeUnit) > 1 else []
-
-        return upper, lower
-
+ 
     @ staticmethod
     def _removeExponentFromUnit(u):
         
@@ -716,28 +693,6 @@ class unit():
                 raise ValueError(f'The unit {u} was stripped of all integers which left no symbols in the unit. This is normally due to the integers removed being equal to 1, as the unit is THE unit. Howver, the intergers removed was not equal to 1. The unit is therefore not known.')
             u = '1'
         return u, exponent
-
-    @staticmethod
-    def _assertEqualStatic(a, b):
-
-        aUpper, aLower = unit._splitCompositeUnit(a)
-        bUpper, bLower = unit._splitCompositeUnit(b)
-               
-        for elem in aUpper:
-            if not elem in bUpper:
-                return False
-            bUpper.remove(elem)
-        if bUpper:
-            return False
-        
-        for elem in aLower:
-            if not elem in bLower:
-                return False
-            bLower.remove(elem)
-        if bLower:
-            return False
-        
-        return True
 
     @staticmethod
     def _removePrefixFromUnit(unit):
@@ -772,382 +727,285 @@ class unit():
             raise ValueError(f'The unit ({prefix}{unit}) was not found. Therefore it was interpreted as a prefix and a unit. However the unit ({unit}) was not found')
         return unit, prefix
 
-    @staticmethod
-    def _splitCompositeAndIncreaseExponent(unitStr, exp):
-            
-        up, low = unit._splitCompositeUnit(knownUnits[unitStr][0])
-        
-        up, upExp = map(list, zip(*[unit._removeExponentFromUnit(elem) for elem in up]))
-        low, lowExp = map(list, zip(*[unit._removeExponentFromUnit(elem) for elem in low])) if low else [[],[]]
-        
-        upExp = [elem * exp for elem in upExp]
-        lowExp = [elem * exp for elem in lowExp]
-        
-        return up, upExp, low, lowExp
-
-    @staticmethod
-    def _getSIBaseUnit(upper, upperExp, lower, lowerExp):    
-                
-        nUpper = len(upper)
-        upperOut, lowerOut, upperExpOut, lowerExpOut = [], [], [], []
-        
-        for i, (elem, exp) in enumerate(zip(upper + lower, upperExp + lowerExp)):
-            
-            up,low = unit._splitCompositeUnit(knownUnits[elem][0])
-            
-            if (i >= nUpper):
-                up, low = low, up
-            
-            for elem in up:
-                elem, elemExp = unit._removeExponentFromUnit(elem)
-                elemExp *= exp
-                if not elem in upperOut:
-                    upperOut.append(elem)
-                    upperExpOut.append(elemExp)
-                else:
-                    index = upperOut.index(elem)
-                    upperExpOut[index] += elemExp
-                    
-            for elem in low:
-                elem, elemExp = unit._removeExponentFromUnit(elem)
-                elemExp *= exp
-                if not elem in lowerOut:
-                    lowerOut.append(elem)
-                    lowerExpOut.append(elemExp)
-                else:
-                    index = lowerOut.index(elem)
-                    lowerExpOut[index] += elemExp
-        
-        
-        upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp = unit._cancleUnits(
-            upperOut, [None] * len(upperOut), upperExpOut, lowerOut, [None] * len(lowerOut), lowerExpOut
-        )
-
-        return unit._combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp)
-
-    def isCombinationUnit(self):
-        if len(self.upper) > 1:
-            return True
-        if self.lower:
-            return True
-        return False
-
     def __str__(self, pretty=False):
+        
         if not pretty:
             return self.unitStr
-        else:
-            if self.lower:
-                # a fraction is needed
-                out = rf'\frac{{'
-                for i, (up, prefix, exp) in enumerate(zip(self.upper, self.upperPrefix, self.upperExp)):
-                    if exp > 1:
-                        up = rf'{up}^{exp}'
-                    if prefix is None:
-                        prefix = ''
-                    out += rf'{prefix}{up}'
-                    if i != len(self.upper) - 1:
-                        out += rf' \cdot '
-                out += rf'}}{{'
-                for i, (low, prefix, exp) in enumerate(zip(self.lower, self.lowerPrefix, self.lowerExp)):
-                    if exp > 1:
-                        low = rf'{low}^{exp}'
-                    if prefix is None:
-                        prefix = ''
-                    out += rf'{prefix}{low}'
-                    if i != len(self.lower) - 1:
-                        out += rf' \cdot '
-                out += rf'}}'
-            else:
-                # no fraction
-                out = r''
-                for i, (up, prefix, exp) in enumerate(zip(self.upper, self.upperPrefix, self.upperExp)):
-                    if exp > 1:
-                        up = rf'{up}^{exp}'
-                    if prefix is None:
-                        prefix = ''
-                    out += rf'{prefix}{up}'
-                    if i != len(self.upper) - 1:
-                        out += rf' \cdot '
-            return out
 
-    def _assertEqual(self, other):
-        if isinstance(other, unit):
-            other = other.unitStr
-        return self._assertEqualStatic(self.unitStr, other)
+        upper, lower = [],[]
+        for u, item in self.unitDict.items():
+            for pre, exp in item.items():
+                isUpper = exp > 0
+                if not isUpper: exp *= -1 
+                if exp == 1: exp = ''
+                if pre == None: pre = ''
+                s = f'{pre}{u}{exp}'
+                if isUpper:
+                    upper.append(s)
+                else:
+                    lower.append(s)
+        
+        if not lower:
+            # no fraction
+            out = '\cdot'.join(upper)
+            return out
+        
+        # a fraction is needed
+        out = rf'\frac{{'
+        out += '\cdot'.join(upper)
+        out += rf'}}{{'
+        out += '\cdot'.join(lower)
+        out += rf'}}'
+        return out
+
+    def __eq__(self, other):
+        return self.unitDict == other.unitDict
+
+    def isLogarithmicUnit(self):
+        upper, lower = unit._splitCompositeUnit(self.unitStr)
+        if lower or len(upper) != 1: return False
+        return unit._splitUnitExponentAndPrefix(upper[0])[0] in logrithmicUnits
 
     def __add__(self, other):
-        
-        ## output 1: are the units a logarithmic unit
-        ## output 2: outputUnit
-        ## output 3: scaleToSI. If true, then scale both self and other to SI and neglect output 2 and 3
-        ## output 4: scaleSelf. If true then scale self to remove the prefix
-        ## output 5: scaleOther. If true then scale other to remove the prefix
-        
         ## determine the units of self without any prefixes and convert this to a string
-        selfWithoutPrefixes = unit(unit._combineUpperAndLower(self.upper, [None] * len(self.upperPrefix), self.upperExp, self.lower, [None] * len(self.lowerPrefix), self.lowerExp))
-        selfWithoutPrefixesString = str(selfWithoutPrefixes)
-        
-        ## determine if self is a part of the logarithmic units
-        isLogarithmicUnit = selfWithoutPrefixesString in logrithmicUnits.keys()
+        selfUnitDictWithoutPrefixes = {}
+        for key, item in self.unitDict.items():
+            selfUnitDictWithoutPrefixes[key] = {}
+            selfUnitDictWithoutPrefixes[key][None] = 0
+            for exp in item.values():
+                selfUnitDictWithoutPrefixes[key][None] += exp
         
         ## determine if self is the same as other - then no conversions are necessary
-        if unit._assertEqualStatic(str(self), str(other)):
-            return isLogarithmicUnit, str(self), False, False, False   
+        if self.unitDict == other.unitDict:
+            return unit(unitDict=self.unitDict)  
         
         ## determine the units of other without any prefixes and convert this to a string
-        otherWithoutPrefixes = unit(unit._combineUpperAndLower(other.upper, [None] * len(other.upperPrefix), other.upperExp, other.lower, [None] * len(other.lowerPrefix), other.lowerExp))
-        otherWithoutPrefixesString = str(otherWithoutPrefixes)
-        
-        ## determine if self and/or other has to be scaled in order to remove any prefixes
-        scaleSelf = str(self) != selfWithoutPrefixesString
-        scaleOther = str(other) != otherWithoutPrefixesString
+        otherUnitDictWithoutPrefixes = {}
+        for key, item in other.unitDict.items():
+            otherUnitDictWithoutPrefixes[key] = {}
+            otherUnitDictWithoutPrefixes[key][None] = 0
+            for exp in item.values():
+                otherUnitDictWithoutPrefixes[key][None] += exp
         
         ## determine if the self and other are identical once any prefixes has been removed
-        if unit._assertEqualStatic(selfWithoutPrefixesString, otherWithoutPrefixesString):
-            return isLogarithmicUnit, selfWithoutPrefixesString, False, scaleSelf, scaleOther
+        if selfUnitDictWithoutPrefixes == otherUnitDictWithoutPrefixes:
+            return unit(unitDict=selfUnitDictWithoutPrefixes)
         
         # determine if the SI base units of self and other are equal
-        if self._SIBaseUnit == other._SIBaseUnit:
-            return isLogarithmicUnit, self._SIBaseUnit, True, False, False
+        if self.unitDictSI == other.unitDictSI:
+            return unit(unitDict=copy(self.unitDictSI))
         
         ## determine if "DELTAK" and "K" are the SI Baseunits of self and other
-        SIBaseUnits = [selfWithoutPrefixes._SIBaseUnit,  otherWithoutPrefixes._SIBaseUnit]        
-        if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
+        SIBaseUnits = [self.unitDictSI, other.unitDictSI]        
+        if {'DELTAK':{None:1}} in SIBaseUnits and {'K':{None:1}} in SIBaseUnits:
             
-            indexTemp = SIBaseUnits.index('K')
+            indexTemp = SIBaseUnits.index({'K':{None:1}})
             indexDiff = 0 if indexTemp == 1 else 1
             
-            units = [selfWithoutPrefixesString, otherWithoutPrefixesString]
+            units = [list(selfUnitDictWithoutPrefixes.keys())[0], list(otherUnitDictWithoutPrefixes.keys())[0]]
 
             if units[indexTemp] == units[indexDiff][-1]:        
-                return isLogarithmicUnit, units[indexTemp], False, scaleSelf, scaleOther
+                return unit(unitDict=[selfUnitDictWithoutPrefixes, otherUnitDictWithoutPrefixes][indexTemp])
             
-            return isLogarithmicUnit, 'K', True, False, False
+            return unit('K')
 
         raise ValueError(f'You tried to add a variable in [{self}] to a variable in [{other}], but the units do not have the same SI base unit')
 
     def __sub__(self, other):
-        ## output 1: are the units a logarithmic unit
-        ## output 2: outputUnit
-        ## output 3: scaleToSI. If true, then scale both self and other to SI and neglect output 2 and 3
-        ## output 4: scaleSelf. If true then scale self to remove the prefix
-        ## output 5: scaleOther. If true then scale other to remove the prefix
         
-        ## determine the units of self without any prefixes and convert this to a string
-        selfWithoutPrefixes = unit(unit._combineUpperAndLower(self.upper, [None] * len(self.upperPrefix), self.upperExp, self.lower, [None] * len(self.lowerPrefix), self.lowerExp))
-        selfWithoutPrefixesString = str(selfWithoutPrefixes)
+        ## determine the units of self without any prefixes
+        selfUnitDictWithoutPrefixes = {}
+        for key, item in self.unitDict.items():
+            selfUnitDictWithoutPrefixes[key] = {}
+            selfUnitDictWithoutPrefixes[key][None] = 0
+            for exp in item.values():
+                selfUnitDictWithoutPrefixes[key][None] += exp
         
-        ## determine if self is a part of the logarithmic units
-        isLogarithmicUnit = selfWithoutPrefixesString in logrithmicUnits.keys()
         
-        ## determine the units of other without any prefixes and convert this to a string
-        otherWithoutPrefixes = unit(unit._combineUpperAndLower(other.upper, [None] * len(other.upperPrefix), other.upperExp, other.lower, [None] * len(other.lowerPrefix), other.lowerExp))
-        otherWithoutPrefixesString = str(otherWithoutPrefixes)
+        ## determine the units of other without any prefixes and convert
+        otherUnitDictWithoutPrefixes = {}
+        for key, item in other.unitDict.items():
+            otherUnitDictWithoutPrefixes[key] = {}
+            otherUnitDictWithoutPrefixes[key][None] = 0
+            for exp in item.values():
+                otherUnitDictWithoutPrefixes[key][None] += exp
         
-        ## determine if self and/or other has to be scaled in order to remove any prefixes
-        scaleSelf = str(self) != selfWithoutPrefixesString
-        scaleOther = str(other) != otherWithoutPrefixesString
-
+        
         ## determine if "DELTAK" and "K" are the SI Baseunits of self and other
-        SIBaseUnits = [self._SIBaseUnit, other._SIBaseUnit]
-        if SIBaseUnits[0] == 'K' and SIBaseUnits[1] == 'K':
-            if selfWithoutPrefixesString == otherWithoutPrefixesString:
-                return isLogarithmicUnit, 'DELTA' + str(self), False, scaleSelf, scaleOther
-            return isLogarithmicUnit,'DELTAK', True, False, False
+        SIBaseUnits = [self.unitDictSI, other.unitDictSI]        
+        if SIBaseUnits[0] == {'K':{None:1}} and SIBaseUnits[1] == {'K':{None:1}}:
+            if self.unitDict == other.unitDict:
+                return unit(unitDict = copy(self.unitDict))
+            return unit('K')
 
-        if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
-            
-            indexTemp = SIBaseUnits.index('K')
+        if {'DELTAK':{None:1}} in SIBaseUnits and {'K':{None:1}} in SIBaseUnits:
+            indexTemp = SIBaseUnits.index({'K':{None:1}})
             if indexTemp != 0:
-                raise ValueError('You tried to subtract a temperature from a temperature differnce. This is not possible.')
-            indexDiff = 0 if indexTemp == 1 else 1
-            
-            units = [selfWithoutPrefixesString, otherWithoutPrefixesString]
-
-
-            if units[indexTemp] == units[indexDiff][-1]:        
-                return isLogarithmicUnit, units[indexTemp], False, scaleSelf, scaleOther
-            
-            return isLogarithmicUnit, 'K', True, False, False
+                raise ValueError('You tried to subtract a temperature from a temperature differnce. This is not possible.')      
+            return unit(unitDict=[selfUnitDictWithoutPrefixes, otherUnitDictWithoutPrefixes][indexTemp])
         
                 
         ## determine if self is the same as other - then no conversions are necessary
-        if unit._assertEqualStatic(str(self), str(other)):
-            return isLogarithmicUnit, str(self), False, False, False
-           
+        if self.unitDict == other.unitDict:
+            return unit(unitDict=self.unitDict)
+        
         ## determine if the self and other are identical once any prefixes has been removed
-        if unit._assertEqualStatic(selfWithoutPrefixesString, otherWithoutPrefixesString):
-            return isLogarithmicUnit, selfWithoutPrefixesString, False, scaleSelf, scaleOther
+        if selfUnitDictWithoutPrefixes == otherUnitDictWithoutPrefixes:
+            return unit(unitDict=selfUnitDictWithoutPrefixes)
         
-        # test if the SI base units are identical
-        if self._SIBaseUnit == other._SIBaseUnit:
-            return isLogarithmicUnit, self._SIBaseUnit, True, False, False
-        
+        # determine if the SI base units of self and other are equal
+        if self.unitDictSI == other.unitDictSI:
+            return unit(unitDict=self.unitDictSI)
         
         
         raise ValueError(f'You tried to subtract a variable in [{other}] from a variable in [{self}], but the units do not have the same SI base unit')
 
     def __mul__(self, other):
-        return unit._multiply(self.unitStr, other.unitStr)
-
-    def __truediv__(self, other):
+        out = {}
         
-        a = self.unitStr
-        b = other.unitStr
-
-        bUpper, bUpperPrefix, bUpperExp, bLower, bLowerPrefix, bLowerExp = unit._getLists(b)
-
-        b = self._combineUpperAndLower(
-            upper=bLower,
-            upperPrefix=bLowerPrefix,
-            upperExp=bLowerExp,
-            lower=bUpper,
-            lowerPrefix=bUpperPrefix,
-            lowerExp=bUpperExp
-        )
-
-        return unit._multiply(a, b)
-
-    def __pow__(self, power):
-        return self.__staticPow(self.unitStr, self.upper, self.upperPrefix, self.upperExp, self.lower, self.lowerPrefix, self.lowerExp, self._SIBaseUnit, power)
+        for key, item in self.unitDict.items():
+            out[key]= {}
+            for pre, exp in item.items():
+                out[key][pre] = exp
+        
+        for key, item in other.unitDict.items():
+            if not key in out:
+                out[key] = item
+            else:
+                for pre, exp in item.items():
+                    if not pre in out[key]:
+                        out[key][pre] = exp
+                    else:
+                        out[key][pre] += exp
+        
+        out = unit._reduceDict(out)
+        return unit(unitDict = out)
+    
+    def __truediv__(self, other):
+        return unit(unitDict = unit.staticTruediv(self.unitDict, other.unitDict))
     
     @staticmethod
-    def __staticPow(unitStr, upper, upperPrefix, upperExp ,lower, lowerPrefix, lowerExp, _SIBaseUnit, power):
-        if power == 0:
-            return '1', False
-
-        elif power > 1:
-
-            if unitStr == '1':
-                # self is '1'. Therefore the power does not matter
-                return unitStr, False
-
-            else:
-                # self is not '1'. Therefore all exponents are multiplied by the power
-
-                if not (isinstance(power, int) or power.is_integer()):
-                    raise ValueError('The power has to be an integer')
-
-                upperExp = [int(elem * power) for elem in upperExp]
-                lowerExp = [int(elem * power) for elem in lowerExp]
-
-                return unit._combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp) , False
-
-        else:
-            # the power is smaller than 1.
-            # Therefore it is necessary to determine if all exponents are divisible by the recibricol of the power
-
-            if unitStr == '1':
-                # self is '1'. Therefore the power does not matter
-                return unitStr, False
-            else:
-                # self is not '1'.
-                # Therefore it is necessary to determine if all exponents are divisible by the recibricol of the power
-
-                def isCloseToInteger(a, rel_tol=1e-9, abs_tol=0.0):
-                    b = np.around(a)
-                    return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
-                
-                # Test if the exponent of all units is divisible by the power
-                try:
-                    for exp in upperExp + lowerExp:
-                        if not isCloseToInteger(exp * power):
-                            raise ValueError(f'You can not raise a variable with the unit {unitStr} to the power of {power}')
-
-                    upperExp = [int(elem * power) for elem in upperExp]
-                    lowerExp = [int(elem * power) for elem in lowerExp]
-
-                    return unit._combineUpperAndLower(upper, upperPrefix, upperExp, lower, lowerPrefix, lowerExp), False
-                
-                except ValueError:                
-                    ## the exponents of the unit was not divisible by the power
-                    ## test if the exponents of the SIBaseunit is divisible by the power 
-                    
-                    siUpper, siUpperPrefix, siUpperExp, siLower, siLowerPrefix, siLowerExp = unit._getLists(_SIBaseUnit)
-                    for exp in siUpperExp + siLowerExp:
-                        if not isCloseToInteger(exp * power):
-                            raise ValueError(f'You can not raise a variable with the unit {unitStr} to the power of {power}')
-
-                    siUpperExp = [int(elem * power) for elem in siUpperExp]
-                    siLowerExp = [int(elem * power) for elem in siLowerExp]
-
-                    return unit._combineUpperAndLower(siUpper, siUpperPrefix, siUpperExp, siLower, siLowerPrefix, siLowerExp), True
-
-    def getConverter(self, newUnit):
-        newUnit = unit._formatUnit(newUnit)
-
-        # get the upper, upperExp, lower and lowerExp of the newUnit without creating a unit
-        otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(newUnit)
-
-        # determine if the SI bases are identical
-        otherSIBase = self._getSIBaseUnit(otherUpper, otherUpperExp, otherLower, otherLowerExp)
+    def staticTruediv(a, b):
+        out = {}
         
-        if unit._assertEqualStatic(self._SIBaseUnit, otherSIBase) == False:
-            raise ValueError(f'You tried to convert from {self} to {newUnit}. But these do not have the same base units')
+        for key, item in a.items():
+            out[key]= {}
+            for pre, exp in item.items():
+                out[key][pre] = exp
         
-        return self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
+        for key, item in b.items():
+            if not key in out:
+                out[key] = {}
+                for pre, exp in item.items():
+                    out[key][pre] = -1 * exp
+            else:
+                for pre, exp in item.items():
+                    if not pre in out[key]:
+                        out[key][pre] = -exp
+                    else:
+                        out[key][pre] -= exp
+        
+        return unit._reduceDict(out)
+    
+    def __pow__(self, power):
+        return unit(unitDict= unit.staticPow(self.unitDict, self.unitDictSI, self.unitStr, power))
+    
+    @staticmethod
+    def staticPow(unitDict, unitDictSI, unitStr, power):
+        
+        if unitDict == {'1': {None: 1}}:
+            return unitDict
+        
+        frac = Fraction(power).limit_denominator()
+        num, den = frac._numerator, frac._denominator
+        
+        ## determine if it is possible to take the power of the unitDict
+        isPossible = True
+        out = {}
+        for key, item in unitDict.items():
+            for pre, exp in item.items():
+                if not (exp * num) % den == 0:
+                    isPossible = False
+                    break
+            if not isPossible:
+                break
+        
+        ## if it is possible, then return a new unitDict
+        if isPossible:
+            for key, item in unitDict.items():
+                out[key] = {}
+                for pre, exp in unitDict[key].items():
+                    out[key][pre] = int(num * exp / den)
+            out = unit._reduceDict(out)
+            return out
+        
+        ## determine if it is possible to take the power of the sibase unit
+        isPossible = True
+        out = {}
+        for key, item in unitDictSI.items():
+            for pre, exp in item.items():
+                if not (exp * num) % den == 0:
+                    isPossible = False
+                    break
+            
+        ## if it is possible, then return a new unitDict
+        if isPossible:
+            for key, item in unitDictSI.items():
+                out[key] = {}
+                for pre, exp in item.items():
+                    out[key][pre] = int(num * exp / den)
+            out = unit._reduceDict(out)
+            return out
+        
+        raise ValueError(f'You can not raise a variable with the unit {unitStr} to the power of {power}')
 
-    def getUnitWithoutPrefix(self):
-        return self._removePrefixFromUnit(self.unitStr)[0]
+    def getConverter(self, newUnitStr):  
+        newUnitStr =  unit._formatUnitStr(newUnitStr)
+        newUnitDict = unit._getUnitDict(newUnitStr)
+        newUnitDictSI = unit._getUnitDictSI(newUnitDict)
+        if not (self.unitDictSI == newUnitDictSI):
+            raise ValueError(f'You tried to convert from {self} to {newUnitStr}. But these do not have the same base units')
+        return self.getConverterFromDict(newUnitDict)
+    
+    def getConverterFromDict(self, newUnitDict):    
+        
+        # initialize the scale and offset
+        out = _unitConversion(1, 0)
+        
+        ## loop over self.unitDict
+        for u, item in self.unitDict.items():
+            for pre, exp in item.items():
+                conv = knownUnits[u][1]
+                if not pre is None: conv *= knownPrefixes[pre]
+                isUpper = exp > 0
+                if not isUpper: exp *= -1                    
+                conv = conv ** exp
+                out = out * conv if isUpper else out / conv
+
+        ## loop over newUnitDict
+        for u, item in newUnitDict.items():
+            for pre, exp in item.items():
+                conv = knownUnits[u][1]
+                if not pre is None: conv *= knownPrefixes[pre]
+                isUpper = exp > 0
+                if not isUpper: exp *= -1
+                conv = conv ** exp
+                out = out * conv if not isUpper else out / conv
+        
+        return out
+
+    def isCombinationUnit(self):
+        return len(list(self.unitDict.keys())) > 1
 
     def getLogarithmicConverter(self, unitStr = None):
         if unitStr is None:
             unitStr = self.unitStr
-        u, p = self._removePrefixFromUnit(unitStr)
+        u, _ = self._removePrefixFromUnit(unitStr)
         return knownUnits[u][1]
-   
-    def _getConverter(self, otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp):
-        
-        # initialize the scale and offset
-        out = _unitConversion(1, 0)
 
-        nUpper = len(self.upper)
-        units = self.upper + self.lower 
-        prefixes = self.upperPrefix + self.lowerPrefix
-        exponents = self.upperExp + self.lowerExp
-        for i, (unit, prefix, exp) in enumerate(zip(units, prefixes, exponents)):
-            conv = knownUnits[unit][1]
-            if not prefix is None:
-                conv *= knownPrefixes[prefix]
-            if exp > 1: conv = conv ** exp
-            out = out * conv if i < nUpper else out / conv
-
-        nUpper = len(otherUpper)
-        units = otherUpper + otherLower
-        prefixes = otherUpperPrefix + otherLowerPrefix
-        exponents = otherUpperExp + otherLowerExp
-        for i, (unit, prefix, exp) in enumerate(zip(units, prefixes, exponents)):
-            conv = knownUnits[unit][1]
-            if not prefix is None:
-                conv *= knownPrefixes[prefix]
-            if exp > 1: conv = conv ** exp
-            out = out / conv if i < nUpper else out * conv
-
-        return out
-
-    def convert(self, unitStr):
-        if unitStr == '':
-            unitStr = '1'
-
-        # remove any unknown characters
-        unitStr = self._formatUnit(unitStr)
-
-        # split the unit in upper and lower
-        self.upper, self.upperPrefix, self.upperExp, self.lower, self.lowerPrefix, self.lowerExp = self._getLists(unitStr)
-
-        # create the unit string
-        self.unitStr = self._createUnitString()
-
-        self._SIBaseUnit = self._getSIBaseUnit(self.upper, self.upperExp, self.lower, self.lowerExp)
-        otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp = self._getLists(self._SIBaseUnit)
-        self._converterToSI = self._getConverter(otherUpper, otherUpperPrefix, otherUpperExp, otherLower, otherLowerPrefix, otherLowerExp)
-
-
-
-
-if __name__ == "__main__":
-    a = unit('%')
-    b = unit('%')
     
-    c = a + b
-    print(c)
+if __name__ == "__main__":
+    a = unit('K')
+    converter = a.getConverter('C')
+    print(converter.convert(300), 26.85)
+    

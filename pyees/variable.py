@@ -2,12 +2,9 @@ from copy import copy
 import numpy as np
 try:
     from unit import unit
-    from unit import logrithmicUnits
 except ImportError:
     from pyees.unit import unit
-    from pyees.unit import logrithmicUnits
-    
-        
+     
     
 class logarithmicVariables:
     def __init__(self):
@@ -129,7 +126,7 @@ class scalarVariable():
         converter = self._unitObject.getConverter(newUnit)
         self._value = converter.convert(self._value, useOffset=not self._unitObject.isCombinationUnit())
         self._uncert = converter.convert(self._uncert, useOffset=False)
-        self._unitObject.convert(newUnit)
+        self._unitObject = unit(newUnit)
  
     def printUncertanty(self, value, uncert):
         # function to print number
@@ -199,6 +196,7 @@ class scalarVariable():
                 return rf'{value} {pm} {uncert}{space}{unitStr}'
 
     def _addDependent(self, var, grad):
+                
         # scale the gradient to SI units. This is necessary if one of the variables are converted after the dependency has been noted
         grad *= self._converterToSI.convert(1, useOffset=False) / var._converterToSI.convert(1, useOffset=False)
         
@@ -238,51 +236,34 @@ class scalarVariable():
             raise ValueError(f'You tried to set the covariance between {self} and {var} with a non scalar value')
         
         covUnit = unit(unitStr)
-        selfVarUnit = unit(self._unitObject * var._unitObject)
-        if not unit._assertEqualStatic(covUnit._SIBaseUnit, selfVarUnit._SIBaseUnit):
+        selfVarUnit = self._unitObject * var._unitObject
+        if not covUnit.unitDictSI ==  selfVarUnit.unitDictSI:
             raise ValueError(f'The covariance of {covariance} [{unitStr}] does not match the units of {self} and {var}')
         
-        covariance *= covUnit._converterToSI.convert(1, useOffset=False)
+        covariance = covUnit._converterToSI.convert(covariance, useOffset=False)
         
         self.covariance[var] = covariance        
         var.covariance[self] = covariance
         
     def _calculateUncertanty(self):
- 
-        # variance from each measurement
-        variance = 0
-
-        # loop over each different variable object in the dependency dict
-        for dependency in self.dependsOn.values():
-            
-            ## loop over each "instance" of the variable
-            ## an instance occurs when the variable has been changed using methods as __setitem__
-            ## this affectively makes the variable a "new" variable in the eyes of other variables
-    
-            ## add the variance constribution to the variance
-            unc, grad = dependency[0], dependency[1]
-            variance += (unc * grad) ** 2
         
-        ## scale the variance back in to the currenct unit
-        ## the scaling is raised to a power of 2, as the above line should be
-        ## variance += (scale * unc * grad) ** 2
-        scale = 1 / self._converterToSI.convert(1, useOffset=False)
-        variance *= scale ** 2
+        ## all variances are determined in the SI unit system.
+        ## these has to be converted back in the the unit of self
+        scale = 1 / self._converterToSI.convert(1, useOffset=False) ** 2
+        
+        # variance from each measurement
+        variance = sum([(unc * grad)**2 for unc, grad in self.dependsOn.values()]) * scale
         
         # variance from the corralation between measurements
         ## covariance = list(vari, vari.currentValue, vari.currentUncert, varj, varj.currentValue, varj.currenctUncert, cov)
         ## from the above the gradients can be found from self.dependsOn
-        
         for var1 in self.dependsOn.keys():
             for var2 in var1.covariance.keys():
                 if var2 in self.dependsOn:
                     grad1 = self.dependsOn[var1][1]
                     grad2 = self.dependsOn[var2][1]
-                    s = scale**2 
                     cov = var1.covariance[var2]
-                    term = s * grad1 * grad2 * cov
-                    variance += term
-                    # variance += scale**2 * grad1 * grad2 * var1.covariance[var2]
+                    variance += scale * grad1 * grad2 * cov
 
         self._uncert = np.sqrt(variance)
         
@@ -292,48 +273,45 @@ class scalarVariable():
             return self + variable(other, self.unit)
 
         # determine if the two variable can be added
-        isLogarithmicUnit, outputUnit, scaleToSI, scaleSelf, scaleOther = self._unitObject + other._unitObject
-        if isLogarithmicUnit:
+        outputUnit = self._unitObject + other._unitObject
+        
+        ## handle logarithmic addition seperately
+        if outputUnit.isLogarithmicUnit():
             return logarithmicVariables.__add__(self, other)
 
-        # convert self and other to the SI unit system
-        selfUnit = copy(self.unit)
-        otherUnit = copy(other.unit)
+        # convert self and other
+        selfUnit = copy(self._unitObject)
+        otherUnit = copy(other._unitObject)
         
-        if scaleToSI:
-            self.convert(self._unitObject._SIBaseUnit)
-            other.convert(other._unitObject._SIBaseUnit)
-        else:
-            if scaleSelf:
-                a, _ = self._unitObject._removePrefixFromUnit(self.unit)
-                self.convert(a)
-            if scaleOther:
-                a, _ = other._unitObject._removePrefixFromUnit(other.unit)
-                other.convert(a)
-        
+        ## convert the units if the SI unit is identical to that of the output unit and the unit is not equal to the output unit
+        if self._unitObject.unitDictSI == outputUnit.unitDictSI and not self._unitObject == outputUnit:
+            self.convert(str(outputUnit))
+        if other._unitObject.unitDictSI == outputUnit.unitDictSI and not other._unitObject == outputUnit:
+            other.convert(str(outputUnit))
 
-        # determine the value and gradients
+        # determine the value
         val = self.value + other.value
         
-        # create the new variable
+        # create the new variable and add the self and other as dependencies
         var = variable(val, outputUnit)
         var._addDependent(self, 1)
         var._addDependent(other, 1)
         var._calculateUncertanty()
 
         # convert all units back to their original units
-        self.convert(selfUnit)
-        other.convert(otherUnit)
+        if not self._unitObject == selfUnit:
+            self.convert(str(selfUnit))
+        if not other._unitObject == otherUnit:
+            other.convert(str(otherUnit))
         
-        ## convert the variable in to the original unit if self and other has the same original unit
-        ## otherwise keep the variable in the SI unit system
-        if (selfUnit == otherUnit):
-            var.convert(selfUnit)
-        
-        if outputUnit == 'K':
-            SIBaseUnits = [self._unitObject._SIBaseUnit, other._unitObject._SIBaseUnit]
-            if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
-                var.convert([selfUnit, otherUnit][SIBaseUnits.index('K')]) 
+        ## if the output unit is 'K' and one of the inputs is a temperature and the other is a tempreature difference
+        ## then return the output in the same unit as the temperature
+        ## this has no affect if the inputs are in 'K' and 'DeltaK'
+        ## but the output is converted to 'C' if the inputs are in 'C' and 'DeltaK' 
+        SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
+        if outputUnit.unitDict == {'K':{None:1}} and {'DELTAK':{None:1}} in SIBaseUnits and {'K':{None:1}} in SIBaseUnits:
+            var.convert(str([selfUnit, otherUnit][SIBaseUnits.index({'K':{None:1}})])) 
+            
         return var
 
     def __radd__(self, other):
@@ -344,45 +322,44 @@ class scalarVariable():
             return self - variable(other, self.unit)
 
         # determine if the variables can be subtracted
-        isLogarithmicUnit, outputUnit, scaleToSI, scaleSelf, scaleOther = self._unitObject - other._unitObject
-        if isLogarithmicUnit:
+        outputUnit = self._unitObject - other._unitObject
+    
+        ## handle logarithmic unit seperately
+        if outputUnit.isLogarithmicUnit():
             return logarithmicVariables.__sub__(self, other)
-
-        # convert self and other to the SI unit system
-        selfUnit = copy(self.unit)
-        otherUnit = copy(other.unit)
- 
-        if scaleToSI:
-            self.convert(self._unitObject._SIBaseUnit)
-            other.convert(other._unitObject._SIBaseUnit)
-        else:
-            if scaleSelf:
-                a, _ = self._unitObject._removePrefixFromUnit(self.unit)
-                self.convert(a)
-            if scaleOther:
-                a, _ = other._unitObject._removePrefixFromUnit(other.unit)
-                other.convert(a)
-
-        # determine the value and gradients
+        
+        # convert self and other
+        selfUnit = copy(self._unitObject)
+        otherUnit = copy(other._unitObject)
+        
+        ## convert the units if the SI unit is identical to that of the output unit and the unit is not equal to the output unit
+        if self._unitObject.unitDictSI == outputUnit.unitDictSI and not self._unitObject == outputUnit:
+            self.convert(str(outputUnit))
+        if other._unitObject.unitDictSI == outputUnit.unitDictSI and not other._unitObject == outputUnit:
+            other.convert(str(outputUnit))
+       
+        # determine the value
         val = self.value - other.value
 
-        # create the new variable
+        # create the new variable and add the self and other as dependencies
         var = variable(val, outputUnit)
         var._addDependent(self, 1)
         var._addDependent(other, -1)
         var._calculateUncertanty()
 
+        # convert all units back to their original units
+        if not self._unitObject == selfUnit:
+            self.convert(str(selfUnit))
+        if not other._unitObject == otherUnit:
+            other.convert(str(otherUnit))
 
-        # convert self and other back
-        self.convert(selfUnit)
-        other.convert(otherUnit)
-
-        if self.unit == other.unit and outputUnit == self.unit:
-            var.convert(self.unit)
-        if outputUnit == 'K':
-            SIBaseUnits = [self._unitObject._SIBaseUnit, other._unitObject._SIBaseUnit]
-            if 'DELTAK' in SIBaseUnits and 'K' in SIBaseUnits:
-                var.convert([selfUnit, otherUnit][SIBaseUnits.index('K')]) 
+        SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
+        if outputUnit.unitDictSI == {'K':{None:1}} and SIBaseUnits[0] == {'K':{None:1}} and SIBaseUnits[1] == {'K':{None:1}}:
+            if list(self._unitObject.unitDict.keys())[0] == list(other._unitObject.unitDict.keys())[0]:
+                var._unitObject = unit('DELTA' + list(self._unitObject.unitDict.keys())[0])
+            else:
+                var._unitObject = unit('DELTAK')
+            
         return var
 
     def __rsub__(self, other):
@@ -393,15 +370,21 @@ class scalarVariable():
         if not isinstance(other, scalarVariable):
             return self * variable(other)
 
+        ## determine the value
         val = self.value * other.value
+        
+        ## determine the output unit
         outputUnit = self._unitObject * other._unitObject
 
+        ## create a variable
         var = variable(val, outputUnit)
         var._addDependent(self, other.value)
         var._addDependent(other, self.value)
         var._calculateUncertanty()
 
-        if var._unitObject._SIBaseUnit == '1' and var._unitObject != '1':
+        ## if all units were cancled during the multiplication, then convert to 1
+        ## this will remove any remaining prefixes
+        if var._unitObject.unitDictSI == {'1':{None:1}} and var._unitObject.unitDict != {'1' : {None: 1}}:
             var.convert('1')
 
         return var
@@ -410,20 +393,27 @@ class scalarVariable():
         return self * other
 
     def __pow__(self, other):
+        
         if not isinstance(other, scalarVariable):
             return self ** variable(other, '')
 
         if str(other.unit) != '1':
             raise ValueError('The exponent can not have a unit')
 
-        selfUnit = copy(self.unit)
-        outputUnit, hasToBeScaledToSI = self._unitObject ** other.value
-
-        if hasToBeScaledToSI:
-            self.convert(self._unitObject._SIBaseUnit)
+        ## determine the output unit
+        outputUnit = self._unitObject ** other.value
         
+        ## if self._unitObject has the same keys, as the output unit
+        ## then self does not have to be scaled to the SI unit system in order for the unit to be raised to the power
+        hasToBeScaledToSI = self._unitObject.unitDict.keys() != outputUnit.unitDict.keys()
+        if hasToBeScaledToSI:
+            selfUnit = copy(self.unit)
+            self.convert(self._unitObject.unitStrSI)
+        
+        ## dertermine the value
         val = self.value ** other.value
 
+        ## determine the gradients of the output with respoect to self and other
         def gradSelf(valSelf, valOTher):
             if valSelf != 0:
                 return  valOTher * valSelf ** (valOTher - 1)
@@ -437,14 +427,16 @@ class scalarVariable():
         gradOther = np.vectorize(gradOther, otypes=[float])(self.value, other.value, other._uncert)
         gradSelf = np.vectorize(gradSelf, otypes=[float])(self.value, other.value)
         
+        ## create a new variable
         var = variable(val, outputUnit)
         var._addDependent(self, gradSelf)
         var._addDependent(other, gradOther)
         var._calculateUncertanty()
-        
+
+        ## converte self back if it was converted to the SI unit system
         if hasToBeScaledToSI:
             self.convert(selfUnit)
-        
+
         return var
 
     def __rpow__(self, other):
@@ -453,16 +445,22 @@ class scalarVariable():
     def __truediv__(self, other):
         if not isinstance(other, scalarVariable):
             return self / variable(other)
-
+        
+        ## determine the value
         val = self.value / other.value
+        
+        ## determine the output unit
         outputUnit = self._unitObject / other._unitObject
 
+        ## create a variable
         var = variable(val, outputUnit)
         var._addDependent(self, 1 / other.value)
         var._addDependent(other, -self.value / (other.value**2))
         var._calculateUncertanty()
 
-        if var._unitObject._SIBaseUnit == '1' and var._unitObject != '1':
+        ## if all units were cancled during the multiplication, then convert to 1
+        ## this will remove any remaining prefixes
+        if var._unitObject.unitDictSI == {'1':{None:1}} and var._unitObject.unitDict != {'1' : {None: 1}}:
             var.convert('1')
 
         return var
@@ -519,11 +517,11 @@ class scalarVariable():
         return self**(1 / 2)
 
     def sin(self):
-        if str(self._unitObject._SIBaseUnit) != 'rad':
+        if self._unitObject.unitDictSI != {'rad': {None:1}}:
             raise ValueError('You can only take sin of an angle')
         
         outputUnit = '1'
-        if self._unitObject._assertEqual('rad'):
+        if self.unit == 'rad':
             val = np.sin(self.value)
             grad = np.cos(self.value)
         else:
@@ -537,7 +535,7 @@ class scalarVariable():
         return var
 
     def cos(self):
-        if str(self._unitObject._SIBaseUnit) != 'rad':
+        if self._unitObject.unitDictSI != {'rad': {None:1}}:
             raise ValueError('You can only take cos of an angle')
 
         outputUnit = '1'
@@ -555,7 +553,7 @@ class scalarVariable():
         return var
 
     def tan(self):
-        if str(self._unitObject._SIBaseUnit) != 'rad':
+        if self._unitObject.unitDictSI != {'rad': {None:1}}:
             raise ValueError('You can only take tan of an angle')
 
         outputUnit = '1'
@@ -594,128 +592,69 @@ class scalarVariable():
     def mean(self):
         return self
 
+    @staticmethod
+    def __comparer__(func):
+        
+        def wrap(*args):
+            a = args[0]
+            b = args[1]           
+            
+            if not isinstance(b,scalarVariable):
+                b = variable(b, a.unit)
+            
+            if a.unit == b.unit:
+                return func(a,b)
+            
+            if not a._unitObject.unitDictSI == b._unitObject.unitDictSI:
+                raise ValueError(f'You cannot compare {a} and {b} as they do not have the same SI base unit')
+        
+            aUnit = copy(a.unit)
+            bUnit = copy(b.unit)
+            
+            a.convert(a._unitObject.unitStrSI)
+            b.convert(b._unitObject.unitStrSI)
+            
+            res = func(a,b)
+            
+            a.convert(aUnit)
+            b.convert(bUnit)
+            
+            return res
+            
+        return wrap
+
+    @__comparer__
     def __lt__(self, other):
-        if not isinstance(other, scalarVariable):
-            return self < variable(other, self.unit)
-
-        if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
-            raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
+        return self.value < other.value
         
-        selfUnit = copy(self.unit)
-        otherUnit = copy(other.unit)
-        
-        self.convert(self._unitObject._SIBaseUnit)
-        other.convert(self._unitObject._SIBaseUnit)
-
-        out = self.value < other.value
-        
-        self.convert(selfUnit)
-        other.convert(otherUnit)
-        return out
-
+    @__comparer__
     def __le__(self, other):
-        if not isinstance(other, scalarVariable):
-            return self <= variable(other, self.unit)
-        if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
-            raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
+        return self.value <= other.value
         
-        selfUnit = copy(self.unit)
-        otherUnit = copy(other.unit)
-        
-        self.convert(self._unitObject._SIBaseUnit)
-        other.convert(self._unitObject._SIBaseUnit)
-        
-        out = self.value <= other.value
-        
-        self.convert(selfUnit)
-        other.convert(otherUnit)
-        return out
-    
+    @__comparer__
     def __gt__(self, other):
-        if not isinstance(other, scalarVariable):
-            return self > variable(other, self.unit)
-
-        if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
-            raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
-        
-        selfUnit = copy(self.unit)
-        otherUnit = copy(other.unit)
-        
-        self.convert(self._unitObject._SIBaseUnit)
-        other.convert(self._unitObject._SIBaseUnit)
-
-        out = self.value > other.value
+        return self.value > other.value
            
-        self.convert(selfUnit)
-        other.convert(otherUnit)
-        return out
-   
+    @__comparer__
     def __ge__(self, other):
-        if not isinstance(other, scalarVariable):
-            return self >= variable(other, self.unit)
-
-        if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
-            raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
-        
-        selfUnit = copy(self.unit)
-        otherUnit = copy(other.unit)
-        
-        self.convert(self._unitObject._SIBaseUnit)
-        other.convert(self._unitObject._SIBaseUnit)
-
-        out = self.value >= other.value
-        
-        self.convert(selfUnit)
-        other.convert(otherUnit)
-        return out
-
+        return self.value >= other.value
+    
+    @__comparer__
     def __eq__(self, other):
-        if not isinstance(other, scalarVariable):
-            return self == variable(other, self.unit)
-
-        if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
-            raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
-        
-        selfUnit = copy(self.unit)
-        otherUnit = copy(other.unit)
-        
-        self.convert(self._unitObject._SIBaseUnit)
-        other.convert(self._unitObject._SIBaseUnit)
-        
         if isinstance(self, arrayVariable) and isinstance(other, arrayVariable):
             if len(self) != len(other):
-                raise ValueError(f"operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}")    
-        out = self.value == other.value
+                raise ValueError(f"operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}")   
+        return self.value == other.value
             
-        self.convert(selfUnit)
-        other.convert(otherUnit)
-        return out
-
+    @__comparer__
     def __ne__(self, other):
-        if not isinstance(other, scalarVariable):
-            return self != variable(other, self.unit)
-
-        if not self._unitObject._SIBaseUnit == other._unitObject._SIBaseUnit:
-            raise ValueError(f'You cannot compare {self} and {other} as they do not have the same SI base unit')
-        
-        selfUnit = copy(self.unit)
-        otherUnit = copy(other.unit)
-        
-        self.convert(self._unitObject._SIBaseUnit)
-        other.convert(self._unitObject._SIBaseUnit)
-
         if isinstance(self, arrayVariable) and isinstance(other, arrayVariable):
             if len(self) != len(other):
-                raise ValueError(f"operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}")    
-        out = self.value != other.value
+                raise ValueError(f"operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}")   
+        return  self.value != other.value
             
-        self.convert(selfUnit)
-        other.convert(otherUnit)
-        return out
-
     def __hash__(self):
         return id(self)
-
 
 class arrayVariable(scalarVariable):
     
@@ -899,6 +838,9 @@ class arrayVariable(scalarVariable):
         else:
             out = [a**other for a in self]
 
+        ## if other is an arrayVariable, then this could imply that the unit of each element in out are not equal
+        ## if the units of the scalarVariables are equel, then collect them in an arrayVariable
+        ## else return the list of scalarVariables
         if all([out[0].unit == elem.unit for elem in out]):
             return arrayVariable(scalarVariables=out)
         
@@ -953,7 +895,7 @@ class arrayVariable(scalarVariable):
         for elem in self.scalarVariables:
             elem._value = converter.convert(elem._value, useOffset=not self._unitObject.isCombinationUnit())
             elem._uncert = converter.convert(elem._uncert, useOffset=False)
-        self._unitObject.convert(newUnit)
+        self._unitObject = unit(newUnit)
 
     def __iter__(self):
         self.n = 0
@@ -1006,9 +948,16 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
-
-
 if __name__ == "__main__":
-    A = variable(7, '%', 0.1)
-    B = -A
-    print(B)
+    a = variable(23, 'deg', 2)
+    # a = variable(np.pi / 180 * 23, 'rad', np.pi /  180 *2)
+    b = np.sin(a)
+    print(b.dependsOn[a])
+    a.convert('rad')
+    print(b.dependsOn[a])
+    c = a * b
+    
+    
+    val = np.pi / 180 * 23
+    unc = np.pi / 180 * 2
+    print(c.uncert, np.sqrt((unc * (np.sin(val) + val * np.cos(val)))**2))

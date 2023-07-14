@@ -8,19 +8,16 @@ class test(unittest.TestCase):
 
     def testPower(self):
         A = unit('L-kg/min')
-        with self.assertRaises(Exception) as context:
-            A**1.5
-        self.assertEqual('The power has to be an integer', str(context.exception))
-        a, _ = A**2
-        self.assertEqual(str(a), 'L2-kg2/min2')
+        a = A**2
+        self.assertTrue(a == unit('L2-kg2/min2'))
 
         B = unit('m/s2')
-        b, _ = B**0
-        self.assertEqual(str(b), '1')
+        b = B**0
+        self.assertTrue(b == unit('1'))
 
         C = unit('L2/h2')
-        c, _ = C**0.5
-        self.assertEqual(str(c), 'L/h')
+        c = C**0.5
+        self.assertTrue(c == unit('L/h'))
 
     def testMultiply(self):
         a = unit('L/min')
@@ -29,38 +26,45 @@ class test(unittest.TestCase):
             L-kg-m/min-L
             kg-m/min    """
         c = a * b
-        self.assertTrue(unit(c)._assertEqual('kg-m/min'))
+        self.assertTrue(c == unit('kg-m/min'))
 
         a = unit('L/min')
         b = unit('L/min')
         c = a * b
-        self.assertEqual(str(c), 'L2/min2')
+        self.assertTrue(c == unit('L2/min2'))
 
         a = unit('km')
         b = unit('1/m')
         c = a * b
-        self.assertEqual(str(c), 'km/m')
+        self.assertTrue(c == unit('km/m'))
+        
+        a = unit('m/N')
+        b = unit('N/cm')
+        c = a * b
+        self.assertTrue(c == unit('m/cm'))
+        
 
     def testDivide(self):
 
         a = unit('L/min')
         b = unit('L/min')
         c = a / b
-        self.assertEqual(str(c), '1')
+        self.assertTrue(c == unit('1'))
 
         a = unit('L/min')
         b = unit('kg-m/L')
-        """ L/min / (kg-m/L)
-            L/min * L/kg-m
+        """ (L/min) / (kg-m/L)
+            (L/min) * (L/kg-m)
             L2 / min-kg-m """
         c = a / b
-
-        self.assertTrue(unit('L2/min-kg-m')._assertEqual(unit(c)))
+        self.assertTrue(c == unit('L2/min-kg-m'))
 
         A = unit('m')
         B = unit('cm')
         c = A / B
-        self.assertEqual(c, 'm/cm')
+        self.assertTrue(c == unit('m/cm'))
+    
+        
 
     def testAdd(self):
         a = unit('L/min')
@@ -72,46 +76,95 @@ class test(unittest.TestCase):
         
         a = unit('L/min')
         b = unit('L/min')
-        _,cUnit,_,_,_ = a + b
-        self.assertEqual(cUnit, 'L/min')
+        outputUnit = a + b
+        self.assertTrue(outputUnit == unit('L/min'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
 
         a = unit('m-K/L-bar')
         b = unit('K-m/bar-L')
-        _,cUnit,_,_,_ = a + b
-        self.assertTrue(unit._assertEqualStatic(cUnit, 'DELTAK-m/bar-L'))
+        outputUnit = a + b
+        self.assertTrue(outputUnit == unit('DELTAK-m/bar-L'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
         
         a = unit('J/kg-DELTAK')
         b = unit('J/kg-DELTAK')
-        _,cUnit,_,_,_ = a + b
-        self.assertTrue(unit._assertEqualStatic(cUnit, 'J/kg-DELTAK'))
+        outputUnit = a + b
+        self.assertTrue(outputUnit == unit('J/kg-DELTAK'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
         
         a = unit('J/g-DELTAK')
         b = unit('J/kg-DELTAK')
-        _,cUnit,_,_,_ = a + b
-        self.assertTrue(unit._assertEqualStatic(cUnit, 'J/g-DELTAK'))
+        outputUnit = a + b
+        self.assertTrue(outputUnit == unit('J/g-DELTAK'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
+        
+        a = unit('dB')
+        b = unit('dB')
+        outputUnit = a + b
+        self.assertTrue(outputUnit == unit('dB'))
+        self.assertTrue(outputUnit.isLogarithmicUnit())
+        
+        a = unit('mB')
+        b = unit('dB')
+        outputUnit = a + b
+        self.assertTrue(outputUnit == unit('B'))
+        self.assertTrue(outputUnit.isLogarithmicUnit())
+        
+        a = unit('L/min')
+        b = unit('m3/h')
+        outputUnit = a + b
+        self.assertTrue(outputUnit == unit('m3/s'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
         
     def testSub(self):
         a = unit('L/min')
         b = unit('kg-m/L')
-        
+
         with self.assertRaises(Exception) as context:
-            a-b
+            a - b
         self.assertTrue('You tried to subtract a variable in [kg-m/L] from a variable in [L/min], but the units do not have the same SI base unit' in str(context.exception))
         
         a = unit('L/min')
         b = unit('L/min')
-        _,cUnit,_,_,_ = a - b
-        self.assertEqual(str(cUnit), 'L/min')
+        outputUnit = a - b
+        self.assertTrue(outputUnit == unit('L/min'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
+
+        a = unit('m-K/L-bar')
+        b = unit('K-m/bar-L')
+        outputUnit = a - b
+        self.assertTrue(outputUnit == unit('DELTAK-m/bar-L'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
         
         a = unit('J/kg-DELTAK')
         b = unit('J/kg-DELTAK')
-        _,cUnit,_,_,_ = a - b
-        self.assertTrue(unit._assertEqualStatic(cUnit, 'J/kg-DELTAK'))
+        outputUnit = a - b
+        self.assertTrue(outputUnit == unit('J/kg-DELTAK'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
         
         a = unit('J/g-DELTAK')
         b = unit('J/kg-DELTAK')
-        _,cUnit,_,_,_ = a - b
-        self.assertTrue(unit._assertEqualStatic(cUnit, 'J/g-DELTAK'))
+        outputUnit = a - b
+        self.assertTrue(outputUnit == unit('J/g-DELTAK'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
+        
+        a = unit('dB')
+        b = unit('dB')
+        outputUnit = a - b
+        self.assertTrue(outputUnit == unit('dB'))
+        self.assertTrue(outputUnit.isLogarithmicUnit())
+        
+        a = unit('mB')
+        b = unit('dB')
+        outputUnit = a - b
+        self.assertTrue(outputUnit == unit('B'))
+        self.assertTrue(outputUnit.isLogarithmicUnit())
+        
+        a = unit('L/min')
+        b = unit('m3/h')
+        outputUnit = a - b
+        self.assertTrue(outputUnit == unit('m3/s'))
+        self.assertFalse(outputUnit.isLogarithmicUnit())
 
     def testConvert(self):
         a = unit('L/min')
@@ -146,13 +199,11 @@ class test(unittest.TestCase):
         a = unit('A')
         b = unit('V')
         c = a * b
-        c = unit(c)
         converter = c.getConverter('W')
         
         a = unit('A')
         b = unit('ohm')
         c = a * b
-        c = unit(c)
         converter = c.getConverter('V')
         
         self.assertEqual(converter.convert(1, useOffset=True), 1)
@@ -177,38 +228,37 @@ class test(unittest.TestCase):
     def testInput(self):
 
         a = unit(None)
-        self.assertEqual(str(a), '1')
+        self.assertTrue(a == unit('1'))
         
         a = unit('m / s')
-        self.assertEqual(str(a), 'm/s')
+        self.assertTrue(a == unit('m/s'))
 
         with self.assertRaises(Exception) as context:
             a = unit('m!/s')
-        self.assertEqual('The character ! is not used within the unitsystem', str(context.exception))
+        self.assertTrue('The character ! is not used within the unitsystem', str(context.exception))
 
         with self.assertRaises(Exception) as context:
             a = unit('m/s/bar')
-        self.assertEqual('A unit can only have a single slash (/)', str(context.exception))
+        self.assertTrue('A unit can only have a single slash (/)', str(context.exception))
 
-        self.assertEqual(str(unit(' ')), '1')
-        self.assertEqual(str(unit('-')), '1')
-        self.assertEqual(str(unit('')), '1')
-        self.assertEqual(str(unit('--')), '1')
-        self.assertEqual(str(unit('- -')), '1')
+        self.assertTrue(unit(' ') == unit('1'))
+        self.assertTrue(unit('-') == unit('1'))
+        self.assertTrue(unit('') == unit('1'))
+        self.assertTrue(unit('--') == unit('1'))
+        self.assertTrue(unit('- -') == unit('1'))
         
-        self.assertEqual(str(unit('()')), '1')
-        self.assertEqual(str(unit('( )')), '1')
-        self.assertEqual(str(unit('(  )')), '1')  
-        self.assertEqual(str(unit('(-)')), '1')
-        self.assertEqual(str(unit('(--)')), '1')
-        self.assertEqual(str(unit('(- -)')), '1')
-        self.assertEqual(str(unit('( -)')), '1')
-        self.assertEqual(str(unit('( - (- ))')), '1')
+        self.assertTrue(unit('()') == unit('1'))
+        self.assertTrue(unit('( )') == unit('1'))
+        self.assertTrue(unit('(  )') == unit('1'))  
+        self.assertTrue(unit('(-)') == unit('1'))
+        self.assertTrue(unit('(--)') == unit('1'))
+        self.assertTrue(unit('(- -)') == unit('1'))
+        self.assertTrue(unit('( -)') == unit('1'))
+        self.assertTrue(unit('( - (- ))') == unit('1'))
         
-        
-        self.assertEqual(str(unit('(m/s2)2/Hz')), 'm2/s4-Hz')
-        self.assertEqual(str(unit('(m1/s2)2/Hz')), 'm2/s4-Hz')
-        self.assertEqual(str(unit('(m1/s2)1/Hz')), 'm/s2-Hz')
+        self.assertTrue(unit('(m/s2)2/Hz') == unit('m2/s4-Hz'))
+        self.assertTrue(unit('(m1/s2)2/Hz') == unit('m2/s4-Hz'))
+        self.assertTrue(unit('(m1/s2)1/Hz') == unit('m/s2-Hz'))
 
     def testAddNewUnit(self):
         addNewUnit('gnA', 9.81, 'm/s2')

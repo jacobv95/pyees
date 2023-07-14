@@ -1,11 +1,12 @@
 import unittest
 import numpy as np
-from random import uniform
 try:
     from variable import variable
+    from unit import unit
 except ImportError:
     from pyees.variable import variable
-
+    from pyees.unit import unit
+    
 class test(unittest.TestCase): 
 
     def testSingleNumber(self):
@@ -93,7 +94,6 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(B.value, 8)
         self.assertEqual(B.unit, '%')
         self.assertEqual(B.uncert, 0.1)
-
 
     def test_sub(self):
         A = variable(12.3, 'L/min', uncert=2.6)
@@ -234,6 +234,13 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(c.value, 10 - 100 * 1e-6)
         self.assertEqual(c.unit, 'DELTAC')
         self.assertEqual(c.uncert, np.sqrt((1 * 1.2)**2 + (1 * 3.9*1e-6)**2))
+        
+        a = variable(100, 'muC', 3.9)
+        b = variable(10, 'C', 1.2)
+        c = a - b
+        self.assertAlmostEqual(c.value, -10 + 100 * 1e-6)
+        self.assertEqual(c.unit, 'DELTAC')
+        self.assertEqual(c.uncert, np.sqrt((1 * 1.2)**2 + (1 * 3.9*1e-6)**2))
 
     def test_multiply(self):
         A = variable(12.3, 'L/min', uncert=2.6)
@@ -244,12 +251,12 @@ class test(unittest.TestCase):
         C = A * B
 
         self.assertAlmostEqual(C.value, 12.3 * 745.1)
-        self.assertTrue(C._unitObject._assertEqual('L-m/min'))
+        self.assertTrue(C._unitObject == unit('L-m/min'))
         self.assertAlmostEqual(C.uncert, np.sqrt((745.1 * 2.6)**2 + (12.3 * 53.9)**2))
 
         C_vec = A_vec * B_vec
         np.testing.assert_array_equal(C_vec.value, np.array([12.3 * 745.1, 54.3 * 496.13, 91.3 * 120.54]))
-        self.assertTrue(C._unitObject._assertEqual('L-m/min'))
+        self.assertTrue(C._unitObject == unit('L-m/min'))
         np.testing.assert_array_almost_equal(
             C_vec.uncert,
             np.array([
@@ -260,7 +267,7 @@ class test(unittest.TestCase):
 
         C_vec.convert('m3-km / s')
         np.testing.assert_array_equal(C_vec.value, np.array([12.3 * 745.1, 54.3 * 496.13, 91.3 * 120.54]) / 1000 / 1000 / 60)
-        self.assertEqual(C_vec.unit, 'm3-km/s')
+        self.assertTrue(C_vec._unitObject == unit('m3-km/s'))
         np.testing.assert_almost_equal(
             C_vec.uncert,
             np.array([
@@ -273,7 +280,7 @@ class test(unittest.TestCase):
         b = variable(7.43, 'N/cm', 2.5)
         c = a * b
         self.assertAlmostEqual(c.value, 891.6)
-        self.assertEqual(c.unit, '1')
+        self.assertTrue(c._unitObject == unit('1'))
         self.assertAlmostEqual(c.uncert, 320.032970958)
 
     def test_divide(self):
@@ -284,17 +291,17 @@ class test(unittest.TestCase):
 
         C = A / B
         self.assertAlmostEqual(C.value, 12.3 / 745.1)
-        self.assertTrue(C._unitObject._assertEqual('L/min-m'))
+        self.assertTrue(C._unitObject == unit('L/min-m'))
         self.assertAlmostEqual(C.uncert, np.sqrt((1 / 745.1 * 2.6)**2 + (12.3 / (745.1**2) * 53.9)**2))
 
         C.convert('m3/h-mm')
         self.assertAlmostEqual(C.value, 12.3 / 745.1 / 1000 * 60 / 1000)
-        self.assertEqual(C.unit, 'm3/h-mm')
+        self.assertTrue(C._unitObject == unit('m3/h-mm'))
         self.assertAlmostEqual(C.uncert, np.sqrt((1 / (745.1 * 1000) * 2.6 / 1000 * 60)**2 + (12.3 / ((745.1)**2) * 53.9 / 1000 * 60 / 1000)**2))
 
         C_vec = A_vec / B_vec
         np.testing.assert_array_equal(C_vec.value, np.array([12.3 / 745.1, 54.3 / 496.13, 91.3 / 120.54]))
-        self.assertTrue(C_vec._unitObject._assertEqual('L/min-m'))
+        self.assertTrue(C_vec._unitObject == unit('L/min-m'))
         np.testing.assert_array_almost_equal(
             C_vec.uncert,
             np.array([
@@ -305,7 +312,7 @@ class test(unittest.TestCase):
 
         C_vec.convert('m3 / h -mm')
         np.testing.assert_almost_equal(C_vec.value, np.array([12.3 / 745.1, 54.3 / 496.13, 91.3 / 120.54]) / 1000 * 60 / 1000)
-        self.assertEqual(C_vec.unit, 'm3/h-mm')
+        self.assertTrue(C_vec._unitObject == unit('m3/h-mm')) 
         np.testing.assert_almost_equal(
             C_vec.uncert,
             np.array([
@@ -702,7 +709,7 @@ class test(unittest.TestCase):
 
         A *= B
         self.assertAlmostEqual(A.value, 12.3 * 745.1)
-        self.assertTrue(A._unitObject._assertEqual('L-m/min'))
+        self.assertTrue(A._unitObject, unit('L-m/min'))
         self.assertAlmostEqual(A.uncert, np.sqrt((745.1 * 2.6)**2 + (12.3 * 53.9)**2))
 
         A = variable(12.3, 'L/min', uncert=2.6)
@@ -723,7 +730,7 @@ class test(unittest.TestCase):
 
         A_vec *= B_vec
         np.testing.assert_array_almost_equal(A_vec.value, np.array([12.3 * 745.1, 54.3 * 496.13, 91.3 * 120.54]))
-        self.assertTrue(A_vec._unitObject._assertEqual('L-m/min'))
+        self.assertTrue(A_vec._unitObject, unit('L-m/min'))
         np.testing.assert_array_almost_equal(
             A_vec.uncert,
             np.array([
@@ -751,20 +758,20 @@ class test(unittest.TestCase):
 
         A /= B
         self.assertAlmostEqual(A.value, 12.3 / 745.1)
-        self.assertTrue(A._unitObject._assertEqual('L/min-m'))
+        self.assertTrue(A._unitObject == unit('L/min-m'))
         self.assertAlmostEqual(A.uncert, np.sqrt((1 / 745.1 * 2.6)**2 + (12.3 / (745.1**2) * 53.9)**2))
 
         A = variable(12.3, 'L/min', uncert=2.6)
         A /= 2
         self.assertAlmostEqual(A.value, 12.3 / 2)
-        self.assertEqual(A.unit, 'L/min')
+        self.assertTrue(A._unitObject == unit('L/min'))
         self.assertAlmostEqual(A.uncert, np.sqrt((1 / 2 * 2.6)**2))
 
         A = variable(12.3, 'L/min', uncert=2.6)
         B = 2
         B /= A
         self.assertAlmostEqual(B.value, 2 / 12.3)
-        self.assertEqual(B.unit, 'min/L')
+        self.assertTrue(B._unitObject == unit('min/L'))
         self.assertAlmostEqual(B.uncert, np.sqrt((2 / (12.3**2) * 2.6)**2))
 
         A_vec = variable([12.3, 54.3, 91.3], 'L/min', uncert=[2.6, 5.4, 10.56])
@@ -772,7 +779,7 @@ class test(unittest.TestCase):
 
         A_vec /= B_vec
         np.testing.assert_array_almost_equal(A_vec.value, np.array([12.3 / 745.1, 54.3 / 496.13, 91.3 / 120.54]))
-        self.assertTrue(A_vec._unitObject._assertEqual('L/min-m'))
+        self.assertTrue(A_vec._unitObject == unit('L/min-m'))
         np.testing.assert_array_almost_equal(
             A_vec.uncert,
             np.array([
@@ -785,7 +792,7 @@ class test(unittest.TestCase):
         A = variable(12.3, 'L/min', uncert=2.6)
         A_vec /= A
         np.testing.assert_array_almost_equal(A_vec.value, np.array([12.3 / 12.3, 54.3 / 12.3, 91.3 / 12.3]))
-        self.assertEqual(A_vec.unit, '1')
+        self.assertTrue(A_vec._unitObject, unit('1'))
         np.testing.assert_array_almost_equal(
             A_vec.uncert,
             np.array([
@@ -866,6 +873,7 @@ class test(unittest.TestCase):
         self.assertEqual(str(A), '1.23e-08 [m]')
 
     def testRoot(self):
+        from random import uniform
         A = variable(10, 'L2/min2')
         a = np.sqrt(A)
         self.assertEqual(a.value, np.sqrt(10))
@@ -933,8 +941,6 @@ class test(unittest.TestCase):
         
         A = variable(0.9, 'L/min', 3)
         self.assertEqual(str(A), '1 +/- 3 [L/min]')
-        
-        
 
     def testUnitless(self):
         with self.assertRaises(Exception) as context:
@@ -1198,12 +1204,12 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(b.value, 3361.3445378151260504201680672269)
         self.assertEqual(b.unit, 'L2/min2')
         self.assertAlmostEqual(b.uncert, np.sqrt((1.5 * 0.16806722689075630252100840336134 * 200)**2))
-
+       
         b *= np.sin(a * variable(1, 'rad-min/L'))
         self.assertAlmostEqual(b.value, -2935.453099878973383976532508069948132551783965504369163751)
         self.assertEqual(b.unit, 'L2/min2')
         self.assertAlmostEqual(b.uncert, np.sqrt((1.5 * 2 * 200 * (2 * np.sin(200) + 200 * np.cos(200)) / 23.8)**2))
-
+                
         a /= variable(100, 'L/min')
         a.convert('')
         b /= np.exp(a)
@@ -1253,7 +1259,7 @@ class test(unittest.TestCase):
         a.addCovariance(b, 23, 'L-Pa/min')
         c = a * b
         self.assertEqual(c.value, 123 * 93)
-        self.assertTrue(c._unitObject._assertEqual('L-Pa/min'))
+        self.assertTrue(c._unitObject ==unit('L-Pa/min'))
         self.assertAlmostEqual(c.uncert, np.sqrt((123 * 1.2)**2 + (93 * 9.7)**2 + 2 * 93 * 123 * 23))
 
         a = variable(123, 'L/min', 9.7)
@@ -1262,7 +1268,7 @@ class test(unittest.TestCase):
         a.convert('m3/s')
         c = a * b
         self.assertEqual(c.value, 123 * 93 / 1000 / 60)
-        self.assertTrue(c._unitObject._assertEqual('m3-Pa/s'))
+        self.assertTrue(c._unitObject ==unit('m3-Pa/s'))
         self.assertEqual(c.uncert, np.sqrt((123 / 1000 / 60 * 1.2)**2 + (93 * 9.7 / 1000 / 60)**2 + 2 * 93 * 123 / 1000 / 60 * 23 / 1000 / 60))
         
         a = variable(123, 'L/min', 9.7)
@@ -1271,15 +1277,15 @@ class test(unittest.TestCase):
         a.convert('m3/s')
         c = a * b
         self.assertEqual(c.value, 123 * 93 / 1000 / 60)
-        self.assertTrue(c._unitObject._assertEqual('m3-Pa/s'))
-        self.assertEqual(c.uncert, np.sqrt((123 / 1000 / 60 * 1.2)**2 + (93 * 9.7 / 1000 / 60)**2 + 2 * 93 * 123 / 1000 / 60 * 23))
+        self.assertTrue(c._unitObject ==unit('m3-Pa/s'))
+        self.assertAlmostEqual(c.uncert, np.sqrt((123 / 1000 / 60 * 1.2)**2 + (93 * 9.7 / 1000 / 60)**2 + 2 * 93 * 123 / 1000 / 60 * 23))
         
         a = variable([1, 2, 3], 'L/min', [0.1, 0.2 ,0.3])
         b = variable([93, 97, 102], 'Pa', [1.2, 2.4, 4.7])
         a.addCovariance(b, [2, 3, 4], 'L-Pa/min')
         c = a * b
         np.testing.assert_equal(c.value, [1*93, 2*97, 3*102])
-        self.assertTrue(c._unitObject._assertEqual('L-Pa/min'))
+        self.assertTrue(c._unitObject ==unit('L-Pa/min'))
         dcda = np.array([93, 97, 102], dtype = float)
         dcdb = np.array([1, 2, 3], dtype = float)
         ua = np.array([0.1, 0.2, 0.3], dtype = float)
@@ -1303,13 +1309,7 @@ class test(unittest.TestCase):
         area.convert('m2')
         self.assertEqual(area.value, 0.12566370614359172953850573)
         self.assertEqual(area.unit, 'm2')
-        self.assertEqual(area.uncert, np.sqrt((2 * np.pi / 4 * 0.4 * 0.002)**2))
-        
-        
-        
-        
-         
-        
+        self.assertEqual(area.uncert, np.sqrt((2 * np.pi / 4 * 0.4 * 0.002)**2))  
 
     def testCompare(self):
         a = variable(1, 'm')
@@ -1320,7 +1320,7 @@ class test(unittest.TestCase):
         np.testing.assert_equal(a >= b, [False, False, False])
         np.testing.assert_equal(a == b, [False, False, False])
         np.testing.assert_equal(a != b, [True, True, True])
-
+        
         a = variable([2, 3, 4], 'm')
         b = variable(1, 'm')
         np.testing.assert_equal(a < b, [False, False, False])
@@ -1333,54 +1333,54 @@ class test(unittest.TestCase):
         a = variable([1, 2], 'm')
         b = variable([2, 3, 4], 'm')
         with self.assertRaises(Exception) as context:
-            c = a < b
+            a < b
         self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a <= b
+            a <= b
         self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a > b
+            a > b
         self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a >= b
+            a >= b
         self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a == b
+            a == b
         self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a != b
+            a != b
         self.assertTrue("operands could not be broadcast together with shapes (2,) (3,)" in str(context.exception))
         
         
         a = variable(1, 'm')
         b = variable(2, 'C')
         with self.assertRaises(Exception) as context:
-            c = a < b
+            a < b
         self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a <= b
+            a <= b
         self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a > b
+            a > b
         self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a >= b
+            a >= b
         self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a == b
+            a == b
         self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            c = a != b
+            a != b
         self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(context.exception))
 
         a = variable([1, 2, 3], 'm')
@@ -1476,18 +1476,17 @@ class test(unittest.TestCase):
         c2 *= a2
         
         np.testing.assert_equal(C[0].value, c0.value)
-        self.assertTrue(C._unitObject._assertEqual(c0.unit))
+        self.assertTrue(C._unitObject == unit(c0.unit))
         np.testing.assert_equal(C[0].uncert, c0.uncert)
         
         np.testing.assert_equal(C[1].value, c1.value)
-        self.assertTrue(C._unitObject._assertEqual(c0.unit))
+        self.assertTrue(C._unitObject == unit(c0.unit))
         np.testing.assert_equal(C[1].uncert, c1.uncert)
         
         np.testing.assert_equal(C[2].value, c2.value)
-        self.assertTrue(C._unitObject._assertEqual(c0.unit))
+        self.assertTrue(C._unitObject == unit(c0.unit))
         np.testing.assert_equal(C[2].uncert, c2.uncert)
-
-              
+      
     def testAppend(self):
         A = variable(12.3, 'L/min', uncert=2.6)
         B = variable(45, 'Pa', 1.2)
@@ -1521,8 +1520,8 @@ class test(unittest.TestCase):
         d = a * c
 
         np.testing.assert_equal(d.value, np.array([1,2,3,4,5,6]) * np.array([10,11,12,13,14,15]))
-        self.assertTrue(d._unitObject._assertEqualStatic(d.unit, 'm-Pa'))        
-        np.testing.assert_equal(d.uncert, np.sqrt(2 * np.array([1,2,3,4,5,6]) * np.array([10,11,12,13,14,15]) * np.array([0,0,0,0.1,0.2,0.3])))
+        self.assertTrue(d._unitObject == unit('m-Pa'))        
+        np.testing.assert_array_almost_equal(d.uncert, np.sqrt(2 * np.array([1,2,3,4,5,6]) * np.array([10,11,12,13,14,15]) * np.array([0,0,0,0.1,0.2,0.3])))
         
         
         a = variable([1, 2, 3], 'm')
@@ -1534,9 +1533,8 @@ class test(unittest.TestCase):
         c.append(d) 
         d = a * c
         np.testing.assert_equal(d.value, np.array([1,2,3,4,5,6]) * np.array([10,11,12,13,14,15]))
-        self.assertTrue(d._unitObject._assertEqualStatic(d.unit, 'm-Pa'))        
+        self.assertTrue(d._unitObject == unit('m-Pa'))        
         np.testing.assert_equal(d.uncert, np.array([0,0,0,0,0,0]))
-        
         
     def testAddBel(self):
         a = variable(11,'dB', 0.1)
@@ -1761,9 +1759,8 @@ class test(unittest.TestCase):
         gradA = -10**(1.1+1) / (10**(19/10) - 10**1.1)
         gradB = 10**(19/10) / (10**(19/10) - 10**1.1)
         self.assertAlmostEqual(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
-      
 
-    def testTemperatureArithmatic(self):
+    def testTemperatureAddition(self):
         a = variable(20,'C')
         b = variable(30,'C')
         c = a + b
@@ -1787,35 +1784,6 @@ class test(unittest.TestCase):
         c = a + b
         self.assertEqual(c.value, 50)
         self.assertEqual(c.unit, 'DELTAC')
-        
-        
-        a = variable(20,'C')
-        b = variable(30,'C')
-        c = a - b
-        self.assertEqual(c.value, -10)
-        self.assertEqual(c.unit, 'DELTAC')
-        
-        a = variable(20,'C')
-        b = variable(30,'DELTAC')
-        c = a - b
-        self.assertEqual(c.value, -10)
-        self.assertEqual(c.unit, 'C')
-        
-        a = variable(20,'DELTAC')
-        b = variable(30,'C')
-        with self.assertRaises(Exception) as context:
-            c = a - b
-        self.assertTrue("You tried to subtract a temperature from a temperature differnce. This is not possible." in str(context.exception))
-
-        
-        a = variable(20,'DELTAC')
-        b = variable(30,'DELTAC')
-        c = a - b
-        self.assertEqual(c.value, -10)
-        self.assertEqual(c.unit, 'DELTAC')
-        
-        
-        
         
         a = variable(100,'K')
         b = variable(20, 'C')
@@ -1841,8 +1809,31 @@ class test(unittest.TestCase):
         self.assertEqual(c.value, 120)
         self.assertEqual(c.unit, 'DELTAK')
         
+    def testTemperatureSubtraction(self):
+        a = variable(20,'C')
+        b = variable(30,'C')
+        c = a - b
+        self.assertEqual(c.value, -10)
+        self.assertEqual(c.unit, 'DELTAC')
         
+        a = variable(20,'C')
+        b = variable(30,'DELTAC')
+        c = a - b
+        self.assertEqual(c.value, -10)
+        self.assertEqual(c.unit, 'C')
         
+        a = variable(20,'DELTAC')
+        b = variable(30,'C')
+        with self.assertRaises(Exception) as context:
+            c = a - b
+        self.assertTrue("You tried to subtract a temperature from a temperature differnce. This is not possible." in str(context.exception))
+
+        a = variable(20,'DELTAC')
+        b = variable(30,'DELTAC')
+        c = a - b
+        self.assertEqual(c.value, -10)
+        self.assertEqual(c.unit, 'DELTAC')
+              
         a = variable(100,'K')
         b = variable(20, 'C')
         c = a - b 
@@ -1875,6 +1866,7 @@ class test(unittest.TestCase):
         self.assertEqual(c.unit, 'DELTAK')
         
         
+    def testTemperatureMean(self):
         a = variable(20,'C')
         b = variable(30,'C')
         c = np.mean([a,b])

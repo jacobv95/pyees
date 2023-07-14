@@ -22,7 +22,7 @@ def isAllArgumentsUsed(arguments: dict):
 
 def findArgument(arguments : dict, parameterName, unitStr, raiseError = True):
 
-    desiredSIBaseUnit = unit(unitStr)._SIBaseUnit
+    desiredSIBaseUnit = unit(unitStr).unitStrSI
     
     parameter = None
     if  parameterName in arguments.keys():
@@ -32,7 +32,7 @@ def findArgument(arguments : dict, parameterName, unitStr, raiseError = True):
         if raiseError:
             raise ValueError(f'Could not find an arugment matching that of a {parameterName}')
     if not parameter is None:
-        if parameter._unitObject._SIBaseUnit != desiredSIBaseUnit:
+        if parameter._unitObject.unitStrSI != desiredSIBaseUnit:
             raise ValueError(f'The input {parameterName} did not have to correct unit of {unitStr}')
 
     return arguments, parameter
@@ -52,7 +52,6 @@ def differentialsBrine(fluid : Fluid, fluidName,  property, C, parameters):
     vars.append(C)
     return vars, grads
 
-
 def differentials(fluid : Fluid, property : str, parameters):
     vars = []
     indexes = []
@@ -61,9 +60,7 @@ def differentials(fluid : Fluid, property : str, parameters):
             indexes.append(i)
             vars.append(param)
     
-    
     inputs = list(fluid._inputs)
-
     
     grads = []
     for i in indexes:
@@ -86,7 +83,6 @@ def differentials(fluid : Fluid, property : str, parameters):
         grads.append((y2-y1) / (2*dx*i0.value))
     
     return vars, grads
-    
 
 def outputFromParameters(scalarMethod, property, params):
     
@@ -315,11 +311,11 @@ knownFluids = {
 
 if __name__ == "__main__":
 
-    T = variable([20,25,30], 'C', [0.1, 0.2, 0.15])
-    P = variable([1, 1.1, 1.2], 'bar', [0.03, 0.04, 0.025])
+    # T = variable([20,25,30], 'C', [0.1, 0.2, 0.15])
+    # P = variable([1 * 1e5, 1.1 * 1e5, 1.2 * 1e5], 'Pa', [0.03 * 1e5, 0.04 * 1e5, 0.025 * 1e5])
     
-    rho = prop('density', 'water', T = T, P = P)
-    for elem in rho:
-        for key, item in elem.dependsOn.items():
-            print(key, item[1])
+    # rho = prop('density', 'water', T = T, P = P)
+    # print(rho)
+    P = variable(1, 'bar')
+    print(P._unitObject._converterToSI.scale)
     

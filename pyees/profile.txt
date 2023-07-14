@@ -1,116 +1,82 @@
-         35940001 function calls in 25.815 seconds
+         27220004 function calls in 17.420 seconds
 
    Ordered by: internal time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-  1420000    1.437    0.000    2.471    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:693(_removeExponentFromUnit)
-   180000    1.428    0.000    5.433    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:788(_getSIBaseUnit)
-   380000    1.371    0.000    2.344    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:414(_combineUpperAndLower)
-   320000    1.340    0.000    2.325    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:201(_addDependent)
-   180000    1.305    0.000    3.328    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:1099(_getConverter)
-   390000    1.175    0.000    5.130    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:493(_getLists)
-  1420000    0.950    0.000    0.950    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:696(<listcomp>)
-   160000    0.864    0.000    1.025    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:250(_calculateUncertanty)
-   210000    0.830    0.000    2.044    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:367(_cancleUnits)
-   810000    0.797    0.000    1.067    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:12(__mul__)
-   800000    0.742    0.000    2.770    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:486(_splitUnitExponentAndPrefix)
-   790000    0.714    0.000    1.047    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:676(_splitCompositeUnit)
-   960000    0.579    0.000    0.731    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:742(_removePrefixFromUnit)
-    60000    0.533    0.000    1.331    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:445(reduceLists)
-   180000    0.533    0.000    0.849    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:649(__formatUnit)
-   120000    0.517    0.000   12.445    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:348(__init__)
-   370000    0.495    0.000    1.077    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:33(__truediv__)
-   180000    0.468    0.000    1.578    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:510(_formatUnit)
-    40000    0.420    0.000    4.611    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:722(__init__)
-  3400000    0.397    0.000    0.397    0.000 {built-in method builtins.len}
-  1780000    0.370    0.000    0.370    0.000 {method 'split' of 'str' objects}
-  1640000    0.351    0.000    0.351    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:38(convert)
-  1080000    0.317    0.000    0.449    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:716(__hash__)
-  2420000    0.315    0.000    0.315    0.000 {built-in method builtins.isinstance}
-  1520000    0.313    0.000    0.313    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:6(__init__)
-    60000    0.312    0.000    0.312    0.000 {method 'reduce' of 'numpy.ufunc' objects}
-   100000    0.281    0.000   12.724    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:973(variable)
-    40000    0.253    0.000    2.394    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:750(_addDependent)
-   390000    0.251    0.000    1.866    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:497(<listcomp>)
-   340000    0.239    0.000    7.730    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:97(__init__)
-   380000    0.222    0.000    0.222    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:421(<listcomp>)
-   160000    0.221    0.000    0.253    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:21(__pow__)
-  1340000    0.219    0.000    0.219    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:112(_converterToSI)
-    30000    0.180    0.000    3.277    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:432(_multiply)
-    30000    0.173    0.000   12.076    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:391(__mul__)
-    60000    0.171    0.000    0.599    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\fromnumeric.py:69(_wrapreduction)
-    20000    0.170    0.000    3.224    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:951(convert)
-   380000    0.161    0.000    0.161    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:419(<listcomp>)
-   380000    0.157    0.000    0.157    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:420(<listcomp>)
-  1120000    0.148    0.000    0.148    0.000 {method 'append' of 'list' objects}
-   380000    0.148    0.000    0.148    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:422(<listcomp>)
-   200000    0.147    0.000    1.302    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:500(<listcomp>)
-   200000    0.146    0.000    0.240    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:975(evaluateInput)
-   180000    0.143    0.000    0.143    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:522(<listcomp>)
-   820000    0.140    0.000    0.140    0.000 {method 'join' of 'str' objects}
-  1080000    0.132    0.000    0.132    0.000 {built-in method builtins.id}
-    30000    0.126    0.000    2.055    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:1128(convert)
-   150000    0.120    0.000    0.991    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:364(_createUnitString)
-    10000    0.119    0.000    5.569    0.001 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:342(__sub__)
-   180000    0.118    0.000    0.118    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:523(<listcomp>)
-   520000    0.114    0.000    0.114    0.000 {method 'find' of 'str' objects}
-   380000    0.106    0.000    0.106    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:417(<listcomp>)
-    30000    0.104    0.000    1.823    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:1076(getConverter)
-   840000    0.103    0.000    0.103    0.000 {method 'keys' of 'dict' objects}
-    70000    0.094    0.000    0.094    0.000 {built-in method numpy.array}
-   160000    0.092    0.000    0.092    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:453(<listcomp>)
-    10000    0.082    0.000    1.246    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:929(__sub__)
-   380000    0.081    0.000    0.081    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:418(<listcomp>)
-    60000    0.081    0.000    0.680    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\fromnumeric.py:2829(amin)
-   540000    0.079    0.000    0.079    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:124(uncert)
-   200000    0.079    0.000    0.079    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:501(<listcomp>)
-   200000    0.070    0.000    0.070    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:502(<listcomp>)
-    60000    0.069    0.000    0.813    0.000 <__array_function__ internals>:177(amin)
-    60000    0.068    0.000    0.339    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:462(<listcomp>)
-    30000    0.065    0.000    0.096    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:775(<listcomp>)
-    60000    0.063    0.000    0.164    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:465(<listcomp>)
-   180000    0.063    0.000    0.063    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:664(<listcomp>)
-    60000    0.061    0.000    0.061    0.000 {built-in method builtins.getattr}
-   150000    0.059    0.000    0.075    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:828(isCombinationUnit)
-   140000    0.056    0.000    0.073    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:762(__getitem__)
-    90000    0.055    0.000    0.055    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:395(<listcomp>)
-    20000    0.055    0.000    0.920    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:742(_calculateUncertanty)
-    30000    0.054    0.000    0.136    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:720(_assertEqualStatic)
-    60000    0.053    0.000    0.733    0.000 {built-in method numpy.core._multiarray_umath.implement_array_function}
-    90000    0.052    0.000    0.052    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:396(<listcomp>)
-   320000    0.050    0.000    0.050    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:116(value)
-    60000    0.044    0.000    0.044    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\fromnumeric.py:70(<dictcomp>)
-    90000    0.042    0.000    0.042    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:397(<listcomp>)
-    60000    0.042    0.000    0.042    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:447(<listcomp>)
-    70000    0.040    0.000    0.040    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:400(<listcomp>)
-    70000    0.040    0.000    0.040    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:401(<listcomp>)
-   160000    0.040    0.000    0.040    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:454(<listcomp>)
-    90000    0.039    0.000    0.039    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:398(<listcomp>)
-    70000    0.037    0.000    0.037    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:402(<listcomp>)
-    30000    0.037    0.000    3.314    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:990(__mul__)
-   180000    0.036    0.000    0.036    0.000 {method 'replace' of 'str' objects}
-    70000    0.035    0.000    0.035    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:403(<listcomp>)
-    30000    0.033    0.000    0.173    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:773(value)
-   210000    0.033    0.000    0.033    0.000 {method 'items' of 'dict' objects}
-    70000    0.033    0.000    0.033    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:660(<listcomp>)
-    50000    0.031    0.000    0.040    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:120(unit)
-   160000    0.028    0.000    0.028    0.000 {built-in method builtins.sum}
-    10000    0.027    0.000    1.003    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:128(convert)
-    60000    0.026    0.000    0.026    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:463(<listcomp>)
-   160000    0.024    0.000    0.024    0.000 {method 'values' of 'dict' objects}
-   100000    0.023    0.000    0.023    0.000 {method 'index' of 'list' objects}
-    60000    0.021    0.000    0.021    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:464(<listcomp>)
-    60000    0.020    0.000    0.020    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:466(<listcomp>)
-    20000    0.019    0.000    0.026    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\copy.py:66(copy)
-    60000    0.019    0.000    0.019    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:467(<listcomp>)
-   100000    0.019    0.000    0.019    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:835(__str__)
-    30000    0.013    0.000    0.013    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:439(<listcomp>)
-    20000    0.012    0.000    0.012    0.000 {built-in method numpy.zeros}
-    30000    0.011    0.000    0.011    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:442(<listcomp>)
-    50000    0.011    0.000    0.011    0.000 {method 'remove' of 'list' objects}
-    60000    0.011    0.000    0.011    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\fromnumeric.py:2824(_amin_dispatcher)
-    20000    0.004    0.000    0.004    0.000 {method 'get' of 'dict' objects}
-    20000    0.003    0.000    0.003    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\copy.py:107(_copy_immutable)
+   320000    1.330    0.000    2.319    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:198(_addDependent)
+   130000    1.185    0.000    3.562    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:970(getConverterFromDict)
+   250000    1.095    0.000    1.370    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:437(_reduceDict)
+   130000    1.007    0.000    3.723    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:494(_getUnitDictSI)
+   240000    0.877    0.000    1.113    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:365(_getUnitStrFromDict)
+   160000    0.743    0.000    1.181    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:248(_calculateUncertanty)
+   710000    0.677    0.000    0.911    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:11(__mul__)
+   620000    0.674    0.000    0.801    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:20(__pow__)
+   560000    0.604    0.000    1.035    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:670(_removeExponentFromUnit)
+   560000    0.540    0.000    2.147    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:431(_splitUnitExponentAndPrefix)
+   560000    0.436    0.000    0.573    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:697(_removePrefixFromUnit)
+   320000    0.428    0.000    0.930    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:31(__truediv__)
+   560000    0.393    0.000    0.393    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:673(<listcomp>)
+  3260000    0.385    0.000    0.385    0.000 {method 'items' of 'dict' objects}
+   120000    0.380    0.000    9.834    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:343(__init__)
+    40000    0.376    0.000    1.792    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:661(__init__)
+  1780000    0.365    0.000    0.365    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:7(__init__)
+    90000    0.341    0.000    0.548    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:542(_formatUnitStr)
+   390000    0.335    0.000    0.487    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:414(_splitCompositeUnit)
+  1080000    0.310    0.000    0.445    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:656(__hash__)
+  1480000    0.306    0.000    0.306    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:36(convert)
+    90000    0.300    0.000    1.429    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:516(_getUnitDict)
+  2310000    0.293    0.000    0.293    0.000 {built-in method builtins.isinstance}
+   100000    0.273    0.000    5.846    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:915(variable)
+    40000    0.244    0.000    2.392    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:689(_addDependent)
+  1340000    0.227    0.000    0.227    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:109(_converterToSI)
+   340000    0.226    0.000    3.688    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:94(__init__)
+   160000    0.211    0.000    0.211    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:255(<listcomp>)
+  1480000    0.180    0.000    0.180    0.000 {method 'keys' of 'dict' objects}
+    30000    0.179    0.000    7.112    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:368(__mul__)
+  1410000    0.177    0.000    0.177    0.000 {built-in method builtins.len}
+    30000    0.173    0.000    3.917    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:863(__mul__)
+    10000    0.156    0.000    2.943    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:320(__sub__)
+   680000    0.150    0.000    0.150    0.000 {method 'split' of 'str' objects}
+   200000    0.144    0.000    0.234    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:917(evaluateInput)
+  1080000    0.135    0.000    0.135    0.000 {built-in method builtins.id}
+   890000    0.129    0.000    0.129    0.000 {method 'append' of 'list' objects}
+   480000    0.103    0.000    0.103    0.000 {method 'find' of 'str' objects}
+    10000    0.093    0.000    2.020    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:893(convert)
+    70000    0.092    0.000    0.092    0.000 {built-in method numpy.array}
+   540000    0.085    0.000    0.085    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:121(uncert)
+   480000    0.083    0.000    0.083    0.000 {method 'join' of 'str' objects}
+    30000    0.082    0.000    0.213    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\copy.py:66(copy)
+   470000    0.069    0.000    0.069    0.000 {method 'values' of 'dict' objects}
+    30000    0.067    0.000    0.098    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:714(<listcomp>)
+    90000    0.064    0.000    0.064    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:558(<listcomp>)
+   160000    0.062    0.000    0.062    0.000 {built-in method builtins.sum}
+   140000    0.058    0.000    0.075    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:701(__getitem__)
+    70000    0.056    0.000    0.073    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:997(isCombinationUnit)
+    20000    0.056    0.000    1.069    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:681(_calculateUncertanty)
+    10000    0.052    0.000    0.408    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:814(__sub__)
+   320000    0.051    0.000    0.051    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:113(value)
+    90000    0.048    0.000    0.048    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:559(<listcomp>)
+    20000    0.038    0.000    0.071    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\copy.py:259(_reconstruct)
+    90000    0.036    0.000    0.036    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:563(<listcomp>)
+    30000    0.033    0.000    0.174    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:712(value)
+    10000    0.032    0.000    0.953    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:962(getConverter)
+    20000    0.022    0.000    0.022    0.000 {method '__reduce_ex__' of 'object' objects}
+    90000    0.019    0.000    0.019    0.000 {method 'replace' of 'str' objects}
+    40000    0.018    0.000    0.018    0.000 {built-in method builtins.getattr}
+    10000    0.017    0.000    0.055    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:764(isLogarithmicUnit)
+    70000    0.015    0.000    0.015    0.000 {method 'pop' of 'dict' objects}
+    60000    0.014    0.000    0.014    0.000 {method 'remove' of 'list' objects}
+    20000    0.013    0.000    0.013    0.000 {built-in method numpy.zeros}
+    40000    0.012    0.000    0.012    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:761(__eq__)
+    20000    0.012    0.000    0.018    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\copyreg.py:104(__newobj__)
+    50000    0.009    0.000    0.009    0.000 {method 'get' of 'dict' objects}
+    20000    0.008    0.000    0.008    0.000 {method 'update' of 'dict' objects}
+    20000    0.006    0.000    0.006    0.000 {built-in method __new__ of type object at 0x00007FFEAB869F90}
+    20001    0.004    0.000    0.004    0.000 {built-in method builtins.hasattr}
+    20000    0.004    0.000    0.004    0.000 {built-in method builtins.issubclass}
+    10000    0.003    0.000    0.003    0.000 {method 'copy' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\copyreg.py:113(_slotnames)
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 {method 'get' of 'mappingproxy' objects}
 
 

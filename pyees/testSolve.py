@@ -173,8 +173,6 @@ class test(unittest.TestCase):
         self.assertRelativeDifference(y.value, correctY.value, tol)
         self.assertRelativeDifference(x.uncert, correctX.uncert, tol)
         self.assertRelativeDifference(y.uncert, correctY.uncert, tol)
-
-
    
     def testSolveOneNonlinearEquationWithBounds1(self):
         lbs = [variable(-10,'L/min'), variable(10, 'L/min')]
@@ -305,7 +303,6 @@ class test(unittest.TestCase):
         
         self.assertRelativeDifference(x.value, correct.value, tol)
     
-    
     def testSolveOneNonlinearEquationWithBoundsUsingDifferentUnits2(self):
                 
         a = variable(23.7, 'mbar-min2/L2', 0.1)
@@ -346,7 +343,6 @@ class test(unittest.TestCase):
         self.assertEqual(t_out.unit, 'C')
         self.assertRelativeDifference(t_out.uncert, 1.217157659256291610, tol)
      
-
     def testSolveOneNonlinearEquationWithVectors(self):
         a = variable([23.7, 12.3], '', [0.1, 0.05])
         b = variable([943, 793], '', [12.5, 9.4])
@@ -402,7 +398,6 @@ class test(unittest.TestCase):
         
         for i in range(len(x)):
             self.assertRelativeDifference(x[i].value, correct[i].value, tol)
-
 
     def testCallableBoundInputs(self):
         a = variable([23.7, 12.3], '', [0.1, 0.05])
