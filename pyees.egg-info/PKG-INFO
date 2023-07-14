@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pyees
-Version: 1.3.7
+Version: 1.3.8
 Summary: EES but for python. Pyees can be used do perform uncertanty (error) propagation. Furthermore, it can solve nonlinear systems of equations and look up material properties.
 Home-page: https://github.com/jacobv95/pyees
 Download-URL: https://github.com/jacobv95/pyees/archive/refs/tags/v1.0.tar.gz

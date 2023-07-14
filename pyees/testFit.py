@@ -47,7 +47,7 @@ class test(unittest.TestCase):
         # fit.plotNormalizedResiduals(ax2, label = 'normalized resudials')
         # np.testing.assert_array_equal(ax2.lines[0].get_ydata(), [])
 
-        
+
         
         
 

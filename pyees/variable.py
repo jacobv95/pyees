@@ -196,7 +196,7 @@ class scalarVariable():
                 return rf'{value} {pm} {uncert}{space}{unitStr}'
 
     def _addDependent(self, var, grad):
-                
+                                
         # scale the gradient to SI units. This is necessary if one of the variables are converted after the dependency has been noted
         grad *= self._converterToSI.convert(1, useOffset=False) / var._converterToSI.convert(1, useOffset=False)
         

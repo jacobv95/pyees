@@ -4,6 +4,7 @@ setup.cfg
 setup.py
 pyees/__init__.py
 pyees/fit.py
+pyees/profileFit.py
 pyees/profilePyees.py
 pyees/prop.py
 pyees/sheet.py

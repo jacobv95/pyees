@@ -27,6 +27,30 @@ class _fit():
         self.xUncert = x.uncert
         self.yUncert = y.uncert
 
+
+        indexesNotToUse = []
+        for i in range(len(self.xVal)):
+            if np.isnan(self.xVal[i]):
+                indexesNotToUse.append(i)
+                continue
+            if np.isnan(self.xUncert[i]):
+                indexesNotToUse.append(i)
+                continue
+            if np.isnan(self.yVal[i]):
+                indexesNotToUse.append(i)
+                continue
+            if np.isnan(self.yUncert[i]):
+                indexesNotToUse.append(i)
+                continue
+        
+
+        if indexesNotToUse:
+            indexesToUse = [i for i in range(len(self.xVal)) if not i in indexesNotToUse]
+            self.xVal = self.xVal[indexesToUse]
+            self.xUncert = self.xUncert[indexesToUse]
+            self.yVal = self.yVal[indexesToUse]
+            self.yUncert = self.yUncert[indexesToUse]
+
         # uncertanties can not be 0
         if len(self.xVal) == 1:
             self._sx = self.xUncert if self.xUncert != 0 else 1e-10
@@ -67,11 +91,11 @@ class _fit():
                 )
 
         # determine r-squared
-        self._residuals = y - self._predict(x)
+        self._residuals = np.array([yi - pi for yi, pi in zip(self.yVal, self._predict(regression.beta, self.xVal))])# y.value - self._predict(x.value)
         ss_res = sum(self._residuals**2)
-        ss_tot = sum((y - np.mean(y))**2)
+        ss_tot = sum((self.yVal - np.mean(self.yVal))**2)
         if ss_tot != 0:
-            self.r_squared = 1 - (ss_res / ss_tot)
+            self.r_squared = variable(1 - (ss_res / ss_tot))
         else:
             self.r_squared = variable(1)
         np.seterr('warn')
@@ -162,10 +186,10 @@ class _fit():
             raise ValueError('The input "x" has to be a variable')
         return self.func(x)
     
-    def _predict(self, x):
-        if not isinstance(x, scalarVariable):
-            x = variable(x, self.xUnit)
-        return self.func(x)
+    def _predict(self, coeffs, x):
+        # if not isinstance(x, scalarVariable):
+        #     x = variable(x, self.xUnit)
+        return self._func(coeffs, x)
 
     def plotUncertanty(self, ax, x = None, **kwargs):
         
