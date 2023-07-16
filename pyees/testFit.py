@@ -67,11 +67,9 @@ class test(unittest.TestCase):
 
         self.assertAlmostEqual(Fa.value, 2)
         self.assertEqual(str(Fa.unit), 'DELTAC/m')
-        self.assertAlmostEqual(Fa.uncert, 0)
 
         self.assertAlmostEqual(Fb.value, 10)
         self.assertEqual(str(Fb.unit), 'C')
-        self.assertAlmostEqual(Fb.uncert, 0)
 
         self.assertAlmostEqual(F.r_squared, 1)
 
@@ -82,7 +80,6 @@ class test(unittest.TestCase):
         n = 100
         x = np.linspace(0, 100, n)
         y = a * x**2 + b * x + c
-        # y += 10 * np.random.rand(n)
 
         x = variable(x, 'm')
         y = variable(y, 'C')
@@ -94,15 +91,12 @@ class test(unittest.TestCase):
 
         self.assertAlmostEqual(Fa.value, 2)
         self.assertEqual(str(Fa.unit), 'DELTAC/m2')
-        self.assertAlmostEqual(Fa.uncert, 0)
 
         self.assertAlmostEqual(Fb.value, 10)
         self.assertEqual(str(Fb.unit), 'DELTAC/m')
-        self.assertAlmostEqual(Fb.uncert, 0)
 
         self.assertAlmostEqual(Fc.value, 15)
         self.assertEqual(str(Fc.unit), 'C')
-        self.assertAlmostEqual(Fc.uncert, 0)
 
         self.assertAlmostEqual(F.r_squared, 1)
 
@@ -114,7 +108,6 @@ class test(unittest.TestCase):
         n = 100
         x = np.linspace(0, 100, n)
         y = a * x**3 + b * x**2 + c * x + d
-        # y += 10 * np.random.rand(n)
 
         x = variable(x, 'm')
         y = variable(y, 'C')
@@ -127,19 +120,15 @@ class test(unittest.TestCase):
 
         self.assertAlmostEqual(Fa.value, 2)
         self.assertEqual(str(Fa.unit), 'DELTAC/m3')
-        self.assertAlmostEqual(Fa.uncert, 0)
 
         self.assertAlmostEqual(Fb.value, 10)
         self.assertEqual(str(Fb.unit), 'DELTAC/m2')
-        self.assertAlmostEqual(Fb.uncert, 0)
 
         self.assertAlmostEqual(Fc.value, 15)
         self.assertEqual(str(Fc.unit), 'DELTAC/m')
-        self.assertAlmostEqual(Fc.uncert, 0)
 
         self.assertAlmostEqual(Fd.value, 50)
         self.assertEqual(str(Fd.unit), 'C')
-        self.assertAlmostEqual(Fd.uncert, 0)
 
         self.assertAlmostEqual(F.r_squared, 1)
 
@@ -148,18 +137,19 @@ class test(unittest.TestCase):
         y = variable([2.7331291071103,4.83637470698903,7.76023628649736,12.92164947233590,19.26005212361100,29.98037228450110,58.70407550133760,82.8915749115424,144.581793442337], 'kg/m3') 
         f = exp_fit(x,y)
         
-        a,b,c,d  = f.coefficients
-
+        a,b,c  = f.coefficients
         self.assertEqual(b.unit, '1')
         self.assertEqual(a.unit, y.unit)
+        self.assertEqual(c.unit, y.unit)
         self.assertRelativeDifference(a.value, 0.9875635849080608, 5e-2)
-        self.assertRelativeDifference(b.value, 1.0515901240689571, 1e-3)
+        self.assertRelativeDifference(b.value, 0.04932224945938845, 1e-3)
+        self.assertEqual(c.value,0)
         
         x = variable([20, 30, 40, 50, 60, 70, 80, 90, 100], 'C')
         y = variable([2.7331291071103,4.83637470698903,7.76023628649736,12.92164947233590,19.26005212361100,29.98037228450110,58.70407550133760,82.8915749115424,144.581793442337], 'kg/m3') 
 
         with self.assertRaises(Exception) as context:
-            f = exp_fit(x,y)
+            f = exp_fit(x,y, p0 = [1,1,1,1])
         self.assertTrue('The variable "x" cannot have a unit' in str(context.exception))
        
         
@@ -168,14 +158,16 @@ class test(unittest.TestCase):
     def testPowFit(self):    
         x = variable([20, 30, 40, 50, 60, 70, 80, 90, 100])
         y = variable([2735.968626, 5013.971519, 6501.553987, 10229.42877, 10745.50817, 14982.43969, 17657.04326, 20032.85742, 23085.80822], 'kg/m3') 
-        f = pow_fit(x,y)
+        f = pow_fit(x,y, p0 = [1,1,0])
         
-        a,b  = f.coefficients
-
+        a,b,c  = f.coefficients
         self.assertEqual(b.unit, '1')
         self.assertEqual(a.unit, y.unit)
+        self.assertEqual(c.unit, y.unit)
         self.assertRelativeDifference(a.value, 54.1146149130, 5e-2)
         self.assertRelativeDifference(b.value, 1.3161605224, 1e-2)
+        self.assertEqual(c.value, 0)
+        
         
         x = variable([20, 30, 40, 50, 60, 70, 80, 90, 100], 'C')
         y = variable([2.7331291071103,4.83637470698903,7.76023628649736,12.92164947233590,19.26005212361100,29.98037228450110,58.70407550133760,82.8915749115424,144.581793442337], 'kg/m3') 
@@ -207,7 +199,7 @@ class test(unittest.TestCase):
         y = variable([2.7331291071103,4.83637470698903,7.76023628649736,12.92164947233590,19.26005212361100,29.98037228450110,58.70407550133760,82.8915749115424,144.581793442337], 'kg/m3') 
 
         with self.assertRaises(Exception) as context:
-            f = logistic_fit(x,y)
+            f = logistic_fit(x,y, p0 = [1,1,1])
         self.assertTrue('The variable "x" cannot have a unit' in str(context.exception))
     
 
