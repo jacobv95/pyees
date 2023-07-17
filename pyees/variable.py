@@ -892,10 +892,12 @@ class arrayVariable(scalarVariable):
     
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
+        newUnit = unit(newUnit)
         for elem in self.scalarVariables:
             elem._value = converter.convert(elem._value, useOffset=not self._unitObject.isCombinationUnit())
             elem._uncert = converter.convert(elem._uncert, useOffset=False)
-        self._unitObject = unit(newUnit)
+            elem._unitObject = newUnit
+        self._unitObject = newUnit
 
     def __iter__(self):
         self.n = 0
@@ -949,15 +951,9 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return scalarVariable(value, unit, uncert, nDigits)
 
 if __name__ == "__main__":
-    a = variable(23, 'deg', 2)
-    # a = variable(np.pi / 180 * 23, 'rad', np.pi /  180 *2)
-    b = np.sin(a)
-    print(b.dependsOn[a])
-    a.convert('rad')
-    print(b.dependsOn[a])
-    c = a * b
+    time = variable([601.15],'s')
+    time.convert('min')
     
+    print(time)
+    print(time[0])
     
-    val = np.pi / 180 * 23
-    unc = np.pi / 180 * 2
-    print(c.uncert, np.sqrt((unc * (np.sin(val) + val * np.cos(val)))**2))

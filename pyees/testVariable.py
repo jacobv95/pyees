@@ -1311,6 +1311,21 @@ class test(unittest.TestCase):
         self.assertEqual(area.unit, 'm2')
         self.assertEqual(area.uncert, np.sqrt((2 * np.pi / 4 * 0.4 * 0.002)**2))  
 
+        time = variable([1,2,3], 's', [0.1, 0.2, 0.3])
+        time.convert('min')
+        np.testing.assert_array_equal(time.value, np.array([1,2,3]) / 60)
+        self.assertEqual(time.unit, 'min')
+        np.testing.assert_array_equal(time.uncert, np.array([0.1,0.2,0.3]) / 60)
+        self.assertEqual(time[0].value, 1/60)
+        self.assertEqual(time[1].value, 2/60)
+        self.assertEqual(time[2].value, 3/60)
+        self.assertEqual(time[0].unit, 'min')
+        self.assertEqual(time[1].unit, 'min')
+        self.assertEqual(time[2].unit, 'min')
+        self.assertEqual(time[0].uncert, 0.1/60)
+        self.assertEqual(time[1].uncert, 0.2/60)
+        self.assertEqual(time[2].uncert, 0.3/60)
+
     def testCompare(self):
         a = variable(1, 'm')
         b = variable([2, 3, 4], 'm')
