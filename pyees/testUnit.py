@@ -195,7 +195,6 @@ class test(unittest.TestCase):
         converter = a.getConverter('m2')
         self.assertAlmostEqual(converter.convert(1), 1/1000 * 1/1000)
 
-
         a = unit('A')
         b = unit('V')
         c = a * b

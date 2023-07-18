@@ -7,7 +7,7 @@ class _unitConversion():
     def __init__(self, scale, offset=0) -> None:
         self.scale = scale
         self.offset = offset
-
+    
     def __mul__(self, other):
         if isinstance(other, _unitConversion):
             scale = self.scale * other.scale
@@ -32,6 +32,26 @@ class _unitConversion():
         if isinstance(other, _unitConversion):
             return _unitConversion(1 / other.scale, - other.offset / other.scale) * self
         return self * _unitConversion(1 / other)
+    
+    @staticmethod
+    def staticMul(selfScale, selfOffset, otherScale, otherOffset = 0):
+        scale = selfScale * otherScale
+        offset = selfScale * otherOffset + selfOffset
+        return scale, offset
+    
+    @staticmethod
+    def staticPow(selfScale, selfOffset, pow):
+        if pow==1: return selfScale, selfOffset
+        scale, offset = selfScale, selfOffset
+        for _ in range(pow - 1):
+            selfScale *= scale
+            selfOffset*= scale
+            selfOffset += offset
+        return selfScale, selfOffset
+
+    @staticmethod
+    def staticTruediv(selfScale, selfOffset, otherScale, otherOffset = 0):
+        return _unitConversion.staticMul(1 / otherScale, - otherOffset / otherScale, selfScale, selfOffset)
 
     def convert(self, value, useOffset=True):
         if useOffset:
@@ -352,13 +372,7 @@ class unit():
         self.unitStr = self._getUnitStrFromDict(self.unitDict)
         self.unitDictSI = self._getUnitDictSI(self.unitDict)
         self.unitStrSI = self._getUnitStrFromDict(self.unitDictSI)
-        
-        # ## create a version of the self.unitDictSI that is formatted in the same way as a unitDict
-        # unitDictSI = {}
-        # for key, exp in self.unitDictSI.items():
-        #     u = knownUnits[key][0]
-        #     u,p,e = unit._splitUnitExponentAndPrefix(u)
-        #     unitDictSI[u] = {p: e*exp}
+
         self._converterToSI = self.getConverterFromDict(self.unitDictSI)
 
 
@@ -970,29 +984,37 @@ class unit():
     def getConverterFromDict(self, newUnitDict):    
         
         # initialize the scale and offset
-        out = _unitConversion(1, 0)
+        outScale, outOffset = 1,0
         
         ## loop over self.unitDict
         for u, item in self.unitDict.items():
             for pre, exp in item.items():
                 conv = knownUnits[u][1]
-                if not pre is None: conv *= knownPrefixes[pre]
+                convScale, convOffset = conv.scale, conv.offset
+                if not pre is None: convScale, convOffset = _unitConversion.staticMul(convScale, convOffset, knownPrefixes[pre])
                 isUpper = exp > 0
-                if not isUpper: exp *= -1                    
-                conv = conv ** exp
-                out = out * conv if isUpper else out / conv
+                if not isUpper: exp *= -1    
+                convScale, convOffset = _unitConversion.staticPow(convScale, convOffset, exp)
+                if isUpper:
+                    outScale, outOffset = _unitConversion.staticMul(outScale, outOffset, convScale, convOffset)
+                else:
+                    outScale, outOffset = _unitConversion.staticTruediv(outScale, outOffset, convScale, convOffset)      
 
         ## loop over newUnitDict
         for u, item in newUnitDict.items():
             for pre, exp in item.items():
                 conv = knownUnits[u][1]
-                if not pre is None: conv *= knownPrefixes[pre]
+                convScale, convOffset = conv.scale, conv.offset
+                if not pre is None: convScale, convOffset = _unitConversion.staticMul(convScale, convOffset, knownPrefixes[pre])
                 isUpper = exp > 0
-                if not isUpper: exp *= -1
-                conv = conv ** exp
-                out = out * conv if not isUpper else out / conv
-        
-        return out
+                if not isUpper: exp *= -1    
+                convScale, convOffset = _unitConversion.staticPow(convScale, convOffset, exp)
+                if not isUpper:
+                    outScale, outOffset = _unitConversion.staticMul(outScale, outOffset, convScale, convOffset)
+                else:
+                    outScale, outOffset = _unitConversion.staticTruediv(outScale, outOffset, convScale, convOffset)      
+                
+        return _unitConversion(outScale, outOffset)
 
     def isCombinationUnit(self):
         return len(list(self.unitDict.keys())) > 1
@@ -1003,9 +1025,4 @@ class unit():
         u, _ = self._removePrefixFromUnit(unitStr)
         return knownUnits[u][1]
 
-    
-if __name__ == "__main__":
-    a = unit('K')
-    converter = a.getConverter('C')
-    print(converter.convert(300), 26.85)
     

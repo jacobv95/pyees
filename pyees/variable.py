@@ -994,26 +994,5 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
-if __name__ == "__main__":
-
-    t_in = variable(50, 'C', 1.2)
-    t_out = variable([10, 15, 20, 25, 30, 35, 40], 'C', [0.9, 1.1, 1.0, 0.8, 0.9, 1.3, 1.1])
-    
-    dt = t_in - t_out
-    print(dt)
-    for elem in dt:
-        print(elem)
-
-    
-    t_in = variable(50, 'C', 1.2)
-    dt = variable([10, 15, 20, 25, 30, 35, 40], 'DELTAC', [0.9, 1.1, 1.0, 0.8, 0.9, 1.3, 1.1])
-    
-    t_out = t_in + dt
-    print(t_out)
-    for elem in t_out:
-        print(elem)
-        
-        
-    
     
     
