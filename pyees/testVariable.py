@@ -1326,6 +1326,14 @@ class test(unittest.TestCase):
         self.assertEqual(time[1].uncert, 0.2/60)
         self.assertEqual(time[2].uncert, 0.3/60)
 
+
+        t1 = variable([1,2,3], 'min')
+        t1[1].convert('s')
+        dt = variable(10, 'min')
+        with self.assertRaises(Exception) as context:
+            t1 + dt
+        self.assertTrue("Some of the scalarvariables in [1, 120, 3] [min] did not have the unit [min] as they should. This could happen if the user has converted a scalarVaraible instead of the arrayVaraible." in str(context.exception))
+        
     def testCompare(self):
         a = variable(1, 'm')
         b = variable([2, 3, 4], 'm')

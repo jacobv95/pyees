@@ -310,8 +310,10 @@ class scalarVariable():
         ## but the output is converted to 'C' if the inputs are in 'C' and 'DeltaK' 
         SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
         if outputUnit.unitDict == {'K':{None:1}} and {'DELTAK':{None:1}} in SIBaseUnits and {'K':{None:1}} in SIBaseUnits:
-            var.convert(str([selfUnit, otherUnit][SIBaseUnits.index({'K':{None:1}})])) 
-            
+            var.convert(str([selfUnit, otherUnit][SIBaseUnits.index({'K':{None:1}})]))     
+            for elem in var:
+                elem._unitObject = var._unitObject
+        
         return var
 
     def __radd__(self, other):
@@ -359,7 +361,8 @@ class scalarVariable():
                 var._unitObject = unit('DELTA' + list(self._unitObject.unitDict.keys())[0])
             else:
                 var._unitObject = unit('DELTAK')
-            
+            for elem in var:
+                elem._unitObject = var._unitObject
         return var
 
     def __rsub__(self, other):
@@ -677,7 +680,48 @@ class arrayVariable(scalarVariable):
             self.scalarVariables = scalarVariables
             self._unitObject = self.scalarVariables[0]._unitObject
             self.nDigits = self.scalarVariables[0].nDigits
-            
+
+    def __checkUnitOfScalarVariables(self):
+        for var in self.scalarVariables:
+            if var._unitObject != self._unitObject:
+                raise ValueError(f'Some of the scalarvariables in {self} did not have the unit [{self.unit}] as they should. This could happen if the user has converted a scalarVaraible instead of the arrayVaraible.')
+        
+    def __add__(self, other):
+        self.__checkUnitOfScalarVariables()
+        return scalarVariable.__add__(self, other)
+
+    def __sub__(self, other):
+        self.__checkUnitOfScalarVariables()
+        return scalarVariable.__sub__(self, other)
+
+    def __mul__(self, other):
+        self.__checkUnitOfScalarVariables()
+        return scalarVariable.__mul__(self, other)
+
+    def __rmul__(self, other):
+        self.__checkUnitOfScalarVariables()
+        return scalarVariable.__rmul__(self, other)
+
+    def __pow__(self, other):
+        self.__checkUnitOfScalarVariables()
+        return scalarVariable.__pow__(self, other)
+
+    def __rpow__(self, other):
+        self.__checkUnitOfScalarVariables()
+        return scalarVariable.__rpow__(self, other)
+    
+    def __truediv__(self, other):
+        self.__checkUnitOfScalarVariables()
+        return scalarVariable.__truediv__(self, other)
+
+    def __rtruediv__(self, other):
+        self.__checkUnitOfScalarVariables()
+        return scalarVariable.__rtruediv__(self, other)
+    
+    def __neg__(self):
+        self.__checkUnitOfScalarVariables()
+        return scalarVariable.__neg__(self)
+
     def _calculateUncertanty(self):
         for elem in self.scalarVariables:
             elem._calculateUncertanty()
@@ -951,9 +995,25 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return scalarVariable(value, unit, uncert, nDigits)
 
 if __name__ == "__main__":
-    time = variable([601.15],'s')
-    time.convert('min')
+
+    t_in = variable(50, 'C', 1.2)
+    t_out = variable([10, 15, 20, 25, 30, 35, 40], 'C', [0.9, 1.1, 1.0, 0.8, 0.9, 1.3, 1.1])
     
-    print(time)
-    print(time[0])
+    dt = t_in - t_out
+    print(dt)
+    for elem in dt:
+        print(elem)
+
+    
+    t_in = variable(50, 'C', 1.2)
+    dt = variable([10, 15, 20, 25, 30, 35, 40], 'DELTAC', [0.9, 1.1, 1.0, 0.8, 0.9, 1.3, 1.1])
+    
+    t_out = t_in + dt
+    print(t_out)
+    for elem in t_out:
+        print(elem)
+        
+        
+    
+    
     
