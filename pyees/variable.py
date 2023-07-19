@@ -199,25 +199,34 @@ class scalarVariable():
                                 
         # scale the gradient to SI units. This is necessary if one of the variables are converted after the dependency has been noted
         grad *= self._converterToSI.convert(1, useOffset=False) / var._converterToSI.convert(1, useOffset=False)
+        self.__addDependent(var, grad)
         
-        if var.dependsOn:
-            # the variable depends on other variables
-            # loop over the dependencies of the variables and add them to the dependencies of self.
-            # this ensures that the product rule is used
-            for vvar, dependency in var.dependsOn.items():
-                if not vvar in self.dependsOn:
-                    unc = vvar._converterToSI.convert(vvar.uncert, useOffset = False)
-                    self.dependsOn[vvar] = [unc, grad * dependency[1]]
-                else:
-                    self.dependsOn[vvar][1] += grad * dependency[1]
-        else:    
+    def __addDependent(self, var, grad):
+        
+        if not var.dependsOn:
             ## the variable does not depend on other variables
             ## add the variable to the dependencies of self
-            if not var in self.dependsOn:
-                unc = var._converterToSI.convert(var.uncert, useOffset = False)
-                self.dependsOn[var] = [unc, grad]
-            else:
-                self.dependsOn[var][1] += grad
+            self.___addDependent(var, grad)    
+            return
+        
+        # the variable depends on other variables
+        # loop over the dependencies of the variables and add them to the dependencies of self.
+        # this ensures that the product rule is used
+        for vvar, dependency in var.dependsOn.items():
+            self.___addDependent(vvar, grad * dependency[1])
+        
+    
+    def ___addDependent(self, var, grad):
+        if not var in self.dependsOn:
+            ## the variable is not in the dependencies of self.
+            ## add it to the dictionary
+            unc = var._converterToSI.convert(var.uncert, useOffset = False)
+            self.dependsOn[var] = [unc, grad]
+        else:
+            ## the variable is already in the dependencies of self
+            ## increment the gradient
+            ## this makes sure that the productrule of differentiation is followed
+            self.dependsOn[var][1] += grad
 
     def __iter__(self):
         self.n = 0
@@ -309,8 +318,8 @@ class scalarVariable():
         ## this has no affect if the inputs are in 'K' and 'DeltaK'
         ## but the output is converted to 'C' if the inputs are in 'C' and 'DeltaK' 
         SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
-        if outputUnit.unitDict == {'K':{None:1}} and {'DELTAK':{None:1}} in SIBaseUnits and {'K':{None:1}} in SIBaseUnits:
-            var.convert(str([selfUnit, otherUnit][SIBaseUnits.index({'K':{None:1}})]))     
+        if outputUnit.unitDict == {'K':{'':1}} and {'DELTAK':{'':1}} in SIBaseUnits and {'K':{'':1}} in SIBaseUnits:
+            var.convert(str([selfUnit, otherUnit][SIBaseUnits.index({'K':{'':1}})]))     
             for elem in var:
                 elem._unitObject = var._unitObject
         
@@ -356,7 +365,7 @@ class scalarVariable():
             other.convert(str(otherUnit))
 
         SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
-        if outputUnit.unitDictSI == {'K':{None:1}} and SIBaseUnits[0] == {'K':{None:1}} and SIBaseUnits[1] == {'K':{None:1}}:
+        if outputUnit.unitDictSI == {'K':{'':1}} and SIBaseUnits[0] == {'K':{'':1}} and SIBaseUnits[1] == {'K':{'':1}}:
             if list(self._unitObject.unitDict.keys())[0] == list(other._unitObject.unitDict.keys())[0]:
                 var._unitObject = unit('DELTA' + list(self._unitObject.unitDict.keys())[0])
             else:
@@ -387,7 +396,7 @@ class scalarVariable():
 
         ## if all units were cancled during the multiplication, then convert to 1
         ## this will remove any remaining prefixes
-        if var._unitObject.unitDictSI == {'1':{None:1}} and var._unitObject.unitDict != {'1' : {None: 1}}:
+        if var._unitObject.unitDictSI == {'1':{'':1}} and var._unitObject.unitDict != {'1' : {'': 1}}:
             var.convert('1')
 
         return var
@@ -463,7 +472,7 @@ class scalarVariable():
 
         ## if all units were cancled during the multiplication, then convert to 1
         ## this will remove any remaining prefixes
-        if var._unitObject.unitDictSI == {'1':{None:1}} and var._unitObject.unitDict != {'1' : {None: 1}}:
+        if var._unitObject.unitDictSI == {'1':{'':1}} and var._unitObject.unitDict != {'1' : {'': 1}}:
             var.convert('1')
 
         return var
@@ -480,7 +489,7 @@ class scalarVariable():
         var._addDependent(other, 1 / (self.value))
         var._calculateUncertanty()
 
-        if var._unitObject._SIBaseUnit == '1' and var._unitObject != '1':
+        if var._unitObject.unitDictSI == {'1':{'':1}} and var._unitObject.unitDict != {'1' : {'': 1}}:
             var.convert('1')
 
         return var
@@ -520,7 +529,7 @@ class scalarVariable():
         return self**(1 / 2)
 
     def sin(self):
-        if self._unitObject.unitDictSI != {'rad': {None:1}}:
+        if self._unitObject.unitDictSI != {'rad': {'':1}}:
             raise ValueError('You can only take sin of an angle')
         
         outputUnit = '1'
@@ -538,7 +547,7 @@ class scalarVariable():
         return var
 
     def cos(self):
-        if self._unitObject.unitDictSI != {'rad': {None:1}}:
+        if self._unitObject.unitDictSI != {'rad': {'':1}}:
             raise ValueError('You can only take cos of an angle')
 
         outputUnit = '1'
@@ -556,7 +565,7 @@ class scalarVariable():
         return var
 
     def tan(self):
-        if self._unitObject.unitDictSI != {'rad': {None:1}}:
+        if self._unitObject.unitDictSI != {'rad': {'':1}}:
             raise ValueError('You can only take tan of an angle')
 
         outputUnit = '1'
@@ -734,10 +743,12 @@ class arrayVariable(scalarVariable):
         isArrayVariable = isinstance(var, arrayVariable)
         isArrayGradient = isinstance(grad, list) or isinstance(grad, np.ndarray)
         
+        grad *= self._converterToSI.convert(1, useOffset=False) / var._converterToSI.convert(1, useOffset=False)
+        
         for i, elem in enumerate(self.scalarVariables):
             v = var[i] if isArrayVariable else var
             g = grad[i] if isArrayGradient else grad
-            elem._addDependent(v, g)
+            elem._scalarVariable__addDependent(v, g)
                         
     def __len__(self):
         return len(self.scalarVariables)
@@ -995,4 +1006,7 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return scalarVariable(value, unit, uncert, nDigits)
 
     
-    
+if __name__ == "__main__":
+    a = variable(11,'dB', 0.1)
+    b = variable(19,'dB',1.2)
+    c = a + b

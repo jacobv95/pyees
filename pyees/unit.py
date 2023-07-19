@@ -3,36 +3,9 @@ from fractions import Fraction
 from copy import copy
 
 class _unitConversion():
-
     def __init__(self, scale, offset=0) -> None:
-        self.scale = scale
-        self.offset = offset
-    
-    def __mul__(self, other):
-        if isinstance(other, _unitConversion):
-            scale = self.scale * other.scale
-            offset = self.scale * other.offset + self.offset
-        else:
-            scale = self.scale * other
-            offset = self.offset
-        return _unitConversion(scale, offset)
-
-    def __pow__(self, other):
-        scale = 1
-        offset = 0
-        
-        for _ in range(other):
-            scale *= self.scale
-            offset*= self.scale
-            offset += self.offset
-            
-        return _unitConversion(scale, offset)
-
-    def __truediv__(self, other):
-        if isinstance(other, _unitConversion):
-            return _unitConversion(1 / other.scale, - other.offset / other.scale) * self
-        return self * _unitConversion(1 / other)
-    
+        self.scale, self.offset = scale, offset
+     
     @staticmethod
     def staticMul(selfScale, selfOffset, otherScale, otherOffset = 0):
         scale = selfScale * otherScale
@@ -40,209 +13,184 @@ class _unitConversion():
         return scale, offset
     
     @staticmethod
-    def staticPow(selfScale, selfOffset, pow):
-        if pow==1: return selfScale, selfOffset
-        scale, offset = selfScale, selfOffset
-        for _ in range(pow - 1):
-            selfScale *= scale
-            selfOffset*= scale
-            selfOffset += offset
-        return selfScale, selfOffset
-
+    def staticPow(scale, offset, pow):
+        if pow == 1: return scale, offset
+        scale = scale ** pow
+        offset = offset * sum([scale ** (pow - i) for i in range(pow)])
+        return scale, offset
+       
     @staticmethod
     def staticTruediv(selfScale, selfOffset, otherScale, otherOffset = 0):
         return _unitConversion.staticMul(1 / otherScale, - otherOffset / otherScale, selfScale, selfOffset)
 
     def convert(self, value, useOffset=True):
-        if useOffset:
-            return self.scale * value + self.offset
-        else:
-            return self.scale * value
+        return self.scale * value + useOffset * self.offset
 
 class neperConversion():
-    def __init__(self):
-        self.scale = 1
-        self.offset = 0
+            
     @staticmethod
     def convertToSignal(var):
         var._uncert = 2*np.exp(2*var.value) * var.uncert
         var._value = np.exp(2*var.value)
+        
     @staticmethod
     def convertFromSignal(var):
         var._uncert = 1 / (2*var.value) * var.uncert
         var._value = 1/2 * np.log(var.value)
-    def __mul__(self, other):
-        return 1 * other
-    def __rmul__(self, other):
-        return self * other
-    def __truediv__(self, other):
-        return 1 / other
-    def __rtruediv__(self, other):
-        return other / 1
-    def __pow__ (self, other):
-        return 1** other
-    def __rpow__(self, other):
-        return other ** 1
 
 class bellConversion():
-    def __init__(self):
-        self.scale = 1
-        self.offset = 0
+        
     @staticmethod
     def convertToSignal(var):
         var._uncert = 10**var.value * np.log(10) * var.uncert
         var._value = 10**var.value
+        
     @staticmethod
     def convertFromSignal(var):
         var._uncert = 1 / (var.value * np.log(10)) * var.uncert
         var._value = np.log10(var.value)
-    def __mul__(self, other):
-        return 1 * other
-    def __rmul__(self, other):
-        return self * other
-    def __truediv__(self, other):
-        return 1 / other
-    def __rtruediv__(self, other):
-        return other / 1
-    def __pow__ (self, other):
-        return 1** other
-    def __rpow__(self, other):
-        return other ** 1
 
 class octaveConversion():
-    def __init__(self):
-        self.scale = 1
-        self.offset = 0
+        
     @staticmethod
     def convertToSignal(var):
         var._uncert = 2**var.value * np.log(2) * var.uncert
         var._value = 2**var.value
+        
     @staticmethod
     def convertFromSignal(var):
         var._uncert = 1 / (var.value * np.log(2)) * var.uncert
         var._value = np.log2(var.value)
-    def __mul__(self, other):
-        return 1 * other
-    def __rmul__(self, other):
-        return self * other
-    def __truediv__(self, other):
-        return 1 / other
-    def __rtruediv__(self, other):
-        return other / 1
-    def __pow__ (self, other):
-        return 1** other
-    def __rpow__(self, other):
-        return other ** 1
 
     
+    
 baseUnit = {
-    '1': _unitConversion(1),
-    '': _unitConversion(1),
-    '%': _unitConversion(1e-2)
+    '1': (1,0),
+    '': (1,0),
+    '%': (1e-2,0)
 }
 
 force = {
-    'N': _unitConversion(1)
+    'N': (1,0)
 }
 
 mass = {
-    'g': _unitConversion(1 / 1000)
+    'g': (1 / 1000,0)
 }
 
 energy = {
-    'J': _unitConversion(1),
+    'J': (1,0),
 }
 
 power = {
-    'W': _unitConversion(1)
+    'W': (1,0)
 }
 
 pressure = {
-    'Pa': _unitConversion(1),
-    'bar': _unitConversion(1e5)
+    'Pa': (1,0),
+    'bar': (1e5,0)
 }
 
 temperature = {
-    'K': _unitConversion(1),
-    'C': _unitConversion(1, 273.15),
-    'F': _unitConversion(5 / 9, 273.15 - 32 * 5 / 9)
+    'K': (1,0),
+    'C': (1, 273.15),
+    'F': (5 / 9, 273.15 - 32 * 5 / 9)
 }
 
 temperatureDifference = {
-    'DELTAK': _unitConversion(1),
-    'DELTAC': _unitConversion(1),
-    'DELTAF': _unitConversion(5 / 9)
+    'DELTAK': (1,0),
+    'DELTAC': (1,0),
+    'DELTAF': (5 / 9,0)
 }
 
 time = {
-    's': _unitConversion(1),
-    'min': _unitConversion(60),
-    'h': _unitConversion(60 * 60),
-    'yr': _unitConversion(60 * 60 * 24 * 365)
+    's': (1,0),
+    'min': (60,0),
+    'h': (60 * 60,0),
+    'yr': (60 * 60 * 24 * 365,0)
 }
 
 volume = {
-    'm3': _unitConversion(1),
-    'L': _unitConversion(1 / 1000)
+    'm3': (1,0),
+    'L': (1 / 1000,0)
 }
 
 length = {
-    'm': _unitConversion(1),
-    'Å': _unitConversion(1e-10),
-    'ly': _unitConversion(9460730472580800)
+    'm': (1,0),
+    'Å': (1e-10,0),
+    'ly': (9460730472580800,0)
 }
 
 angle = {
-    'rad': _unitConversion(1),
-    'deg': _unitConversion(np.pi / 180)
+    'rad': (1,0),
+    'deg': (np.pi / 180,0)
 }
 
 current = {
-    'A': _unitConversion(1)
+    'A': (1,0)
 }
 
 voltage = {
-    'V': _unitConversion(1)
+    'V': (1,0)
 }
 
 frequency = {
-    'Hz': _unitConversion(1)
+    'Hz': (1,0)
 }
 
 resistance = {
-    'ohm': _unitConversion(1)
+    'ohm': (1,0)
 }
 
 kinematicViscosity = {
-    'St': _unitConversion(1e-4)
+    'St': (1e-4,0)
 }
 
 logrithmicUnits = {
-    'Np' : neperConversion(),
-    'B': bellConversion(),
-    'oct': octaveConversion(),
-    'dec': bellConversion()
+    'Np' : (1,0),
+    'B': (1,0),
+    'oct': (1,0),
+    'dec': (1,0)
 }
 
+def siUnitForce():                      return {'g':{'k':1}, 'm':{'':1}, 's':{'':-2}} 
+def siUnitPressure():                   return {'g':{'k':1}, 'm':{'':-1}, 's':{'':-2}}
+def siUnitTime():                       return {'s':{'':1}}
+def siUnitTemperature():                return {'K':{'':1}}
+def siUnitVolume():                     return {'m':{'':3}}
+def siUnitLength():                     return {'m':{'':1}}
+def siUnitEnergy():                     return {'g':{'k':1}, 'm':{'':2}, 's':{'':-2}}
+def siUnitPower():                      return {'g':{'k':1}, 'm':{'':2}, 's':{'':-3}}
+def siUnitMass():                       return {'g':{'k':1}}
+def siUnitCurrent():                    return {'A':{'':1}}
+def siUnitVoltage():                    return {'g':{'k':1}, 'm':{'':2}, 's':{'':-3}, 'A':{'':-1}}
+def siUnitBaseUnit():                   return {'1':{'':1}}
+def siUnitFreqeuncy():                  return {'s':{'':-1}}
+def siUnitAngle():                      return {'rad':{'':1}}
+def siUnitResistance():                 return {'g':{'k':1}, 'm':{'':2}, 's':{'':-3}, 'A':{'':-2}}
+def siUnitKinematicViscosity():         return {'m':{'':2},'s':{'':-1}}
+def siUnitLogarithmicUnit():            return {'Np':{'':1}}
+def siUnitTemperatureDifference():      return {'DELTAK':{'':1}}
+
 knownUnitsDict = {
-    'kg-m/s2': force,
-    'kg/m-s2': pressure,
-    's': time,
-    'K': temperature,
-    'm3': volume,
-    'm': length,
-    'kg-m2/s2': energy,
-    'kg-m2/s3': power,
-    'kg': mass,
-    'A': current,
-    'kg-m2/s3-A': voltage,
-    '1': baseUnit,
-    '1/s': frequency,
-    'rad': angle,
-    'kg-m2/s3-A2' : resistance,
-    'm2/s' : kinematicViscosity,
-    'Np': logrithmicUnits,
-    'DELTAK': temperatureDifference
+    siUnitForce:                        force,
+    siUnitPressure:                     pressure,
+    siUnitTime:                         time,
+    siUnitTemperature:                  temperature,
+    siUnitVolume:                       volume,
+    siUnitLength:                       length,
+    siUnitEnergy :                      energy,
+    siUnitPower :                       power,
+    siUnitMass:                         mass,
+    siUnitCurrent:                      current,
+    siUnitVoltage :                     voltage,
+    siUnitBaseUnit:                     baseUnit,
+    siUnitFreqeuncy:                    frequency,
+    siUnitAngle:                        angle,
+    siUnitResistance:                   resistance,
+    siUnitKinematicViscosity:           kinematicViscosity,
+    siUnitLogarithmicUnit:              logrithmicUnits,
+    siUnitTemperatureDifference:        temperatureDifference
 }
 
 knownPrefixes = {
@@ -252,6 +200,7 @@ knownPrefixes = {
     'k':10**3,
     'h':10**2,
     'da':10**1,
+    '': 1,
     'd':10**-1,
     'c':10**-2,
     'm':10**-3,
@@ -270,7 +219,6 @@ for key, d in knownUnitsDict.items():
             raise Warning(f'The unit {item} known in more than one unit system')
 
 
-
 # determine the known characters within the unit system
 knownCharacters = list(knownUnits.keys()) + list(knownPrefixes.keys())
 knownCharacters = ''.join(knownCharacters)
@@ -284,7 +232,10 @@ unitPrefixCombinations = []
 for u in knownUnits:
     unitPrefixCombinations += [u]
     if u not in baseUnit or u == "%":
-        unitPrefixCombinations += [p + u for p in knownPrefixes]
+        for p in knownPrefixes:
+            if p == '':continue
+            
+            unitPrefixCombinations.append(p+u)
 
 for elem in unitPrefixCombinations:
     count = sum([1 if u == elem else 0 for u in unitPrefixCombinations])
@@ -315,38 +266,30 @@ def addNewUnit(newUnit: str, scale: float, existingUnit: str, offset : float = 0
         raise ValueError(f'The unit {newUnit} is already known within the unit system')
     unitPrefixCombinations.append(newUnit)
     for p in knownPrefixes:
+        if p == '': continue
         if p+newUnit in unitPrefixCombinations:
             raise ValueError(f'The unit {p+newUnit} is already known within the unit system')
         unitPrefixCombinations.append(newUnit)
 
-    ## create the conversion 
-    conversion =  _unitConversion(scale, offset)
-
-
+    
     existingUnitDict = unit._getUnitDict(existingUnit)
     existingUnitDictSI = unit._getUnitDictSI(existingUnitDict)
-    SIBaseUnit = unit._getUnitStrFromDict(existingUnitDictSI)
-        
+    def existingUnitDictSIMethod(): return existingUnitDictSI
+
     
-    for key, item in existingUnitDict.items():
-        for pre, exp in item.items():    
-                    
-            unitConversion = knownUnits[key][1]
-            
+    for u, item in existingUnitDict.items():
+        for pre, exp in item.items():
+            convScale, convOffset = knownUnits[u][1]
+            convScale = convScale * knownPrefixes[pre]
             isUpper = exp > 0
-            
-            if not isUpper: exp *= -1
-            
-            unitConversion =  unitConversion ** exp
-
-            if not pre is None: unitConversion *= knownPrefixes[pre]
-
+            if not isUpper: exp = -exp 
+            convScale, convOffset = _unitConversion.staticPow(convScale, convOffset, exp)
             if isUpper:
-                conversion = unitConversion * conversion
+                scale, offset = _unitConversion.staticMul(convScale, convOffset, scale, offset)
             else:
-                conversion = _unitConversion(1) / unitConversion * conversion
+                scale, offset = _unitConversion.staticTruediv(scale, offset, convScale, convOffset)      
     
-    knownUnits[newUnit] = [SIBaseUnit, conversion]
+    knownUnits[newUnit] = [existingUnitDictSIMethod, (scale, offset)]
         
     global knownCharacters
     for s in newUnit:
@@ -360,29 +303,29 @@ integers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 class unit():
 
-    def __init__(self, unitStr = None, unitDict = None):
-        if unitStr is None and unitDict is None:
+    def __init__(self, unitStr = None, unitDict = None, unitDictSI = None):
+        if unitStr is None:
             unitStr = ''
         
-        if not unitStr is None:
+        if unitDict is None:
             self.unitDict = self._getUnitDict(self._formatUnitStr(unitStr))
         else:
             self.unitDict = unitDict
+        
+        if unitDictSI is None:
+            self.unitDictSI = self._getUnitDictSI(self.unitDict)
+        else:
+            self.unitDictSI = unitDictSI    
             
         self.unitStr = self._getUnitStrFromDict(self.unitDict)
-        self.unitDictSI = self._getUnitDictSI(self.unitDict)
         self.unitStrSI = self._getUnitStrFromDict(self.unitDictSI)
-
-        self._converterToSI = self.getConverterFromDict(self.unitDictSI)
-
+        self.getConverterToSI()
 
     @staticmethod
     def _getUnitStrFromDict(unitDict):
         upper, lower = [], []
         for u, item in unitDict.items():    
             for p, exp in item.items():
-                if p is None: p = ''
-
                 up = exp > 0
                 
                 if not up:
@@ -455,22 +398,17 @@ class unit():
         for key, item in unitDict.items():
             prefixesToRemove = []
             for pre, exp in item.items():
-                if exp == 0:
-                    prefixesToRemove.append(pre)
-            for pre in prefixesToRemove:
-                unitDict[key].pop(pre)
+                if exp == 0:  prefixesToRemove.append(pre)
+            for pre in prefixesToRemove: unitDict[key].pop(pre)
     
         ## remove the units, which has no items in their dictionary
         keysToRemove = []
         for key, item in unitDict.items():
-            if not item:
-                keysToRemove.append(key)
-        for key in keysToRemove:
-            unitDict.pop(key)
+            if not item: keysToRemove.append(key)
+        for key in keysToRemove: unitDict.pop(key)
         
         ## remove the unit '1' above the fraction line, if there are any other units above the fraction line
-        keys = list(unitDict.keys())
-        if len(keys) > 1 and '1' in keys:
+        if len(unitDict) > 1 and '1' in unitDict:
             otherUpper = False
             for key, item in unitDict.items():
                 if key == '1':
@@ -484,46 +422,44 @@ class unit():
             if otherUpper:
                 unitDict.pop('1')
                 
-        ## add the units '1' if there are not other units
-        if not unitDict:
-            unitDict = {'1': {None: 1}}
-        
         ## set the exponent of the unit '1' to 1
         if '1' in unitDict:
-            unitDict['1'][None] = 1
+            unitDict['1'] = {'':1}
+            
+        ## add the units '1' if there are not other units
+        if not unitDict:
+            unitDict = {'1': {'': 1}}
         
         ## make temperature units in to temperature differences, if there are any other units in the dict
-        for temperatureUnit in temperature.keys():
-            if temperatureUnit in unitDict:
-                otherKeys = list(unitDict.keys())
-                otherKeys.remove(temperatureUnit)
-                if otherKeys:
-                    unitDict['DELTA' + temperatureUnit] = unitDict[temperatureUnit]
-                    unitDict.pop(temperatureUnit)
-        
-        
-        
+        if len(unitDict) > 1:
+            keysToChange = []
+            for key in unitDict.keys():
+                if key in temperature: keysToChange.append(key)
+            for key in keysToChange: 
+                unitDict['DELTA' + key] = unitDict[key]
+                unitDict.pop(key)       
+            
         return unitDict
     
     @staticmethod
     def _getUnitDictSI(unitDict):
         out = {}
         for key, item in unitDict.items():
-            unitSI = knownUnits[key][0]
-            upper,lower = unit._splitCompositeUnit(unitSI)
-            nUpper = len(upper)
-            for exp in item.values():
-                for i, elem in enumerate(upper + lower):
-                    u,p,e = unit._splitUnitExponentAndPrefix(elem)
-                    if i > nUpper - 1:
-                        e *= -1
-                    if u in out:
-                        if p in out[u]:
-                            out[u][p] += e * exp
+            exp = sum(item.values())
+            unitSI = knownUnits[key][0]()
+            for kkey, iitem in unitSI.items():
+                if kkey in out:
+                    for p,e in iitem.items():
+                        e = e * exp
+                        if p in out[kkey]:
+                            out[kkey][p] += e
                         else:
-                            out[u][p] = e * exp
-                    else:
-                        out[u] = {p: e * exp} 
+                            out[kkey][p] = e
+                else:
+                    out[kkey] = {}
+                    for p,e in iitem.items():
+                        out[kkey][p] = e * exp         
+                    
         out = unit._reduceDict(out)                 
         return out
 
@@ -535,12 +471,8 @@ class unit():
         
         nUpper = len(upper)
         for i, elem in enumerate(upper + lower):
-            
             u, p, e = unit._splitUnitExponentAndPrefix(elem)
-
-            if i > nUpper - 1:
-                e *= -1
-            
+            if i > nUpper - 1: e = - e
             if not u in out:
                 out[u] = {p: e}
             else:
@@ -712,7 +644,7 @@ class unit():
     def _removePrefixFromUnit(unit):
         
         if unit in knownUnits:
-            return unit, None
+            return unit, ''
 
         # The unit was not found. This must be because the unit has a prefix
         found = False
@@ -752,7 +684,6 @@ class unit():
                 isUpper = exp > 0
                 if not isUpper: exp *= -1 
                 if exp == 1: exp = ''
-                if pre == None: pre = ''
                 s = f'{pre}{u}{exp}'
                 if isUpper:
                     upper.append(s)
@@ -785,43 +716,43 @@ class unit():
         selfUnitDictWithoutPrefixes = {}
         for key, item in self.unitDict.items():
             selfUnitDictWithoutPrefixes[key] = {}
-            selfUnitDictWithoutPrefixes[key][None] = 0
+            selfUnitDictWithoutPrefixes[key][''] = 0
             for exp in item.values():
-                selfUnitDictWithoutPrefixes[key][None] += exp
+                selfUnitDictWithoutPrefixes[key][''] += exp
         
         ## determine if self is the same as other - then no conversions are necessary
         if self.unitDict == other.unitDict:
-            return unit(unitDict=self.unitDict)  
+            return unit(unitDict=self.unitDict, unitDictSI=self.unitDictSI)  
         
         ## determine the units of other without any prefixes and convert this to a string
         otherUnitDictWithoutPrefixes = {}
         for key, item in other.unitDict.items():
             otherUnitDictWithoutPrefixes[key] = {}
-            otherUnitDictWithoutPrefixes[key][None] = 0
+            otherUnitDictWithoutPrefixes[key][''] = 0
             for exp in item.values():
-                otherUnitDictWithoutPrefixes[key][None] += exp
+                otherUnitDictWithoutPrefixes[key][''] += exp
         
         ## determine if the self and other are identical once any prefixes has been removed
         if selfUnitDictWithoutPrefixes == otherUnitDictWithoutPrefixes:
-            return unit(unitDict=selfUnitDictWithoutPrefixes)
+            return unit(unitDict=selfUnitDictWithoutPrefixes, unitDictSI=self.unitDictSI)
         
         # determine if the SI base units of self and other are equal
         if self.unitDictSI == other.unitDictSI:
-            return unit(unitDict=copy(self.unitDictSI))
+            return unit(unitDict=self.unitDictSI, unitDictSI=self.unitDictSI)
         
         ## determine if "DELTAK" and "K" are the SI Baseunits of self and other
         SIBaseUnits = [self.unitDictSI, other.unitDictSI]        
-        if {'DELTAK':{None:1}} in SIBaseUnits and {'K':{None:1}} in SIBaseUnits:
+        if {'DELTAK':{'':1}} in SIBaseUnits and {'K':{'':1}} in SIBaseUnits:
             
-            indexTemp = SIBaseUnits.index({'K':{None:1}})
+            indexTemp = SIBaseUnits.index({'K':{'':1}})
             indexDiff = 0 if indexTemp == 1 else 1
             
             units = [list(selfUnitDictWithoutPrefixes.keys())[0], list(otherUnitDictWithoutPrefixes.keys())[0]]
 
             if units[indexTemp] == units[indexDiff][-1]:        
-                return unit(unitDict=[selfUnitDictWithoutPrefixes, otherUnitDictWithoutPrefixes][indexTemp])
+                return unit(unitDict=[selfUnitDictWithoutPrefixes, otherUnitDictWithoutPrefixes][indexTemp], unitDictSI = SIBaseUnits[indexTemp])
             
-            return unit('K')
+            return unit(unitDict={'K':{'':1}}, unitDictSI={'K':{'':1}})
 
         raise ValueError(f'You tried to add a variable in [{self}] to a variable in [{other}], but the units do not have the same SI base unit')
 
@@ -831,45 +762,45 @@ class unit():
         selfUnitDictWithoutPrefixes = {}
         for key, item in self.unitDict.items():
             selfUnitDictWithoutPrefixes[key] = {}
-            selfUnitDictWithoutPrefixes[key][None] = 0
+            selfUnitDictWithoutPrefixes[key][''] = 0
             for exp in item.values():
-                selfUnitDictWithoutPrefixes[key][None] += exp
+                selfUnitDictWithoutPrefixes[key][''] += exp
         
         
         ## determine the units of other without any prefixes and convert
         otherUnitDictWithoutPrefixes = {}
         for key, item in other.unitDict.items():
             otherUnitDictWithoutPrefixes[key] = {}
-            otherUnitDictWithoutPrefixes[key][None] = 0
+            otherUnitDictWithoutPrefixes[key][''] = 0
             for exp in item.values():
-                otherUnitDictWithoutPrefixes[key][None] += exp
+                otherUnitDictWithoutPrefixes[key][''] += exp
         
         
         ## determine if "DELTAK" and "K" are the SI Baseunits of self and other
         SIBaseUnits = [self.unitDictSI, other.unitDictSI]        
-        if SIBaseUnits[0] == {'K':{None:1}} and SIBaseUnits[1] == {'K':{None:1}}:
+        if SIBaseUnits[0] == {'K':{'':1}} and SIBaseUnits[1] == {'K':{'':1}}:
             if self.unitDict == other.unitDict:
-                return unit(unitDict = copy(self.unitDict))
-            return unit('K')
+                return unit(unitDict = self.unitDict, unitDictSI=self.unitDictSI)
+            return unit(unitDict={'K':{'':1}}, unitDictSI={'K':{'':1}})
 
-        if {'DELTAK':{None:1}} in SIBaseUnits and {'K':{None:1}} in SIBaseUnits:
-            indexTemp = SIBaseUnits.index({'K':{None:1}})
+        if {'DELTAK':{'':1}} in SIBaseUnits and {'K':{'':1}} in SIBaseUnits:
+            indexTemp = SIBaseUnits.index({'K':{'':1}})
             if indexTemp != 0:
                 raise ValueError('You tried to subtract a temperature from a temperature differnce. This is not possible.')      
-            return unit(unitDict=[selfUnitDictWithoutPrefixes, otherUnitDictWithoutPrefixes][indexTemp])
+            return unit(unitDict=[selfUnitDictWithoutPrefixes, otherUnitDictWithoutPrefixes][indexTemp], unitDictSI=SIBaseUnits[indexTemp])
         
                 
         ## determine if self is the same as other - then no conversions are necessary
         if self.unitDict == other.unitDict:
-            return unit(unitDict=self.unitDict)
+            return unit(unitDict=self.unitDict, unitDictSI = self.unitDictSI)
         
         ## determine if the self and other are identical once any prefixes has been removed
         if selfUnitDictWithoutPrefixes == otherUnitDictWithoutPrefixes:
-            return unit(unitDict=selfUnitDictWithoutPrefixes)
+            return unit(unitDict=selfUnitDictWithoutPrefixes, unitDictSI=self.unitDictSI)
         
         # determine if the SI base units of self and other are equal
         if self.unitDictSI == other.unitDictSI:
-            return unit(unitDict=self.unitDictSI)
+            return unit(unitDict=self.unitDictSI, unitDictSI = self.unitDictSI)
         
         
         raise ValueError(f'You tried to subtract a variable in [{other}] from a variable in [{self}], but the units do not have the same SI base unit')
@@ -927,7 +858,7 @@ class unit():
     @staticmethod
     def staticPow(unitDict, unitDictSI, unitStr, power):
         
-        if unitDict == {'1': {None: 1}}:
+        if unitDict == {'1': {'': 1}}:
             return unitDict
         
         frac = Fraction(power).limit_denominator()
@@ -973,56 +904,68 @@ class unit():
         
         raise ValueError(f'You can not raise a variable with the unit {unitStr} to the power of {power}')
 
-    def getConverter(self, newUnitStr):  
-        newUnitStr =  unit._formatUnitStr(newUnitStr)
-        newUnitDict = unit._getUnitDict(newUnitStr)
-        newUnitDictSI = unit._getUnitDictSI(newUnitDict)
-        if not (self.unitDictSI == newUnitDictSI):
-            raise ValueError(f'You tried to convert from {self} to {newUnitStr}. But these do not have the same base units')
-        return self.getConverterFromDict(newUnitDict)
-    
-    def getConverterFromDict(self, newUnitDict):    
-        
+    def getConverterToSI(self):
         # initialize the scale and offset
         outScale, outOffset = 1,0
         
         ## loop over self.unitDict
         for u, item in self.unitDict.items():
             for pre, exp in item.items():
-                conv = knownUnits[u][1]
-                convScale, convOffset = conv.scale, conv.offset
-                if not pre is None: convScale, convOffset = _unitConversion.staticMul(convScale, convOffset, knownPrefixes[pre])
+                convScale, convOffset = knownUnits[u][1]
                 isUpper = exp > 0
-                if not isUpper: exp *= -1    
-                convScale, convOffset = _unitConversion.staticPow(convScale, convOffset, exp)
+                if not isUpper: exp = -exp  
+                convScale, convOffset = _unitConversion.staticPow(convScale * knownPrefixes[pre], convOffset, exp)
                 if isUpper:
                     outScale, outOffset = _unitConversion.staticMul(outScale, outOffset, convScale, convOffset)
                 else:
                     outScale, outOffset = _unitConversion.staticTruediv(outScale, outOffset, convScale, convOffset)      
+        self._converterToSI = _unitConversion(outScale, outOffset)
 
+    def getConverter(self, newUnitStr):  
+        newUnitStr =  unit._formatUnitStr(newUnitStr)
+        newUnitDict = unit._getUnitDict(newUnitStr)
+        if newUnitDict == self.unitDictSI:
+            return self._converterToSI
+        
+        newUnitDictSI = unit._getUnitDictSI(newUnitDict)
+        if not (self.unitDictSI == newUnitDictSI):
+            raise ValueError(f'You tried to convert from {self} to {newUnitStr}. But these do not have the same base units')
+        
+        outScale, outOffset = self._converterToSI.scale, self._converterToSI.offset
+        
         ## loop over newUnitDict
         for u, item in newUnitDict.items():
             for pre, exp in item.items():
-                conv = knownUnits[u][1]
-                convScale, convOffset = conv.scale, conv.offset
-                if not pre is None: convScale, convOffset = _unitConversion.staticMul(convScale, convOffset, knownPrefixes[pre])
+                convScale, convOffset = knownUnits[u][1]
                 isUpper = exp > 0
-                if not isUpper: exp *= -1    
-                convScale, convOffset = _unitConversion.staticPow(convScale, convOffset, exp)
+                if not isUpper: exp = -exp
+                convScale, convOffset = _unitConversion.staticPow(convScale * knownPrefixes[pre], convOffset, exp)
                 if not isUpper:
                     outScale, outOffset = _unitConversion.staticMul(outScale, outOffset, convScale, convOffset)
                 else:
                     outScale, outOffset = _unitConversion.staticTruediv(outScale, outOffset, convScale, convOffset)      
-                
+            
         return _unitConversion(outScale, outOffset)
 
     def isCombinationUnit(self):
         return len(list(self.unitDict.keys())) > 1
 
-    def getLogarithmicConverter(self, unitStr = None):
-        if unitStr is None:
-            unitStr = self.unitStr
-        u, _ = self._removePrefixFromUnit(unitStr)
-        return knownUnits[u][1]
+    def getLogarithmicConverter(self):
+        u, _ = self._removePrefixFromUnit(self.unitStr)
+        
+        if u == 'B':
+            return bellConversion()
+        if u == 'Np':
+            return neperConversion()
+        if u == 'oct':
+            return octaveConversion()
+        return bellConversion()
 
-    
+if __name__ == '__main__':
+
+    addNewUnit('gnA', 9.81, 'm/s2')
+    a = unit('gnA')
+    converter = a.getConverter('m/s2')
+    print(converter.convert(1), 9.81)
+    # converter = unit('Rø').getConverter('C')
+    # print(converter.convert(100), 176.190476190476190476)

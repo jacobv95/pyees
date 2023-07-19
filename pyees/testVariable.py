@@ -1888,7 +1888,6 @@ class test(unittest.TestCase):
         self.assertEqual(c.value, 100 - 20)
         self.assertEqual(c.unit, 'DELTAK')
         
-        
     def testTemperatureMean(self):
         a = variable(20,'C')
         b = variable(30,'C')

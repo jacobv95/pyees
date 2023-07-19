@@ -64,8 +64,6 @@ class test(unittest.TestCase):
         c = A / B
         self.assertTrue(c == unit('m/cm'))
     
-        
-
     def testAdd(self):
         a = unit('L/min')
         b = unit('kg-m/L')
