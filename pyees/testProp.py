@@ -280,9 +280,9 @@ class test(unittest.TestCase):
         dMassFlow_dT = [-0.000330293371618005199, -0.000410463892510075697, -0.000483157770611803349]
         
         for i, elem in enumerate(massFlow):
-            self.assertAlmostEqual(elem.dependsOn[flow][1], dMassFlow_dFlow[i], 6)
-            self.assertAlmostEqual(elem.dependsOn[T[i]][1], dMassFlow_dT[i], 6)
-            self.assertAlmostEqual(elem.dependsOn[P[i]][1], dMassFlow_dP[i], 6)
+            self.assertAlmostEqual(elem.dependsOn[flow], dMassFlow_dFlow[i], 6)
+            self.assertAlmostEqual(elem.dependsOn[T[i]], dMassFlow_dT[i], 6)
+            self.assertAlmostEqual(elem.dependsOn[P[i]], dMassFlow_dP[i], 6)
         
       
 

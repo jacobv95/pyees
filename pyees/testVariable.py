@@ -1269,7 +1269,7 @@ class test(unittest.TestCase):
         c = a * b
         self.assertEqual(c.value, 123 * 93 / 1000 / 60)
         self.assertTrue(c._unitObject ==unit('m3-Pa/s'))
-        self.assertEqual(c.uncert, np.sqrt((123 / 1000 / 60 * 1.2)**2 + (93 * 9.7 / 1000 / 60)**2 + 2 * 93 * 123 / 1000 / 60 * 23 / 1000 / 60))
+        self.assertAlmostEqual(c.uncert, np.sqrt((123 / 1000 / 60 * 1.2)**2 + (93 * 9.7 / 1000 / 60)**2 + 2 * 93 * 123 / 1000 / 60 * 23 / 1000 / 60))
         
         a = variable(123, 'L/min', 9.7)
         b = variable(93, 'Pa', 1.2)
@@ -1293,7 +1293,7 @@ class test(unittest.TestCase):
         uab = np.array([2, 3, 4], dtype = float)
 
         uc = np.sqrt((dcda * ua)**2 + (dcdb * ub)**2 + 2 * dcda * dcdb * uab)
-        np.testing.assert_equal(c.uncert, uc)
+        np.testing.assert_array_almost_equal(c.uncert, uc)
 
     def testConvert(self):
         a = variable(1, 'km', 0.1)

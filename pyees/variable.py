@@ -98,6 +98,7 @@ class scalarVariable():
 
         # create a unit object
         self._unitObject = unitObject if isinstance(unitObject, unit) else unit(unitObject)
+        self._uncertSI = self._unitObject._converterToSI.convert(self._uncert, useOffset=False)
 
         # number of digits to show
         self.nDigits = nDigits
@@ -213,20 +214,19 @@ class scalarVariable():
         # loop over the dependencies of the variables and add them to the dependencies of self.
         # this ensures that the product rule is used
         for vvar, dependency in var.dependsOn.items():
-            self.___addDependent(vvar, grad * dependency[1])
+            self.___addDependent(vvar, grad * dependency)
         
-    
     def ___addDependent(self, var, grad):
-        if not var in self.dependsOn:
-            ## the variable is not in the dependencies of self.
-            ## add it to the dictionary
-            unc = var._converterToSI.convert(var.uncert, useOffset = False)
-            self.dependsOn[var] = [unc, grad]
-        else:
+        if var in self.dependsOn:
             ## the variable is already in the dependencies of self
             ## increment the gradient
             ## this makes sure that the productrule of differentiation is followed
-            self.dependsOn[var][1] += grad
+            self.dependsOn[var] += grad
+            return 
+        
+        ## the variable is not in the dependencies of self.
+        ## add it to the dictionary
+        self.dependsOn[var] = grad
 
     def __iter__(self):
         self.n = 0
@@ -256,25 +256,23 @@ class scalarVariable():
         
     def _calculateUncertanty(self):
         
+        variance = 0
+        for var, grad in self.dependsOn.items():
+            ## variance from the measurements     
+            variance += (var._uncertSI * grad)**2
+           
+            # variance from the corralation between measurements
+            ## covariance = dict(var: covariance)
+            ## the gradients can be found in self.dependsOn
+            ## loop over all variables that are in var.covariance and also self.dependsOn
+            if not var.covariance: continue
+            for var2 in filter(lambda x: x in self.dependsOn, var.covariance):
+                variance += grad * self.dependsOn[var2] * var.covariance[var2]
+        
         ## all variances are determined in the SI unit system.
         ## these has to be converted back in the the unit of self
-        scale = 1 / self._converterToSI.convert(1, useOffset=False) ** 2
-        
-        # variance from each measurement
-        variance = sum([(unc * grad)**2 for unc, grad in self.dependsOn.values()]) * scale
-        
-        # variance from the corralation between measurements
-        ## covariance = list(vari, vari.currentValue, vari.currentUncert, varj, varj.currentValue, varj.currenctUncert, cov)
-        ## from the above the gradients can be found from self.dependsOn
-        for var1 in self.dependsOn.keys():
-            for var2 in var1.covariance.keys():
-                if var2 in self.dependsOn:
-                    grad1 = self.dependsOn[var1][1]
-                    grad2 = self.dependsOn[var2][1]
-                    cov = var1.covariance[var2]
-                    variance += scale * grad1 * grad2 * cov
-
-        self._uncert = np.sqrt(variance)
+        self._uncertSI = np.sqrt(variance)
+        self._uncert = self._uncertSI / self._converterToSI.convert(1, useOffset=False)
         
     def __add__(self, other):
         
@@ -1008,5 +1006,10 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     
 if __name__ == "__main__":
     a = variable(11,'dB', 0.1)
-    b = variable(19,'dB',1.2)
+    b = variable(19,'dB', 1.2)
+    print(a._uncertSI)
+    print(b._uncertSI)
     c = a + b
+    gradA = (10**(11/10)) / (10**(19/10) + 10**(11/10))
+    gradB = (10**(19/10)) / (10**(19/10) + 10**(11/10))
+    print(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))

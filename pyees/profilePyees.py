@@ -9,7 +9,7 @@ except ImportError:
 pr = cProfile.Profile()
 pr.enable()
 
-for _ in range(1):
+for _ in range(50_000):
 
     c = variable(4.182, 'J/kg-K', 0.130)
     rho = variable(1000, 'kg/m3', 0.01)
