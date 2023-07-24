@@ -260,7 +260,7 @@ class scalarVariable():
         for var, grad in self.dependsOn.items():
             ## variance from the measurements     
             variance += (var._uncertSI * grad)**2
-           
+        
             # variance from the corralation between measurements
             ## covariance = dict(var: covariance)
             ## the gradients can be found in self.dependsOn

@@ -1,5 +1,7 @@
 import numpy as np
 from fractions import Fraction
+from functools import cache
+
 
 
 class _unitConversion():
@@ -362,6 +364,7 @@ class unit():
         if lower: out = out + '/' + '-'.join(lower)
         return out
       
+    @cache
     def getUnitWithoutPrefix(self):
         
         upper, lower = [],[]
@@ -384,6 +387,7 @@ class unit():
         return out
         
     @ staticmethod
+    @cache
     def _splitCompositeUnit(compositeUnit):
         lower = []
         if not slash in compositeUnit:
@@ -401,6 +405,7 @@ class unit():
         return upper, lower
 
     @staticmethod
+    @cache
     def _splitUnitExponentAndPrefix(unitStr):
         prefixUnit, exponent = unit._removeExponentFromUnit(unitStr)
         u, prefix = unit._removePrefixFromUnit(prefixUnit)
@@ -479,6 +484,7 @@ class unit():
         return out
 
     @staticmethod
+    @cache
     def _getUnitDict(unitStr):
         upper, lower = unit._splitCompositeUnit(unitStr)
 
@@ -501,6 +507,7 @@ class unit():
         return out
    
     @ staticmethod
+    @cache
     def _formatUnitStr(unitStr):
         
         ## remove spaces
@@ -629,6 +636,7 @@ class unit():
         return unitStr
  
     @ staticmethod
+    @cache
     def _removeExponentFromUnit(u):
         
         integerIndexes = [i for i, char in enumerate(u) if char in integers]
@@ -656,6 +664,7 @@ class unit():
         return u, exponent
 
     @staticmethod
+    @cache
     def _removePrefixFromUnit(unit):
         
         if unit in knownUnits:
@@ -717,7 +726,7 @@ class unit():
         out += '\cdot'.join(lower)
         out += rf'}}'
         return out
-
+    
     def __eq__(self, other):
         return self.unitDict == other.unitDict
 
@@ -979,6 +988,6 @@ class unit():
             return octaveConversion()
         return bellConversion()
 
+    def __hash__(self):
+        return id(self)
 
-    
-    
