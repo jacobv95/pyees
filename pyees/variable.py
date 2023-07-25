@@ -1,4 +1,4 @@
-from copy import copy
+
 import numpy as np
 try:
     from unit import unit
@@ -98,7 +98,7 @@ class scalarVariable():
 
         # create a unit object
         self._unitObject = unitObject if isinstance(unitObject, unit) else unit(unitObject)
-        self._uncertSI = self._unitObject._converterToSI.convert(self._uncert, useOffset=False)
+        self._uncertSI = self.uncert * self._unitObject._converterToSI.scale
 
         # number of digits to show
         self.nDigits = nDigits
@@ -107,9 +107,6 @@ class scalarVariable():
         self.dependsOn = {}
         self.covariance = {}
 
-    @property
-    def _converterToSI(self):
-        return self._unitObject._converterToSI
 
     @property
     def value(self):
@@ -126,7 +123,7 @@ class scalarVariable():
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
         self._value = converter.convert(self._value, useOffset=not self._unitObject.isCombinationUnit())
-        self._uncert = converter.convert(self._uncert, useOffset=False)
+        self._uncert = self._uncert * converter.scale
         self._unitObject = unit(newUnit)
  
     def printUncertanty(self, value, uncert):
@@ -199,7 +196,7 @@ class scalarVariable():
     def _addDependent(self, var, grad):
                                 
         # scale the gradient to SI units. This is necessary if one of the variables are converted after the dependency has been noted
-        grad *= self._converterToSI.convert(1, useOffset=False) / var._converterToSI.convert(1, useOffset=False)
+        grad *= self._unitObject._converterToSI.scale / var._unitObject._converterToSI.scale
         self.__addDependent(var, grad)
         
     def __addDependent(self, var, grad):
@@ -249,7 +246,7 @@ class scalarVariable():
         if not covUnit.unitDictSI ==  selfVarUnit.unitDictSI:
             raise ValueError(f'The covariance of {covariance} [{unitStr}] does not match the units of {self} and {var}')
         
-        covariance = covUnit._converterToSI.convert(covariance, useOffset=False)
+        covariance = covariance * covUnit._converterToSI.scale
         
         self.covariance[var] = covariance        
         var.covariance[self] = covariance
@@ -272,7 +269,7 @@ class scalarVariable():
         ## all variances are determined in the SI unit system.
         ## these has to be converted back in the the unit of self
         self._uncertSI = np.sqrt(variance)
-        self._uncert = self._uncertSI / self._converterToSI.convert(1, useOffset=False)
+        self._uncert = self._uncertSI / self._unitObject._converterToSI.scale
         
     def __add__(self, other):
         
@@ -287,9 +284,9 @@ class scalarVariable():
             return logarithmicVariables.__add__(self, other)
 
         # convert self and other
-        selfUnit = copy(self._unitObject)
-        otherUnit = copy(other._unitObject)
-        
+        selfUnit = self._unitObject
+        otherUnit = other._unitObject
+    
         ## convert the units if the SI unit is identical to that of the output unit and the unit is not equal to the output unit
         if self._unitObject.unitDictSI == outputUnit.unitDictSI and not self._unitObject == outputUnit:
             self.convert(str(outputUnit))
@@ -338,8 +335,8 @@ class scalarVariable():
             return logarithmicVariables.__sub__(self, other)
         
         # convert self and other
-        selfUnit = copy(self._unitObject)
-        otherUnit = copy(other._unitObject)
+        selfUnit = self._unitObject
+        otherUnit = other._unitObject
         
         ## convert the units if the SI unit is identical to that of the output unit and the unit is not equal to the output unit
         if self._unitObject.unitDictSI == outputUnit.unitDictSI and not self._unitObject == outputUnit:
@@ -417,7 +414,7 @@ class scalarVariable():
         ## then self does not have to be scaled to the SI unit system in order for the unit to be raised to the power
         hasToBeScaledToSI = self._unitObject.unitDict.keys() != outputUnit.unitDict.keys()
         if hasToBeScaledToSI:
-            selfUnit = copy(self.unit)
+            selfUnit = self.unit
             self.convert(self._unitObject.unitStrSI)
         
         ## dertermine the value
@@ -618,8 +615,8 @@ class scalarVariable():
             if not a._unitObject.unitDictSI == b._unitObject.unitDictSI:
                 raise ValueError(f'You cannot compare {a} and {b} as they do not have the same SI base unit')
         
-            aUnit = copy(a.unit)
-            bUnit = copy(b.unit)
+            aUnit = a.unit
+            bUnit = b.unit
             
             a.convert(a._unitObject.unitStrSI)
             b.convert(b._unitObject.unitStrSI)
@@ -741,7 +738,7 @@ class arrayVariable(scalarVariable):
         isArrayVariable = isinstance(var, arrayVariable)
         isArrayGradient = isinstance(grad, list) or isinstance(grad, np.ndarray)
         
-        grad *= self._converterToSI.convert(1, useOffset=False) / var._converterToSI.convert(1, useOffset=False)
+        grad *= self._unitObject._converterToSI.scale / var._unitObject._converterToSI.scale
         
         for i, elem in enumerate(self.scalarVariables):
             v = var[i] if isArrayVariable else var
@@ -1003,13 +1000,3 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
-    
-if __name__ == "__main__":
-    a = variable(11,'dB', 0.1)
-    b = variable(19,'dB', 1.2)
-    print(a._uncertSI)
-    print(b._uncertSI)
-    c = a + b
-    gradA = (10**(11/10)) / (10**(19/10) + 10**(11/10))
-    gradB = (10**(19/10)) / (10**(19/10) + 10**(11/10))
-    print(c.uncert, np.sqrt( (gradA * a.uncert)**2 + (gradB * b.uncert)**2))

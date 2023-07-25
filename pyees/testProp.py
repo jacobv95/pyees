@@ -1,5 +1,4 @@
 import unittest
-import numpy as np
 import openpyxl
 try:
     from prop import prop
