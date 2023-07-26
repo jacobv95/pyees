@@ -1540,11 +1540,11 @@ class test(unittest.TestCase):
         b.addCovariance(d, [0.1, 0.2, 0.3], 'm-Pa')
         a.append(b)
         c.append(d) 
-        d = a * c
+        e = a * c
 
-        np.testing.assert_equal(d.value, np.array([1,2,3,4,5,6]) * np.array([10,11,12,13,14,15]))
-        self.assertTrue(d._unitObject == unit('m-Pa'))        
-        np.testing.assert_array_almost_equal(d.uncert, np.sqrt(2 * np.array([1,2,3,4,5,6]) * np.array([10,11,12,13,14,15]) * np.array([0,0,0,0.1,0.2,0.3])))
+        np.testing.assert_equal(e.value, np.array([1,2,3,4,5,6]) * np.array([10,11,12,13,14,15]))
+        self.assertTrue(e._unitObject == unit('m-Pa'))        
+        np.testing.assert_array_almost_equal(e.uncert, np.sqrt(2 * np.array([1,2,3,4,5,6]) * np.array([10,11,12,13,14,15]) * np.array([0,0,0,0.1,0.2,0.3])))
         
         
         a = variable([1, 2, 3], 'm')

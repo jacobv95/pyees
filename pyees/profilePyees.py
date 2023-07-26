@@ -22,7 +22,7 @@ for _ in range(50_000):
 pr.disable()
 s = io.StringIO()
 ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
-ps.print_stats()
+ps.print_stats(100)
 
 with open('profile.txt', 'w+') as f:
     f.write(s.getvalue())

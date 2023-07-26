@@ -12,12 +12,11 @@ class logarithmicVariables:
     
     @staticmethod
     def __add__(a,b):
-        aUnit = str(a.unit)
-        bUnit =str(b.unit)
+        aUnit = a.unit
+        bUnit = b.unit
         
         aUnitWithoutPrefix = a._unitObject.getUnitWithoutPrefix()
         a.convert(aUnitWithoutPrefix)
-
         aConverter = a._unitObject.getLogarithmicConverter()
         a._unitStr = '1'
         a._unitObject = unit('')
@@ -52,12 +51,11 @@ class logarithmicVariables:
 
     @staticmethod
     def __sub__(a,b):
-        aUnit = str(a.unit)
-        bUnit =str(b.unit)
+        aUnit = a.unit
+        bUnit = b.unit
         
         aUnitWithoutPrefix = a._unitObject.getUnitWithoutPrefix()
         a.convert(aUnitWithoutPrefix)
-
         aConverter = a._unitObject.getLogarithmicConverter()
         a._unitStr = '1'
         a._unitObject = unit('')
@@ -236,10 +234,6 @@ class scalarVariable():
         raise StopIteration           
    
     def addCovariance(self, var, covariance: float, unitStr: str):
-        try:
-            float(covariance)
-        except TypeError:
-            raise ValueError(f'You tried to set the covariance between {self} and {var} with a non scalar value')
         
         covUnit = unit(unitStr)
         selfVarUnit = self._unitObject * var._unitObject
@@ -250,6 +244,7 @@ class scalarVariable():
         
         self.covariance[var] = covariance        
         var.covariance[self] = covariance
+        
         
     def _calculateUncertanty(self):
         
@@ -999,4 +994,3 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return arrayVariable(value = value, unitStr = unit, uncert = uncert, nDigits = nDigits)
     else:
         return scalarVariable(value, unit, uncert, nDigits)
-

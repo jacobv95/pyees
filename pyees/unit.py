@@ -389,20 +389,21 @@ class unit():
 
     @staticmethod
     def _getUnitStrFromDict(unitDict):
-        upper, lower = [], []
+        upper, lower = '',''
         
         for u, item in unitDict.items():    
             for p, exp in item.items():
                 isUpper = exp > 0
                 if not isUpper: exp = - exp
                 exp = str(exp) if exp != 1 else ''
-                s = p+u+str(exp)
-                if isUpper: upper.append(s)
-                else: lower.append(s)
-        
-        out = '-'.join(upper)
-        if lower: out = out + '/' + '-'.join(lower)
-        return out
+                s = p + u + exp + '-'
+                if isUpper: upper += s
+                else: lower += s
+                
+        upper = upper[:-1]
+        if lower: upper += '/' + lower[:-1]
+        return upper
+
       
     def getUnitWithoutPrefix(self):
         
@@ -446,25 +447,21 @@ class unit():
         prefixUnit, exponent = unit._removeExponentFromUnit(unitStr)
         u, prefix = unit._removePrefixFromUnit(prefixUnit)
         return u, prefix, exponent
-   
+       
     @staticmethod
     def _reduceDict(unitDict):
         
         ## loop over all units, and remove any prefixes, which has an exponenet of 0
+        n = len(unitDict)
+        keysToRemove = []
         for key, item in unitDict.items():
             prefixesToRemove = []
             for pre, exp in item.items():
                 if exp == 0:  prefixesToRemove.append(pre)
             for pre in prefixesToRemove: item.pop(pre)
-
-        ## remove the units, which has no items in their dictionary
-        keysToRemove = []
-        n = len(unitDict)
-        for key, item in unitDict.items():
-            if not item:
-                keysToRemove.append(key)
-                n -= 1
-                
+            if not item: keysToRemove.append(key)
+        n -= len(keysToRemove)        
+        
         ## if all the keys in unitDict has to be removed, then return the unit '1'
         if n == 0:
             ## return '1' if there are not other units
@@ -475,18 +472,24 @@ class unit():
         
         ## check if 1 is in the unit
         if '1' in unitDict:
-            if n > 1:
-                ## determine if there are any other units than '1' above the fraction line
-                otherUpper = sum([sum([1 if exp > 0 else 0 for exp in item.values()]) if (key != '1') else 0 for key, item in unitDict.items()])
-                            
+            if n > 1:     
+                otherUpper = False
+                for key, item in unitDict.items():
+                    if key == '1': continue
+                    for exp in item.values():
+                        if exp > 0:
+                            otherUpper = True
+                            break
+                    if otherUpper: break
+
+                    
                 ## if there are any other upper units, then remove 1
                 ## else set the exponent of the unit '1' to 1
                 if otherUpper:
                     unitDict.pop('1')
                     n -= 1
                 else: unitDict['1'][''] = 1
-            else:
-                unitDict['1'][''] = 1
+            else: unitDict['1'][''] = 1
                 
         ## make temperature units in to temperature differences, if there are any other units in the dict
         if n > 1:
@@ -506,17 +509,11 @@ class unit():
             exp = sum(item.values())
             unitSI = _knownUnits[key][0]
             for kkey, iitem in unitSI.items():
-                if kkey in out:
-                    for p,e in iitem.items():
-                        e = e * exp
-                        if p in out[kkey]:
-                            out[kkey][p] += e
-                        else:
-                            out[kkey][p] = e
-                else:
-                    out[kkey] = {}
-                    for p,e in iitem.items():
-                        out[kkey][p] = e * exp         
+                for p, e in iitem.items():
+                    e = e * exp
+                    if kkey in out: e = e + out[kkey][p]
+                    out[kkey] = {p: e}
+                    
                     
         out = unit._reduceDict(out)                 
         return out
@@ -526,7 +523,6 @@ class unit():
         upper, lower = unit._splitCompositeUnit(unitStr)
 
         out = {}
-        
         nUpper = len(upper)
         for i, elem in enumerate(upper + lower):
             u, p, e = unit._splitUnitExponentAndPrefix(elem)
@@ -534,14 +530,11 @@ class unit():
             if not u in out:
                 out[u] = {p: e}
             else:
-                if not p in out[u]:
-                    out[u][p] = e
-                else:
-                    out[u][p] += e
+                if p in out[u]: e += out[u][p]
+                out[u][p] = e
         
-        out = unit._reduceDict(out)
-        
-        return out
+        return unit._reduceDict(out)
+    
    
     @ staticmethod
     def _formatUnitStr(unitStr):
@@ -1016,7 +1009,3 @@ class unit():
         if u == 'oct':
             return _octaveConversion()
         return _bellConversion()
-
-    def __hash__(self):
-        return id(self)
-
