@@ -744,9 +744,9 @@ class unit():
         
         # a fraction is needed
         out = rf'\frac{{'
-        out += '\cdot'.join(upper)
+        out += '\cdot '.join(upper)
         out += rf'}}{{'
-        out += '\cdot'.join(lower)
+        out += '\cdot '.join(lower)
         out += rf'}}'
         return out
     
