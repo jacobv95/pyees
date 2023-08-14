@@ -114,8 +114,7 @@ The unit is used to determine which computations can be performed on the variabl
 ### exponents
 The exponent will always apply to the unit AND the prefix. The unit 'mm3' is interpreted as "cubic millimeters" (0.001 [m] * 0.001 [m] * 0.001 [m]) and not "milli cubicmeters" (0.001 * (1 [m] * 1 [m] * 1 [m])). 
 
-Furhtermore, 1 kilometer multiplied with 1 meter returns 1 kilometer-meter. This is beacuse there is no prefix, x, in the known prefixes, such that 
-<img src="https://render.githubusercontent.com/render/math?math=x^2 = 1000 \quad \rightarrow \quad x = 31.62">. However, the result, 1 kilometer-meter, can be converted in to square meters using the convert method.
+Furhtermore, 1 kilometer multiplied with 1 meter returns 1 kilometer-meter.
 
 
 
