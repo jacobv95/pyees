@@ -6,7 +6,8 @@ EES is a nice program with a lot of uses. However, the syntax is poor and the it
 Just run ```pip install pyees```
 
 ## Scope of this package
-These computations quickly becomes very difficult for more complicated equations than the one used in this example. This packages is designed to easily perform such computations. Furthermore a few features is added to the packages
+The scope of this package is to
+ - Easily calculate uncertanty propagation
  - Read data with uncertanty from an .xls or .xlsx file
  - Print measurements with the correct number of significant digits based on the uncertanty
  - Plot data with errorbars
