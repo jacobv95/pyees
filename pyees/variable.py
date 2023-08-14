@@ -310,8 +310,6 @@ class scalarVariable():
         SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
         if outputUnit.unitDict == {'K':{'':1}} and {'DELTAK':{'':1}} in SIBaseUnits and {'K':{'':1}} in SIBaseUnits:
             var.convert(str([selfUnit, otherUnit][SIBaseUnits.index({'K':{'':1}})]))     
-            for elem in var:
-                elem._unitObject = var._unitObject
         
         return var
 
