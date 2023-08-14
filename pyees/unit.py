@@ -316,7 +316,7 @@ def _checkForAmbiguityInTheUnits():
 
 
 
-def addNewUnit(newUnit: str, scale: float, existingUnit: str, offset : float = 0):
+def addNewUnit(newUnit: str, scale: float, existingUnitStr: str, offset : float = 0):
     
     ## add the newUnit to the unitPrefix combinations
     _unitPrefixCombinations.append(newUnit)
@@ -325,7 +325,7 @@ def addNewUnit(newUnit: str, scale: float, existingUnit: str, offset : float = 0
         _unitPrefixCombinations.append(p+newUnit)
 
     ## create a unitObject from the existing unit string
-    existingUnit = unit(existingUnit)
+    existingUnit = unit(existingUnitStr)
     
     ## the SI unit of the existing unit must be the same as that of the new unit
     newUnitDictSI = existingUnit.unitDictSI
@@ -338,7 +338,7 @@ def addNewUnit(newUnit: str, scale: float, existingUnit: str, offset : float = 0
     
     ## add the newunit to the values of knownUnitsDict. This is used to check for ambiguity in the unit system
     for item in _knownUnitsDict.values():
-        if existingUnit in item:
+        if existingUnitStr in item:
             item[newUnit] = (scale,offset)
     
     ## add the characters of the new unit to the knownCharacters
@@ -1009,3 +1009,7 @@ class unit():
         if u == 'oct':
             return _octaveConversion()
         return _bellConversion()
+
+
+if __name__ == "__main__":
+    addNewUnit('day', 24, 'h')
