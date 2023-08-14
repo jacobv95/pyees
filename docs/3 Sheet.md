@@ -1,7 +1,7 @@
 
-# Sheet
+# Sheets
 
-A sheet is a collection is variables. This allows the user to iterate over variables easily
+A sheet is a collection of variables. This allows the user to iterate over variables easily
 
 ```
 import pyees as pe
