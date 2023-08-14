@@ -15,7 +15,7 @@ The uncertanty is printed with one significant digit. The measurement is printed
 print(variable(12.3,'m',0.01))
 >> 12.30 +/- 0.01 [m]
 
-print(variable(12.34,'m',0.))
+print(variable(12.34,'m',0.1))
 >> 12.3 +/- 0.1 [m]
 
 print(variable(1234,'m',16))
@@ -59,9 +59,6 @@ numpy.tan(a)
 numpy.mean(a), numpy.mean([a,b])
 numpy.min(a), numpy.min([a,b])
 numpy.max(a), numpy.max([a,b])
-a[0]
-a.len()
-a.append(b)
 ```
 
 
@@ -113,6 +110,15 @@ The unit is used to determine which computations can be performed on the variabl
  - The n'th root of a variable can be taken if the exponent of the unit of the variable is divisible by n
 
 
+
+### exponents
+The exponent will always apply to the unit AND the prefix. The unit 'mm3' is interpreted as "cubic millimeters" (0.001 [m] * 0.001 [m] * 0.001 [m]) and not "milli cubicmeters" (0.001 * (1 [m] * 1 [m] * 1 [m])). 
+
+Furhtermore, 1 kilometer multiplied with 1 meter returns 1 kilometer-meter. This is beacuse there is no prefix, x, in the known prefixes, such that 
+<img src="https://render.githubusercontent.com/render/math?math=\left(xm\right)^2 \quad \rightarrow \quad x^2 = 1000 \quad \rightarrow \quad x = 31.62">. However, the result, 1 kilometer-meter, can be converted in to square meters using the convert method.
+
+
+
 ## Conversion of the variable
 A variable can be converted in to any other unit with the same SI base unit using the convert-method
 
@@ -121,13 +127,6 @@ a = variable(10,'L/min')
 a.convert('m3/h')
 >> 0.6 [m3/h]
 ```
-
-
-## exponents
-The exponent will always apply to the unit AND the prefix. The unit 'mm3' is interpreted as "cubic millimeters" (0.001 [m] * 0.001 [m] * 0.001 [m]) and not "milli cubicmeters" (0.001 * (1 [m] * 1 [m] * 1 [m])). 
-
-Furhtermore, 1 kilometer multiplied with 1 meter returns 1 kilometer-meter. This is beacuse there is not prefix, x, in the known prefixes, such that 
-<img src="https://render.githubusercontent.com/render/math?math=\left(xm\right)^2 \quad \rightarrow \quad x^2 = 1000 \quad \rightarrow \quad x = 31.62">. However, the result, 1 kilometer-meter, can be converted in to square meters using the convert method.
 
 
 
@@ -145,90 +144,20 @@ When using variables from pyees these calculations happen automatically.
 The return type is either "scalarVariable" or "arrayVariable" when initializing a variable. This depends on the supplied value is a list-like object or not. The arrayVariable is basically a list which holds scalarVariables. 
 
 The array variable also includes some array methods:
- - __setitem__
- - __len__
- - __getitem__
-
-It should be noted, that the method __setitem__ changes some of the scalarVariables in the arrayVariable. This will have consequences for uncertanty propagations.
-
-
-Three methods are defined which returns the same output. These three methods are created in order to show how changing a scalarVariable in an arrayVariable will affect the uncertanty propagation.
-
-``` 
-def arrayMethod():
-    ## create a variable
-    a = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
-
-    ## use the variable 'a' to create the variable 'b'
-    b = a**2
-
-    ## change the variable a using the __setitem__ method
-    a[1] = variable(5,'m',0.5)
-
-    ## modify 'b' using 'a'
-    b *= a
-    return b.value, b.uncert
-
-
-
-def scalarMethod1():
-    ## Lets calculate each term on by one using scalarVariables
-    a0 = variable(1,'m', 0.1)
-    a1 = variable(2,'m', 0.2)
-    a2 = variable(3,'m', 0.3)
-
-    ## use the variablea a0, a1 and a2 to create the variables b0, b1 and b2
-    b0 = a0**2
-    b1 = a1**2
-    b2 = a2**2
-
-    ## change the variable a1
-    a1 = variable(5, 'm', 0.5)
-
-    ## modify b0, b1 and b2 using a0, a1 and a2
-    b0 *= a0
-    b1 *= a1
-    b2 *= a2
-
-    ## return values of b0, b1 and b2 wrapped in a numpy array
-    ## this makes comparing the result from the arrayVariable-method and the scalarVariable-method easy
-    values = np.array([elem.value for elem in [b0,b1,b2]])
-    uncerts = np.array([elem.uncert for elem in [b0,b1,b2]])
-    return values, uncerts
-
-
-def scalarMethod2():
-    ## lets calculate each term in a slightly faster way
-    ## as the scalarVariables a0 and a2 are not overwritten, then b0 and b2 is simply a0**3 and b0**3
-    ## furthermore, we will not overwrite a1 but rather create two seperate variables
-    a0 = variable(1,'m', 0.1)
-    a1_1 = variable(2,'m', 0.2)
-    a1_2 = variable(5, 'm', 0.5)
-    a2 = variable(3,'m', 0.3)
-
-    b0 = a0**3
-    b1 = a1_1**2 * a1_2
-    b2 = a2**3
-
-    ## return values of b0, b1 and b2 wrapped in a numpy array
-    ## this makes comparing the result from the arrayVariable-method and the scalarVariable-method easy
-    values = np.array([elem.value for elem in [b0,b1,b2]])
-    uncerts = np.array([elem.uncert for elem in [b0,b1,b2]])
-    return values, uncerts
-
-
-
-## run and compare the three methods
-print(arrayMethod())
->> (array([ 1., 20., 27.]), array([0.3       , 4.47213595, 8.1       ]))
-
-print(scalarMethod1())
->> (array([ 1., 20., 27.]), array([0.3       , 4.47213595, 8.1       ]))
-
-print(scalarMethod2())
->> (array([ 1., 20., 27.]), array([0.3       , 4.47213595, 8.1       ]))
-
-## All methods return the same result
 ```
+a = variable([1,2,3], 'm')
 
+a[0]
+>> 1 [m]
 
+len(a)
+>> 3
+
+a[2] = variable(5, 'm')
+print(a)
+>> [1,2,5] [m]
+
+a.pop(1)
+print(a)
+>> [1,5] [m]
+```
