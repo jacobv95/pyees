@@ -105,7 +105,6 @@ class scalarVariable():
         self.dependsOn = {}
         self.covariance = {}
 
-
     @property
     def value(self):
         return self._value
@@ -190,6 +189,9 @@ class scalarVariable():
             return rf'{value}{space}{unitStr}'
         else:
                 return rf'{value} {pm} {uncert}{space}{unitStr}'
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
     def _addDependent(self, var, grad):
                                 
@@ -992,3 +994,4 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return arrayVariable(value = value, unitStr = unit, uncert = uncert, nDigits = nDigits)
     else:
         return scalarVariable(value, unit, uncert, nDigits)
+
