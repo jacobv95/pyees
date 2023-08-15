@@ -128,7 +128,13 @@ class scalarVariable():
         if uncert == 0 or uncert is None or np.isnan(uncert):
             return f'{value:.{self.nDigits}g}', None
 
+        
+        
         digitsUncert = -int(np.floor(np.log10(np.abs(uncert))))
+        uncert = float(f'{uncert:.{1}g}')
+        digitsUncert = -int(np.floor(np.log10(np.abs(uncert))))
+        
+
 
         if value != 0:
             digitsValue = -int(np.floor(np.log10(np.abs(value))))
@@ -995,3 +1001,5 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
+if __name__ == "__main__":
+    print(scalarVariable.printUncertanty(None, 102.59573439096775, 0.94))

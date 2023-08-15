@@ -837,6 +837,16 @@ class test(unittest.TestCase):
 
         A = variable(10.0, 'm', uncert=0.1)
         self.assertEqual(str(A), '10.0 +/- 0.1 [m]')
+        
+        A = variable(102.59573439096775, 'm', uncert=0.94)
+        self.assertEqual(str(A), '102.6 +/- 0.9 [m]')
+        
+        A = variable(102.59573439096775, 'm', uncert=0.96)
+        self.assertEqual(str(A), '103 +/- 1 [m]')
+        
+        A = variable(102.59573439096775, 'm', uncert=0.951)
+        self.assertEqual(str(A), '103 +/- 1 [m]')
+
 
     def testPrintValueScalar(self):
         A = variable(123456789 * 10**(0), 'm', nDigits=6)

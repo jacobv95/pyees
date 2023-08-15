@@ -153,6 +153,17 @@ class test(unittest.TestCase):
         np.testing.assert_almost_equal([elemA.covariance[elemB] for elemA, elemB in zip(dat4_1.A, dat4_1.B)], np.array([0.025, 0.06, 0.105, 0.16, 0.225, 0.025, 0.06, 0.105, 0.16, 0.225]) / 1000 / 60 / 6000)
         np.testing.assert_almost_equal([elemB.covariance[elemA] for elemA, elemB in zip(dat4_1.A, dat4_1.B)], np.array([0.025, 0.06, 0.105, 0.16, 0.225, 0.025, 0.06, 0.105, 0.16, 0.225]) / 1000 / 60 / 6000)
 
+
+        dat1 = sheetsFromFile("testData/data11.xlsx", "A-B")
+        dat2 = sheetsFromFile("testData/data11.xlsx", "A-B")
+        dat1.append(dat2)
+        np.testing.assert_array_equal(dat1.A.value, [1,1])
+        self.assertEqual(dat1.A.unit, 'm')
+        np.testing.assert_array_equal(dat1.A.uncert, [0,0])
+        np.testing.assert_array_equal(dat1.B.value, [2,2])
+        self.assertEqual(dat1.B.unit, 'L')
+        np.testing.assert_array_equal(dat1.B.uncert, [0,0])
+
     def testIndex(self):
         dat = sheetsFromFile('testData/data1.xlsx', 'A-B')
         np.testing.assert_array_equal(dat.A.value, [1, 2, 3, 4, 5])
