@@ -17,10 +17,11 @@ The scope of this package is to
 
 ## Documentation
 The documentation is split to parts:
- - 1 [Variables](/docs/1%20Variables.md)
-   - [Temperature](/docs/1.1%20Temperature.md)
-   - [Add new unit](/docs/1.2%20Add%20new%20units.md)
- - 3 [Sheets](/docs/3%20Sheet.md)
- - 4 [Fitting](/docs/4%20Fitting.md)
- - 5 [Prop](/docs/5%20Prop.md)
- - 6 [Solving](/docs/6%20Solving.md)
+ - [Variables](/docs/Variables/Variables.md)
+   - [Units](/docs/Units/Units.md)
+     - [Temperature](/docs/Units/Temperature.md)
+     - [Add new unit](/docs/Units/Add%20new%20units.md)
+ - [Sheets](/docs/Sheets/Sheet.md)
+ - [Fitting](/docs/Fitting/Fitting.md)
+ - [Prop](/docs/Prop/Prop.md)
+ - [Solving](/docs/Solving/Solving.md)
