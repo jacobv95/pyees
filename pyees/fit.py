@@ -134,9 +134,9 @@ class _fit():
 
         # scatter
         if showUncert:
-            ax.errorbar(self.xVal, self.yVal, xerr=self.xUncert, yerr=self.yUncert, linestyle='', label=label, **kwargs)
+            return ax.errorbar(self.xVal, self.yVal, xerr=self.xUncert, yerr=self.yUncert, linestyle='', label=label, **kwargs)
         else:
-            ax.scatter(self.xVal, self.yVal, label=label, **kwargs)
+            return ax.scatter(self.xVal, self.yVal, label=label, **kwargs)
 
     def scatterNormalizedResiduals(self, ax, label = True, **kwargs):
         
@@ -156,7 +156,7 @@ class _fit():
         scale = variable(np.array([1 / ((elemX**2 + elemY**2)**(1/2)) for elemX, elemY in zip(self._sx, self._sy)]))
         normRes = scale * self._residuals
         np.seterr('warn')
-        ax.scatter(self.xVal, normRes.value, label=label, **kwargs)
+        return ax.scatter(self.xVal, normRes.value, label=label, **kwargs)
 
     def scatterResiduals(self, ax, label = True, **kwargs):
         
@@ -172,7 +172,7 @@ class _fit():
         else:
             raise ValueError('The label has to be a string, a bool or None')
         
-        ax.scatter(self.xVal, self._residuals.value, label=label, **kwargs)
+        return ax.scatter(self.xVal, self._residuals.value, label=label, **kwargs)
 
     def plotData(self, ax, label=True, **kwargs):
 
@@ -188,7 +188,7 @@ class _fit():
         else:
             raise ValueError('The label has to be a string, a bool or None')
 
-        ax.plot(self.xVal, self.yVal, label=label, **kwargs)
+        return ax.plot(self.xVal, self.yVal, label=label, **kwargs)
 
     def predict(self, x):
         if not isinstance(x, scalarVariable):
@@ -211,7 +211,7 @@ class _fit():
         y = self.predict(x)
         y = list(y.value + y.uncert) + [np.nan] + list(y.value - y.uncert)
         x = list(x.value) + [np.nan] + list(x.value)
-        ax.plot(x, y, **kwargs)
+        return ax.plot(x, y, **kwargs)
 
     def plot(self, ax, label=True, x=None, **kwargs):
 
@@ -236,7 +236,7 @@ class _fit():
         y = self.predict(x).value
         x = x.value
         
-        ax.plot(x, y, label=label, **kwargs)
+        return ax.plot(x, y, label=label, **kwargs)
           
     def addUnitToLabels(self, ax):
         self.addUnitToXLabel(ax)
