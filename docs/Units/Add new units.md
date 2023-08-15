@@ -14,10 +14,10 @@ Any new units added to the unitsystem can be used in combination with any prefix
 
 ## exmaple
 ```
-from pyees import variable, addNewUnits
+import pyees as pe
 
-addNewUnit('inch', 25.4, 'mm')
-a = variable(1, 'inch')
+pe.addNewUnit('inch', 25.4, 'mm')
+a = pe.variable(1, 'inch')
 a.convert('mm')
 print(a)
 >> 25.4 [mm]
@@ -26,7 +26,7 @@ print(a.value)
 ## 1 inch is equal to 25.4 mm according to WolframAlpha
 
 addNewUnit('Rø', 40/21, 'C', -7.5 * 40/21)
-b = variable(83.1, 'Rø')
+b = pe.variable(83.1, 'Rø')
 b.convert('F')
 print(b)
 >> 291 [F]
@@ -35,7 +35,7 @@ print(b.value)
 ## 83.1 Rømer is equal to 291.2 Fahrenheit according to WolframAlpha
 
 
-c = variable(143.6, 'mRø')
+c = pe.variable(143.6, 'mRø')
 c.convert('K')
 print(c)
 >> 259 [K]

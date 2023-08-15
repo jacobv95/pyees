@@ -77,8 +77,27 @@ A new excel-file is created with one worksheet for each sheet in the input "shee
 ## List-like methods
 
 The sheet object supports the following methods
- - append
- - __getitem__
+```
+import pyees as pe
+
+sheet1 = pe.sheetsFromFile('example1.xlsx', dataRange='A-B', uncertRange'C-D')
+sheet2 = pe.sheetsFromFile('example1.xlsx', dataRange='A-B', uncertRange'C-D')
+
+len(sheet1)
+>> 1
+
+sheet1.append(sheet2)
+print(sheet1.A)
+>> [33, 33] [m] +/- [1, 1]
+print(sheet1.B)
+>> [52, 52] [m] +/- [2, 2]
+
+sheet1.pop(0)
+print(sheet1.A)
+>> [33] [m] +/- [1]
+print(sheet1.B)
+>> [52] [m] +/- [2]
+```
 
 
 ## printContents

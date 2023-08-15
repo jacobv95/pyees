@@ -12,19 +12,20 @@ var = variable(val: float | list | ndarray, unit: str|None, uncert=None: float |
 The uncertanty is printed with one significant digit. The measurement is printed with the same number of decimal places as the uncertanty. This means that if the uncertanty is a factor of 10 larger than the measurement, then the variable is printed as zero.
 
 ```
-print(variable(12.3,'m',0.01))
+import pyees as pe
+print(pe.variable(12.3,'m',0.01))
 >> 12.30 +/- 0.01 [m]
 
-print(variable(12.34,'m',0.1))
+print(pe.variable(12.34,'m',0.1))
 >> 12.3 +/- 0.1 [m]
 
-print(variable(1234,'m',16))
+print(pe.variable(1234,'m',16))
 >> 1230 +/- 20 [m]
 
-print(variable(12.34,'m',16))
+print(pe.variable(12.34,'m',16))
 >> 10 +/- 20 [m]
 
-print(variable(1.234,'m',16))
+print(pe.variable(1.234,'m',16))
 >> 0 +/- 20 [m]
 ```
 
@@ -68,7 +69,8 @@ numpy.max(a), numpy.max([a,b])
 A variable can be converted in to any other unit with the same SI base unit using the convert-method
 
 ```
-a = variable(10,'L/min')
+import pyees as pe
+a = pe.variable(10,'L/min')
 a.convert('m3/h')
 >> 0.6 [m3/h]
 ```
@@ -90,7 +92,8 @@ The return type is either "scalarVariable" or "arrayVariable" when initializing 
 
 The array variable also includes some array methods:
 ```
-a = variable([1,2,3], 'm')
+import pyees as pe
+a = pe.variable([1,2,3], 'm')
 
 a[0]
 >> 1 [m]
@@ -98,7 +101,7 @@ a[0]
 len(a)
 >> 3
 
-a[2] = variable(5, 'm')
+a[2] = pe.variable(5, 'm')
 print(a)
 >> [1,2,5] [m]
 

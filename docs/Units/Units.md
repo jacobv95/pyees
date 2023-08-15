@@ -47,6 +47,7 @@ The unit is used to determine which computations can be performed on the variabl
 
 
 
+
 ## exponents
 The exponent will always apply to the unit AND the prefix. The unit 'mm3' is interpreted as "cubic millimeters" (0.001 [m] * 0.001 [m] * 0.001 [m]) and not "milli cubicmeters" (0.001 * (1 [m] * 1 [m] * 1 [m])). 
 

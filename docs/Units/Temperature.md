@@ -5,14 +5,15 @@ Temperatures are wierd. The units celsius and fahrenheit are relative units, mea
  - A tempaturedifference is returned, when subtracing two temperatures
  
 ```
-a = variable(30,'C')
-b = variable(20,'C')
+import pyees as pe
+a = pe.variable(30,'C')
+b = pe.variable(20,'C')
 a - b
 ## 30 [C] - 20 [C] = 10 [DELTAC]
 >> 10 [DELTAC]
 
 
-c = variable(20,'K')
+c = pe.variable(20,'K')
 a - c
 ## 30 [C] - 20 [K] = (30 [K] + 273.15 [K]) - 20[K] = 300.15 [K] - 20 [K] = 283.15 [DELTAK]
 >> 283 [DELTAK]
@@ -21,8 +22,9 @@ a - c
 
  - If temperature difference is added to or subtracted from a temperature, then a tempeature is returned in the same unit as the original temperature
 ```
-a = variable(30,'C')
-b = variable(10,'DELTAK')
+import pyees as pe
+a = pe.variable(30,'C')
+b = pe.variable(10,'DELTAK')
 a + b 
 ## 30 [C] + 10 [DELTAK] = 30 [C] + 10 [DELTAC] = 40 [C]
 >> 40 [C]
@@ -33,7 +35,7 @@ a - b
 >> 40 [C]
 
 
-c = variable(13, 'F')
+c = pe.variable(13, 'F')
 a - c
 ## 30 [C] - 13 [F] = 30 [C] - 7.22 [DELTAC] = 22.77 [C]
 >> 22.8 [C]
@@ -44,8 +46,9 @@ a - c
  - A temperature cannot be subtracted from a tempertaure difference
 
 ```
-a = variable(30,'DELTAC')
-b = variable(20,'C')
+import pyees as pe
+a = pe.variable(30,'DELTAC')
+b = pe.variable(20,'C')
 a - b
 >> ValueError: You tried to subtract a temperature from a temperature differnce. This is not possible.
 ```
