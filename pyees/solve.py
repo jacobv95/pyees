@@ -69,7 +69,6 @@ def solve(func, x, *args, bounds = None, **kwargs):
         for bound in xi:
             nVariables += 1 
 
-
     ## check the number of equations and variables
     if (len(out) != nVariables):
         raise ValueError(f'You supplied {len(out)} equations but {nVariables} variables. The number of equations and the vairables has to match')
@@ -265,3 +264,19 @@ def solve(func, x, *args, bounds = None, **kwargs):
     return x
 
 
+if __name__ == "__main__":
+    from variable import variable
+    solveTol = 1e-12
+    a = variable([23.7, 12.3], '', [0.1, 0.05])
+    b = variable([943, 793], '', [12.5, 9.4])
+    
+    def func(x):
+        return [a * x**2, b]
+    
+    lower = variable([-np.inf, -np.inf])
+    upper = variable([np.inf, np.inf])
+    
+    def bounds(x):
+        return [lower, x, upper]
+    
+    solve(func, variable([20],''), tol = solveTol, bounds=bounds)

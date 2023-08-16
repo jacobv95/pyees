@@ -737,8 +737,18 @@ class arrayVariable(scalarVariable):
     
     def _addDependent(self, var, grad):
         isArrayVariable = isinstance(var, arrayVariable)
-        isArrayGradient = isinstance(grad, list) or isinstance(grad, np.ndarray)
+        isArrayGradient = isinstance(grad, list) or isinstance(grad, np.ndarray) and len(grad) == len(self)
         
+        if isArrayVariable:
+            if not len(var) == len(self):
+                var = var[0]
+                isArrayVariable = False
+                
+        if isArrayGradient:
+            if not len(grad) == len(self):
+                grad = grad[0]
+                isArrayGradient = False
+            
         grad *= self._unitObject._converterToSI.scale / var._unitObject._converterToSI.scale
         
         for i, elem in enumerate(self.scalarVariables):
@@ -1002,4 +1012,9 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
         return scalarVariable(value, unit, uncert, nDigits)
 
 if __name__ == "__main__":
-    print(scalarVariable.printUncertanty(None, 102.59573439096775, 0.94))
+    
+    rho = variable([1], 'kg/m3', [0.1])
+    mpo = variable([1,2,3], 'kg/s', [0.1,0.2,0.3])
+
+    vpo = mpo / rho
+    

@@ -455,7 +455,7 @@ class test(unittest.TestCase):
         upper = variable([np.inf, np.inf])
         with self.assertRaises(Exception) as context:
             solve(func, variable([20],''), tol = solveTol, bounds=bounds)
-        self.assertTrue("The function returned an exception when supplied the initial guesses. Somtehing is wrong." in str(context.exception))
+        self.assertTrue("You supplied 2 equations but 1 variables. The number of equations and the vairables has to match" in str(context.exception))
         
         with self.assertRaises(Exception) as context:
             solve(func, variable(20,''), tol = solveTol, bounds=bounds)
@@ -512,7 +512,7 @@ class test(unittest.TestCase):
         bounds = [lower,upper]  
         with self.assertRaises(Exception) as context:
             solve(func, variable([20],''), tol = solveTol, bounds=bounds)
-        self.assertTrue("The function returned an exception when supplied the initial guesses. Somtehing is wrong." in str(context.exception))
+        self.assertTrue("You supplied 2 equations but 1 variables. The number of equations and the vairables has to match" in str(context.exception))
         
         with self.assertRaises(Exception) as context:
             solve(func, variable(20,''), tol = solveTol, bounds=bounds)
