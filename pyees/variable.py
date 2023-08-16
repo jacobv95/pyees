@@ -737,7 +737,7 @@ class arrayVariable(scalarVariable):
     
     def _addDependent(self, var, grad):
         isArrayVariable = isinstance(var, arrayVariable)
-        isArrayGradient = isinstance(grad, list) or isinstance(grad, np.ndarray) and len(grad) == len(self)
+        isArrayGradient = isinstance(grad, list) or isinstance(grad, np.ndarray)
         
         if isArrayVariable:
             if not len(var) == len(self):
