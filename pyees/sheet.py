@@ -1,3 +1,4 @@
+from typing import Any
 import numpy as np
 import openpyxl
 import xlrd
@@ -6,9 +7,9 @@ import os.path
 import re
 import string
 try:
-    from variable import variable, scalarVariable
+    from variable import variable, scalarVariable, arrayVariable
 except ImportError:
-    from pyees.variable import variable, scalarVariable
+    from pyees.variable import variable, scalarVariable, arrayVariable
 
 
 
@@ -461,4 +462,12 @@ class sheet():
             if isinstance(item, scalarVariable):
                 item.pop(index)
 
-
+    def __setattr__(self, name: str, value: Any) -> None:
+        if not isinstance(value, scalarVariable):
+            raise ValueError('You can only set variables as attributes to a sheet')
+        
+        if not hasattr(value, '__len__'):
+            ## the variable is not an arrayVariable. It has to be to be an array variable
+            value = arrayVariable(scalarVariables=[value])
+        
+        self.__dict__[name] = value

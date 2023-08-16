@@ -1,9 +1,11 @@
 import unittest
 import numpy as np
 try:
-    from sheet import sheetsFromFile
+    from sheet import sheetsFromFile, sheet
+    from variable import variable
 except ImportError:
-    from pyees.sheet import sheetsFromFile
+    from pyees.sheet import sheetsFromFile, sheet
+    from pyees.variable import variable
 
 class test(unittest.TestCase):
 
@@ -163,6 +165,28 @@ class test(unittest.TestCase):
         np.testing.assert_array_equal(dat1.B.value, [2,2])
         self.assertEqual(dat1.B.unit, 'L')
         np.testing.assert_array_equal(dat1.B.uncert, [0,0])
+
+
+        sheet1 = sheet()
+        sheet1.a = variable(1,'m',0.1)
+        sheet1.b = variable(1,'L',0.1)
+        
+        sheet2 = sheet()
+        sheet2.a = variable(2,'m',0.2)
+        sheet2.b = variable(2,'L',0.2)
+        
+        sheet1.append(sheet2)
+        
+        np.testing.assert_array_equal(sheet1.a.value, [1,2])
+        self.assertEqual(sheet1.a.unit, 'm')
+        np.testing.assert_array_equal(sheet1.a.uncert, [0.1, 0.2])
+        np.testing.assert_array_equal(sheet1.b.value, [1,2])
+        self.assertEqual(sheet1.b.unit, 'L')
+        np.testing.assert_array_equal(sheet1.b.uncert, [0.1, 0.2])
+        
+
+
+
 
     def testIndex(self):
         dat = sheetsFromFile('testData/data1.xlsx', 'A-B')
