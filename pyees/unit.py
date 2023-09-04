@@ -449,7 +449,7 @@ class unit():
         return u, prefix, exponent
        
     @staticmethod
-    def _reduceDict(unitDict):
+    def _removeUnitsWithExponentZero(unitDict):
         
         ## loop over all units, and remove any prefixes, which has an exponenet of 0
         n = len(unitDict)
@@ -469,8 +469,13 @@ class unit():
         
         ## remove the keys
         for key in keysToRemove: unitDict.pop(key)
-        
+        return unitDict
+       
+    @staticmethod
+    def _reduceDict(unitDict):
+        unitDict = unit._removeUnitsWithExponentZero(unitDict)
         ## check if 1 is in the unit
+        n = len(unitDict)
         if '1' in unitDict:
             if n > 1:     
                 otherUpper = False
@@ -496,10 +501,20 @@ class unit():
             keysToChange = []
             for key in _temperature.keys():
                 if key in unitDict: keysToChange.append(key)
-            for key in keysToChange: 
-                unitDict['DELTA' + key] = unitDict[key]
+            for key in keysToChange:
+                if 'DELTA' + key in unitDict:
+                    for pre, exp in unitDict[key].items():
+                        if pre in unitDict['DELTA' + key]:
+                            unitDict['DELTA' + key][pre] += exp
+                        else:
+                            unitDict['DELTA' + key][pre] = exp
+                else:
+                    unitDict['DELTA' + key] = unitDict[key]
                 unitDict.pop(key)
-            
+        
+       
+        unitDict = unit._removeUnitsWithExponentZero(unitDict)
+ 
         return unitDict
     
     @staticmethod
@@ -1012,4 +1027,7 @@ class unit():
 
 
 if __name__ == "__main__":
-    addNewUnit('day', 24, 'h')
+    a = unit('1/K')
+    b = unit('K')
+    c = a * b
+    print(c)

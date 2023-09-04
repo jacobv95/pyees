@@ -1910,6 +1910,38 @@ class test(unittest.TestCase):
         c = np.mean(a)
         self.assertEqual(c.value, 25)
         self.assertEqual(c.unit, 'C')
+         
+    def testTemperatureMultiplication(self):
+        a = variable(1, '1/K')
+        b = variable(1, 'K')
+        c = a * b
+        self.assertEqual(c.value, 1)
+        self.assertEqual(c.unit, '1')
+        self.assertEqual(c.uncert, 0)
+        
+        a = variable(1, '1/K')
+        b = variable(1, 'DELTAC')
+        c = a * b
+        self.assertEqual(c.value, 1)
+        self.assertEqual(c.unit, '1')
+        self.assertEqual(c.uncert, 0)
+        
+    def testTemperatureDivide(self):
+        a = variable(1, '1/K')
+        b = variable(1, '1/K')
+        c = a / b
+        self.assertEqual(c.value, 1)
+        self.assertEqual(c.unit, '1')
+        self.assertEqual(c.uncert, 0)
+        
+        a = variable(1, '1/K')
+        b = variable(1, '1/DELTAC')
+        c = a / b
+        self.assertEqual(c.value, 1)
+        self.assertEqual(c.unit, '1')
+        self.assertEqual(c.uncert, 0)
+        
+    
                 
     def testPop(self):
         
