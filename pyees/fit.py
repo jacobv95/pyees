@@ -315,6 +315,9 @@ class dummy_fit(_fit):
     def func_name(self):
         return '1'
 
+    def plot(self,  *args, **kwargs):
+        return self.plotData(args, kwargs)
+
 class exp_fit(_fit):
     """Create an exponential fit of the input data and easily plot the regression.
     
