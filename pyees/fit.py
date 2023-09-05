@@ -309,14 +309,14 @@ class dummy_fit(_fit):
 
         self.r_squared = variable(1)
 
-    def _func(self, x):
-        return 1
-
+    def func(self, x):
+        if isinstance(x, arrayVariable):
+            return variable([1] * len(x))
+        return variable(1)
+    
     def func_name(self):
         return '1'
 
-    def plot(self,  *args, **kwargs):
-        return self.plotData(args, kwargs)
 
 class exp_fit(_fit):
     """Create an exponential fit of the input data and easily plot the regression.
@@ -510,17 +510,6 @@ class logistic_fit(_fit):
 
 ## TODO fit - få det til at virke som i bogen - brug tests - mangler solutions
 
-
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    x = variable([20, 30, 40, 50, 60, 70, 80, 90, 100])
-    y = variable([2.7331291071103,4.83637470698903,7.76023628649736,12.92164947233590,19.26005212361100,29.98037228450110,58.70407550133760,82.8915749115424,144.581793442337], 'kg/m3') 
-    f = exp_fit(x,y)
-    print(f)
-    fig, ax = plt.subplots()
-    f.scatter(ax)
-    f.plot(ax)
-    plt.show()
+    
     
         
