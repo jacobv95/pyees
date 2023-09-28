@@ -232,7 +232,8 @@ _knownPrefixes = {
     'm':10**-3,
     'mu':10**-6,
     'n':10**-9,
-    'p':10**-12
+    'p':10**-12,
+    'µ': 10**-6
 }
 
 ## create a dictionary of all known units
