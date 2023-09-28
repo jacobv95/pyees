@@ -166,6 +166,9 @@ _logrithmicUnits = {
     'dec': (1,0)
 }
 
+_conductance = {
+    'S' : (1,0)
+}
 
 ## Create a dictionary of all the si base units of each different type of measurement
 ## the value of this dictionary is the dictionary representation of the si units
@@ -188,6 +191,7 @@ _SIBaseUnits = {
     'KinematicViscosity'        : {'m':{'':2},'s':{'':-1}},
     'LogarithmicUnit'           : {'Np':{'':1}},
     'TemperatureDifference'     : {'DELTAK':{'':1}},
+    'Conductance'              : {'g':{'k':-1}, 'm':{'':-2}, 's':{'':3}, 'A':{'':2}},
 }
 
 ## create a dictionary of all units for each type of measurement.
@@ -210,7 +214,8 @@ _knownUnitsDict = {
     'Resistance':                   _resistance,
     'KinematicViscosity':           _kinematicViscosity,
     'LogarithmicUnit':              _logrithmicUnits,
-    'TemperatureDifference':        _temperatureDifference
+    'TemperatureDifference':        _temperatureDifference,
+    'Conductance':                  _conductance
 }
 
 ## create a dictionary of the known prefixes
@@ -447,33 +452,10 @@ class unit():
         prefixUnit, exponent = unit._removeExponentFromUnit(unitStr)
         u, prefix = unit._removePrefixFromUnit(prefixUnit)
         return u, prefix, exponent
-       
-    @staticmethod
-    def _removeUnitsWithExponentZero(unitDict):
-        
-        ## loop over all units, and remove any prefixes, which has an exponenet of 0
-        n = len(unitDict)
-        keysToRemove = []
-        for key, item in unitDict.items():
-            prefixesToRemove = []
-            for pre, exp in item.items():
-                if exp == 0:  prefixesToRemove.append(pre)
-            for pre in prefixesToRemove: item.pop(pre)
-            if not item: keysToRemove.append(key)
-        n -= len(keysToRemove)        
-        
-        ## if all the keys in unitDict has to be removed, then return the unit '1'
-        if n == 0:
-            ## return '1' if there are not other units
-            return {'1': {'': 1}}
-        
-        ## remove the keys
-        for key in keysToRemove: unitDict.pop(key)
-        return unitDict
-       
+              
     @staticmethod
     def _reduceDict(unitDict):
-        unitDict = unit._removeUnitsWithExponentZero(unitDict)
+        
         ## check if 1 is in the unit
         n = len(unitDict)
         if '1' in unitDict:
@@ -513,8 +495,24 @@ class unit():
                 unitDict.pop(key)
         
        
-        unitDict = unit._removeUnitsWithExponentZero(unitDict)
- 
+        ## loop over all units, and remove any prefixes, which has an exponenet of 0
+        keysToRemove = []
+        for key, item in unitDict.items():
+            prefixesToRemove = []
+            for pre, exp in item.items():
+                if exp == 0:  prefixesToRemove.append(pre)
+            for pre in prefixesToRemove: item.pop(pre)
+            if not item: keysToRemove.append(key)
+        n -= len(keysToRemove)        
+        
+        ## if all the keys in unitDict has to be removed, then return the unit '1'
+        if n == 0:
+            ## return '1' if there are not other units
+            return {'1': {'': 1}}
+        
+        ## remove the keys
+        for key in keysToRemove: unitDict.pop(key)
+        
         return unitDict
     
     @staticmethod
@@ -1025,9 +1023,3 @@ class unit():
             return _octaveConversion()
         return _bellConversion()
 
-
-if __name__ == "__main__":
-    a = unit('1/K')
-    b = unit('K')
-    c = a * b
-    print(c)
