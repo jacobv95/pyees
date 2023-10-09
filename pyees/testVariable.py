@@ -1077,6 +1077,44 @@ class test(unittest.TestCase):
         self.assertEqual(A.unit, 'm')
         self.assertEqual(A.uncert, 0)
 
+    def testArgMax(self):
+
+        A = variable(10, 'm', 2.3)
+        A = np.argmax(A)
+        self.assertEqual(A, 0)
+
+        A = variable(10, 'm')
+        A = np.argmax(A)
+        self.assertEqual(A, 0)
+
+        A = variable([10, 15.7], 'm', [2.3, 5.6])
+        A = np.argmax(A)
+        self.assertEqual(A, 1)
+
+        A = variable([10, 15.7], 'm')
+        A = np.argmax(A)
+        self.assertEqual(A, 1)
+
+
+    def testArgMin(self):
+
+        A = variable(10, 'm', 2.3)
+        A = np.argmin(A)
+        self.assertEqual(A, 0)
+
+        A = variable(10, 'm')
+        A = np.argmin(A)
+        self.assertEqual(A, 0)
+
+        A = variable([10, 15.7], 'm', [2.3, 5.6])
+        A = np.argmin(A)
+        self.assertEqual(A, 0)
+
+        A = variable([10, 15.7], 'm')
+        A = np.argmin(A)
+        self.assertEqual(A, 0)
+
+
     def testMean(self):
 
         A = variable(10, 'm', 2.3)

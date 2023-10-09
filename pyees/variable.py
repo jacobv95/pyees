@@ -589,6 +589,10 @@ class scalarVariable():
                 return self.min()
             case np.mean:
                 return self.mean()
+            case np.argmin:
+                return self.argmin()
+            case np.argmax:
+                return self.argmax()
         raise NotImplementedError()
     
     def max(self):
@@ -599,6 +603,12 @@ class scalarVariable():
     
     def mean(self):
         return self
+
+    def argmin(self):
+        return 0
+
+    def argmax(self):
+        return 0
 
     @staticmethod
     def __comparer__(func):
@@ -951,6 +961,12 @@ class arrayVariable(scalarVariable):
     def mean(self):
         return sum(self) / len(self)
     
+    def argmin(self):
+        return np.argmin(self.value)
+    
+    def argmax(self):
+        return np.argmax(self.value)
+    
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
         newUnit = unit(newUnit)
@@ -1013,8 +1029,7 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 if __name__ == "__main__":
     
-    rho = variable([1], 'kg/m3', [0.1])
     mpo = variable([1,2,3], 'kg/s', [0.1,0.2,0.3])
 
-    vpo = mpo / rho
+    print(np.argmax(mpo))
     
