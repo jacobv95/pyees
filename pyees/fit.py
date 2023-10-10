@@ -71,18 +71,16 @@ class _fit():
         np.seterr('ignore')
         data = odr.RealData(self.xVal, self.yVal, sx=self._sx, sy=self._sy)
         regression = odr.ODR(data, odr.Model(self._func), beta0=self.p0)
-        regression = regression.run()
-        popt = regression.beta
-        popt = [0.9 * elem for elem in popt]
-        regression = odr.ODR(data, odr.Model(self._func), beta0=popt)
-        regression = regression.run()
-        # regression = regression.restart()        
+        regression = regression.run()       
         
         ## create a list of coefficients
         self.coefficients = []
+        ## the diagonal of the covariance matrix is scaled according to the residual variance
+        ## if the residual variance is zero then set the scale to 1
+        scale = 1 if regression.res_var == 0 else regression.res_var
         units = self.getVariableUnits()
         for i in range(len(regression.beta)):
-            var = variable(regression.beta[i], units[i], np.sqrt(regression.cov_beta[i,i]))
+            var = variable(regression.beta[i], units[i], np.sqrt(regression.cov_beta[i,i] * scale))
             self.coefficients.append(var)
         
         ## add the covariance between the coefficients
@@ -97,13 +95,24 @@ class _fit():
                 )
 
         # determine r-squared
-        self._residuals = np.array([yi - pi for yi, pi in zip(self.yVal, self._predict(regression.beta, self.xVal))])# y.value - self._predict(x.value)
-        ss_res = sum(self._residuals**2)
+        residuals = np.array([yi - pi for yi, pi in zip(self.yVal, self._predict(regression.beta, self.xVal))])# y.value - self._predict(x.value)
+        ss_res = sum(residuals**2)
         ss_tot = sum((self.yVal - np.mean(self.yVal))**2)
         if ss_tot != 0:
             self.r_squared = variable(1 - (ss_res / ss_tot))
         else:
             self.r_squared = variable(1)
+        
+        
+        delta, epsilon = regression.delta, regression.eps
+        dx_star = ( self.xUncert*np.sqrt( ((self.yUncert*delta)**2) /
+                ( (self.yUncert*delta)**2 + (self.xUncert*epsilon)**2 ) ) )
+        dy_star = ( self.yUncert*np.sqrt( ((self.xUncert*epsilon)**2) /
+                ( (self.yUncert*delta)**2 + (self.xUncert*epsilon)**2 ) ) )
+        sigma_odr = np.sqrt(dx_star**2 + dy_star**2)
+        residuals = ( np.sign(self.yVal-self._func(regression.beta, self.xVal))
+              * np.sqrt(delta**2 + epsilon**2) )
+        self._residualY = variable(residuals, self.yUnit, sigma_odr)
         
         
     def getOnlyUsedTerms(self, B):
@@ -154,9 +163,10 @@ class _fit():
         
         np.seterr('ignore')
         scale = variable(np.array([1 / ((elemX**2 + elemY**2)**(1/2)) for elemX, elemY in zip(self._sx, self._sy)]))
-        normRes = scale * self._residuals
+        normRes = scale * self._residualY
         np.seterr('warn')
-        return ax.scatter(self.xVal, normRes.value, label=label, **kwargs)
+        
+        return ax.errorbar(self.xVal, normRes.value, xerr=self.xUncert, yerr=normRes.uncert, linestyle='', label=label, **kwargs)
 
     def scatterResiduals(self, ax, label = True, **kwargs):
         
@@ -172,7 +182,7 @@ class _fit():
         else:
             raise ValueError('The label has to be a string, a bool or None')
         
-        return ax.scatter(self.xVal, self._residuals.value, label=label, **kwargs)
+        return ax.errorbar(self.xVal, self._residualY.value, xerr=self.xUncert, yerr=self._residualY.uncert, linestyle='', label=label, **kwargs)
 
     def plotData(self, ax, label=True, **kwargs):
 
@@ -510,6 +520,12 @@ class logistic_fit(_fit):
 
 ## TODO fit - få det til at virke som i bogen - brug tests - mangler solutions
 
-    
+
+if __name__ == "__main__":
+    x = variable([1,2])
+    y = variable([10,10])
+    F = pol_fit(x, y, deg=0)
+    Fa = F.coefficients[0]
+    print(Fa)
     
         

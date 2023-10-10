@@ -2,9 +2,44 @@ import unittest
 import numpy as np
 import matplotlib.pyplot as plt
 try:
-    from fit import *
+    from fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit
 except ImportError:
-    from pyees.fit import *
+    from pyees.fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit
+
+
+
+class gaussian(_fit):
+    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = [True, True, True]):
+        self._nParameters = 3
+        _fit.__init__(self, self.func, x, y, p0=p0, useParameters = useParameters)
+
+    def getVariableUnits(self):
+        return ['', '', '']
+
+    def _func(self, B, x):
+        from numpy import exp
+        mu,sigma,y_mu = self.getOnlyUsedTerms(B)
+        return y_mu*exp(-(x-mu)**2/(2*sigma**2))
+
+    def func_name(self):
+        mu,sigma,y_mu = self.coefficients
+        return f'$y_mu \cdot exp(-(x-mu)^2/(2 sigma ^ 2)),\quad mu={mu.__str__(pretty = True)}, \quad sigma={sigma.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
+
+class absolute_power(_fit):
+    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = [True, True, True]):
+        self._nParameters = 3
+        _fit.__init__(self, self.func, x, y, p0=p0, useParameters = useParameters)
+
+    def getVariableUnits(self):
+        return ['', '', '']
+
+    def _func(self, B, x):
+        mu,nu,y_mu = self.getOnlyUsedTerms(B)
+        return  y_mu*abs(x-mu)**nu
+
+    def func_name(self):
+        mu,nu,y_mu = self.coefficients
+        return f'$ y_mu*abs(x-mu)^*u,\quad mu={mu.__str__(pretty = True)}, \quad nu={nu.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
 
 
 class test(unittest.TestCase):
@@ -48,6 +83,40 @@ class test(unittest.TestCase):
         # np.testing.assert_array_equal(ax2.lines[0].get_ydata(), [])
 
 
+    def testRegression(self):
+        # https://www.physics.utoronto.ca/apl/python/ODR_Fitter_Description.pdf
+        
+        x = variable([11.9, 8.9, 6.3, 14.0, 8.0, 12.7, 10.2, 18.2, 20.8, 17.8, 17.0, 19.8], '', [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1, 0.2, 0.1, 0.2, 0.2, 0.2])
+        y = variable([26.1, 9.3, 2.9, 42.0, 7.0, 32.8, 16.8, 46.4, 31.3, 49.4, 50.6, 38.0], '', [0.1, 0.1, 0.1, 0.2, 0.1, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2])       
+
+        f = gaussian(x,y, p0 = [15, 5, 10])
+        mu, sigma, y_mu = f.coefficients
+
+        epsilon = 1e-4
+        self.assertRelativeDifference(mu.value, 16.643, epsilon)
+        self.assertRelativeDifference(mu.uncert, 0.05991, epsilon)
+        self.assertRelativeDifference(sigma.value, 4.2778, epsilon)
+        self.assertRelativeDifference(sigma.uncert, 0.042811, epsilon)
+        self.assertRelativeDifference(y_mu.value, 50.686, epsilon)
+        self.assertRelativeDifference(y_mu.uncert, 0.27017, epsilon)
+        
+        
+        ## Asymmetric uncertainties
+        x = variable([0.305, 0.356, 0.468, 0.659, 0.859, 1.028, 1.091, 1.369, 1.583, 1.646, 1.823, 1.934], '', [0.047, 0.048, 0.040, 0.031, 0.031, 0.031, 0.057, 0.060, 0.041, 0.036, 0.036, 0.058])
+        y = variable([25.127, 7.440, 3.345, 2.274, 2.088, 1.045, -0.662, 0.493, 0.927, 0.401, -0.562, -0.405], '', [0.686, 0.501, 0.828, 0.575, 0.926, 0.895, 0.570, 0.715, 0.663, 0.734, 0.918, 0.547])
+        
+        f = absolute_power(x,y, p0 = [0, -1, 1])
+        mu, nu, y_mu = f.coefficients
+        epsilon = 1e-4
+        self.assertRelativeDifference(mu.value, 0.20045, epsilon)
+        self.assertRelativeDifference(mu.uncert, 0.13953, epsilon)
+        self.assertRelativeDifference(nu.value, -1.5997, epsilon)
+        self.assertRelativeDifference(nu.uncert, 0.89354, epsilon)
+        self.assertRelativeDifference(y_mu.value, 0.47992, epsilon)
+        self.assertRelativeDifference(y_mu.uncert, 0.23242, epsilon)
+        
+        
+        
         
         
 
@@ -158,7 +227,7 @@ class test(unittest.TestCase):
     def testPowFit(self):    
         x = variable([20, 30, 40, 50, 60, 70, 80, 90, 100])
         y = variable([2735.968626, 5013.971519, 6501.553987, 10229.42877, 10745.50817, 14982.43969, 17657.04326, 20032.85742, 23085.80822], 'kg/m3') 
-        f = pow_fit(x,y, p0 = [1,1,0])
+        f = pow_fit(x,y, p0 = [50,1,0])
         
         a,b,c  = f.coefficients
         self.assertEqual(b.unit, '1')

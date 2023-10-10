@@ -308,14 +308,3 @@ knownFluids = {
     'air': propHumidAir
 }
 
-
-if __name__ == "__main__":
-
-    # T = variable([20,25,30], 'C', [0.1, 0.2, 0.15])
-    # P = variable([1 * 1e5, 1.1 * 1e5, 1.2 * 1e5], 'Pa', [0.03 * 1e5, 0.04 * 1e5, 0.025 * 1e5])
-    
-    # rho = prop('density', 'water', T = T, P = P)
-    # print(rho)
-    P = variable(1, 'bar')
-    print(P._unitObject._converterToSI.scale)
-    
