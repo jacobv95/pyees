@@ -55,7 +55,6 @@ class _fit():
                 indexesNotToUse.append(i)
                 continue
         
-
         if indexesNotToUse:
             indexesToUse = [i for i in range(len(self.xVal)) if not i in indexesNotToUse]
             self.xVal = self.xVal[indexesToUse]
@@ -95,7 +94,8 @@ class _fit():
                 )
 
         # determine r-squared
-        residuals = np.array([yi - pi for yi, pi in zip(self.yVal, self._predict(regression.beta, self.xVal))])# y.value - self._predict(x.value)
+        delta, epsilon = regression.delta, regression.eps
+        residuals = ( np.sign(self.yVal-self._func(regression.beta, self.xVal)) * np.sqrt(delta**2 + epsilon**2) )
         ss_res = sum(residuals**2)
         ss_tot = sum((self.yVal - np.mean(self.yVal))**2)
         if ss_tot != 0:
@@ -104,14 +104,12 @@ class _fit():
             self.r_squared = variable(1)
         
         
-        delta, epsilon = regression.delta, regression.eps
+        
         dx_star = ( self.xUncert*np.sqrt( ((self.yUncert*delta)**2) /
                 ( (self.yUncert*delta)**2 + (self.xUncert*epsilon)**2 ) ) )
         dy_star = ( self.yUncert*np.sqrt( ((self.xUncert*epsilon)**2) /
                 ( (self.yUncert*delta)**2 + (self.xUncert*epsilon)**2 ) ) )
         sigma_odr = np.sqrt(dx_star**2 + dy_star**2)
-        residuals = ( np.sign(self.yVal-self._func(regression.beta, self.xVal))
-              * np.sqrt(delta**2 + epsilon**2) )
         self._residualY = variable(residuals, self.yUnit, sigma_odr)
         
         

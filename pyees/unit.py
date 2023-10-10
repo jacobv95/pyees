@@ -514,6 +514,19 @@ class unit():
         ## remove the keys
         for key in keysToRemove: unitDict.pop(key)
         
+        if not '1' in unitDict:
+            hasUpper = False
+            for key, item in unitDict.items():
+                for exp in item.values():
+                    if exp > 0:
+                        hasUpper = True
+                        break
+                if hasUpper: break
+            if not hasUpper:
+                unitDict['1'] = {'': 1}
+            
+        
+        
         return unitDict
     
     @staticmethod
@@ -526,10 +539,8 @@ class unit():
                 for p, e in iitem.items():
                     e = e * exp
                     if kkey in out: e = e + out[kkey][p]
-                    out[kkey] = {p: e}
-                    
-                    
-        out = unit._reduceDict(out)                 
+                    out[kkey] = {p: e}    
+        out = unit._reduceDict(out)              
         return out
 
     @staticmethod
@@ -1024,3 +1035,12 @@ class unit():
             return _octaveConversion()
         return _bellConversion()
 
+if __name__ == "__main__":
+    a = unit('Hz')
+    a.getConverter(a.unitStrSI)
+    
+    
+    
+    # out = unit._getUnitDict('Hz')
+    # out = unit._getUnitDictSI(out)
+    # print(out)

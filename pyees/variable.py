@@ -1029,7 +1029,11 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
 
 if __name__ == "__main__":
     
-    mpo = variable([1,2,3], 'kg/s', [0.1,0.2,0.3])
-
-    print(np.argmax(mpo))
+    # a = variable(1, 'mV/Hz')
+    # b = variable(2, 'mV')
+    x = variable(10, 'Hz')
     
+    x ** 0
+        
+    # c = a*x + b
+    # print(c)

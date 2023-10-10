@@ -70,17 +70,6 @@ class test(unittest.TestCase):
         a,b = fit.coefficients
         self.assertEqual(str(a), '2.03 +/- 0.05 [mV/Hz]')
         self.assertEqual(str(b), '-1 +/- 3 [mV]')
-        
-        # ## TODO compare this to the example in the book
-        # fig1, ax1 = plt.subplots()
-        # fit.plotResiduals(ax1, label = 'residuals')
-        # np.testing.assert_array_equal(ax1.lines[0].get_ydata(), [])
-
-
-        # ## TODO compare this to the example in the book
-        # fig2, ax2 = plt.subplots()
-        # fit.plotNormalizedResiduals(ax2, label = 'normalized resudials')
-        # np.testing.assert_array_equal(ax2.lines[0].get_ydata(), [])
 
 
     def testRegression(self):
@@ -113,11 +102,7 @@ class test(unittest.TestCase):
         self.assertRelativeDifference(nu.value, -1.5997, epsilon)
         self.assertRelativeDifference(nu.uncert, 0.89354, epsilon)
         self.assertRelativeDifference(y_mu.value, 0.47992, epsilon)
-        self.assertRelativeDifference(y_mu.uncert, 0.23242, epsilon)
-        
-        
-        
-        
+        self.assertRelativeDifference(y_mu.uncert, 0.23242, epsilon)   
         
 
     def testLinFit(self):
