@@ -2,9 +2,9 @@ import unittest
 import numpy as np
 import matplotlib.pyplot as plt
 try:
-    from fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit
+    from fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit, crateNewFitClass
 except ImportError:
-    from pyees.fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit
+    from pyees.fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit, createNewFitClass
 
 
 
@@ -256,6 +256,57 @@ class test(unittest.TestCase):
             f = logistic_fit(x,y, p0 = [1,1,1])
         self.assertTrue('The variable "x" cannot have a unit' in str(context.exception))
     
+    def testNewFit(self):
+        def func(B, x):
+            a = B[0]
+            return a*x**2
+
+        def funcName(coefficients):
+            a = coefficients[0]
+            return f'a*x, a={a}'
+        
+        def getVariableUnitsFunc(xUnit, yUnit):
+            return [yUnit / (xUnit**2)]
+        
+        nParameters = 1
+        
+        newFit = crateNewFitClass(func, funcName, getVariableUnitsFunc, nParameters)
+
+
+        x = variable([1,2,3], 'm')
+        y = variable([2,4,6], 'C')
+        f1 = newFit(x,y)
+
+        f2 = pol_fit(x, y, useParameters=[True, False, False])
+        self.assertEqual(f1.coefficients[0], f2.coefficients[0])
+        
+
+        
+        
+        def func(B, x):
+            a,c  = B
+            return a*x**2 + c
+
+        def funcName(coefficients):
+            a,c = coefficients
+            return f'a*x + c, a={a}, c = {c}'
+        
+        def getVariableUnitsFunc(xUnit, yUnit):
+            return [yUnit / (xUnit**2), yUnit]
+        
+        nParameters = 2
+        
+        newFit = crateNewFitClass(func, funcName, getVariableUnitsFunc, nParameters)
+
+
+        x = variable([1,2,3], 'm')
+        y = variable([2,4,6], 'C')
+        f1 = newFit(x,y)
+
+        f2 = pol_fit(x, y, useParameters=[True, False, True])
+        self.assertEqual(f1.coefficients[0], f2.coefficients[0])
+        self.assertEqual(f1.coefficients[1], f2.coefficients[2])
+        
 
 
 

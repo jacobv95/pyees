@@ -110,8 +110,7 @@ class _fit():
         dy_star = ( self.yUncert*np.sqrt( ((self.xUncert*epsilon)**2) /
                 ( (self.yUncert*delta)**2 + (self.xUncert*epsilon)**2 ) ) )
         sigma_odr = np.sqrt(dx_star**2 + dy_star**2)
-        self._residualY = variable(residuals, self.yUnit, sigma_odr)
-        
+        self._residualY = variable(residuals, self.yUnit, sigma_odr) 
         
     def getOnlyUsedTerms(self, B):
         for i in range(len(B)):
@@ -342,7 +341,7 @@ class exp_fit(_fit):
         Wheater or not to use the parameters in order (a,b,c). If an element is set to "False", then the parameter is fixed to the initial guess
     """
     
-    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = [True, True, False]):
+    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] | None = [True, True, False]):
         self._nParameters = 3
         if x.unit != '1':
             raise ValueError('The variable "x" cannot have a unit')
@@ -375,7 +374,7 @@ class pow_fit(_fit):
     useParameters : List(double) = None
         Wheater or not to use the parameters in order (a,b,c). If an element is set to "False", then the parameter is fixed to the initial guess
     """
-    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = [True,True,False]):
+    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] | None = [True,True,False]):
         self._nParameters = 3
         
         if x.unit != '1':
@@ -394,7 +393,7 @@ class pow_fit(_fit):
         return f'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
 
 
-def lin_fit(x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = None):
+def lin_fit(x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] | None = None):
     """Create a linear fit of the input data and easily plot the regression.
     
     f(x) = a*x + b
@@ -429,7 +428,7 @@ class pol_fit(_fit):
     deg: int
         The degree of the polynomial
     """
-    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = None, deg :int = 2):
+    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] | None = None, deg :int = 2):
         self._nParameters = deg + 1
         self.deg = deg
 
@@ -488,7 +487,7 @@ class logistic_fit(_fit):
     useParameters : List(double) = None
         Wheater or not to use the parameters in order (L,k,x0). If an element is set to "False", then the parameter is fixed to the initial guess
     """
-    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = None):
+    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] | None = None):
 
         self._nParameters = 3
 
@@ -515,15 +514,27 @@ class logistic_fit(_fit):
         return out
 
 
-
-## TODO fit - få det til at virke som i bogen - brug tests - mangler solutions
-
-
-if __name__ == "__main__":
-    x = variable([1,2])
-    y = variable([10,10])
-    F = pol_fit(x, y, deg=0)
-    Fa = F.coefficients[0]
-    print(Fa)
+def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
     
+    class newFit(_fit):
         
+        def __init__(self, x : variable, y: variable, p0 : list[float] | None = None, useParameters : list[bool] | None = None):
+            
+            self.getVariableUnitsFunc = getVariableUnitsFunc
+            self.func = func
+            self.func_nameFunc = funcNameFunc
+            self._nParameters = nParameters
+            
+            _fit.__init__(self, self.func, x, y, p0=p0, useParameters = useParameters)
+
+        def _func(self,B,x):
+            return self.func(B,x)
+
+        def func_name(self):
+            return self.func_nameFunc(self.coefficients)
+        
+        def getVariableUnits(self):
+            return self.getVariableUnitsFunc(self.xUnit, self.yUnit)
+
+    return newFit
+
