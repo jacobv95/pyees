@@ -7,9 +7,9 @@ import os.path
 import re
 import string
 try:
-    from variable import variable, scalarVariable, arrayVariable
+    from variable import variable, scalarVariable, arrayVariable, unit
 except ImportError:
-    from pyees.variable import variable, scalarVariable, arrayVariable
+    from pyees.variable import variable, scalarVariable, arrayVariable, unit
 
 
 
@@ -77,20 +77,23 @@ class _fileFromSheets():
                     meas = object
  
                     self.write(worksheet, 0, col, objectName)
-                    unit = '-' if meas.unit == '1' else meas.unit
-                    self.write(worksheet, 1, col, unit)
+                    u = '-' if meas.unit == '1' else meas.unit
+                    self.write(worksheet, 1, col, u)
                     
-                    u = meas.unit
-                    scale = variable(1, u)
-                    meas /= scale
+                    u = meas._unitObject
+                    meas._unitObject = unit('')
+                    for elem in meas:
+                        elem._unitObject = unit('')
                     
                     for row, val in enumerate(meas):
                         string = str(val)
-                        string = string.replace('+/-', '±\n')
+                        string = string.replace(' +/- ', '±\n')
                         self.write(worksheet, row + 2, col, string)
                     
-                    meas *= scale
-                                                
+                    meas._unitObject = u
+                    for elem in meas:
+                        elem._unitObject = u
+                           
                     col += 1          
                          
         self.wb.save(self.fileName)
@@ -471,3 +474,4 @@ class sheet():
             value = arrayVariable(scalarVariables=[value])
         
         self.__dict__[name] = value
+    

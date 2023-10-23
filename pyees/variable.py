@@ -99,11 +99,20 @@ class scalarVariable():
         self._uncertSI = self.uncert * self._unitObject._converterToSI.scale
 
         # number of digits to show
-        self.nDigits = nDigits
+        self._nDigits = nDigits
 
         # uncertanty
         self.dependsOn = {}
         self.covariance = {}
+
+    @property
+    def nDigits(self):
+        return self._nDigits
+
+    @nDigits.setter
+    def nDigits(self, nDigits):
+        self._nDigits = nDigits
+        
 
     @property
     def value(self):
@@ -126,7 +135,7 @@ class scalarVariable():
     def printUncertanty(self, value, uncert):
         # function to print number
         if uncert == 0 or uncert is None or np.isnan(uncert):
-            return f'{value:.{self.nDigits}g}', None
+            return f'{value:.{self._nDigits}g}', None
 
         
         
@@ -682,7 +691,7 @@ class arrayVariable(scalarVariable):
             raise ValueError('You cannot supply both values and scalarVariables')
         
         if not value is None:
-            self.nDigits = nDigits
+            self._nDigits = nDigits
             
             # create a unit object
             self._unitObject = unitStr if isinstance(unitStr, unit) else unit(unitStr)        
@@ -780,6 +789,16 @@ class arrayVariable(scalarVariable):
         else:
             raise NotImplementedError()
  
+    @property
+    def nDigits(self):
+        return self._nDigits
+ 
+    @nDigits.setter
+    def nDigits(self, nDigits):
+        self._nDigits = nDigits
+        for elem in self.scalarVariables:
+            elem.nDigits = nDigits
+        
     @property
     def value(self):
         return np.array([elem.value for elem in self.scalarVariables])       
@@ -1027,13 +1046,4 @@ def variable(value, unit = '', uncert = None, nDigits = 3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
-if __name__ == "__main__":
-    
-    # a = variable(1, 'mV/Hz')
-    # b = variable(2, 'mV')
-    x = variable(10, 'Hz')
-    
-    x ** 0
-        
-    # c = a*x + b
-    # print(c)
+
