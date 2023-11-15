@@ -1,10 +1,10 @@
 import unittest
 import numpy as np
 try:
-    from variable import variable
+    from variable import variable, logarithmic
     from unit import unit
 except ImportError:
-    from pyees.variable import variable
+    from pyees.variable import variable, logarithmic
     from pyees.unit import unit
 
 
@@ -1775,7 +1775,7 @@ class test(unittest.TestCase):
     def testAverageBel(self):
         a = variable([66.62, 68.91, 65.22, 63.86, 60.74, 63.36],
                      'dB', [1,2,3,4,5,6])
-        b = np.mean(a)
+        b = logarithmic.mean(a)
         self.assertAlmostEqual(b.value, 65.53976386561031)
         self.assertEqual(b.unit, 'dB')
         val = 10**(66.62/10) + 10**(68.91/10) + 10 ** (65.22/10) + 10**(63.86/10) + 10**(60.74/10) + 10**(63.36/10)
@@ -1798,7 +1798,7 @@ class test(unittest.TestCase):
     def testAddBel(self):
         a = variable(11, 'dB', 0.1)
         b = variable(19, 'dB', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertEqual(
             c.value, 19.638920341433795986775635083534144311728776386508569289294)
         self.assertEqual(c.unit, 'dB')
@@ -1809,7 +1809,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'B', 0.1)
         b = variable(19, 'B', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertEqual(
             c.value, 19.000000004342944797317794326113524021957351355250018803653068412)
         self.assertEqual(c.unit, 'B')
@@ -1820,7 +1820,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'B', 0.1)
         b = variable(19, 'dB', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertAlmostEqual(
             c.value, 1.9638920341433795986775635083534144311728776386508569289294)
         self.assertEqual(c.unit, 'B')
@@ -1832,7 +1832,7 @@ class test(unittest.TestCase):
     def testSubtractBel(self):
         a = variable(11, 'dB', 0.1)
         b = variable(19, 'dB', 1.2)
-        c = b - a
+        c = logarithmic.sub(b,a)
         self.assertEqual(
             c.value, 18.250596325673850704123951198937009709734608031896818185442)
         self.assertEqual(c.unit, 'dB')
@@ -1843,7 +1843,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'B', 0.1)
         b = variable(19, 'B', 1.2)
-        c = b - a
+        c = logarithmic.sub(b,a)
         self.assertEqual(
             c.value, 18.99999999565705515925275748356129104145734723683018994643533534)
         self.assertEqual(c.unit, 'B')
@@ -1854,7 +1854,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'B', 0.1)
         b = variable(19, 'dB', 1.2)
-        c = b-a
+        c = logarithmic.sub(b,a)
         self.assertAlmostEqual(
             c.value, 18.250596325673850704123951198937009709734608031896818185442)
         self.assertEqual(c.unit, 'dB')
@@ -1866,7 +1866,7 @@ class test(unittest.TestCase):
     def testAddNeper(self):
         a = variable(1.1, 'Np', 1.2)
         b = variable(1.9, 'Np', 0.1)
-        c = a + b
+        c = logarithmic.add(a,b)
         gradA = np.exp(2*1.1) / (np.exp(2*1.1) + np.exp(2*1.9))
         gradB = np.exp(2*1.9) / (np.exp(2*1.1) + np.exp(2*1.9))
         self.assertAlmostEqual(c.value, 1.9919503704442)
@@ -1876,7 +1876,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'dNp', 0.1)
         b = variable(19, 'dNp', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertEqual(
             c.value, 19.919503704441694148537476059644226712824512622876065)
         self.assertEqual(c.unit, 'dNp')
@@ -1887,7 +1887,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'B', 0.2)
         b = variable(1.9, 'Np', 0.1)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertAlmostEqual(
             c.value, 1.758082147187876468991064264007183585955484366785)
         self.assertEqual(c.unit, 'B')
@@ -1899,7 +1899,7 @@ class test(unittest.TestCase):
     def testSubtractNeper(self):
         a = variable(1.1, 'Np', 1.2)
         b = variable(1.9, 'Np', 0.1)
-        c = b - a
+        c = logarithmic.sub(b,a)
         gradA = -np.exp(2*1.1) / (-np.exp(2*1.1) + np.exp(2*1.9))
         gradB = np.exp(2*1.9) / (-np.exp(2*1.1) + np.exp(2*1.9))
         self.assertAlmostEqual(
@@ -1910,7 +1910,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'dNp', 0.1)
         b = variable(19, 'dNp', 1.2)
-        c = b - a
+        c = logarithmic.sub(b,a)
         self.assertEqual(
             c.value, 17.872414933794011376350282497774605052189199203232206053472)
         self.assertEqual(c.unit, 'dNp')
@@ -1921,7 +1921,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'B', 0.2)
         b = variable(1.9, 'Np', 0.1)
-        c = b - a
+        c = logarithmic.sub(b,a)
         self.assertAlmostEqual(
             c.value, 1.7346138119351200779277098049685724168821500468817797823749)
         self.assertEqual(c.unit, 'Np')
@@ -1934,7 +1934,7 @@ class test(unittest.TestCase):
     def testAddOctave(self):
         a = variable(11, 'oct', 0.1)
         b = variable(19, 'oct', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertEqual(
             c.value, 19.005624549193878106919859102674066601721109681538352035907295778)
         self.assertEqual(c.unit, 'oct')
@@ -1945,7 +1945,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'doct', 0.1)
         b = variable(19, 'doct', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertEqual(
             c.value, 25.547555540454389776996741016863742223173494327085729223977)
         self.assertEqual(c.unit, 'doct')
@@ -1956,7 +1956,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'oct', 0.1)
         b = variable(19, 'doct', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertAlmostEqual(
             c.value, 2.5547555540454389776996741016863742223173494327085729223977)
         self.assertEqual(c.unit, 'oct')
@@ -1968,7 +1968,7 @@ class test(unittest.TestCase):
     def testSubtractOctave(self):
         a = variable(11, 'oct', 0.1)
         b = variable(19, 'oct', 1.2)
-        c = b - a
+        c = logarithmic.sub(b,a)
         self.assertEqual(
             c.value, 18.994353436858857937578124384247611038635913083061882360637118114)
         self.assertEqual(c.unit, 'oct')
@@ -1979,7 +1979,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'doct', 0.1)
         b = variable(19, 'doct', 1.2)
-        c = b - a
+        c = logarithmic.sub(b,a)
         self.assertAlmostEqual(
             c.value, 6.677423233234791893663882614756435176500756327730140063397)
         self.assertEqual(c.unit, 'doct')
@@ -1990,7 +1990,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'oct', 0.1)
         b = variable(19, 'doct', 1.2)
-        c = b - a
+        c = logarithmic.sub(b,a)
         self.assertAlmostEqual(
             c.value, 6.677423233234791893663882614756435176500756327730140063397)
         self.assertEqual(c.unit, 'doct')
@@ -2002,7 +2002,7 @@ class test(unittest.TestCase):
     def testAddDecade(self):
         a = variable(11, 'ddec', 0.1)
         b = variable(19, 'ddec', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertEqual(
             c.value, 19.638920341433795986775635083534144311728776386508569289294)
         self.assertEqual(c.unit, 'ddec')
@@ -2013,7 +2013,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'dec', 0.1)
         b = variable(19, 'dec', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertEqual(
             c.value, 19.000000004342944797317794326113524021957351355250018803653068412)
         self.assertEqual(c.unit, 'dec')
@@ -2024,7 +2024,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'dec', 0.1)
         b = variable(19, 'ddec', 1.2)
-        c = a + b
+        c = logarithmic.add(a,b)
         self.assertAlmostEqual(
             c.value, 1.9638920341433795986775635083534144311728776386508569289294)
         self.assertEqual(c.unit, 'dec')
@@ -2036,7 +2036,7 @@ class test(unittest.TestCase):
     def testSubtractDecade(self):
         a = variable(11, 'ddec', 0.1)
         b = variable(19, 'ddec', 1.2)
-        c = b - a
+        c = logarithmic.sub(b,a)
         self.assertEqual(
             c.value, 18.250596325673850704123951198937009709734608031896818185442)
         self.assertEqual(c.unit, 'ddec')
@@ -2047,7 +2047,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'dec', 0.1)
         b = variable(19, 'dec', 1.2)
-        c = b - a
+        c = logarithmic.sub(b,a)
         self.assertEqual(
             c.value, 18.99999999565705515925275748356129104145734723683018994643533534)
         self.assertEqual(c.unit, 'dec')
@@ -2058,7 +2058,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'dec', 0.1)
         b = variable(19, 'ddec', 1.2)
-        c = b-a
+        c = logarithmic.sub(b,a)
         self.assertAlmostEqual(
             c.value, 18.250596325673850704123951198937009709734608031896818185442)
         self.assertEqual(c.unit, 'ddec')

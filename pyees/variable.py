@@ -6,12 +6,12 @@ except ImportError:
     from pyees.unit import unit
 
 
-class logarithmicVariables:
+class logarithmic:
     def __init__(self):
         pass
 
     @staticmethod
-    def __add__(a, b):
+    def add(a, b):
         aUnit = a.unit
         bUnit = b.unit
 
@@ -64,7 +64,7 @@ class logarithmicVariables:
         return c
 
     @staticmethod
-    def __sub__(a, b):
+    def sub(a, b):
         aUnit = a.unit
         bUnit = b.unit
 
@@ -352,10 +352,6 @@ class scalarVariable():
         # determine if the two variable can be added
         outputUnit = self._unitObject + other._unitObject
 
-        # handle logarithmic addition seperately
-        if outputUnit.isLogarithmicUnit():
-            return logarithmicVariables.__add__(self, other)
-
         # convert self and other
         selfUnit = self._unitObject
         otherUnit = other._unitObject
@@ -402,10 +398,6 @@ class scalarVariable():
 
         # determine if the variables can be subtracted
         outputUnit = self._unitObject - other._unitObject
-
-        # handle logarithmic unit seperately
-        if outputUnit.isLogarithmicUnit():
-            return logarithmicVariables.__sub__(self, other)
 
         # convert self and other
         selfUnit = self._unitObject
@@ -1062,9 +1054,7 @@ class arrayVariable(scalarVariable):
         return variable(self.value[index], self.unit, self.uncert[index])
 
     def mean(self):
-        if not self._unitObject.isLogarithmicUnit():
-            return sum(self / len(self))
-        return logarithmicVariables.mean(self)
+        return sum(self) / len(self)
 
     def argmin(self):
         return np.argmin(self.value)
