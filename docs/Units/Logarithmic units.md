@@ -27,3 +27,8 @@ The follwowing methods are available
  - logarithmic.add
  - logarithmic.subtract
  - logarithmic.mean
+
+
+## conversion
+
+A variable can be converted to any logarithmic unit if it is unitless. Similarly, any logarithmic unit can be converted to a unitless variable
