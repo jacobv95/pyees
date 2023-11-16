@@ -15,51 +15,22 @@ class logarithmic:
         aUnit = a.unit
         bUnit = b.unit
 
-        aUnitWithoutPrefix = a._unitObject.getUnitWithoutPrefix()
-        a.convert(aUnitWithoutPrefix)
-        aConverter = a._unitObject.getLogarithmicConverter()
-        a._unitStr = '1'
-        a._unitObject = unit('')
-        for elem in a:
-            elem._unitStr = '1'
-            elem._unitObject = unit('')
-        aConverter.convertToSignal(a)
+        if (aUnit == bUnit):
+            cUnit = aUnit
+        else:
+            if (a._unitObject.getUnitWithoutPrefix() == b._unitObject.getUnitWithoutPrefix()):
+                cUnit = a._unitObject.getUnitWithoutPrefix()
+            else:
+                cUnit = 'Np'
 
-        bUnitWithoutPrefix = b._unitObject.getUnitWithoutPrefix()
-        b.convert(bUnitWithoutPrefix)
-        bConverter = b._unitObject.getLogarithmicConverter()
-        b._unitStr = '1'
-        b._unitObject = unit('')
-        for elem in b:
-            elem._unitStr = '1'
-            elem._unitObject = unit('')
-        bConverter.convertToSignal(b)
+        a.convert('1')
+        b.convert('1')
 
         c = a + b
 
-        aConverter.convertFromSignal(a)
-        a._unitStr = aUnitWithoutPrefix
-        a._unitObject = unit(aUnitWithoutPrefix)
-        for elem in a:
-            elem._unitStr = aUnitWithoutPrefix
-            elem._unitObject = unit(aUnitWithoutPrefix)
         a.convert(aUnit)
-
-        bConverter.convertFromSignal(b)
-        b._unitStr = bUnitWithoutPrefix
-        b._unitObject = unit(bUnitWithoutPrefix)
-        for elem in b:
-            elem._unitStr = bUnitWithoutPrefix
-            elem._unitObject = unit(bUnitWithoutPrefix)
         b.convert(bUnit)
-
-        aConverter.convertFromSignal(c)
-        c._unitStr = aUnitWithoutPrefix
-        c._unitObject = unit(aUnitWithoutPrefix)
-        for elem in c:
-            elem._unitStr = aUnitWithoutPrefix
-            elem._unitObject = unit(aUnitWithoutPrefix)
-        c.convert(aUnit)
+        c.convert(cUnit)
 
         return c
 
@@ -68,51 +39,22 @@ class logarithmic:
         aUnit = a.unit
         bUnit = b.unit
 
-        aUnitWithoutPrefix = a._unitObject.getUnitWithoutPrefix()
-        a.convert(aUnitWithoutPrefix)
-        aConverter = a._unitObject.getLogarithmicConverter()
-        a._unitStr = '1'
-        a._unitObject = unit('')
-        for elem in a:
-            elem._unitStr = '1'
-            elem._unitObject = unit('')
-        aConverter.convertToSignal(a)
+        if (aUnit == bUnit):
+            cUnit = aUnit
+        else:
+            if (a._unitObject.getUnitWithoutPrefix() == b._unitObject.getUnitWithoutPrefix()):
+                cUnit = a._unitObject.getUnitWithoutPrefix()
+            else:
+                cUnit = 'Np'
 
-        bUnitWithoutPrefix = b._unitObject.getUnitWithoutPrefix()
-        b.convert(bUnitWithoutPrefix)
-        bConverter = b._unitObject.getLogarithmicConverter()
-        b._unitStr = '1'
-        b._unitObject = unit('')
-        for elem in b:
-            elem._unitStr = '1'
-            elem._unitObject = unit('')
-        bConverter.convertToSignal(b)
+        a.convert('1')
+        b.convert('1')
 
         c = a - b
 
-        aConverter.convertFromSignal(a)
-        a._unitStr = aUnitWithoutPrefix
-        a._unitObject = unit(aUnitWithoutPrefix)
-        for elem in a:
-            elem._unitStr = aUnitWithoutPrefix
-            elem._unitObject = unit(aUnitWithoutPrefix)
         a.convert(aUnit)
-
-        bConverter.convertFromSignal(b)
-        b._unitStr = bUnitWithoutPrefix
-        b._unitObject = unit(bUnitWithoutPrefix)
-        for elem in b:
-            elem._unitStr = bUnitWithoutPrefix
-            elem._unitObject = unit(bUnitWithoutPrefix)
         b.convert(bUnit)
-
-        aConverter.convertFromSignal(c)
-        c._unitStr = aUnitWithoutPrefix
-        c._unitObject = unit(aUnitWithoutPrefix)
-        for elem in c:
-            elem._unitStr = aUnitWithoutPrefix
-            elem._unitObject = unit(aUnitWithoutPrefix)
-        c.convert(aUnit)
+        c.convert(cUnit)
 
         return c
 
@@ -120,32 +62,11 @@ class logarithmic:
     def mean(a):
         aUnit = a.unit
 
-        aUnitWithoutPrefix = a._unitObject.getUnitWithoutPrefix()
-        a.convert(aUnitWithoutPrefix)
-        aConverter = a._unitObject.getLogarithmicConverter()
-        a._unitStr = '1'
-        a._unitObject = unit('')
-        for elem in a:
-            elem._unitStr = '1'
-            elem._unitObject = unit('')
-        aConverter.convertToSignal(a)
+        a.convert('1')
 
         b = np.mean(a)
 
-        aConverter.convertFromSignal(a)
-        a._unitStr = aUnitWithoutPrefix
-        a._unitObject = unit(aUnitWithoutPrefix)
-        for elem in a:
-            elem._unitStr = aUnitWithoutPrefix
-            elem._unitObject = unit(aUnitWithoutPrefix)
         a.convert(aUnit)
-
-        aConverter.convertFromSignal(b)
-        b._unitStr = aUnitWithoutPrefix
-        b._unitObject = unit(aUnitWithoutPrefix)
-        for elem in b:
-            elem._unitStr = aUnitWithoutPrefix
-            elem._unitObject = unit(aUnitWithoutPrefix)
         b.convert(aUnit)
 
         return b
@@ -191,9 +112,8 @@ class scalarVariable():
 
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
-        self._value = converter.convert(
-            self._value, useOffset=not self._unitObject.isCombinationUnit())
-        self._uncert = self._uncert * converter.scale
+        self._value, self._uncert, self._uncertSI = converter(
+            self._value, self._uncert, self._uncertSI, useOffset=not self._unitObject.isCombinationUnit())
         self._unitObject = unit(newUnit)
 
     def printUncertanty(self, value, uncert):
@@ -1066,9 +986,8 @@ class arrayVariable(scalarVariable):
         converter = self._unitObject.getConverter(newUnit)
         newUnit = unit(newUnit)
         for elem in self.scalarVariables:
-            elem._value = converter.convert(
-                elem._value, useOffset=not self._unitObject.isCombinationUnit())
-            elem._uncert = converter.convert(elem._uncert, useOffset=False)
+            elem._value, elem._uncert, elem._uncertSI = converter(
+                elem._value, elem._uncert, elem._uncertSI, useOffset=not self._unitObject.isCombinationUnit())
             elem._unitObject = newUnit
         self._unitObject = newUnit
 
@@ -1127,8 +1046,3 @@ def variable(value, unit='', uncert=None, nDigits=3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
-
-if __name__ == "__main__":
-    a = variable([1, 2], 'dB')
-    b = np.mean(a)
-    print(b.value)

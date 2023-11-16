@@ -21,6 +21,7 @@ The documentation is split to parts:
    - [Units](/docs/Units/Units.md)
      - [Temperature](/docs/Units/Temperature.md)
      - [Add new unit](/docs/Units/Add%20new%20units.md)
+     - [Logarithmic units](/docs/Units/Logarithmic%20units.md)
  - [Sheets](/docs/Sheets/Sheet.md)
  - [Fitting](/docs/Fitting/Fitting.md)
    - [Create new fit class](/docs/Fitting/create%20New%20Fit%20Class.md)

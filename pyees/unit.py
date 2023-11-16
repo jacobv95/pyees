@@ -33,55 +33,73 @@ class _unitConversion():
     def staticTruediv(selfScale, selfOffset, otherScale, otherOffset=0):
         return _unitConversion.staticMul(1 / otherScale, - otherOffset / otherScale, selfScale, selfOffset)
 
-    def convert(self, value, useOffset=True):
-        return self.scale * value + useOffset * self.offset
+    def convert(self, value, uncert, uncertSI, useOffset=True):
+        val = self.scale * value + useOffset * self.offset
+        unc = self.scale * uncert
+        return val, unc, uncertSI
 
 
 class _neperConversion():
+    def __init__(self):
+        self.linearConverter = _unitConversion(1, 0).convert
 
-    @staticmethod
-    def convertToSignal(var):
-        var._uncert = 2*np.exp(2*var.value) * var.uncert
-        var._uncertSI = 2*np.exp(2*var.value) * var._uncertSI
-        var._value = np.exp(2*var.value)
+    def converterToSignal(self, value, uncert, uncertSI, useOffset=True):
+        val, unc, uncSI = self.linearConverter(
+            value, uncert, uncertSI, useOffset=useOffset)
+        unc = 2*np.exp(2*val) * unc
+        uncSI = 2*np.exp(2*val) * uncSI
+        val = np.exp(2*val)
+        return val, unc, uncSI
 
-    @staticmethod
-    def convertFromSignal(var):
-        var._uncert = 1 / (2*var.value) * var.uncert
-        var._uncertSI = 1 / (2*var.value) * var._uncertSI
-        var._value = 1/2 * np.log(var.value)
+    def converterFromSignal(self, value, uncert, uncertSI, useOffset=True):
+        unc = 1 / (2*value) * uncert
+        uncSI = 1 / (2*value) * uncertSI
+        val = 1/2 * np.log(value)
+        val, unc, uncSI = self.linearConverter(
+            val, unc, uncSI, useOffset=useOffset)
+        return val, unc, uncSI
 
 
 class _bellConversion():
+    def __init__(self):
+        self.linearConverter = _unitConversion(1, 0).convert
 
-    @staticmethod
-    def convertToSignal(var):
-        for v in var:
-            v._uncert = 10**v.value * np.log(10) * v.uncert
-            v._uncertSI = 10**v.value * np.log(10) * v._uncertSI
-            v._value = 10**v.value
+    def converterToSignal(self, value, uncert, uncertSI, useOffset=True):
+        val, unc, uncSI = self.linearConverter(
+            value, uncert, uncertSI, useOffset=useOffset)
+        unc = 10**val * np.log(10) * unc
+        uncSI = 10**val * np.log(10) * uncSI
+        val = 10**val
+        return val, unc, uncSI
 
-    @staticmethod
-    def convertFromSignal(var):
-        for v in var:
-            v._uncert = 1 / (v.value * np.log(10)) * v.uncert
-            v._uncertSI = 1 / (v.value * np.log(10)) * v._uncertSI
-            v._value = np.log10(v.value)
+    def converterFromSignal(self, value, uncert, uncertSI, useOffset=True):
+        unc = 1 / (value * np.log(10)) * uncert
+        uncSI = 1 / (value * np.log(10)) * uncertSI
+        val = np.log10(value)
+        val, unc, uncSI = self.linearConverter(
+            val, unc, uncSI, useOffset=useOffset)
+        return val, unc, uncSI
 
 
 class _octaveConversion():
+    def __init__(self):
+        self.linearConverter = _unitConversion(1, 0).convert
 
-    @staticmethod
-    def convertToSignal(var):
-        var._uncert = 2**var.value * np.log(2) * var.uncert
-        var._uncertSI = 2**var.value * np.log(2) * var._uncertSI
-        var._value = 2**var.value
+    def converterToSignal(self, value, uncert, uncertSI, useOffset=True):
+        val, unc, uncSI = self.linearConverter(
+            value, uncert, uncertSI, useOffset=useOffset)
+        unc = 2**val * np.log(2) * unc
+        uncSI = 2**val * np.log(2) * uncSI
+        val = 2**val
+        return val, unc, uncSI
 
-    @staticmethod
-    def convertFromSignal(var):
-        var._uncert = 1 / (var.value * np.log(2)) * var.uncert
-        var._uncertSI = 1 / (var.value * np.log(2)) * var._uncertSI
-        var._value = np.log2(var.value)
+    def converterFromSignal(self, value, uncert, uncertSI, useOffset=True):
+        unc = 1 / (value * np.log(2)) * uncert
+        uncSI = 1 / (value * np.log(2)) * uncertSI
+        val = np.log2(value)
+        val, unc, uncSI = self.linearConverter(
+            val, unc, uncSI, useOffset=useOffset)
+        return val, unc, uncSI
 
 
 _baseUnit = {
@@ -1047,37 +1065,57 @@ class unit():
         self._converterToSI = _unitConversion(outScale, outOffset)
 
     def getConverter(self, newUnitStr):
+        # TODO if self or other is a logarithmic unit, then do not use linear conversion
+
         newUnitStr = unit._formatUnitStr(newUnitStr)
         newUnitDict = unit._getUnitDict(newUnitStr)
         if newUnitDict == self.unitDictSI:
-            return self._converterToSI
+            return self._converterToSI.convert
 
         newUnitDictSI = unit._getUnitDictSI(newUnitDict)
-        if not (self.unitDictSI == newUnitDictSI):
-            raise ValueError(
-                f'You tried to convert from {self} to {newUnitStr}. But these do not have the same base units')
+        if self.unitDictSI == newUnitDictSI:
 
-        outScale, outOffset = self._converterToSI.scale, self._converterToSI.offset
+            outScale, outOffset = self._converterToSI.scale, self._converterToSI.offset
 
-        # loop over newUnitDict
-        for u, item in newUnitDict.items():
-            for pre, exp in item.items():
-                convScale, convOffset = _knownUnits[u][1]
-                convScale = convScale * _knownPrefixes[pre]
-                if convScale == 1 and convOffset == 0:
-                    continue
-                convScale, convOffset = _unitConversion.staticPow(
-                    convScale, convOffset, exp)
-                outScale, outOffset = _unitConversion.staticTruediv(
-                    outScale, outOffset, convScale, convOffset)
+            # loop over newUnitDict
+            for u, item in newUnitDict.items():
+                for pre, exp in item.items():
+                    convScale, convOffset = _knownUnits[u][1]
+                    convScale = convScale * _knownPrefixes[pre]
+                    if convScale == 1 and convOffset == 0:
+                        continue
+                    convScale, convOffset = _unitConversion.staticPow(
+                        convScale, convOffset, exp)
+                    outScale, outOffset = _unitConversion.staticTruediv(
+                        outScale, outOffset, convScale, convOffset)
 
-        return _unitConversion(outScale, outOffset)
+            return _unitConversion(outScale, outOffset).convert
+
+        if (self.unitDictSI == {'Np': {'': 1}} and newUnitDictSI == {'1': {'': 1}}):
+            # convert from logarithmic unit to signal
+            converter = self.getLogarithmicConverter(
+                self._removePrefixFromUnit(self.unitStr)[0])
+            converter.linearConverter = self.getConverter(
+                self.getUnitWithoutPrefix())
+            return converter.converterToSignal
+
+        if (self.unitDictSI == {'1': {'': 1}} and newUnitDictSI == {'Np': {'': 1}}):
+            # convert from signal to logarithmic unit
+            newUnit = unit(newUnitStr)
+            newUnitWithoutPrefix = unit(newUnit.getUnitWithoutPrefix())
+            converter = self.getLogarithmicConverter(newUnit.getUnitWithoutPrefix())
+            converter.linearConverter = newUnitWithoutPrefix.getConverter(
+                newUnitStr)
+            return converter.converterFromSignal
+
+        raise ValueError(
+            f'You tried to convert from {self} to {newUnitStr}. But these do not have the same base units')
 
     def isCombinationUnit(self):
         return len(list(self.unitDict.keys())) > 1
 
-    def getLogarithmicConverter(self):
-        u, _ = self._removePrefixFromUnit(self.unitStr)
+    @staticmethod
+    def getLogarithmicConverter(u):
 
         if u == 'B':
             return _bellConversion()
@@ -1085,13 +1123,7 @@ class unit():
             return _neperConversion()
         if u == 'oct':
             return _octaveConversion()
-        return _bellConversion()
+        if u == 'dec':
+            return _bellConversion()
 
-
-if __name__ == "__main__":
-    a = unit('Hz')
-    a.getConverter(a.unitStrSI)
-
-    # out = unit._getUnitDict('Hz')
-    # out = unit._getUnitDictSI(out)
-    # print(out)
+        raise ValueError(f'The logarithmic conversion of {u} is not knwon')

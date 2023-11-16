@@ -1531,6 +1531,51 @@ class test(unittest.TestCase):
         self.assertTrue("Some of the scalarvariables in [1, 120, 3] [min] did not have the unit [min] as they should. This could happen if the user has converted a scalarVaraible instead of the arrayVaraible." in str(
             context.exception))
 
+        a = variable(19, 'dB', 1.2)
+        a.convert('1')
+        self.assertAlmostEqual(
+            a.value, 79.432823472428150206591828283638793258896063)
+        self.assertEqual(a.unit, '1')
+        self.assertAlmostEqual(a.uncert, 10**(19/10 - 1) * np.log(10) * 1.2)
+        a.convert('dB')
+        self.assertEqual(a.value, 19)
+        self.assertEqual(a.unit, 'dB')
+        self.assertEqual(a.uncert, 1.2)
+
+        a = variable(1.9, 'Np', 0.12)
+        a.convert('1')
+        self.assertAlmostEqual(
+            a.value, 44.701184493300823037557828729065328038051563047543533720765133464)
+        self.assertEqual(a.unit, '1')
+        self.assertAlmostEqual(a.uncert, 2 * np.exp(2*1.9) * 0.12)
+        a.convert('Np')
+        self.assertEqual(a.value, 1.9)
+        self.assertEqual(a.unit, 'Np')
+        self.assertEqual(a.uncert, 0.12)
+
+        a = variable(19, 'doct', 1.2)
+        a.convert('1')
+        self.assertAlmostEqual(
+            a.value, 3.7321319661472296639253730645997686681089198574059761556019895419)
+        self.assertEqual(a.unit, '1')
+        self.assertAlmostEqual(
+            a.uncert, 1/5 * 2**(19/10 - 1) * np.log(2) * 1.2)
+        a.convert('doct')
+        self.assertEqual(a.value, 19)
+        self.assertEqual(a.unit, 'doct')
+        self.assertEqual(a.uncert, 1.2)
+
+        a = variable(19, 'ddec', 1.2)
+        a.convert('1')
+        self.assertAlmostEqual(
+            a.value, 79.432823472428150206591828283638793258896063)
+        self.assertEqual(a.unit, '1')
+        self.assertAlmostEqual(a.uncert, 10**(19/10 - 1) * np.log(10) * 1.2)
+        a.convert('ddec')
+        self.assertEqual(a.value, 19)
+        self.assertEqual(a.unit, 'ddec')
+        self.assertEqual(a.uncert, 1.2)
+
     def testCompare(self):
         a = variable(1, 'm')
         b = variable([2, 3, 4], 'm')
@@ -1774,11 +1819,12 @@ class test(unittest.TestCase):
 
     def testAverageBel(self):
         a = variable([66.62, 68.91, 65.22, 63.86, 60.74, 63.36],
-                     'dB', [1,2,3,4,5,6])
+                     'dB', [1, 2, 3, 4, 5, 6])
         b = logarithmic.mean(a)
         self.assertAlmostEqual(b.value, 65.53976386561031)
         self.assertEqual(b.unit, 'dB')
-        val = 10**(66.62/10) + 10**(68.91/10) + 10 ** (65.22/10) + 10**(63.86/10) + 10**(60.74/10) + 10**(63.36/10)
+        val = 10**(66.62/10) + 10**(68.91/10) + 10 ** (65.22/10) + \
+            10**(63.86/10) + 10**(60.74/10) + 10**(63.36/10)
         grads = [
             (10**(66.62/10)) / val,
             (10**(68.91/10)) / val,
@@ -1787,7 +1833,7 @@ class test(unittest.TestCase):
             (10**(60.74/10)) / val,
             (10**(63.36/10)) / val
         ]
-        
+
         bUncert = 0
         for i in range(len(grads)):
             bUncert += (grads[i] * a.uncert[i])**2
@@ -1798,7 +1844,7 @@ class test(unittest.TestCase):
     def testAddBel(self):
         a = variable(11, 'dB', 0.1)
         b = variable(19, 'dB', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertEqual(
             c.value, 19.638920341433795986775635083534144311728776386508569289294)
         self.assertEqual(c.unit, 'dB')
@@ -1809,7 +1855,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'B', 0.1)
         b = variable(19, 'B', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertEqual(
             c.value, 19.000000004342944797317794326113524021957351355250018803653068412)
         self.assertEqual(c.unit, 'B')
@@ -1820,7 +1866,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'B', 0.1)
         b = variable(19, 'dB', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertAlmostEqual(
             c.value, 1.9638920341433795986775635083534144311728776386508569289294)
         self.assertEqual(c.unit, 'B')
@@ -1832,7 +1878,7 @@ class test(unittest.TestCase):
     def testSubtractBel(self):
         a = variable(11, 'dB', 0.1)
         b = variable(19, 'dB', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertEqual(
             c.value, 18.250596325673850704123951198937009709734608031896818185442)
         self.assertEqual(c.unit, 'dB')
@@ -1843,7 +1889,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'B', 0.1)
         b = variable(19, 'B', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertEqual(
             c.value, 18.99999999565705515925275748356129104145734723683018994643533534)
         self.assertEqual(c.unit, 'B')
@@ -1854,19 +1900,19 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'B', 0.1)
         b = variable(19, 'dB', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertAlmostEqual(
-            c.value, 18.250596325673850704123951198937009709734608031896818185442)
-        self.assertEqual(c.unit, 'dB')
-        gradA = -10**(1.1+1) / (10**(19/10) - 10**1.1)
-        gradB = 10**(19/10) / (10**(19/10) - 10**1.1)
+            c.value, 1.8250596325673850704123951198937009709734608031896818185442)
+        self.assertEqual(c.unit, 'B')
+        gradA = -10**(1.1+1) / (10**(19/10) - 10**1.1) / 10
+        gradB = 10**(19/10) / (10**(19/10) - 10**1.1) / 10
         self.assertAlmostEqual(c.uncert, np.sqrt(
             (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
 
     def testAddNeper(self):
         a = variable(1.1, 'Np', 1.2)
         b = variable(1.9, 'Np', 0.1)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         gradA = np.exp(2*1.1) / (np.exp(2*1.1) + np.exp(2*1.9))
         gradB = np.exp(2*1.9) / (np.exp(2*1.1) + np.exp(2*1.9))
         self.assertAlmostEqual(c.value, 1.9919503704442)
@@ -1876,7 +1922,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'dNp', 0.1)
         b = variable(19, 'dNp', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertEqual(
             c.value, 19.919503704441694148537476059644226712824512622876065)
         self.assertEqual(c.unit, 'dNp')
@@ -1887,19 +1933,20 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'B', 0.2)
         b = variable(1.9, 'Np', 0.1)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertAlmostEqual(
-            c.value, 1.758082147187876468991064264007183585955484366785)
-        self.assertEqual(c.unit, 'B')
-        gradA = 10**1.1 / (np.exp(2*1.9) + 10**1.1)
-        gradB = 2 * np.exp(2*1.9) / (np.log(10) * (10**1.1 + np.exp(2*1.9)))
+            c.value, 2.0240668721868840255988083259625703882692927909254311205261)
+        self.assertEqual(c.unit, 'Np')
+        gradA = 2**(1.1-1) * 5 ** 1.1 * np.log(10) / \
+            (10 ** 1.1 + np.exp(2*1.9))
+        gradB = np.exp(2*1.9) / (10 ** 1.1 + np.exp(2*1.9))
         self.assertAlmostEqual(c.uncert, np.sqrt(
             (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
 
     def testSubtractNeper(self):
         a = variable(1.1, 'Np', 1.2)
         b = variable(1.9, 'Np', 0.1)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         gradA = -np.exp(2*1.1) / (-np.exp(2*1.1) + np.exp(2*1.9))
         gradB = np.exp(2*1.9) / (-np.exp(2*1.1) + np.exp(2*1.9))
         self.assertAlmostEqual(
@@ -1910,7 +1957,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'dNp', 0.1)
         b = variable(19, 'dNp', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertEqual(
             c.value, 17.872414933794011376350282497774605052189199203232206053472)
         self.assertEqual(c.unit, 'dNp')
@@ -1921,7 +1968,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'B', 0.2)
         b = variable(1.9, 'Np', 0.1)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertAlmostEqual(
             c.value, 1.7346138119351200779277098049685724168821500468817797823749)
         self.assertEqual(c.unit, 'Np')
@@ -1934,7 +1981,7 @@ class test(unittest.TestCase):
     def testAddOctave(self):
         a = variable(11, 'oct', 0.1)
         b = variable(19, 'oct', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertEqual(
             c.value, 19.005624549193878106919859102674066601721109681538352035907295778)
         self.assertEqual(c.unit, 'oct')
@@ -1945,7 +1992,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'doct', 0.1)
         b = variable(19, 'doct', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertEqual(
             c.value, 25.547555540454389776996741016863742223173494327085729223977)
         self.assertEqual(c.unit, 'doct')
@@ -1956,7 +2003,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'oct', 0.1)
         b = variable(19, 'doct', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertAlmostEqual(
             c.value, 2.5547555540454389776996741016863742223173494327085729223977)
         self.assertEqual(c.unit, 'oct')
@@ -1968,7 +2015,7 @@ class test(unittest.TestCase):
     def testSubtractOctave(self):
         a = variable(11, 'oct', 0.1)
         b = variable(19, 'oct', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertEqual(
             c.value, 18.994353436858857937578124384247611038635913083061882360637118114)
         self.assertEqual(c.unit, 'oct')
@@ -1979,7 +2026,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'doct', 0.1)
         b = variable(19, 'doct', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertAlmostEqual(
             c.value, 6.677423233234791893663882614756435176500756327730140063397)
         self.assertEqual(c.unit, 'doct')
@@ -1990,19 +2037,19 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'oct', 0.1)
         b = variable(19, 'doct', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertAlmostEqual(
-            c.value, 6.677423233234791893663882614756435176500756327730140063397)
-        self.assertEqual(c.unit, 'doct')
-        gradA = -5 * 2**(1.1+1) / (2**(19/10) - 2**1.1)
-        gradB = 2**(19/10) / (2**(19/10) - 2**1.1)
+            c.value, 0.6677423233234791893663882614756435176500756327730140063397)
+        self.assertEqual(c.unit, 'oct')
+        gradA = -5 * 2**(1.1+1) / (2**(19/10) - 2**1.1) / 10
+        gradB = 2**(19/10) / (2**(19/10) - 2**1.1) / 10
         self.assertAlmostEqual(c.uncert, np.sqrt(
             (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
 
     def testAddDecade(self):
         a = variable(11, 'ddec', 0.1)
         b = variable(19, 'ddec', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertEqual(
             c.value, 19.638920341433795986775635083534144311728776386508569289294)
         self.assertEqual(c.unit, 'ddec')
@@ -2013,7 +2060,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'dec', 0.1)
         b = variable(19, 'dec', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertEqual(
             c.value, 19.000000004342944797317794326113524021957351355250018803653068412)
         self.assertEqual(c.unit, 'dec')
@@ -2024,7 +2071,7 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'dec', 0.1)
         b = variable(19, 'ddec', 1.2)
-        c = logarithmic.add(a,b)
+        c = logarithmic.add(a, b)
         self.assertAlmostEqual(
             c.value, 1.9638920341433795986775635083534144311728776386508569289294)
         self.assertEqual(c.unit, 'dec')
@@ -2036,7 +2083,7 @@ class test(unittest.TestCase):
     def testSubtractDecade(self):
         a = variable(11, 'ddec', 0.1)
         b = variable(19, 'ddec', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertEqual(
             c.value, 18.250596325673850704123951198937009709734608031896818185442)
         self.assertEqual(c.unit, 'ddec')
@@ -2047,7 +2094,7 @@ class test(unittest.TestCase):
 
         a = variable(11, 'dec', 0.1)
         b = variable(19, 'dec', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertEqual(
             c.value, 18.99999999565705515925275748356129104145734723683018994643533534)
         self.assertEqual(c.unit, 'dec')
@@ -2058,12 +2105,12 @@ class test(unittest.TestCase):
 
         a = variable(1.1, 'dec', 0.1)
         b = variable(19, 'ddec', 1.2)
-        c = logarithmic.sub(b,a)
+        c = logarithmic.sub(b, a)
         self.assertAlmostEqual(
-            c.value, 18.250596325673850704123951198937009709734608031896818185442)
-        self.assertEqual(c.unit, 'ddec')
-        gradA = -10**(1.1+1) / (10**(19/10) - 10**1.1)
-        gradB = 10**(19/10) / (10**(19/10) - 10**1.1)
+            c.value, 1.8250596325673850704123951198937009709734608031896818185442)
+        self.assertEqual(c.unit, 'dec')
+        gradA = -10**(1.1+1) / (10**(19/10) - 10**1.1) / 10
+        gradB = 10**(19/10) / (10**(19/10) - 10**1.1) / 10
         self.assertAlmostEqual(c.uncert, np.sqrt(
             (gradA * a.uncert)**2 + (gradB * b.uncert)**2))
 
