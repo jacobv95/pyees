@@ -683,15 +683,19 @@ class arrayVariable(scalarVariable):
             self._unitObject = unitStr if isinstance(
                 unitStr, unit) else unit(unitStr)
 
-            self.scalarVariables = []
-            if not value is None:
-                for v, u in zip(value, uncert):
-                    self.scalarVariables.append(
-                        scalarVariable(v, self._unitObject, u, nDigits))
+            self.scalarVariables = []            
+            for v, u in zip(value, uncert):
+                self.scalarVariables.append(
+                    scalarVariable(v, self._unitObject, u, nDigits))
         else:
+           
             self.scalarVariables = scalarVariables
             self._unitObject = self.scalarVariables[0]._unitObject
             self.nDigits = self.scalarVariables[0].nDigits
+
+            for elem in scalarVariables:
+                if elem._unitObject != self._unitObject:
+                    raise ValueError('You can only create an array variable from a list of scalar variables if all the scalar variables have the same unit')
 
     def __checkUnitOfScalarVariables(self):
         for var in self.scalarVariables:
@@ -1008,6 +1012,12 @@ class arrayVariable(scalarVariable):
 
 
 def variable(value, unit='', uncert=None, nDigits=3):
+    try:
+        if all([isinstance(elem, scalarVariable) for elem in value]):
+            return arrayVariable(scalarVariables=value, unitStr = unit, uncert = uncert, nDigits=nDigits)
+    except TypeError:
+        pass
+    
     # store the value and the uncertaty
     def evaluateInput(input):
         if input is None:
@@ -1046,3 +1056,9 @@ def variable(value, unit='', uncert=None, nDigits=3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
+if __name__ == "__main__":
+    a = variable(1)
+    b = variable(1)
+    c = variable(1)
+    d = variable([a,b,c])
+    print(d)

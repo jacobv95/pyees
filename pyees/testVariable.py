@@ -10,7 +10,7 @@ except ImportError:
 
 class test(unittest.TestCase):
 
-    def testSingleNumber(self):
+    def testArguments(self):
         A = variable(1.3, 'm')
         B = variable(2.0, 'm', 0.01)
         C = variable([1.0, 1.3], 'L/min', np.array([20, 30]))
@@ -57,6 +57,27 @@ class test(unittest.TestCase):
             variable([1.0, 2.3], 'm', 1.5)
         self.assertTrue("The lenght of the value has to be equal to the lenght of the uncertanty" in str(
             context.exception))
+
+        a = variable(1, 'm')
+        b = variable(2, 'm')
+        c = variable([a,b])
+        d = variable([1,2], 'm')
+        np.testing.assert_equal(c.value, d.value)
+        self.assertEqual(c.unit, d.unit)
+        np.testing.assert_equal(c.uncert, d.uncert)
+        
+        
+        a = variable(1, 'm')
+        b = variable(2, 'm3')
+        with self.assertRaises(Exception) as context:
+            c = variable([a,b])
+        self.assertTrue("You can only create an array variable from a list of scalar variables if all the scalar variables have the same unit" in str(context.exception))
+
+      
+        
+        
+        
+        
 
     def test_add(self):
         A = variable(12.3, 'L/min', uncert=2.6)
@@ -2281,7 +2302,6 @@ class test(unittest.TestCase):
         np.testing.assert_equal(A_vec.value, [12.3, 54.3])
         self.assertEqual(A_vec.unit, 'L/min')
         np.testing.assert_equal(A_vec.uncert, [2.6, 5.4])
-
 
 if __name__ == '__main__':
     unittest.main()
