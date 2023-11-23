@@ -112,8 +112,7 @@ class scalarVariable():
 
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
-        self._value, self._uncert, self._uncertSI = converter(
-            self._value, self._uncert, self._uncertSI, useOffset=not self._unitObject.isCombinationUnit())
+        converter(self, useOffset=not self._unitObject.isCombinationUnit())
         self._unitObject = unit(newUnit)
 
     def printUncertanty(self, value, uncert):
@@ -990,8 +989,7 @@ class arrayVariable(scalarVariable):
         converter = self._unitObject.getConverter(newUnit)
         newUnit = unit(newUnit)
         for elem in self.scalarVariables:
-            elem._value, elem._uncert, elem._uncertSI = converter(
-                elem._value, elem._uncert, elem._uncertSI, useOffset=not self._unitObject.isCombinationUnit())
+            converter(elem, useOffset=not self._unitObject.isCombinationUnit())
             elem._unitObject = newUnit
         self._unitObject = newUnit
 
@@ -1056,9 +1054,3 @@ def variable(value, unit='', uncert=None, nDigits=3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
 
-if __name__ == "__main__":
-    a = variable(1)
-    b = variable(1)
-    c = variable(1)
-    d = variable([a,b,c])
-    print(d)

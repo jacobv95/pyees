@@ -2,8 +2,10 @@ import unittest
 import numpy as np
 try:
     from unit import unit, addNewUnit
+    from variable import variable
 except ImportError:
     from pyees.unit import unit, addNewUnit
+    from pyees.variable import variable
 
 class test(unittest.TestCase):
 
@@ -168,31 +170,59 @@ class test(unittest.TestCase):
     def testConvert(self):
         a = unit('L/min')
         converter = a.getConverter('m3/h')
-        np.testing.assert_array_almost_equal(converter(1,1,1), [0.06, 0.06, 1])
+        A = variable(1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 0.06)
+        self.assertAlmostEqual(A.uncert, 0.06)
+        self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('K')
         converter = a.getConverter('C')
-        np.testing.assert_array_almost_equal(converter(300,1,1), [26.85, 1,1])
+        A = variable(300,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 26.85)
+        self.assertAlmostEqual(A.uncert, 1)
+        self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('C')
         converter = a.getConverter('K')
-        np.testing.assert_array_almost_equal(converter(0,1,1), [273.15,1,1])
+        A = variable(0,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 273.15)
+        self.assertAlmostEqual(A.uncert, 1)
+        self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('kJ/kg-C')
         converter = a.getConverter('J/kg-K')
-        np.testing.assert_array_almost_equal(converter(1,1,1, useOffset=False), [1000,1000,1])
+        A = variable(1,'',1)
+        converter(A, useOffset=False)
+        self.assertAlmostEqual(A.value, 1000)
+        self.assertAlmostEqual(A.uncert, 1000)
+        self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('kJ/kg-K')
         converter = a.getConverter('J/kg-F')
-        np.testing.assert_array_almost_equal(converter(1,1,1, useOffset=False), [555.555555555555,555.555555555555,1])
+        A = variable(1,'',1)
+        converter(A, useOffset=False)
+        self.assertAlmostEqual(A.value, 555.555555555555)
+        self.assertAlmostEqual(A.uncert, 555.555555555555)
+        self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('K')
         converter = a.getConverter('F')
-        np.testing.assert_array_almost_equal(converter(300,1,1, useOffset=True), [80.33, 1.7999999999999998, 1])
+        A = variable(300,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 80.33)
+        self.assertAlmostEqual(A.uncert, 1.7999999999999998)
+        self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('mm2')
         converter = a.getConverter('m2')
-        np.testing.assert_array_almost_equal(converter(1,1,1), [1/1000 * 1/1000, 1/1000 * 1/1000, 1])
+        A = variable(1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 1/1000 * 1/1000)
+        self.assertAlmostEqual(A.uncert, 1/1000 * 1/1000)
+        self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('A')
         b = unit('V')
@@ -203,8 +233,11 @@ class test(unittest.TestCase):
         b = unit('ohm')
         c = a * b
         converter = c.getConverter('V')
-        
-        np.testing.assert_array_almost_equal(converter(1,1,1, useOffset=True), [1,1,1])
+        A = variable(1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 1)
+        self.assertAlmostEqual(A.uncert, 1)
+        self.assertAlmostEqual(A._uncertSI, 1)
 
         with self.assertRaises(Exception) as context:
             a = unit('mu')
@@ -261,37 +294,77 @@ class test(unittest.TestCase):
     def testAddNewUnit(self):
         addNewUnit('gnA', 9.81, 'm/s2')
         converter = unit('gnA').getConverter('m/s2')
-        np.testing.assert_array_almost_equal(converter(1,1,1), [9.81, 9.81, 1])
+        A = variable(1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 9.81)
+        self.assertAlmostEqual(A.uncert, 9.81)
+        self.assertAlmostEqual(A._uncertSI, 1)
         
         addNewUnit('gnB', 9.81, 'm/s2', 0)
         converter = unit('gnB').getConverter('m/s2')
-        np.testing.assert_array_almost_equal(converter(1,1,1), [9.81, 9.81, 1])
+        A = variable(1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 9.81)
+        self.assertAlmostEqual(A.uncert, 9.81)
+        self.assertAlmostEqual(A._uncertSI, 1)
 
         converter = unit('gnB').getConverter('mm/h2')
-        np.testing.assert_array_almost_equal(converter(1,1,1), [127137600000, 127137600000, 1])
+        A = variable(1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 127137600000)
+        self.assertAlmostEqual(A.uncert, 127137600000)
+        self.assertAlmostEqual(A._uncertSI, 1)
         
         addNewUnit('Rø', 40/21, 'C', -7.5 * 40/21)
         converter = unit('Rø').getConverter('C')
-        np.testing.assert_array_almost_equal(converter(100,1,1), [176.190476190476190476, 1.9047619047619047619048, 1])
+        A = variable(100,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 176.190476190476190476)
+        self.assertAlmostEqual(A.uncert, 1.9047619047619047619048)
+        self.assertAlmostEqual(A._uncertSI, 1)
         
         converter = unit('Rø').getConverter('F')
-        np.testing.assert_array_almost_equal(converter(100,1,1), [349.142857142857142857142857142857, 3.4285714285714285714286 , 1])
+        A = variable(100,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 349.142857142857142857142857142857)
+        self.assertAlmostEqual(A.uncert,  3.4285714285714285714286)
+        self.assertAlmostEqual(A._uncertSI, 1)
             
         converter = unit('Rø').getConverter('K')
-        np.testing.assert_array_almost_equal(converter(100,1,1), [449.340476190476190476, 1.9047619047619047619048, 1] )
+        A = variable(100,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 449.340476190476190476)
+        self.assertAlmostEqual(A.uncert,  1.9047619047619047619048)
+        self.assertAlmostEqual(A._uncertSI, 1)
         
         addNewUnit('Ra', 5/9 ,'C', -491.67 * 5 / 9)
         converter = unit('Ra').getConverter('C')
-        np.testing.assert_array_almost_equal(converter(83.1,1,1), [-226.98333333333333333333333, 0.5555555555555556, 1])
+        A = variable(83.1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, -226.98333333333333333333333)
+        self.assertAlmostEqual(A.uncert,  0.5555555555555556)
+        self.assertAlmostEqual(A._uncertSI, 1)
         
         converter = unit('Ra').getConverter('F')
-        np.testing.assert_array_almost_equal(converter(83.1,1,1), [-376.57, 1, 1])
+        A = variable(83.1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, -376.57)
+        self.assertAlmostEqual(A.uncert,  1)
+        self.assertAlmostEqual(A._uncertSI, 1)
         
         converter = unit('Ra').getConverter('K')
-        np.testing.assert_array_almost_equal(converter(83.1,1,1), [46.1666666666666666666667, 0.5555555555555556, 1])
-        
+        A = variable(83.1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, 46.1666666666666666666667)
+        self.assertAlmostEqual(A.uncert,  0.5555555555555556)
+        self.assertAlmostEqual(A._uncertSI, 1)
+          
         converter = unit('Ra').getConverter('Rø')
-        np.testing.assert_array_almost_equal(converter(83.1,1,1), [-111.66625, 0.29166666666666666666667, 1])
+        A = variable(83.1,'',1)
+        converter(A)
+        self.assertAlmostEqual(A.value, -111.66625)
+        self.assertAlmostEqual(A.uncert,  0.29166666666666666666667)
+        self.assertAlmostEqual(A._uncertSI, 1)
         
 
     

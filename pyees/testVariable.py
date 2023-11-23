@@ -1465,6 +1465,19 @@ class test(unittest.TestCase):
         self.assertEqual(b.unit, 'L/min')
         self.assertAlmostEqual(b.uncert, np.sqrt((np.e * 0.0237)**2))
 
+        b = variable(64.73976386561031, 'dB')
+        a0 = variable(11.0625, '', 0.4337698122276376)
+        a0.convert('dB')
+        c0 = a0 + b
+        
+        a1 = variable(11.0625, 'm2', 0.4337698122276376)
+        scale = variable(1, 'm2') 
+        a1 /= variable(1, 'm2') 
+        a1.convert('dB')
+        c1 = a1 + b
+        self.assertEqual(c0, c1)
+        
+
     def testCovariance(self):
         a = variable(123, 'L/min', 9.7)
         b = variable(93, 'Pa', 1.2)
