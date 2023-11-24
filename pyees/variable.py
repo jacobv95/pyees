@@ -60,8 +60,8 @@ class logarithmic:
 
     @staticmethod
     def mean(a):
+        
         aUnit = a.unit
-
         a.convert('1')
 
         b = np.mean(a)
@@ -110,6 +110,7 @@ class scalarVariable():
     def uncert(self):
         return self._uncert
 
+  
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
         converter(self, useOffset=not self._unitObject.isCombinationUnit())
@@ -198,26 +199,26 @@ class scalarVariable():
         if not var.dependsOn:
             # the variable does not depend on other variables
             # add the variable to the dependencies of self
-            self.___addDependent(var, grad)
+            self.___addDependent(var, grad, var._uncertSI)
             return
 
         # the variable depends on other variables
         # loop over the dependencies of the variables and add them to the dependencies of self.
         # this ensures that the product rule is used
-        for vvar, dependency in var.dependsOn.items():
-            self.___addDependent(vvar, grad * dependency)
+        for vvar, (uncertSI, ggrad) in var.dependsOn.items():
+            self.___addDependent(vvar, grad * ggrad, uncertSI)
 
-    def ___addDependent(self, var, grad):
+    def ___addDependent(self, var, grad, uncertSI):
         if var in self.dependsOn:
             # the variable is already in the dependencies of self
             # increment the gradient
             # this makes sure that the productrule of differentiation is followed
-            self.dependsOn[var] += grad
+            self.dependsOn[var][1] += grad
             return
 
         # the variable is not in the dependencies of self.
         # add it to the dictionary
-        self.dependsOn[var] = grad
+        self.dependsOn[var] = [uncertSI, grad]
 
     def __iter__(self):
         self.n = 0
@@ -245,9 +246,9 @@ class scalarVariable():
     def _calculateUncertanty(self):
 
         variance = 0
-        for var, grad in self.dependsOn.items():
+        for var, (uncertSI, grad) in self.dependsOn.items():
             # variance from the measurements
-            variance += (var._uncertSI * grad)**2
+            variance += (uncertSI * grad)**2
 
             # variance from the corralation between measurements
             # covariance = dict(var: covariance)
@@ -256,7 +257,7 @@ class scalarVariable():
             if not var.covariance:
                 continue
             for var2 in filter(lambda x: x in self.dependsOn, var.covariance):
-                variance += grad * self.dependsOn[var2] * var.covariance[var2]
+                variance += grad * self.dependsOn[var2][1] * var.covariance[var2]
 
         # all variances are determined in the SI unit system.
         # these has to be converted back in the the unit of self
@@ -1053,4 +1054,7 @@ def variable(value, unit='', uncert=None, nDigits=3):
         return arrayVariable(value=value, unitStr=unit, uncert=uncert, nDigits=nDigits)
     else:
         return scalarVariable(value, unit, uncert, nDigits)
-
+    
+    
+    
+    

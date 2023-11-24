@@ -51,36 +51,27 @@ class _neperConversion():
     def converterToSignal(self, var, useOffset=True):
         self.linearConverter(var, useOffset=useOffset)
         
-        value = var.value
-        uncert = var._uncert
-        uncertSI = var._uncertSI
+        scale = 2*np.exp(2*var._value)
         
-        unc = 2*np.exp(2*value) * uncert
-        uncSI = 2*np.exp(2*value) * uncertSI
-        val = np.exp(2*value)
+        var._uncert = scale * var._uncert
+        var._uncertSI = scale * var._uncertSI
+        var._value = np.exp(2*var._value)
         
-        for key in var.dependsOn.keys():
-            var.dependsOn[key] *= 2*np.exp(2*value)
-        
-        var._value = val
-        var._uncert = unc
-        var._uncertSI = uncSI
+        ## scale the uncertSI of the dependencies
+        for dependency in var.dependsOn.values():
+            dependency[0] *= scale    
 
     def converterFromSignal(self, var, useOffset=True):
-        value = var.value
-        uncert = var._uncert
-        uncertSI = var._uncertSI
+
+        scale = 1 / (2*var._value)
         
-        unc = 1 / (2*value) * uncert
-        uncSI = 1 / (2*value) * uncertSI
-        val = 1/2 * np.log(value)
+        var._uncert = scale * var._uncert
+        var._uncertSI = scale * var._uncertSI
+        var._value = 1/2 * np.log(var._value)
         
-        for key in var.dependsOn.keys():
-            var.dependsOn[key] *= 1 / (2*value)
-        
-        var._value = val
-        var._uncert = unc
-        var._uncertSI = uncSI
+        ## scale the uncertSI of the dependencies
+        for dependency in var.dependsOn.values():
+            dependency[0] *= scale 
         
         self.linearConverter(var, useOffset=useOffset)
 
@@ -92,43 +83,32 @@ class _bellConversion():
     def converterToSignal(self, var, useOffset=True):
         self.linearConverter(var, useOffset=useOffset)
         
-        value = var.value
-        uncert = var._uncert
-        uncertSI = var._uncertSI
+        scale = 10**var.value * np.log(10)
         
-        unc = 10**value * np.log(10) * uncert
-        uncSI = 10**value * np.log(10) * uncertSI
-        val = 10**value
+        var._uncert = scale * var._uncert
+        var._uncertSI = scale * var._uncertSI
+        var._value = 10**var.value
         
-        for key in var.dependsOn.keys():
-            var.dependsOn[key] *= 10**value * np.log(10)
-        
-        var._value = val
-        var._uncert = unc
-        var._uncertSI = uncSI
+        ## scale the uncertSI of the dependencies
+        for dependency in var.dependsOn.values():
+            dependency[0] *= scale 
+
+
 
 
     def converterFromSignal(self, var, useOffset=True):
-        value = var.value
-        uncert = var._uncert
-        uncertSI = var._uncertSI
-        
-        unc = 1 / (value * np.log(10)) * uncert
-        uncSI = 1 / (value * np.log(10)) * uncertSI
-        val = np.log10(value)
-        
-        for key in var.dependsOn.keys():
-            var.dependsOn[key] *= 1 / (value * np.log(10))
-        
-        var._value = val
-        var._uncert = unc
-        var._uncertSI = uncSI
-        
-        self.linearConverter(var, useOffset=useOffset)
-        
 
-        ## TODO scale the dependencies with  1 / (originalValue * np.log(10))
-        ## do this for all logarithmic converters
+        scale = 1 / (var._value * np.log(10))
+        
+        var._uncert = scale *  var._uncert
+        var._uncertSI = scale * var._uncertSI
+        var._value = np.log10(var._value)
+        
+        ## scale the uncertSI of the dependencies
+        for dependency in var.dependsOn.values():
+            dependency[0] *= scale 
+                
+        self.linearConverter(var, useOffset=useOffset)
 
 
 class _octaveConversion():
@@ -138,37 +118,27 @@ class _octaveConversion():
     def converterToSignal(self, var, useOffset=True):
         self.linearConverter(var, useOffset=useOffset)
         
-        value = var.value
-        uncert = var._uncert
-        uncertSI = var._uncertSI
+        scale = 2**var._value * np.log(2)
         
-        unc = 2**value * np.log(2) * uncert
-        uncSI = 2**value * np.log(2) * uncertSI
-        val = 2**value
+        var._uncert = scale * var._uncert
+        var._uncertSI = scale * var._uncertSI
+        var._value = 2**var._value
         
-        for key in var.dependsOn.keys():
-            var.dependsOn[key] *= 2**value * np.log(2)
-
-        var._value = val
-        var._uncert = unc
-        var._uncertSI = uncSI
-
+        ## scale the uncertSI of the dependencies
+        for dependency in var.dependsOn.values():
+            dependency[0] *= scale 
 
     def converterFromSignal(self, var, useOffset=True):
-        value = var.value
-        uncert = var._uncert
-        uncertSI = var._uncertSI
+
+        scale = 1 / (var._value * np.log(2))
         
-        unc = 1 / (value * np.log(2)) * uncert
-        uncSI = 1 / (value * np.log(2)) * uncertSI
-        val = np.log2(value)
+        var._uncert = scale * var._uncert
+        var._uncertSI = scale * var._uncertSI
+        var._value = np.log2(var._value)
         
-        for key in var.dependsOn.keys():
-            var.dependsOn[key] *= 1 / (value * np.log(2))
-         
-        var._value = val
-        var._uncert = unc
-        var._uncertSI = uncSI
+        ## scale the uncertSI of the dependencies
+        for dependency in var.dependsOn.values():
+            dependency[0] *= scale 
         
         self.linearConverter(var, useOffset=useOffset)
 

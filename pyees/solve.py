@@ -240,7 +240,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
             for xjj in xj:
                 if xjj in res.dependsOn:               
                     ## add the gradient d(residual)/d(xj) to the jacobian matrix
-                    J[i, currentIndex] += res.dependsOn[xjj]
+                    J[i, currentIndex] += res.dependsOn[xjj][1]
                 currentIndex += 1
            
     # inverse the jacobian

@@ -1471,11 +1471,34 @@ class test(unittest.TestCase):
         c0 = a0 + b
         
         a1 = variable(11.0625, 'm2', 0.4337698122276376)
-        scale = variable(1, 'm2') 
         a1 /= variable(1, 'm2') 
         a1.convert('dB')
         c1 = a1 + b
         self.assertEqual(c0, c1)
+        
+        
+
+        a = variable([65,66], 'dB', [1,2])
+        b = logarithmic.mean(a)
+        c = variable(0.8, 'dB')
+        d = b - c    
+        
+        aVal = 65
+        bVal = 66
+        ua = 1
+        ub = 2
+        cVal = 0.8
+        uc = 0
+        
+        dVal = 10 * np.log10(10**(aVal/10) / 2 + 10**(bVal/10)/2) - cVal
+        grada = 10**(aVal/10) / (10**(aVal/10) + 10**(bVal/10))
+        gradb = 10**(bVal/10) / (10**(aVal/10) + 10**(bVal/10))
+        gradc = -1 
+        ud = np.sqrt((ua * grada)**2 + (ub * gradb)**2 + (uc * gradc)**2)
+        
+        self.assertAlmostEqual(d.value, dVal)
+        self.assertEqual(d.unit, 'dB')
+        self.assertAlmostEqual(d.uncert, ud)
         
 
     def testCovariance(self):
