@@ -300,6 +300,12 @@ class test(unittest.TestCase):
         np.testing.assert_array_equal(sheets[1].E.uncert, np.array([15,16,17,18,15,16,17,18])/100)
         self.assertEqual(sheets[1].E.unit, 'C')
         
+        a = sheetsFromFile("testData/data12.xls", "D-CF", sheets=0)
+        a = sheetsFromFile("testData/data12.xlsx", "D-CF", sheets=0)
+        
+        
+        
+        
     def pop(self):
 
         dat = sheetsFromFile('testData/data1.xlsx', 'A-B')
@@ -330,16 +336,14 @@ class test(unittest.TestCase):
         
     def testReadNAN(self):
         dat = sheetsFromFile('testData/data9.xls', 'A-B')
-        
         np.testing.assert_equal(dat.A.value, [np.nan, 1])
         self.assertEqual(dat.A.unit, '1')
         np.testing.assert_equal(dat.A.uncert, [0, 0])
-        
         np.testing.assert_equal(dat.B.value, [np.nan, 2])
         self.assertEqual(dat.B.unit, '1')
         np.testing.assert_equal(dat.B.uncert, [0, 0])
         
-        dat = sheetsFromFile('testData/data10.xlsx', 'A-B')
+        dat = sheetsFromFile('testData/data10.xlsx', 'A-C')
         np.testing.assert_equal(dat.A.value, [np.nan])
         self.assertEqual(dat.A.unit, '1')
         np.testing.assert_equal(dat.A.uncert, [0])
@@ -347,6 +351,15 @@ class test(unittest.TestCase):
         np.testing.assert_equal(dat.B.value, [np.nan])
         self.assertEqual(dat.B.unit, '1')
         np.testing.assert_equal(dat.B.uncert, [0])
+        
+        np.testing.assert_equal(dat.C.value, [1])
+        self.assertEqual(dat.B.unit, '1')
+        np.testing.assert_equal(dat.C.uncert, [0])
+        
+        with self.assertRaises(Exception) as context:
+            dat = sheetsFromFile('testData/data10.xlsx', 'A-B')
+        self.assertTrue("There is no valid data in the data sheet" in str(context.exception))
+
         
         
 if __name__ == '__main__':

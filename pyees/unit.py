@@ -59,7 +59,7 @@ class _neperConversion():
         
         ## scale the uncertSI of the dependencies
         for dependency in var.dependsOn.values():
-            dependency[0] *= scale    
+            dependency[1] *= scale    
 
     def converterFromSignal(self, var, useOffset=True):
 
@@ -71,7 +71,7 @@ class _neperConversion():
         
         ## scale the uncertSI of the dependencies
         for dependency in var.dependsOn.values():
-            dependency[0] *= scale 
+            dependency[1] *= scale 
         
         self.linearConverter(var, useOffset=useOffset)
 
@@ -91,7 +91,7 @@ class _bellConversion():
         
         ## scale the uncertSI of the dependencies
         for dependency in var.dependsOn.values():
-            dependency[0] *= scale 
+            dependency[1] *= scale 
 
 
 
@@ -106,7 +106,7 @@ class _bellConversion():
         
         ## scale the uncertSI of the dependencies
         for dependency in var.dependsOn.values():
-            dependency[0] *= scale 
+            dependency[1] *= scale 
                 
         self.linearConverter(var, useOffset=useOffset)
 
@@ -126,7 +126,7 @@ class _octaveConversion():
         
         ## scale the uncertSI of the dependencies
         for dependency in var.dependsOn.values():
-            dependency[0] *= scale 
+            dependency[1] *= scale 
 
     def converterFromSignal(self, var, useOffset=True):
 
@@ -138,7 +138,7 @@ class _octaveConversion():
         
         ## scale the uncertSI of the dependencies
         for dependency in var.dependsOn.values():
-            dependency[0] *= scale 
+            dependency[1] *= scale 
         
         self.linearConverter(var, useOffset=useOffset)
 

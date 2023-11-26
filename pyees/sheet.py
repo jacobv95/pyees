@@ -143,8 +143,21 @@ class _sheetsFromFile():
                 return [elem.value for elem in sheet.row(row)]
 
             def readCol(sheet, col):
-                return [elem.value for elem in sheet.col(col)]
-
+                nRows = len(sheet.col(col))
+                col = [self.readCell(sheet, row, col) for row in range(nRows)]
+                allNone = False
+                index = -1
+                for i, elem in enumerate(col):
+                    if np.isnan(elem):
+                        if not allNone:
+                            index = i
+                        allNone = True
+                    else:
+                        allNone = False
+                if allNone:
+                    col = col[0:index]
+                return col
+            
         elif extension == '.xlsx':
             self.wb = openpyxl.load_workbook(xlFile, data_only=True)
             self.sheets = [self.wb[elem] for elem in self.wb.sheetnames]
@@ -158,14 +171,29 @@ class _sheetsFromFile():
                 try:
                     float(cell.value)
                     return cell.value
-                except ValueError:
+                except (ValueError, TypeError):
                     return np.nan
 
             def readRow(sheet, row):
                 return [elem.value for elem in list(sheet.iter_rows())[row]]
 
             def readCol(sheet, col):
-                return [elem.value for elem in list(sheet.iter_cols())[col]]
+                nRows = sheet.max_row
+                col = [self.readCell(sheet, row, col) for row in range(nRows)]
+                allNone = False
+                index = -1
+                for i, elem in enumerate(col):
+                    if np.isnan(elem):
+                        if not allNone:
+                            index = i
+                        allNone = True
+                    else:
+                        allNone = False
+                if allNone:
+                    col = col[0:index]
+                return col
+                
+
 
         self.readCell = readCell
         self.readRow = readRow
@@ -303,11 +331,15 @@ class _sheetsFromFile():
             nDataPoints = []
             for i in range(self.nCols):
                 nDataPoint = self.readCol(sh, self.dataStartCol[ii] + i - 1)[2:]
-                nDataPoint = sum([1 if elem not in ['', None] else 0 for elem in nDataPoint])
+                # nDataPoint = sum([1 if elem not in ['', None] else 0 for elem in nDataPoint])
+                nDataPoint = len(nDataPoint)
                 nDataPoints.append(nDataPoint)
-            if not all(elem == nDataPoints[0] for elem in nDataPoints):
+            nonZeroColoums = [elem for elem in nDataPoints if elem != 0]
+            if not all(elem == nonZeroColoums[0] for elem in nonZeroColoums):
                 raise ValueError('There are not an equal amount of rows in the data')
-            nDataPoint = nDataPoints[0]
+            if not nonZeroColoums:
+                raise ValueError('There is no valid data in the data sheet')
+            nDataPoint = nonZeroColoums[0]
 
             # read the data
             data = np.zeros([nDataPoint, self.nCols])
@@ -320,11 +352,13 @@ class _sheetsFromFile():
                 nUncertanties = []
                 for i in range(self.nCols):
                     nUncertanty = self.readCol(sh, self.uncertStartCol[ii] - 1 + i)[2:]
-                    nUncertanty = sum([1 if elem not in ['', None] else 0 for elem in nUncertanty])
+                    # nUncertanty = sum([1 if elem not in ['', None] else 0 for elem in nUncertanty])
+                    nUncertanty = len(nUncertanty)
                     nUncertanties.append(nUncertanty)
-                if not all(elem == nUncertanties[0] for elem in nUncertanties):
+                nonZeroColoums = [elem for elem in nUncertanties if elem != 0]
+                if not all(elem == nonZeroColoums[0] for elem in nonZeroColoums):
                     raise ValueError('There are not an equal amount of rows in the uncertanty')
-                nUncertanty = nUncertanties[0]
+                nUncertanty = nonZeroColoums[0]
 
                 # evaluate the number of rows of the uncertanty
                 if nUncertanty not in [nDataPoint, nDataPoint * self.nCols]:
