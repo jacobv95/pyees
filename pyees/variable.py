@@ -265,7 +265,6 @@ class scalarVariable():
         self._uncert = self._uncertSI / self._unitObject._converterToSI.scale
 
     def __add__(self, other):
-
         if not isinstance(other, scalarVariable):
             return self + variable(other, self.unit)
 
@@ -1012,7 +1011,7 @@ class arrayVariable(scalarVariable):
 
 def variable(value, unit='', uncert=None, nDigits=3):
     try:
-        if all([isinstance(elem, scalarVariable) for elem in value]):
+        if value != [] and all([isinstance(elem, scalarVariable) for elem in value]):
             return arrayVariable(scalarVariables=value, unitStr = unit, uncert = uncert, nDigits=nDigits)
     except TypeError:
         pass
@@ -1055,6 +1054,6 @@ def variable(value, unit='', uncert=None, nDigits=3):
     else:
         return scalarVariable(value, unit, uncert, nDigits)
     
-    
+
     
     
