@@ -73,12 +73,6 @@ class test(unittest.TestCase):
             c = variable([a,b])
         self.assertTrue("You can only create an array variable from a list of scalar variables if all the scalar variables have the same unit" in str(context.exception))
 
-      
-        
-        
-        
-        
-
     def test_add(self):
         A = variable(12.3, 'L/min', uncert=2.6)
         B = variable(745.1, 'L/min', uncert=53.9)
@@ -1285,6 +1279,13 @@ class test(unittest.TestCase):
         self.assertEqual(A.value, (10 + 15.7) / 2)
         self.assertEqual(A.unit, 'm')
         self.assertEqual(A.uncert, 0)
+        
+        A = variable(10, 'm', 1)
+        B = variable(12, 'm', 2)
+        C = np.mean([A,B])
+        self.assertEqual(C.value, (10+12) / 2)
+        self.assertEqual(C.unit, 'm')
+        self.assertEqual(C.uncert, np.sqrt((1 * 1/2)**2 + (2 * 1/2)**2))
 
     def testSum(self):
         A = variable(10, 'm', 2.3)

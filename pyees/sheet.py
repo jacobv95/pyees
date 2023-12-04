@@ -125,7 +125,7 @@ class _sheetsFromFile():
         # parse functions for the specific extension and get all sheets
         if extension == '.xls':
             self.wb = xlrd.open_workbook(xlFile, formatting_info=True)
-            
+
             self.sheets = self.wb.sheets()
             if not sheets is None:
                 if not isinstance(sheets, list):
@@ -323,7 +323,7 @@ class _sheetsFromFile():
             
             # determine the number of variables
             headers = self.readRow(sh, 0)[self.dataStartCol[ii]-1:self.dataStartCol[ii] - 1 + self.nCols]
-
+            
             headers = self.formatHeaders(headers)
             units = self.readRow(sh, 1)[self.dataStartCol[ii]-1:self.dataStartCol[ii] - 1 + self.nCols]
 
@@ -509,3 +509,5 @@ class sheet():
         
         self.__dict__[name] = value
     
+if __name__ =="__main__":
+    data = sheetsFromFile("20231129_151640.xls", "A-J")

@@ -977,7 +977,19 @@ class arrayVariable(scalarVariable):
         return variable(self.value[index], self.unit, self.uncert[index])
 
     def mean(self):
-        return sum(self) / len(self)
+
+        # determine the value
+        val = np.mean(self.value)
+
+        # create the new variable
+        # add dependencies and calculate the uncertanty
+        var = variable(val, self.unit)
+        n = len(self)
+        for elem in self:
+            var._addDependent(elem, 1/n)
+        var._calculateUncertanty()
+
+        return var
 
     def argmin(self):
         return np.argmin(self.value)
@@ -1011,8 +1023,9 @@ class arrayVariable(scalarVariable):
 
 def variable(value, unit='', uncert=None, nDigits=3):
     try:
-        if value != [] and all([isinstance(elem, scalarVariable) for elem in value]):
-            return arrayVariable(scalarVariables=value, unitStr = unit, uncert = uncert, nDigits=nDigits)
+        if isinstance(value, list):
+            if len(value) != 0 and all([isinstance(elem, scalarVariable) for elem in value]):
+                return arrayVariable(scalarVariables=value, unitStr = unit, uncert = uncert, nDigits=nDigits)
     except TypeError:
         pass
     
@@ -1055,5 +1068,4 @@ def variable(value, unit='', uncert=None, nDigits=3):
         return scalarVariable(value, unit, uncert, nDigits)
     
 
-    
     
