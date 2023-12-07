@@ -582,6 +582,8 @@ class scalarVariable():
                 return self.argmin()
             case np.argmax:
                 return self.argmax()
+            case np.abs:
+                return self.__abs__()
         raise NotImplementedError()
 
     def max(self):
@@ -774,7 +776,7 @@ class arrayVariable(scalarVariable):
 
     def __getitem__(self, index):
 
-        if isinstance(index, int):
+        if isinstance(index, int) or isinstance(index, np.integer):
             return self.scalarVariables[index]
         elif isinstance(index, slice):
             return arrayVariable(scalarVariables=self.scalarVariables[index])
@@ -966,6 +968,8 @@ class arrayVariable(scalarVariable):
                 return self.tan()
             case np.sqrt:
                 return self.sqrt()
+            case np.abs:
+                return self.__abs__()
         raise NotImplementedError()
 
     def min(self):
@@ -1066,6 +1070,4 @@ def variable(value, unit='', uncert=None, nDigits=3):
         return arrayVariable(value=value, unitStr=unit, uncert=uncert, nDigits=nDigits)
     else:
         return scalarVariable(value, unit, uncert, nDigits)
-    
-
     
