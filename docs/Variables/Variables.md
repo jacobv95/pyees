@@ -60,6 +60,7 @@ numpy.tan(a)
 numpy.mean(a), numpy.mean([a,b])
 numpy.min(a), numpy.min([a,b])
 numpy.max(a), numpy.max([a,b])
+numpy.linspace(a,b)
 ```
 
 

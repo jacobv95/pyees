@@ -584,7 +584,38 @@ class scalarVariable():
                 return self.argmax()
             case np.abs:
                 return self.__abs__()
+            case np.linspace:
+                return self._linspace(*args, **kwargs)
         raise NotImplementedError()
+
+    @staticmethod
+    def _linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
+
+        isStartVariable = isinstance(start, scalarVariable)
+        isStopVariable = isinstance(stop, scalarVariable)
+        
+        if isStartVariable and isStopVariable:
+            if (start.unit != stop.unit):
+                raise ValueError('The arguments "start" and "stop" has to have the same unit')
+        else:
+            if isStartVariable:
+                stop = variable(stop, start.unit)
+            else:
+                start = variable(start, stop.unit)
+        
+        t = np.linspace(0,1, num, endpoint, retstep, dtype, axis)
+        
+        val = start.value + (stop.value - start.value) * t
+        unc = start.uncert + (stop.uncert - start.uncert) * t
+        
+        return variable(val, start.unit, unc)
+        
+
+
+    
+
+        
+
 
     def max(self):
         return self

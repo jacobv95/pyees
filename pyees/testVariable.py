@@ -10,6 +10,59 @@ except ImportError:
 
 class test(unittest.TestCase):
 
+    def testLinspace(self):
+        
+        a = variable(1, 'm', 0.1)
+        b = variable(2, 'm', 0.2)
+        c = np.linspace(a,b, 10, endpoint = False)
+        np.testing.assert_array_almost_equal(c.value, np.linspace(1,2,10, endpoint = False))
+        self.assertEqual(c.unit, 'm')
+        np.testing.assert_array_almost_equal(c.uncert, np.linspace(0.1,0.2,10, endpoint = False))
+        
+        
+        a = variable(1, 'm', 0.1)
+        b = variable(2, 'm', 0.2)
+        c = np.linspace(a,b, 10, endpoint = True)
+        np.testing.assert_array_almost_equal(c.value, np.linspace(1,2,10, endpoint = True))
+        self.assertEqual(c.unit, 'm')
+        np.testing.assert_array_almost_equal(c.uncert, np.linspace(0.1,0.2,10, endpoint = True))
+        
+        
+        a = variable(1, 'm', 0.1)
+        b = variable(2, 'm')
+        c = np.linspace(a,b, 10, endpoint = True)
+        np.testing.assert_array_almost_equal(c.value, np.linspace(1,2,10, endpoint = True))
+        self.assertEqual(c.unit, 'm')
+        np.testing.assert_array_almost_equal(c.uncert, np.linspace(0.1,0,10, endpoint = True))
+        
+        
+        a = variable(1, 'm', 0.1)
+        b = 2
+        c = np.linspace(a,b, 10, endpoint = True)
+        np.testing.assert_array_almost_equal(c.value, np.linspace(1,2,10, endpoint = True))
+        self.assertEqual(c.unit, 'm')
+        np.testing.assert_array_almost_equal(c.uncert, np.linspace(0.1,0,10, endpoint = True))
+        
+        a = variable(1, 'm')
+        b = variable(2, 'm', 0.2)
+        c = np.linspace(a,b, 10, endpoint = True)
+        np.testing.assert_array_almost_equal(c.value, np.linspace(1,2,10, endpoint = True))
+        self.assertEqual(c.unit, 'm')
+        np.testing.assert_array_almost_equal(c.uncert, np.linspace(0,0.2,10, endpoint = True))
+        
+        a = 1
+        b = variable(2, 'm', 0.2)
+        c = np.linspace(a,b, 10, endpoint = True)
+        np.testing.assert_array_almost_equal(c.value, np.linspace(1,2,10, endpoint = True))
+        self.assertEqual(c.unit, 'm')
+        np.testing.assert_array_almost_equal(c.uncert, np.linspace(0,0.2,10, endpoint = True))
+        
+        a = variable(1, 'm', 0.1)
+        b = variable(2, 'm3', 0.2)
+        with self.assertRaises(Exception) as context:
+            c = np.linspace(a,b, 10, endpoint = True)
+        self.assertTrue('The arguments "start" and "stop" has to have the same unit' in str(context.exception))
+
     def testArguments(self):
         A = variable(1.3, 'm')
         B = variable(2.0, 'm', 0.01)
