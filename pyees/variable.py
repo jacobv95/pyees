@@ -73,7 +73,7 @@ class logarithmic:
 
 
 class scalarVariable():
-    def __init__(self, value, unitObject: str | unit, uncert, nDigits) -> None:
+    def __init__(self, value, unitObject: str | unit, uncert) -> None:
 
         self._value = value
         self._uncert = uncert
@@ -83,20 +83,9 @@ class scalarVariable():
             unitObject, unit) else unit(unitObject)
         self._uncertSI = self.uncert * self._unitObject._converterToSI.scale
 
-        # number of digits to show
-        self._nDigits = nDigits
-
         # uncertanty
         self.dependsOn = {}
         self.covariance = {}
-
-    @property
-    def nDigits(self):
-        return self._nDigits
-
-    @nDigits.setter
-    def nDigits(self, nDigits):
-        self._nDigits = nDigits
 
     @property
     def value(self):
@@ -119,7 +108,7 @@ class scalarVariable():
     def printUncertanty(self, value, uncert):
         # function to print number
         if uncert == 0 or uncert is None or np.isnan(uncert):
-            return f'{value:.{self._nDigits}g}', None
+            return str(value), None
 
         digitsUncert = -int(np.floor(np.log10(np.abs(uncert))))
         uncert = float(f'{uncert:.{1}g}')
@@ -702,14 +691,13 @@ class scalarVariable():
 
 class arrayVariable(scalarVariable):
 
-    def __init__(self, value=None, unitStr=None, uncert=None, nDigits=None, scalarVariables=None) -> None:
+    def __init__(self, value=None, unitStr=None, uncert=None, scalarVariables=None) -> None:
 
         if not (value is None) and not (scalarVariables is None):
             raise ValueError(
                 'You cannot supply both values and scalarVariables')
 
         if not value is None:
-            self._nDigits = nDigits
 
             # create a unit object
             self._unitObject = unitStr if isinstance(
@@ -718,12 +706,11 @@ class arrayVariable(scalarVariable):
             self.scalarVariables = []            
             for v, u in zip(value, uncert):
                 self.scalarVariables.append(
-                    scalarVariable(v, self._unitObject, u, nDigits))
+                    scalarVariable(v, self._unitObject, u))
         else:
            
             self.scalarVariables = scalarVariables
             self._unitObject = self.scalarVariables[0]._unitObject
-            self.nDigits = self.scalarVariables[0].nDigits
 
             for elem in scalarVariables:
                 if elem._unitObject != self._unitObject:
@@ -817,16 +804,6 @@ class arrayVariable(scalarVariable):
             raise NotImplementedError()
 
     @property
-    def nDigits(self):
-        return self._nDigits
-
-    @nDigits.setter
-    def nDigits(self, nDigits):
-        self._nDigits = nDigits
-        for elem in self.scalarVariables:
-            elem.nDigits = nDigits
-
-    @property
     def value(self):
         return np.array([elem.value for elem in self.scalarVariables])
 
@@ -860,7 +837,7 @@ class arrayVariable(scalarVariable):
     def printUncertanty(self, value, uncert):
         # function to print number
         if uncert == 0 or uncert is None or np.isnan(uncert):
-            return f'{value:.{self.nDigits}g}', 0
+            return str(value), 0
 
         digitsUncert = -int(np.floor(np.log10(np.abs(uncert))))
 
@@ -1056,11 +1033,11 @@ class arrayVariable(scalarVariable):
         self.scalarVariables.pop(index)
 
 
-def variable(value, unit='', uncert=None, nDigits=3):
+def variable(value, unit='', uncert=None):
     try:
         if isinstance(value, list):
             if len(value) != 0 and all([isinstance(elem, scalarVariable) for elem in value]):
-                return arrayVariable(scalarVariables=value, unitStr = unit, uncert = uncert, nDigits=nDigits)
+                return arrayVariable(scalarVariables=value, unitStr = unit, uncert = uncert)
     except TypeError:
         pass
     
@@ -1098,7 +1075,7 @@ def variable(value, unit='', uncert=None, nDigits=3):
                     'The lenght of the value has to be equal to the lenght of the uncertanty')
 
     if isinstance(value, np.ndarray):
-        return arrayVariable(value=value, unitStr=unit, uncert=uncert, nDigits=nDigits)
+        return arrayVariable(value=value, unitStr=unit, uncert=uncert)
     else:
-        return scalarVariable(value, unit, uncert, nDigits)
+        return scalarVariable(value, unit, uncert)
     

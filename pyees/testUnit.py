@@ -290,6 +290,13 @@ class test(unittest.TestCase):
         self.assertTrue(unit('(m/s2)2/Hz') == unit('m2/s4-Hz'))
         self.assertTrue(unit('(m1/s2)2/Hz') == unit('m2/s4-Hz'))
         self.assertTrue(unit('(m1/s2)1/Hz') == unit('m/s2-Hz'))
+        self.assertTrue(unit('((m-s2)2/(Hz))2') == unit('m4-s8/Hz2'))
+        self.assertTrue(unit('((m/s2)2/(Hz))2') == unit('m4/s8-Hz2'))
+        self.assertTrue(unit('((m-s2)2-(Hz))2') == unit('m4-s8-Hz2'))
+        self.assertTrue(unit('((m/s2)2-(Hz))2') == unit('m4-Hz2/s8'))
+        
+        
+        
 
     def testAddNewUnit(self):
         addNewUnit('gnA', 9.81, 'm/s2')

@@ -253,14 +253,14 @@ class _fit():
         xLabel = ax.get_xlabel()
         if xLabel:
             xLabel += ' '
-        xLabel += f'[{self.xUnit}]'
+        xLabel += f'[{self.xUnit.__str__(pretty=True)}]'
         ax.set_xlabel(xLabel)
 
     def addUnitToYLabel(self, ax):
         yLabel = ax.get_ylabel()
         if yLabel:
             yLabel += ' '
-        yLabel += f'[{self.yUnit}]'
+        yLabel += f'[{self.yUnit.__str__(pretty=True)}]'
         ax.set_ylabel(yLabel)
 
     def func(self, x):

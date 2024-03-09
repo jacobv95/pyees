@@ -435,6 +435,7 @@ integers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 class unit():
 
     def __init__(self, unitStr=None, unitDict=None, unitDictSI=None, selfUnitStr=None, selfUnitStrSI=None, converterToSI=None):
+        
         if unitStr is None:
             unitStr = ''
 
@@ -645,17 +646,17 @@ class unit():
 
         return unit._reduceDict(out)
 
-    @ staticmethod
-    def _formatUnitStr(unitStr):
-
+    @staticmethod
+    def _formatUnitStr(unitStr, checkForIllegasSymbols = True):
         # remove spaces
         unitStr = unitStr.replace(' ', '')
 
         # check for any illegal symbols
-        for s in unitStr:
-            if s not in _knownCharacters:
-                raise ValueError(
-                    f'The character {s} is not used within the unitsystem')
+        if checkForIllegasSymbols:
+            for s in unitStr:
+                if s not in _knownCharacters:
+                    raise ValueError(
+                        f'The character {s} is not used within the unitsystem')
 
         # return the unity
         if unitStr is None or unitStr == '':
@@ -676,8 +677,10 @@ class unit():
             raise ValueError(
                 'The unit string has to have an equal number of open parenthesis and close parenthesis')
 
+        # chekc if the entire unit is encapsuled by a single parenthesis
+        ## this only works, if there is only one set of parenthesis
         if len(startParenIndexes) == 1 and startParenIndexes[0] == 0 and stopParenIndexes[0] == len(unitStr) - 1:
-            return unit._formatUnitStr(unitStr[startParenIndexes[0]+1:stopParenIndexes[0]])
+            return unit._formatUnitStr(unitStr[startParenIndexes[0]+1:stopParenIndexes[0]], checkForIllegasSymbols = False)
 
         # find all parenthesis pairs
         allIndexes = startParenIndexes + stopParenIndexes
@@ -702,82 +705,68 @@ class unit():
                 raise ValueError(
                     'An order to evaluate the parenthesis could not be found')
 
-        # find any slashes outside of parenthesis
-        slashOutsideParensFound = False
-        index = -1
-        parenLevel = 0
+        ## check if the last parenthesis pair encapusles the entire unit
+        if (parenOrder[-1][0] == 0 and parenOrder[-1][1] == len(unitStr) - 1):
+            return unit._formatUnitStr(unitStr[parenOrder[-1][0]+1:parenOrder[-1][1]], checkForIllegasSymbols = False)
+
+
+        ## determine if there is a hyphen or a slash outside of any parenthesis.
+        parenLevel = 0    
         for i, s in enumerate(unitStr):
-            if s == '(':
-                parenLevel += 1
-            elif s == ')':
-                parenLevel -= 1
+            if s == '(': parenLevel +=1
+            elif s == ')': parenLevel -=1
+            
+            if parenLevel == 0:
+                if s in ['/', '-']:
+                    a = unit._formatUnitStr(unitStr[0:i], checkForIllegasSymbols = False)
+                    b = unit._formatUnitStr(unitStr[i+1:], checkForIllegasSymbols = False)
+                    
+                    a = unit._getUnitDict(a)
+                    b = unit._getUnitDict(b)
+                    
+                    if s == '/':
+                        out = unit.staticTruediv(a, b)    
+                    else:
+                        out = unit.staticMul(a,b)
+                    out = unit._getUnitStrFromDict(out)
+                    return out                     
+                
+        # # there were no slashes outside of the parenthesis
+        ## select the outer most parenthesis to work with
+        ## select the enture unit and the next parenthesis
+        ## this allows to find exponents of the outer parenthesis
+        currentParens = parenOrder[-1]
+        nextParens = [0, len(unitStr)]
 
-            if parenLevel == 0 and s == '/':
-                if not slashOutsideParensFound:
-                    index = i
-                    slashOutsideParensFound = True
-                else:
-                    raise ValueError(
-                        "You can only have a signle slash ('/') outside of parenthesis")
+        # get the unitDict from the stringwithin the current parentheses
+        _unitStr = unitStr[currentParens[0]+1:currentParens[1]]
+        _unitStr = unit._formatUnitStr(_unitStr, checkForIllegasSymbols = False)
+        _unitDict = unit._getUnitDict(_unitStr)
 
-        if slashOutsideParensFound:
-            # there was a slash outside of the parenthesis.
-            # split the unitStr at the slash and return the upper divided by the lower
-            upper = unitStr[0:index]
-            lower = unitStr[index+1:]
-            upper = unit._getUnitDict(unit._formatUnitStr(upper))
-            lower = unit._getUnitDict(unit._formatUnitStr(lower))
-            return unit._getUnitStrFromDict(unit.staticTruediv(upper, lower))
+        # determine if the nextparenthesis encompasses the current parenthesis
+        if nextParens[0] <= currentParens[0] and nextParens[1] >= currentParens[1]:
 
-        # there were no slashes outside of the parenthesis
-        # append the entire unit as a "parenthesis"
-        parenOrder.append([0, len(unitStr)])
+            # get the string from the end of the current parenthesis to the end of the next parenthesis
+            nextBit = unitStr[currentParens[1]+1:nextParens[1]]
 
-        # loop over the parenthesis from the inner parenthesis to the outer parenthesis
-        for i in range(len(parenOrder)-1):
-            currentParens = parenOrder[i]
-            end = currentParens[1]
-            nextParens = parenOrder[i+1]
+            # A potential exponent of the current parenthis has to be
+            # above a potential slash (/) and before any potential hyphens (-)
+            exponent = nextBit.split('/')[0].split('-')[0]
 
-            # get the unitDict from the stringwithin the current parentheses
-            _unitStr = unitStr[currentParens[0]+1:currentParens[1]]
-            _unitStrLenOriginal = len(_unitStr)
-            _unitStr = unit._formatUnitStr(_unitStr)
-            _unitDict = unit._getUnitDict(_unitStr)
-
-            # determine if the nextparenthesis encompasses the current parenthesis
-            if nextParens[0] <= currentParens[0] and nextParens[1] >= currentParens[1]:
-
-                # get the string from the end of the current parenthesis to the end of the next parenthesis
-                nextBit = unitStr[currentParens[1]+1:nextParens[1]]
-
-                # A potential exponent of the current parenthis has to be
-                # above a potential slash (/) and before any potential hyphens (-)
-                exponent = nextBit.split('/')[0].split('-')[0]
-
-                # try to cast the exponent to an integer
-                # if this works, then raise the unitDict to the exponent
-                try:
-                    exponent = int(exponent)
-                    _unitDict = unit.staticPow(
-                        _unitDict, None, _unitStr, exponent)
-                    _unitStr = unit._getUnitStrFromDict(_unitDict)
-                    end += len(str(exponent))
-                except ValueError:
-                    pass
-
-            # update the next parenthesis based on the change of lengt of _unitStr
-            dLen = len(_unitStr) - _unitStrLenOriginal
-            for j in range(i+1, len(parenOrder)):
-                if parenOrder[j][0] >= currentParens[1]:
-                    parenOrder[j][0] += dLen-1
-                if parenOrder[j][1] >= currentParens[1]:
-                    parenOrder[j][1] += dLen-2
-
-            # update unitStr
-            unitStr = unitStr[0:currentParens[0]] + _unitStr + unitStr[end+1:]
-
-        return unitStr
+            # try to cast the exponent to an integer
+            # if this works, then raise the unitDict to the exponent
+            try:
+                exponent = int(exponent)
+                _unitDict = unit.staticPow(
+                    _unitDict, None, _unitStr, exponent)
+                _unitStr = unit._getUnitStrFromDict(_unitDict)
+                currentParens[1] += len(str(exponent))
+            except ValueError:
+                pass
+        
+        # update unitStr
+        unitStr = unitStr[0:currentParens[0]] + _unitStr + unitStr[currentParens[1]+1:]
+        return unit._formatUnitStr(unitStr, checkForIllegasSymbols = False)
 
     @ staticmethod
     def _removeExponentFromUnit(u):
@@ -853,9 +842,9 @@ class unit():
                 isUpper = exp > 0
                 if not isUpper:
                     exp *= -1
-                if exp == 1:
-                    exp = ''
-                s = f'{pre}{u}{exp}'
+                s = f'{pre}{u}'
+                if exp > 1:
+                    s+=rf'^{{{exp}}}'
                 if isUpper:
                     upper.append(s)
                 else:
@@ -978,13 +967,21 @@ class unit():
             f'You tried to subtract a variable in [{other}] from a variable in [{self}], but the units do not have the same SI base unit')
 
     def __mul__(self, other):
+        unitDict = unit.staticMul(self.unitDict, other.unitDict)
+        converterToSI = _unitConversion(*_unitConversion.staticMul(self._converterToSI.scale,
+                                        self._converterToSI.offset, other._converterToSI.scale, other._converterToSI.offset))
+        return unit(unitDict=unitDict, converterToSI=converterToSI)
+        
+    @staticmethod
+    def staticMul(a,b):
+        
         unitDict = {}
-        for key, item in self.unitDict.items():
+        for key, item in a.items():
             unitDict[key] = {}
             for pre, exp in item.items():
                 unitDict[key][pre] = exp
 
-        for key, item in other.unitDict.items():
+        for key, item in b.items():
             if not key in unitDict:
                 unitDict[key] = {}
                 for pre, exp in item.items():
@@ -997,12 +994,8 @@ class unit():
                         unitDict[key][pre] += exp
 
         unitDict = unit._reduceDict(unitDict)
-
-        converterToSI = _unitConversion(*_unitConversion.staticMul(self._converterToSI.scale,
-                                        self._converterToSI.offset, other._converterToSI.scale, other._converterToSI.offset))
-
-        return unit(unitDict=unitDict, converterToSI=converterToSI)
-
+        return unitDict
+        
     def __truediv__(self, other):
         unitDict = unit.staticTruediv(self.unitDict, other.unitDict)
         converterToSI = _unitConversion(*_unitConversion.staticTruediv(self._converterToSI.scale,
@@ -1106,9 +1099,8 @@ class unit():
         self._converterToSI = _unitConversion(outScale, outOffset)
 
     def getConverter(self, newUnitStr):
-        # TODO if self or other is a logarithmic unit, then do not use linear conversion
 
-        newUnitStr = unit._formatUnitStr(newUnitStr)
+        newUnitStr = self._formatUnitStr(newUnitStr)
         newUnitDict = unit._getUnitDict(newUnitStr)
         if newUnitDict == self.unitDictSI:
             return self._converterToSI.convert
@@ -1168,3 +1160,7 @@ class unit():
             return _bellConversion()
 
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
+
+
+if __name__ == "__main__":
+    a = unit('(m/s2)2')

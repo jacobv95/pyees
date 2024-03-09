@@ -110,7 +110,7 @@ class test(unittest.TestCase):
         dat4 = sheetsFromFile('testData/data4.xlsx', 'A-B')
         with self.assertRaises(Exception) as context:
             dat3.append(dat4)
-        self.assertTrue("You can not set an element of [1, 2, 3, 4, 5] [m] with [1, 2, 3, 4, 5] [L/min] as they do not have the same unit" in str(context.exception))
+        self.assertTrue("You can not set an element of [1.0, 2.0, 3.0, 4.0, 5.0] [m] with [1.0, 2.0, 3.0, 4.0, 5.0] [L/min] as they do not have the same unit" in str(context.exception))
 
         dat2 = sheetsFromFile('testData/data2.xlsx', 'A-B', 'C-D')
         dat4 = sheetsFromFile('testData/data4.xlsx', 'A-B', 'C-D')

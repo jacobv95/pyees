@@ -24,5 +24,5 @@ s = io.StringIO()
 ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
 ps.print_stats(100)
 
-with open('profile.txt', 'w+') as f:
+with open('profilePyees.txt', 'w+') as f:
     f.write(s.getvalue())

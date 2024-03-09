@@ -971,47 +971,47 @@ class test(unittest.TestCase):
 
     def testPrintValueAndUncertScalar(self):
         A = variable(123456789 * 10**(0), 'm',
-                     uncert=123456789 * 10**(-2), nDigits=3)
+                     uncert=123456789 * 10**(-2))
         self.assertEqual(str(A), '123000000 +/- 1000000 [m]')
 
         A = variable(123456789 * 10**(-2), 'm',
-                     uncert=123456789 * 10**(-4), nDigits=3)
+                     uncert=123456789 * 10**(-4))
         self.assertEqual(str(A), '1230000 +/- 10000 [m]')
 
         A = variable(123456789 * 10**(-4), 'm',
-                     uncert=123456789 * 10**(-6), nDigits=3)
+                     uncert=123456789 * 10**(-6))
         self.assertEqual(str(A), '12300 +/- 100 [m]')
 
         A = variable(123456789 * 10**(-6), 'm',
-                     uncert=123456789 * 10**(-8), nDigits=3)
+                     uncert=123456789 * 10**(-8))
         self.assertEqual(str(A), '123 +/- 1 [m]')
 
         A = variable(123456789 * 10**(-7), 'm',
-                     uncert=123456789 * 10**(-9), nDigits=3)
+                     uncert=123456789 * 10**(-9))
         self.assertEqual(str(A), '12.3 +/- 0.1 [m]')
 
         A = variable(123456789 * 10**(-8), 'm',
-                     uncert=123456789 * 10**(-10), nDigits=3)
+                     uncert=123456789 * 10**(-10))
         self.assertEqual(str(A), '1.23 +/- 0.01 [m]')
 
         A = variable(123456789 * 10**(-9), 'm',
-                     uncert=123456789 * 10**(-11), nDigits=3)
+                     uncert=123456789 * 10**(-11))
         self.assertEqual(str(A), '0.123 +/- 0.001 [m]')
 
         A = variable(123456789 * 10**(-10), 'm',
-                     uncert=123456789 * 10**(-12), nDigits=3)
+                     uncert=123456789 * 10**(-12))
         self.assertEqual(str(A), '0.0123 +/- 0.0001 [m]')
 
         A = variable(123456789 * 10**(-12), 'm',
-                     uncert=123456789 * 10**(-14), nDigits=3)
+                     uncert=123456789 * 10**(-14))
         self.assertEqual(str(A), '0.000123 +/- 1e-06 [m]')
 
         A = variable(123456789 * 10**(-14), 'm',
-                     uncert=123456789 * 10**(-16), nDigits=3)
+                     uncert=123456789 * 10**(-16))
         self.assertEqual(str(A), '0.00000123 +/- 1e-08 [m]')
 
         A = variable(123456789 * 10**(-16), 'm',
-                     uncert=123456789 * 10**(-18), nDigits=3)
+                     uncert=123456789 * 10**(-18))
         self.assertEqual(str(A), '0.0000000123 +/- 1e-10 [m]')
 
         A = variable(10.0, 'm', uncert=0.1)
@@ -1027,38 +1027,38 @@ class test(unittest.TestCase):
         self.assertEqual(str(A), '103 +/- 1 [m]')
 
     def testPrintValueScalar(self):
-        A = variable(123456789 * 10**(0), 'm', nDigits=6)
-        self.assertEqual(str(A), '1.23457e+08 [m]')
+        A = variable(123456789 * 10**(0), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(0)))} [m]')
 
-        A = variable(123456789 * 10**(-2), 'm', nDigits=7)
-        self.assertEqual(str(A), '1234568 [m]')
+        A = variable(123456789 * 10**(-2), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-2)))} [m]')
 
-        A = variable(123456789 * 10**(-4), 'm', nDigits=3)
-        self.assertEqual(str(A), '1.23e+04 [m]')
+        A = variable(123456789 * 10**(-4), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-4)))} [m]')
 
-        A = variable(123456789 * 10**(-6), 'm', nDigits=3)
-        self.assertEqual(str(A), '123 [m]')
+        A = variable(123456789 * 10**(-6), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-6)))} [m]')
 
-        A = variable(123456789 * 10**(-7), 'm', nDigits=3)
-        self.assertEqual(str(A), '12.3 [m]')
+        A = variable(123456789 * 10**(-7), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-7)))} [m]')
 
-        A = variable(123456789 * 10**(-8), 'm', nDigits=3)
-        self.assertEqual(str(A), '1.23 [m]')
+        A = variable(123456789 * 10**(-8), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-8)))} [m]')
 
-        A = variable(123456789 * 10**(-9), 'm', nDigits=2)
-        self.assertEqual(str(A), '0.12 [m]')
+        A = variable(123456789 * 10**(-9), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-9)))} [m]')
 
-        A = variable(123456789 * 10**(-10), 'm', nDigits=3)
-        self.assertEqual(str(A), '0.0123 [m]')
+        A = variable(123456789 * 10**(-10), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-10)))} [m]')
 
-        A = variable(123456789 * 10**(-12), 'm', nDigits=3)
-        self.assertEqual(str(A), '0.000123 [m]')
+        A = variable(123456789 * 10**(-12), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-12)))} [m]')
 
-        A = variable(123456789 * 10**(-14), 'm', nDigits=5)
-        self.assertEqual(str(A), '1.2346e-06 [m]')
+        A = variable(123456789 * 10**(-14), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-14)))} [m]')
 
-        A = variable(123456789 * 10**(-16), 'm', nDigits=3)
-        self.assertEqual(str(A), '1.23e-08 [m]')
+        A = variable(123456789 * 10**(-16), 'm')
+        self.assertEqual(str(A), f'{str(float(123456789 * 10**(-16)))} [m]')
 
     def testRoot(self):
         from random import uniform
@@ -1639,7 +1639,7 @@ class test(unittest.TestCase):
         dt = variable(10, 'min')
         with self.assertRaises(Exception) as context:
             t1 + dt
-        self.assertTrue("Some of the scalarvariables in [1, 120, 3] [min] did not have the unit [min] as they should. This could happen if the user has converted a scalarVaraible instead of the arrayVaraible." in str(
+        self.assertTrue("Some of the scalarvariables in [1.0, 120.0, 3.0] [min] did not have the unit [min] as they should. This could happen if the user has converted a scalarVaraible instead of the arrayVaraible." in str(
             context.exception))
 
         a = variable(19, 'dB', 1.2)
@@ -1742,32 +1742,32 @@ class test(unittest.TestCase):
         b = variable(2, 'C')
         with self.assertRaises(Exception) as context:
             a < b
-        self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(
+        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
             context.exception))
 
         with self.assertRaises(Exception) as context:
             a <= b
-        self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(
+        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
             context.exception))
 
         with self.assertRaises(Exception) as context:
             a > b
-        self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(
+        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
             context.exception))
 
         with self.assertRaises(Exception) as context:
             a >= b
-        self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(
+        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
             context.exception))
 
         with self.assertRaises(Exception) as context:
             a == b
-        self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(
+        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
             context.exception))
 
         with self.assertRaises(Exception) as context:
             a != b
-        self.assertTrue("You cannot compare 1 [m] and 2 [C] as they do not have the same SI base unit" in str(
+        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
             context.exception))
 
         a = variable([1, 2, 3], 'm')
