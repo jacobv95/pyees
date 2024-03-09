@@ -253,14 +253,14 @@ class _fit():
         xLabel = ax.get_xlabel()
         if xLabel:
             xLabel += ' '
-        xLabel += f'[{self.xUnit.__str__(pretty=True)}]'
+        xLabel += rf'$\left[{self.xUnit.__str__(pretty=True)}\right]$'
         ax.set_xlabel(xLabel)
 
     def addUnitToYLabel(self, ax):
         yLabel = ax.get_ylabel()
         if yLabel:
             yLabel += ' '
-        yLabel += f'[{self.yUnit.__str__(pretty=True)}]'
+        yLabel += rf'$\left[{self.yUnit.__str__(pretty=True)}\right]$'
         ax.set_ylabel(yLabel)
 
     def func(self, x):
@@ -438,10 +438,13 @@ class pol_fit(_fit):
         units = []
         n = self.deg
         for i in range(n + 1):
-            u = self.yUnit
             if i != n:
-                ui = self.xUnit ** (n - i)
-                u /= ui
+                exponent = n-i                
+                u = rf'({self.yUnit}) / ( {self.xUnit} )'
+                if exponent != 1:
+                    u += str(exponent)
+            else:
+                u = self.yUnit
             units.append(u)
         return units
 
@@ -538,3 +541,17 @@ def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
 
     return newFit
 
+
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    x = variable([1,2,3,4,5,6], '(L/min)2-Hz')
+    y = variable([1,3,6,12, 16, 19], 'mbar')
+    
+    f = pol_fit(x,y)
+    fig, ax = plt.subplots()
+    f.plot(ax)
+    f.scatter(ax)
+    f.addUnitToLabels(ax)
+    ax.legend()
+    plt.show()

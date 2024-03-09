@@ -436,11 +436,14 @@ class unit():
 
     def __init__(self, unitStr=None, unitDict=None, unitDictSI=None, selfUnitStr=None, selfUnitStrSI=None, converterToSI=None):
         
+        self.unitStrPretty = None
+        
         if unitStr is None:
             unitStr = ''
 
         if unitDict is None:
             self.unitDict = self._getUnitDict(self._formatUnitStr(unitStr))
+            self.unitStrPretty = self._formatUnitStrPretty(unitStr)
         else:
             self.unitDict = unitDict
 
@@ -453,6 +456,12 @@ class unit():
             self.unitStr = self._getUnitStrFromDict(self.unitDict)
         else:
             self.unitStr = selfUnitStr
+
+        if self.unitStrPretty is None:
+            self.unitStrPretty = self._formatUnitStrPretty(self.unitStr)
+        self.unitStrPretty = self.unitStrPretty.replace(rf'\left', rf'\left(')
+        self.unitStrPretty = self.unitStrPretty.replace(rf'\right', rf'\right)')
+
 
         if selfUnitStrSI is None:
             self.unitStrSI = self._getUnitStrFromDict(self.unitDictSI)
@@ -647,16 +656,16 @@ class unit():
         return unit._reduceDict(out)
 
     @staticmethod
-    def _formatUnitStr(unitStr, checkForIllegasSymbols = True):
+    def _formatUnitStr(unitStr):
+
         # remove spaces
         unitStr = unitStr.replace(' ', '')
-
+        
         # check for any illegal symbols
-        if checkForIllegasSymbols:
-            for s in unitStr:
-                if s not in _knownCharacters:
-                    raise ValueError(
-                        f'The character {s} is not used within the unitsystem')
+        for s in unitStr:
+            if s not in _knownCharacters:
+                raise ValueError(
+                    f'The character {s} is not used within the unitsystem')
 
         # return the unity
         if unitStr is None or unitStr == '':
@@ -680,7 +689,7 @@ class unit():
         # chekc if the entire unit is encapsuled by a single parenthesis
         ## this only works, if there is only one set of parenthesis
         if len(startParenIndexes) == 1 and startParenIndexes[0] == 0 and stopParenIndexes[0] == len(unitStr) - 1:
-            return unit._formatUnitStr(unitStr[startParenIndexes[0]+1:stopParenIndexes[0]], checkForIllegasSymbols = False)
+            return unit._formatUnitStr(unitStr[startParenIndexes[0]+1:stopParenIndexes[0]])
 
         # find all parenthesis pairs
         allIndexes = startParenIndexes + stopParenIndexes
@@ -707,7 +716,7 @@ class unit():
 
         ## check if the last parenthesis pair encapusles the entire unit
         if (parenOrder[-1][0] == 0 and parenOrder[-1][1] == len(unitStr) - 1):
-            return unit._formatUnitStr(unitStr[parenOrder[-1][0]+1:parenOrder[-1][1]], checkForIllegasSymbols = False)
+            return unit._formatUnitStr(unitStr[parenOrder[-1][0]+1:parenOrder[-1][1]])
 
 
         ## determine if there is a hyphen or a slash outside of any parenthesis.
@@ -718,8 +727,8 @@ class unit():
             
             if parenLevel == 0:
                 if s in ['/', '-']:
-                    a = unit._formatUnitStr(unitStr[0:i], checkForIllegasSymbols = False)
-                    b = unit._formatUnitStr(unitStr[i+1:], checkForIllegasSymbols = False)
+                    a = unit._formatUnitStr(unitStr[0:i])
+                    b = unit._formatUnitStr(unitStr[i+1:])
                     
                     a = unit._getUnitDict(a)
                     b = unit._getUnitDict(b)
@@ -740,7 +749,7 @@ class unit():
 
         # get the unitDict from the stringwithin the current parentheses
         _unitStr = unitStr[currentParens[0]+1:currentParens[1]]
-        _unitStr = unit._formatUnitStr(_unitStr, checkForIllegasSymbols = False)
+        _unitStr = unit._formatUnitStr(_unitStr)
         _unitDict = unit._getUnitDict(_unitStr)
 
         # determine if the nextparenthesis encompasses the current parenthesis
@@ -766,7 +775,128 @@ class unit():
         
         # update unitStr
         unitStr = unitStr[0:currentParens[0]] + _unitStr + unitStr[currentParens[1]+1:]
-        return unit._formatUnitStr(unitStr, checkForIllegasSymbols = False)
+        return unit._formatUnitStr(unitStr)
+
+    @staticmethod
+    def _formatUnitStrPretty(unitStr):
+        
+        # find start parenthesis is the unit string
+        startParenIndexes = [i for i, s in enumerate(unitStr) if s == '(']
+        stopParenIndexes = [i for i, s in enumerate(unitStr) if s == ')']
+
+        if not startParenIndexes and not stopParenIndexes:
+            unitStr = unitStr.split('-')
+            unitStr = [elem for elem in unitStr if not elem == '']
+            unitStr = '-'.join(unitStr) if unitStr else '1'
+            
+            unitStr = unitStr.split('/')
+            if (len(unitStr)) == 1:
+                upper, lower = unitStr[0], ''
+            else:
+                upper, lower = unitStr
+            
+            upper = upper.split('-')
+            lower = lower.split('-')
+            
+            upper = '\cdot '.join(upper)
+            lower = '\cdot '.join(lower)
+            
+            if lower:
+                unitStr = rf'\frac{{{upper}}}{{{lower}}}'
+            else:
+                unitStr = upper
+            
+            return unitStr
+
+        # check that the number of start and stop parenthesis are equal
+        if len(startParenIndexes) != len(stopParenIndexes):
+            raise ValueError(
+                'The unit string has to have an equal number of open parenthesis and close parenthesis')
+
+        # chekc if the entire unit is encapsuled by a single parenthesis
+        ## this only works, if there is only one set of parenthesis
+        if len(startParenIndexes) == 1 and startParenIndexes[0] == 0 and stopParenIndexes[0] == len(unitStr) - 1:
+            return unit._formatUnitStrPretty(unitStr[startParenIndexes[0]+1:stopParenIndexes[0]])
+
+        # find all parenthesis pairs
+        allIndexes = startParenIndexes + stopParenIndexes
+        allIndexes.sort()
+        isStartParen = [elem in startParenIndexes for elem in allIndexes]
+        done, iter, maxIter, parenOrder = False, 0, len(allIndexes), []
+        while not done:
+            for i in range(len(allIndexes)-1):
+                if isStartParen[i] and (isStartParen[i] + isStartParen[i+1] == 1):
+                    parenOrder.append([allIndexes[i], allIndexes[i+1]])
+                    allIndexes.pop(i+1)
+                    allIndexes.pop(i)
+                    isStartParen.pop(i+1)
+                    isStartParen.pop(i)
+                    break
+
+            if len(allIndexes) == 0:
+                break
+
+            iter += 1
+            if iter > maxIter:
+                raise ValueError(
+                    'An order to evaluate the parenthesis could not be found')
+
+        ## check if the last parenthesis pair encapusles the entire unit
+        if (parenOrder[-1][0] == 0 and parenOrder[-1][1] == len(unitStr) - 1):
+            return unit._formatUnitStrPretty(unitStr[parenOrder[-1][0]+1:parenOrder[-1][1]])
+
+
+        ## determine if there is a hyphen or a slash outside of any parenthesis.
+        parenLevel = 0    
+        for i, s in enumerate(unitStr):
+            if s == '(': parenLevel +=1
+            elif s == ')': parenLevel -=1
+            
+            if parenLevel == 0:
+                if s in ['/', '-']:
+                    a = unit._formatUnitStrPretty(unitStr[0:i])
+                    b = unit._formatUnitStrPretty(unitStr[i+1:])
+                    
+                    if s == '/':
+                        out = rf'\frac{{{a}}}{{{b}}}'    
+                    else:
+                        out = rf'{a} \cdot {b}'
+                    return out                     
+                
+        # # there were no slashes outside of the parenthesis
+        ## select the outer most parenthesis to work with
+        ## select the enture unit and the next parenthesis
+        ## this allows to find exponents of the outer parenthesis
+        currentParens = parenOrder[-1]
+        nextParens = [0, len(unitStr)]
+
+        # get the unitDict from the stringwithin the current parentheses
+        _unitStr = unitStr[currentParens[0]+1:currentParens[1]]
+        _unitStr = unit._formatUnitStrPretty(_unitStr)
+
+        # determine if the nextparenthesis encompasses the current parenthesis
+        if nextParens[0] <= currentParens[0] and nextParens[1] >= currentParens[1]:
+
+            # get the string from the end of the current parenthesis to the end of the next parenthesis
+            nextBit = unitStr[currentParens[1]+1:nextParens[1]]
+
+            # A potential exponent of the current parenthis has to be
+            # above a potential slash (/) and before any potential hyphens (-)
+            exponent = nextBit.split('/')[0].split('-')[0]
+
+            # try to cast the exponent to an integer
+            # if this works, then raise the unitDict to the exponent
+            try:
+                exponent = int(exponent)
+                _unitStr = rf'\left {_unitStr} \right^{{{exponent}}}'
+                currentParens[1] += len(str(exponent))
+            except ValueError:
+                pass
+        
+        # update unitStr
+        unitStr = unitStr[0:currentParens[0]] + _unitStr + unitStr[currentParens[1]+1:]
+        return unit._formatUnitStrPretty(unitStr)
+
 
     @ staticmethod
     def _removeExponentFromUnit(u):
@@ -835,33 +965,10 @@ class unit():
 
         if not pretty:
             return self.unitStr
-
-        upper, lower = [], []
-        for u, item in self.unitDict.items():
-            for pre, exp in item.items():
-                isUpper = exp > 0
-                if not isUpper:
-                    exp *= -1
-                s = f'{pre}{u}'
-                if exp > 1:
-                    s+=rf'^{{{exp}}}'
-                if isUpper:
-                    upper.append(s)
-                else:
-                    lower.append(s)
-
-        if not lower:
-            # no fraction
-            out = '\cdot'.join(upper)
-            return out
-
-        # a fraction is needed
-        out = rf'\frac{{'
-        out += '\cdot '.join(upper)
-        out += rf'}}{{'
-        out += '\cdot '.join(lower)
-        out += rf'}}'
-        return out
+        
+        return self.unitStrPretty
+        
+        
 
     def __eq__(self, other):
         return self.unitDict == other.unitDict
@@ -1163,4 +1270,6 @@ class unit():
 
 
 if __name__ == "__main__":
-    a = unit('(m/s2)2')
+    a = unit('(m/s2)2-Hz')
+    
+    print(a.__str__(pretty = True))
