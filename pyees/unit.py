@@ -436,7 +436,6 @@ class unit():
 
     def __init__(self, unitStr=None, unitDict=None, unitDictSI=None, selfUnitStr=None, selfUnitStrSI=None, converterToSI=None):
         
-        self.unitStrOriginal = None
         self.unitStrPretty = None
         
         if unitStr is None:
@@ -453,7 +452,6 @@ class unit():
                     raise ValueError(
                         f'The character {s} is not used within the unitsystem')
 
-            self.unitStrOriginal = unitStr
             self.unitStr, self.unitStrPretty = self._formatUnitStr(unitStr, unitStr)
             self.unitDict = self._getUnitDict(self.unitStr)
         else:
@@ -744,6 +742,8 @@ class unit():
 
         # chekc if the entire unit is encapsuled by a single parenthesis
         ## this only works, if there is only one set of parenthesis
+        startParenIndexesPretty = [i for i, s in enumerate(unitStrPretty) if s == '(']
+        stopParenIndexesPretty = [i for i, s in enumerate(unitStrPretty) if s == ')']
         if len(startParenIndexes) == 1 and startParenIndexes[0] == 0 and stopParenIndexes[0] == len(unitStr) - 1:
             return unit._formatUnitStr(
                 unitStr[startParenIndexes[0]+1:stopParenIndexes[0]],
@@ -751,8 +751,6 @@ class unit():
                 )
 
         # find all parenthesis pairs
-        startParenIndexesPretty = [i for i, s in enumerate(unitStrPretty) if s == '(']
-        stopParenIndexesPretty = [i for i, s in enumerate(unitStrPretty) if s == ')']
         allIndexes = startParenIndexes + stopParenIndexes
         allIndexesPretty = startParenIndexesPretty + stopParenIndexesPretty
         allIndexes.sort()
@@ -1236,11 +1234,19 @@ class unit():
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
 
 
+## TODO parse unitStrPretty to new units
+## this will allow the new unit to automatically have the unitStrPretty
+
 if __name__ == "__main__":
-    a = unit(None)
-    # a.getConverter('m6 / s2')
     
-    print(a.unitStrPretty)
-    # print(rf'\frac{{\frac{{m}}{{s2}}^{{2}}}}{{Hz}}')
+    yUnit = unit('mbar')
+    xUnit = unit('L/min')
+    print(yUnit.unitStrPretty)
+    print(xUnit.unitStrPretty)
     
-    # print(a.__str__(pretty = True))
+    aUnit = yUnit / (xUnit**2)
+    print(aUnit.unitStrPretty)
+    
+    
+    aUnit = unit('mbar / (L/min)2')
+    print(aUnit.unitStrPretty)

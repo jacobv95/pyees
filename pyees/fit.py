@@ -348,7 +348,7 @@ class exp_fit(_fit):
         _fit.__init__(self, self.func, x, y, p0=p0, useParameters = useParameters)
 
     def getVariableUnits(self):
-        return [self.yUnit.unitStrOriginal, '', self.yUnit.unitStrOriginal]
+        return [self.yUnit, '', self.yUnit]
 
     def _func(self, B, x):
         a,b,c = self.getOnlyUsedTerms(B)
@@ -383,7 +383,7 @@ class pow_fit(_fit):
         _fit.__init__(self, self.func, x, y, p0=p0, useParameters=useParameters)
 
     def getVariableUnits(self):
-        return [self.yUnit.unitStrOriginal, '1', self.yUnit.unitStrOriginal]
+        return [self.yUnit, '1', self.yUnit]
 
     def _func(self, B, x):
         a,b,c = self.getOnlyUsedTerms(B)
@@ -440,7 +440,7 @@ class pol_fit(_fit):
         for i in range(n + 1):
             if i != n:
                 exponent = n-i                
-                u = rf'({self.yUnit.unitStrOriginal}) / ( {self.xUnit.unitStrOriginal} )'
+                u = rf'({self.yUnit}) / ( {self.xUnit} )'
                 if exponent != 1:
                     u += str(exponent)
             else:
@@ -499,7 +499,7 @@ class logistic_fit(_fit):
         _fit.__init__(self, self.func, x, y, p0=p0, useParameters=useParameters)
 
     def getVariableUnits(self):
-        return [self.yUnit.unitStrOriginal,'1','1']
+        return [self.yUnit,'1','1']
     
     def _func(self, B, x):
         L,k,x0 = self.getOnlyUsedTerms(B)
