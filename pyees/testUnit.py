@@ -319,6 +319,23 @@ class test(unittest.TestCase):
         self.assertEqual(a, unit('s12'))
         self.assertEqual(a.unitStrPretty, rf's^{{12}}')
         
+        yUnit = unit('mbar')
+        xUnit = unit('L/min')
+
+
+        a = yUnit / (xUnit**2)
+        b = yUnit / xUnit
+        c = yUnit
+        
+        self.assertEqual(a, unit('mbar - min2 / L2'))
+        self.assertEqual(a.unitStrPretty, rf'\frac{{mbar}}{{\left( \frac{{L}}{{min}} \right)^{{2}}}}')
+        self.assertEqual(b, unit('mbar - min / L'))
+        self.assertEqual(b.unitStrPretty, rf'\frac{{mbar}}{{\frac{{L}}{{min}}}}')
+        self.assertEqual(c, unit('mbar'))
+        self.assertEqual(c.unitStrPretty, rf'mbar')
+        
+        
+        
         
         
         

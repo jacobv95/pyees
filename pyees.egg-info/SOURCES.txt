@@ -10,6 +10,7 @@ pyees/prop.py
 pyees/sheet.py
 pyees/solve.py
 pyees/stackOverflowODR.py
+pyees/test.py
 pyees/testFit.py
 pyees/testProp.py
 pyees/testPyees.py

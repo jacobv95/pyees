@@ -439,10 +439,7 @@ class pol_fit(_fit):
         n = self.deg
         for i in range(n + 1):
             if i != n:
-                exponent = n-i                
-                u = rf'({self.yUnit}) / ( {self.xUnit} )'
-                if exponent != 1:
-                    u += str(exponent)
+                u = self.yUnit / self.xUnit ** (n-i)
             else:
                 u = self.yUnit
             units.append(u)
@@ -542,16 +539,3 @@ def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
     return newFit
 
 
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    x = variable([1,2,3,4,5,6], '(L/min)2-Hz')
-    y = variable([1,3,6,12, 16, 19], 'mbar')
-    
-    f = pol_fit(x,y)
-    fig, ax = plt.subplots()
-    f.plot(ax)
-    f.scatter(ax)
-    f.addUnitToLabels(ax)
-    ax.legend()
-    plt.show()
