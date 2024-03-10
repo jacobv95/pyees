@@ -287,13 +287,38 @@ class test(unittest.TestCase):
         self.assertTrue(unit('( -)') == unit('1'))
         self.assertTrue(unit('( - (- ))') == unit('1'))
         
-        self.assertTrue(unit('(m/s2)2/Hz') == unit('m2/s4-Hz'))
-        self.assertTrue(unit('(m1/s2)2/Hz') == unit('m2/s4-Hz'))
-        self.assertTrue(unit('(m1/s2)1/Hz') == unit('m/s2-Hz'))
-        self.assertTrue(unit('((m-s2)2/(Hz))2') == unit('m4-s8/Hz2'))
-        self.assertTrue(unit('((m/s2)2/(Hz))2') == unit('m4/s8-Hz2'))
-        self.assertTrue(unit('((m-s2)2-(Hz))2') == unit('m4-s8-Hz2'))
-        self.assertTrue(unit('((m/s2)2-(Hz))2') == unit('m4-Hz2/s8'))
+        a = unit('(m/s2)2/Hz')
+        self.assertEqual(a, unit('m2/s4-Hz'))
+        self.assertEqual(a.unitStrPretty, rf'\frac{{\left( \frac{{m}}{{s^{{2}}}} \right)^{{2}}}}{{Hz}}')
+        
+        a = unit('(m/s2)1/Hz')
+        self.assertEqual(a, unit('m/s2-Hz'))
+        self.assertEqual(a.unitStrPretty, rf'\frac{{\frac{{m}}{{s^{{2}}}}}}{{Hz}}')
+        
+        a = unit('((m-s2)2/(Hz))2')
+        self.assertEqual(a, unit('m4-s8/Hz2'))
+        self.assertEqual(a.unitStrPretty, rf'\left( \frac{{\left( m\cdot s^{{2}} \right)^{{2}}}}{{Hz}} \right)^{{2}}')
+        
+        a = unit('((m/s2)2/(Hz))2')
+        self.assertEqual(a, unit('m4/s8-Hz2'))
+        self.assertEqual(a.unitStrPretty, rf'\left( \frac{{\left( \frac{{m}}{{s^{{2}}}} \right)^{{2}}}}{{Hz}} \right)^{{2}}')
+        
+        a = unit('((m-s2)2-(Hz))2')
+        self.assertEqual(a, unit('m4-s8-Hz2'))
+        self.assertEqual(a.unitStrPretty, rf'\left( \left( m\cdot s^{{2}} \right)^{{2}} \cdot Hz \right)^{{2}}')
+        
+        a = unit('((m/s2)2-(Hz))2')
+        self.assertEqual(a, unit('m4-Hz2/s8'))
+        self.assertEqual(a.unitStrPretty, rf'\left( \left( \frac{{m}}{{s^{{2}}}} \right)^{{2}} \cdot Hz \right)^{{2}}')
+        
+        a = unit('((m/s2)3-(Hz))2')       
+        self.assertEqual(a, unit('m6-Hz2/s12'))
+        self.assertEqual(a.unitStrPretty, rf'\left( \left( \frac{{m}}{{s^{{2}}}} \right)^{{3}} \cdot Hz \right)^{{2}}')
+        
+        a = unit('s12')
+        self.assertEqual(a, unit('s12'))
+        self.assertEqual(a.unitStrPretty, rf's^{{12}}')
+        
         
         
         
