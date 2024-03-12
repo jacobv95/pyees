@@ -547,33 +547,30 @@ class unit():
         u, prefix = unit._removePrefixFromUnit(prefixUnit)
         return u, prefix, exponent
 
+
+
     @staticmethod
     def _reduceDict(unitDict):
-
+        
         # check if 1 is in the unit
         n = len(unitDict)
         if '1' in unitDict:
+            unitDict['1'][''] = 1
             if n > 1:
-                otherUpper = False
+                otherUpper = False                
                 for key, item in unitDict.items():
-                    if key == '1':
-                        continue
+                    if key == '1': continue
                     for exp in item.values():
                         if exp > 0:
                             otherUpper = True
                             break
-                    if otherUpper:
-                        break
+                    if otherUpper: break
 
                 # if there are any other upper units, then remove 1
                 # else set the exponent of the unit '1' to 1
                 if otherUpper:
                     unitDict.pop('1')
                     n -= 1
-                else:
-                    unitDict['1'][''] = 1
-            else:
-                unitDict['1'][''] = 1
 
         # make temperature units in to temperature differences, if there are any other units in the dict
         if n > 1:
