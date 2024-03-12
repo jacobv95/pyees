@@ -5,7 +5,6 @@ import sys
 import warnings
 try:
     from variable import variable, arrayVariable, scalarVariable
-    from unit import unit
 except ImportError:
     from pyees.variable import variable, arrayVariable, scalarVariable
     from pyees.unit import unit
@@ -43,7 +42,7 @@ class _fit():
         indexesNotToUse = []
         for i in range(len(self.xVal)):
             if np.isnan(self.xVal[i]):
-                indexesNotToUse.append(i)
+                indexesNotToUse.apd(i)
                 continue
             if np.isnan(self.xUncert[i]):
                 indexesNotToUse.append(i)
@@ -89,7 +88,7 @@ class _fit():
                     continue
                 self.coefficients[i].addCovariance(
                     var = self.coefficients[j],
-                    covariance = regression.cov_beta[i,j],
+                    covariance = regression.cov_beta[i,j] * scale,
                     unitStr = str(self.coefficients[i]._unitObject * self.coefficients[j]._unitObject)
                 )
 
@@ -449,7 +448,8 @@ class pol_fit(_fit):
         B = self.getOnlyUsedTerms(B)
         out = 0
         for i,b in enumerate(B):
-            out +=  b * x**(self.deg - i)
+            term = b * x**(self.deg - i)
+            out += term
         return out
 
     def func_name(self):
@@ -539,3 +539,16 @@ def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
     return newFit
 
 
+
+
+if __name__ == "__main__":
+
+    flow = variable([660.09423012, 632.43569693, 585.42024242, 522.76300061, 503.14430082, 447.93713197, 400.01585758], '1', [40.16979867, 39.40731403, 32.88129504, 25.96587423, 28.57373576, 20.87486404, 21.3429122])
+    dp = variable([227.49190451, 201.72024508, 171.5431791, 140.95368402, 125.08148975, 101.49530656, 82.13967787], '1', [2.60904033, 2.31367366, 2.39738832, 2.1452602, 1.83369048, 1.48646204, 1.33872491])
+
+    fit_dp1_2 = pol_fit(flow, dp)
+    print(*fit_dp1_2.coefficients)
+    x = variable(10)
+    out = fit_dp1_2.predict(x)
+    print(out)
+    exit()
