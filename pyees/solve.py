@@ -34,14 +34,26 @@ def solve(func, x, *args, bounds = None, **kwargs):
     except Exception:
         raise ValueError('The function returned an exception when supplied the initial guesses. Somtehing is wrong.')
 
+    ## test the length of all equations
+    for i, equation in enumerate(_func(*x)):
+        if len(equation) != 2:
+            raise ValueError(f'Equation {i+1} is a list of {len(equation)} elements. This corresponds with an equation with {len(equation)} sides. All equations has to have 2 sides')
+    
+
+    ## test weather both sides of all equations return variables
+    for i, equation in enumerate(_func(*x)):
+        for j, side in enumerate(equation):
+            if not isinstance(side, scalarVariable):
+                side = 'Left' if j == 0 else 'Right'
+                raise ValueError(f'The {side} side of equation {i+1} is not a variable. Both side of each equation has to be a variable')
+
     ## create another wrapper around the funciton, which will flatten the equations
     def ffunc(*x):
         out = []
-        for equation in _func(*x):
-            side1, side2 = equation
+        for side1, side2 in _func(*x):
             for elemSide1, elemSide2 in zip(side1, side2):
                 out.append([elemSide1, elemSide2])
-        return out
+        return out    
     
     ## test if the right number of variables were supplied for the function
     try:
@@ -151,17 +163,26 @@ def solve(func, x, *args, bounds = None, **kwargs):
             ## update the object "bound"
             bounds = bbounds
 
+    ## nudge of the variables if one or more equation has already been solved
+    out = ffunc(*x)
+    done = False
+    while not done:
+        out = ffunc(*x)
+        if sum([1 if elem[0] - elem[1] == 0 else 0 for elem in out]) != 0:
+            index = np.random.randint(0, nVariables)
+            x[index]._value *= 1 + np.random.uniform(-0.0001, 0.0001)
+        else:
+            done = True
+    
     ## define the scalings of each equation. This is only valid if there are more than 1 equaiton
     scales = np.ones(nVariables)
     if nVariables != 1:
         out = ffunc(*x)
-        currentIndex = 0
         for i,o in enumerate(out):
             if not doesUnitsOfEquationsMatch[i]:
                 for elem in o:
-                    elem.convert(elem._unitObject.unitStrSI) 
-            scales[i] = 1/(o[0].value - o[1].value)**2
-    
+                    elem.convert(elem._unitObject.unitStrSI)
+            scales[i] = 1/(o[0].value - o[1].value)**2    
     
     ## method to keep the variables within the bounda
     ## the method will be given a single input during the minimzation. 
@@ -194,7 +215,6 @@ def solve(func, x, *args, bounds = None, **kwargs):
                     elem.convert(elem._unitObject.unitStrSI)
 
         return sum([(e[0].value - e[1].value)**2 * s for e,s in zip(out, scales)])
-
 
     ## move the initial guess in to the feasible area if the bounds are callable
     if callable(bounds): keepVariablesFeasible()
@@ -242,7 +262,7 @@ def solve(func, x, *args, bounds = None, **kwargs):
                     ## add the gradient d(residual)/d(xj) to the jacobian matrix
                     J[i, currentIndex] += res.dependsOn[xjj][1]
                 currentIndex += 1
-           
+
     # inverse the jacobian
     Jinv = np.linalg.inv(J)
 
@@ -266,17 +286,16 @@ def solve(func, x, *args, bounds = None, **kwargs):
 
 if __name__ == "__main__":
     from variable import variable
-    solveTol = 1e-12
-    a = variable([23.7, 12.3], '', [0.1, 0.05])
-    b = variable([943, 793], '', [12.5, 9.4])
     
-    def func(x):
-        return [a * x**2, b]
+    a = 1.2
+    b = 2.3
+    total = variable(23)
     
-    lower = variable([-np.inf, -np.inf])
-    upper = variable([np.inf, np.inf])
-    
-    def bounds(x):
-        return [lower, x, upper]
-    
-    solve(func, variable([20],''), tol = solveTol, bounds=bounds)
+    def func(x1, x2):
+        eq1 = [x1 + x2, total]
+        eq2 = [a*x1, b*x2]
+        return [eq1, eq2]
+        
+    x0 = [variable(19), variable(3)]
+    x = solve(func, x0)
+    print(x)

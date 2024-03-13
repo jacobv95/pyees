@@ -54,7 +54,6 @@ class test(unittest.TestCase):
         correctX = (c - b*correctY) / a
         
         def func(x,y):
-            eqs = []
             eq1 = [a * x + b * y, c]
             eq2 = [d * x + e * y, f]
             eqs = [eq1, eq2]
@@ -517,6 +516,63 @@ class test(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             solve(func, variable(20,''), tol = solveTol, bounds=bounds)
         self.assertTrue("You supplied 2 equations but 1 variables. The number of equations and the vairables has to match" in str(context.exception))
+
+    def testAlreadySolvedEquation(self):
+        a = 1.2
+        b = 2.3
+        total = variable(23.0)
+        
+        def func(x1, x2):
+            eq1 = [x1 + x2, total]
+            eq2 = [a*x1, b*x2]
+            return [eq1, eq2]
+            
+        x0 = [variable(20), variable(3)]
+        x = solve(func, x0)
+
+    
+    def testNonVariableEquation(self):
+        a = 1.2
+        b = 2.3
+        total = 23
+        
+        def func(x1, x2):
+            eq1 = [x1 + x2, total]
+            eq2 = [a*x1, b*x2]
+            return [eq1, eq2]
+            
+        x0 = [variable(20), variable(3)]
+        with self.assertRaises(Exception) as context:
+            solve(func, x0)
+        self.assertTrue("The Right side of equation 1 is not a variable. Both side of each equation has to be a variable" in str(context.exception))
+   
+   
+    def testNumberOfSidesInEquations(self):
+        a = 1.2
+        b = 2.3
+        total = variable(23)
+        
+        def func(x1, x2):
+            eq1 = [x1 + x2, total]
+            eq2 = [a*x1, b*x2, 3]
+            return [eq1, eq2]
+            
+        x0 = [variable(20), variable(3)]
+        with self.assertRaises(Exception) as context:
+            solve(func, x0)
+        self.assertTrue("Equation 2 is a list of 3 elements. This corresponds with an equation with 3 sides. All equations has to have 2 sides" in str(context.exception))
+   
+        
+        def func(x1, x2):
+            eq1 = [x1 + x2]
+            eq2 = [a*x1, b*x2]
+            return [eq1, eq2]
+            
+        x0 = [variable(20), variable(3)]
+        with self.assertRaises(Exception) as context:
+            solve(func, x0)
+        self.assertTrue("Equation 1 is a list of 1 elements. This corresponds with an equation with 1 sides. All equations has to have 2 sides" in str(context.exception))
+   
 
 
 if __name__ == '__main__':
