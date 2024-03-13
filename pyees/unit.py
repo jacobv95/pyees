@@ -1158,6 +1158,9 @@ class unit():
         if unitDict == {'1': {'': 1}}:
             return unitDict
 
+        if unitDictSI == {'1': {'':1}}:
+            return unitDictSI
+        
         frac = Fraction(power).limit_denominator()
         num, den = frac._numerator, frac._denominator
 

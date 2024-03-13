@@ -1079,3 +1079,7 @@ def variable(value, unit='', uncert=None):
     else:
         return scalarVariable(value, unit, uncert)
     
+if __name__ == "__main__":
+    a =variable(49,'%')
+    b = np.sqrt(a)
+    print(b)
