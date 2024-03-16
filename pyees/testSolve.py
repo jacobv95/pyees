@@ -15,7 +15,7 @@ solveTol = 1e-12
 class test(unittest.TestCase):
     
     def assertRelativeDifference(self, a, b, r):
-        assert abs(a-b) < abs(b * r), f"The value {a} and {b} has a greater relative difference than {r}. The difference was {abs(a-b)} and was allowed to be {b*r}"
+        assert abs(a-b) <= abs(b * r), f"The value {a} and {b} has a greater relative difference than {r}. The difference was {abs(a-b)} and was allowed to be {b*r}"
       
     def testSolveOneLinearEquation(self):
         a = variable(23.7, '', 0.1)
@@ -529,7 +529,6 @@ class test(unittest.TestCase):
             
         x0 = [variable(20), variable(3)]
         x = solve(func, x0)
-
     
     def testNonVariableEquation(self):
         a = 1.2
@@ -584,6 +583,91 @@ class test(unittest.TestCase):
 
         self.assertRelativeDifference(x.value, correct.value, tol)
         self.assertRelativeDifference(x.uncert, correct.uncert, tol)
+
+
+    def testSolveParametric(self):
+        n = 20
+    
+        a = variable(9, '', 0.3)
+        B = variable(np.linspace(23, 15, n), '', np.linspace(0.2, 0.07, n))
+        x0 = variable(1)
+        
+        def func(x, b):
+            return [a * x, b]
+        
+        correct = B / a
+        x = solve(func, x0, parametric=B, tol = solveTol)
+        for i in range(n):
+            self.assertRelativeDifference(x.value[i], correct.value[i], tol)
+            self.assertRelativeDifference(x.uncert[i], correct.uncert[i], tol)
+
+    def testSolveWithListOfParametrics(self):
+        n = 20
+    
+        A = variable(np.linspace(3, 14,n), '', np.linspace(0.3, 1.7, n))
+        B = variable(np.linspace(23, 15, n), '', np.linspace(0.2, 0.07, n))
+        x0 = variable(1)
+        
+        def func(x, a, b):
+            return [a * x, b]
+        
+        correct = B / A
+        x = solve(func, x0, parametric=[A,B], tol = solveTol)
+        for i in range(n):
+            self.assertRelativeDifference(x.value[i], correct.value[i], tol)
+            self.assertRelativeDifference(x.uncert[i], correct.uncert[i], tol)
+
+    def testSolveWithParametricsAndBounds(self):
+        n = 20
+    
+        a = variable(9, '', 0.3)
+        B = variable(np.linspace(-5, 15, n), '', np.linspace(0.2, 0.07, n))
+        x0 = variable(1)
+        
+        def bounds(x):
+            return [variable(0), x, variable(1)]
+        
+        def func(x, b):
+            return [a * x, b]
+        
+        correct = B / a
+        x = solve(func, x0, parametric=[B], tol = solveTol, bounds = bounds)
+        
+        for i in range(n):
+            checkUncert = True
+            if correct[i] < 0:
+                correct[i]._value = 0
+                checkUncert = False
+            if correct[i] > 1:
+                correct[i]._value = 1
+                checkUncert = False
+
+            self.assertRelativeDifference(x.value[i], correct.value[i], tol)
+            if checkUncert:
+                ## TODO The uncertanty of an output may not be correct as the value is moved in to the feasible range
+                self.assertRelativeDifference(x.uncert[i], correct.uncert[i], tol)
+
+    def testSolveWithParametricsWithDifferentUnits(self):
+        n = 20
+    
+        a = variable(9, 'L/min', 0.3)
+        B = variable(np.linspace(23, 15, n), 'm3', np.linspace(0.2, 0.07, n))
+        x0 = variable(1, 'h')
+
+        def func(x, b):
+            return [a * x, b]
+        
+        correct = B / a
+        correct.convert('h')
+
+        x = solve(func, x0, parametric=B, tol = solveTol)
+
+        x.convert('min')
+        correct.convert('min')
+
+        for i in range(n):
+            self.assertRelativeDifference(x.value[i], correct.value[i], tol)
+            self.assertRelativeDifference(x.uncert[i], correct.uncert[i], tol)
 
 
 if __name__ == '__main__':
