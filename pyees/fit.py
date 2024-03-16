@@ -73,12 +73,10 @@ class _fit():
         
         ## create a list of coefficients
         self.coefficients = []
-        ## the diagonal of the covariance matrix is scaled according to the residual variance
-        ## if the residual variance is zero then set the scale to 1
-        scale = 1 if regression.res_var == 0 else regression.res_var
+    
         units = self.getVariableUnits()
         for i in range(len(regression.beta)):
-            var = variable(regression.beta[i], units[i], np.sqrt(regression.cov_beta[i,i] * scale))
+            var = variable(regression.beta[i], units[i], np.sqrt(regression.cov_beta[i,i]))
             self.coefficients.append(var)
         
         ## add the covariance between the coefficients
@@ -88,7 +86,7 @@ class _fit():
                     continue
                 self.coefficients[i].addCovariance(
                     var = self.coefficients[j],
-                    covariance = regression.cov_beta[i,j] * scale,
+                    covariance = regression.cov_beta[i,j],
                     unitStr = str(self.coefficients[i]._unitObject * self.coefficients[j]._unitObject)
                 )
 
@@ -361,7 +359,7 @@ class exp_fit(_fit):
 class pow_fit(_fit):
     """Create a power fit of the input data and easily plot the regression.
     
-    f(x) = a * b**x + c
+    f(x) = a * x**b + c
 
     Parameters:
     x : variable
@@ -448,8 +446,7 @@ class pol_fit(_fit):
         B = self.getOnlyUsedTerms(B)
         out = 0
         for i,b in enumerate(B):
-            term = b * x**(self.deg - i)
-            out += term
+            out += b * x**(self.deg - i)
         return out
 
     def func_name(self):

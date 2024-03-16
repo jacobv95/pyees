@@ -5,6 +5,7 @@ try:
     from fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit, crateNewFitClass
 except ImportError:
     from pyees.fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit, createNewFitClass
+showPlots = False
 
 
 
@@ -45,7 +46,7 @@ class absolute_power(_fit):
 class test(unittest.TestCase):
    
     def assertRelativeDifference(self, a, b, r):
-        assert abs(a-b) < abs(b * r), f"The value {a} and {b} has a greater relative difference than {r}. The difference was {abs(a-b)} and was allowed to be {b*r}"
+        assert abs(a-b) < abs(b * r), f"The value {a} and {b} has a greater relative difference than {r}. The difference was {abs(a-b)} and was allowed to be {abs(b*r)}"
   
     def testUncertanty(self):
 
@@ -70,11 +71,18 @@ class test(unittest.TestCase):
         a,b = fit.coefficients
         self.assertEqual(str(a), '2.03 +/- 0.05 [mV/Hz]')
         self.assertEqual(str(b), '-1 +/- 3 [mV]')
+        
+        self.assertRelativeDifference(a.uncert, np.sqrt(0.0027), 0.005)
+        self.assertRelativeDifference(b.uncert, np.sqrt(11.5), 0.005)
+        cov = variable(-0.153, 'mV2/Hz')
+        cov.convert('V2/Hz')
+        self.assertRelativeDifference(a.covariance[b], cov.value , 0.005)
 
 
     def testRegression(self):
         # https://www.physics.utoronto.ca/apl/python/ODR_Fitter_Description.pdf
         
+        ## this reference scales the uncertanties based on res_Var
         x = variable([11.9, 8.9, 6.3, 14.0, 8.0, 12.7, 10.2, 18.2, 20.8, 17.8, 17.0, 19.8], '', [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1, 0.2, 0.1, 0.2, 0.2, 0.2])
         y = variable([26.1, 9.3, 2.9, 42.0, 7.0, 32.8, 16.8, 46.4, 31.3, 49.4, 50.6, 38.0], '', [0.1, 0.1, 0.1, 0.2, 0.1, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2])       
 
@@ -83,11 +91,11 @@ class test(unittest.TestCase):
 
         epsilon = 1e-4
         self.assertRelativeDifference(mu.value, 16.643, epsilon)
-        self.assertRelativeDifference(mu.uncert, 0.05991, epsilon)
+        # self.assertRelativeDifference(mu.uncert, 0.05991, epsilon)
         self.assertRelativeDifference(sigma.value, 4.2778, epsilon)
-        self.assertRelativeDifference(sigma.uncert, 0.042811, epsilon)
+        # self.assertRelativeDifference(sigma.uncert, 0.042811, epsilon)
         self.assertRelativeDifference(y_mu.value, 50.686, epsilon)
-        self.assertRelativeDifference(y_mu.uncert, 0.27017, epsilon)
+        # self.assertRelativeDifference(y_mu.uncert, 0.27017, epsilon)
         
         
         ## Asymmetric uncertainties
@@ -98,11 +106,11 @@ class test(unittest.TestCase):
         mu, nu, y_mu = f.coefficients
         epsilon = 1e-4
         self.assertRelativeDifference(mu.value, 0.20045, epsilon)
-        self.assertRelativeDifference(mu.uncert, 0.13953, epsilon)
+        # self.assertRelativeDifference(mu.uncert, 0.13953, epsilon)
         self.assertRelativeDifference(nu.value, -1.5997, epsilon)
-        self.assertRelativeDifference(nu.uncert, 0.89354, epsilon)
+        # self.assertRelativeDifference(nu.uncert, 0.89354, epsilon)
         self.assertRelativeDifference(y_mu.value, 0.47992, epsilon)
-        self.assertRelativeDifference(y_mu.uncert, 0.23242, epsilon)   
+        # self.assertRelativeDifference(y_mu.uncert, 0.23242, epsilon)   
         
 
     def testLinFit(self):
@@ -307,5 +315,125 @@ class test(unittest.TestCase):
         self.assertEqual(f1.coefficients[0], f2.coefficients[0])
         self.assertEqual(f1.coefficients[1], f2.coefficients[2])
         
+        
+        
+    def testMonteCarloPolFit(self):   
+        import scipy.odr as odr     
+        def func(B,x):
+            a,b,c = B
+            return a*x**2 + b*x + c
 
 
+        a = np.random.uniform(-0.01, 0.01)
+        b = np.random.uniform(-5, 5)
+        c = np.random.uniform(-15, 15)
+
+        uncertScale = 0.02
+        noiseScale = 0.02
+
+        xMin = np.random.uniform(-50, 50)
+        xMax = np.random.uniform(100, 200)
+
+        xValue = list(np.linspace(xMin, xMax, 10))
+        xNoise = [np.random.uniform(-elem * noiseScale, elem * noiseScale) for elem in xValue]
+        xValue = [val + noise for val, noise in zip(xValue, xNoise)]
+        xUncert = [np.random.uniform(np.abs(elem * uncertScale)) for elem in xValue]
+
+        yValue = func([a,b,c], np.array(xValue))
+        yNoise = [np.random.uniform(-elem * noiseScale, elem * noiseScale) for elem in yValue]
+        yValue = [val + noise for val, noise in zip(yValue, yNoise)]
+        yUncert = [np.random.uniform(np.abs(elem * uncertScale)) for elem in yValue]
+
+        wx = [1 / elem**2 for elem in xUncert]
+        wy = [1 / elem**2 for elem in yUncert]
+
+        n = 20000
+
+        if showPlots:
+            fig, ax = plt.subplots()
+            x_s = []
+            y_s = []
+
+        nParameters = 3
+        parameterMatrix = np.zeros([n,nParameters])
+
+        for i in range(n):
+            x = [np.random.normal(loc = val, scale = unc) for val, unc in zip(xValue, xUncert)]
+            y = [np.random.normal(loc = val, scale = unc) for val, unc in zip(yValue, yUncert)]
+            if showPlots:
+                x_s.append(x)
+                y_s.append(y)
+            data = odr.Data(x,y, we = wy, wd = wx)
+            regression = odr.ODR(data, odr.Model(func), beta0 = [0] * nParameters)
+            regression = regression.run()       
+            popt = regression.beta
+            parameterMatrix[i,:] = popt
+
+        if showPlots:
+            plt.scatter(x_s,y_s, color = 'black', marker = '.')
+
+
+        parameterValues = np.zeros(nParameters)
+        covarianceMatrix = np.zeros([nParameters, nParameters])
+        for i in range(nParameters):
+            parameterValues[i] = np.mean(parameterMatrix[:,i])
+
+        for i in range(nParameters):
+            for j in range(nParameters):
+                mu_i = parameterValues[i]
+                mu_j = parameterValues[j]
+                out = 0
+                for ii in range(n):
+                    out += (parameterMatrix[ii,i] - mu_i) * (parameterMatrix[ii,j] - mu_j)
+                out /= n-1
+                covarianceMatrix[i,j] = out 
+
+        parameters = []
+        for i in range(nParameters):
+            parameters.append(variable(parameterValues[i], '', np.sqrt(covarianceMatrix[i,i])))
+
+        for i in range(nParameters):
+            for j in range(nParameters):
+                if i == j: continue
+                parameters[i].addCovariance(parameters[j], covarianceMatrix[i,j], '')
+
+        if showPlots:
+            x = np.linspace(min(xValue), max(xValue), 100)
+            y = func(parameters, x)
+            plt.plot(x, y.value, color = 'b', label = 'Monte Carlo')
+            plt.plot(x, y.value + y.uncert, color = 'b', linestyle = 'dashed')
+            plt.plot(x, y.value - y.uncert, color = 'b', linestyle = 'dashed')
+
+
+        ## using pyees
+        x = variable(xValue, '1', xUncert)
+        y = variable(yValue, '1', yUncert)
+        f = pol_fit(x,y)
+
+
+        for i in range(nParameters):
+            self.assertRelativeDifference(f.coefficients[i].value, parameters[i].value, 5e-2)
+            self.assertRelativeDifference(f.coefficients[i].uncert, parameters[i].uncert, 5e-2)
+            
+            for j in range(nParameters):
+                if i == j: continue
+                self.assertRelativeDifference(
+                    f.coefficients[i].covariance[f.coefficients[j]],
+                    covarianceMatrix[i,j],
+                    5e-2
+                )
+            
+
+        if showPlots:
+            f.scatter(ax, color = 'green', label = None)
+            f.plot(ax, color = 'r', label='Pyees')
+            f.plotUncertanty(ax, color = 'r', linestyle = 'dashed')
+            ax.legend()
+            fig.tight_layout()
+            plt.show()
+                        
+        
+
+if __name__ == '__main__':
+    showPlots = True
+    unittest.main()

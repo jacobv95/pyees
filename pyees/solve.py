@@ -284,18 +284,48 @@ def solve(func, x, *args, bounds = None, **kwargs):
     return x
 
 
+
+
+
 if __name__ == "__main__":
+    
     from variable import variable
+    from time import time
     
-    a = 1.2
-    b = 2.3
-    total = variable(23)
+    n = 200
     
-    def func(x1, x2):
-        eq1 = [x1 + x2, total]
-        eq2 = [a*x1, b*x2]
-        return [eq1, eq2]
-        
-    x0 = [variable(19), variable(3)]
+    a = variable(9)
+    B = variable(np.linspace(23, 15, n))
+    x0 = variable(np.linspace(1,11, n))
+    
+    def func(x):
+        return [a * x, B]
+    
+    
+    t0 = time()
     x = solve(func, x0)
-    print(x)
+    t1 = time()
+    print(t1 - t0)
+    # print(x)
+    
+    
+    
+    
+    a = variable(9)
+    B = variable(np.linspace(23, 15, n))
+    x0 = variable(1)
+    
+    def func(x):
+        return [a * x, b]
+    
+    t0 = time()
+    x = []
+    for b in B:
+        out = solve(func, x0)
+        x0 = variable(out.value, out.unit, out.uncert)
+        x.append(x0)        
+    x = variable(x)
+    t1 = time()
+    print(t1 - t0)
+    # print(x)
+    

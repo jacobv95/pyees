@@ -546,7 +546,6 @@ class test(unittest.TestCase):
             solve(func, x0)
         self.assertTrue("The Right side of equation 1 is not a variable. Both side of each equation has to be a variable" in str(context.exception))
    
-   
     def testNumberOfSidesInEquations(self):
         a = 1.2
         b = 2.3
@@ -573,6 +572,18 @@ class test(unittest.TestCase):
             solve(func, x0)
         self.assertTrue("Equation 1 is a list of 1 elements. This corresponds with an equation with 1 sides. All equations has to have 2 sides" in str(context.exception))
    
+    def testCovariance(self):
+        a = variable(23.7, '', 0.1)
+        b = variable(943, '', 12.5)
+        a.addCovariance(b, -3.2, '1')
+        def func(x):
+            return [a * x, b]
+        
+        x = solve(func, variable(1,''), tol = solveTol)
+        correct = b / a
+
+        self.assertRelativeDifference(x.value, correct.value, tol)
+        self.assertRelativeDifference(x.uncert, correct.uncert, tol)
 
 
 if __name__ == '__main__':
