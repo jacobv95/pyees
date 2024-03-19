@@ -1080,6 +1080,47 @@ def variable(value, unit='', uncert=None):
         return scalarVariable(value, unit, uncert)
     
 if __name__ == "__main__":
-    a =variable(49,'%')
-    b = np.sqrt(a)
-    print(b)
+    
+    asdf = variable(23, '', 1.2)
+    b = variable(12, '', 2.3)
+    asdf.addCovariance(b, -1, '')
+    c = asdf * b
+    
+    def getNames(x):
+        for name, object in globals().items():
+            try:
+                if object == x:
+                    return name
+            except: pass
+        return None
+    
+    ## TODO make this a method
+    ## TODO what about negative covariances? This results in a negative significance
+    origin = []
+    significance = []
+    for var, (uncertSI, grad) in c.dependsOn.items():
+        
+        s =  (uncertSI * grad)**2 / c.uncert**2
+        significance.append(variable(s*100, '%'))
+        
+        origin.append([var])
+    
+        if not var.covariance:
+                continue
+        for var2 in filter(lambda x: x in c.dependsOn, var.covariance):
+            if [var2, var] in origin: continue
+            s = 2 * grad * c.dependsOn[var2][1] * var.covariance[var2] / c.uncert**2
+            origin.append([var, var2])
+            significance.append(variable(s*100, '%'))
+    
+    
+    originNames = []
+    for o in origin:
+        if len(o) == 1:
+            originNames.append(f'Uncertanty of {getNames(o[0])}')
+        else:
+            originNames.append(f'Covariance between of {getNames(o[0])} and {getNames(o[1])}')
+            
+    n = max([len(elem) for elem in originNames]) + 5
+    for o, s in zip(originNames, significance):
+        print(o.ljust(n), s)

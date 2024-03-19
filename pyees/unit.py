@@ -547,8 +547,6 @@ class unit():
         u, prefix = unit._removePrefixFromUnit(prefixUnit)
         return u, prefix, exponent
 
-
-
     @staticmethod
     def _reduceDict(unitDict):
         
@@ -891,7 +889,8 @@ class unit():
             try:
                 exponent = int(exponent)
                 if exponent != 1:
-                    _unitStrPretty = rf'\left {_unitStrPretty} \right^{{{exponent}}}'
+                    
+                    _unitStrPretty = rf'\left {_unitStrPretty} \right^{{{int(exponent)}}}'
                 
                 currentParensPretty[1] += len(str(exponent))
             except ValueError:
@@ -1143,11 +1142,21 @@ class unit():
         return unit._reduceDict(unitDict)
 
     def __pow__(self, power):
-        unitDict = unit.staticPow(
-            self.unitDict, self.unitDictSI, self.unitStr, power)
+        unitDict = unit.staticPow(self.unitDict, self.unitDictSI, self.unitStr, power)
         
         if power != 1:
-            unitStrPretty = rf'\left( {self.unitStrPretty} \right)^{{{power}}}'
+            frac = Fraction(power).limit_denominator()
+            num, den = frac._numerator, frac._denominator
+            if den == 1:
+                unitStrPretty = rf'\left( {self.unitStrPretty} \right)^{{{num}}}'
+            else:
+                if num == 1:
+                    if den == 2:
+                        unitStrPretty = rf'\sqrt{{{self.unitStrPretty}}}'
+                    else:
+                        unitStrPretty = rf'\sqrt[{den}]{{{self.unitStrPretty}}}'
+                else:
+                    unitStrPretty = rf'\left( {self.unitStrPretty} \right)^{{\frac{{{num}}}{{{den}}}}}'
         else:
             unitStrPretty = self.unitStrPretty
         return unit(unitDict=unitDict, unitStrPretty = unitStrPretty)

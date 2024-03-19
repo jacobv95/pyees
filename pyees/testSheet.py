@@ -9,6 +9,19 @@ except ImportError:
 
 class test(unittest.TestCase):
 
+    def testSetattr(self):
+        sh = sheet()
+        sh.a = variable(23, 'L/min', 12)
+        sh.b = variable(27, 'm', 78)
+        
+        self.assertEqual(sh.a.value, 23)
+        self.assertEqual(sh.a.unit, 'L/min')
+        self.assertEqual(sh.a.uncert, 12)
+        self.assertEqual(sh.b.value, 27)
+        self.assertEqual(sh.b.unit, 'm')
+        self.assertEqual(sh.b.uncert, 78)
+        
+
     def testReadFileTypes(self):
         # xlsx file
         dat = sheetsFromFile('testData/data1.xlsx', 'A-B')
@@ -184,8 +197,6 @@ class test(unittest.TestCase):
         self.assertEqual(sheet1.b.unit, 'L')
         np.testing.assert_array_equal(sheet1.b.uncert, [0.1, 0.2])
         
-
-
 
 
     def testIndex(self):
