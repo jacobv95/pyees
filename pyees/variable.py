@@ -1070,7 +1070,7 @@ class arrayVariable(scalarVariable):
     def getUncertantyContributors(self):
         out = []
         for elem in self:
-            out.append(elem.printUncertantyContributors())
+            out.append(elem.getUncertantyContributors())
         return out
 
 def variable(value, unit='', uncert=None):
