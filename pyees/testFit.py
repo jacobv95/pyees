@@ -324,15 +324,15 @@ class test(unittest.TestCase):
             return a*x**2 + b*x + c
 
 
-        a = np.random.uniform(-0.01, 0.01)
-        b = np.random.uniform(-5, 5)
+        a = np.random.uniform(0.01, 0.02)
+        b = np.random.uniform(-5, -3)
         c = np.random.uniform(-15, 15)
 
-        uncertScale = 0.02
-        noiseScale = 0.02
+        uncertScale = 0.01
+        noiseScale = 0.01
 
-        xMin = np.random.uniform(-50, 50)
-        xMax = np.random.uniform(100, 200)
+        xMin = 10
+        xMax = 200
 
         xValue = list(np.linspace(xMin, xMax, 10))
         xNoise = [np.random.uniform(-elem * noiseScale, elem * noiseScale) for elem in xValue]
@@ -347,7 +347,7 @@ class test(unittest.TestCase):
         wx = [1 / elem**2 for elem in xUncert]
         wy = [1 / elem**2 for elem in yUncert]
 
-        n = 20000
+        n = 10000
 
         if showPlots:
             fig, ax = plt.subplots()

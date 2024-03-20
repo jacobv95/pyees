@@ -1303,3 +1303,4 @@ class unit():
 
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
 
+## TODO Represent the unit as a matrix on coloumn for each known unit, one row for each prefix - brug scipy dok_matrix

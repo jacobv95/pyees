@@ -508,6 +508,3 @@ class sheet():
             value = arrayVariable(scalarVariables=[value])
         
         self.__dict__[name] = value
-    
-if __name__ =="__main__":
-    data = sheetsFromFile("20231129_151640.xls", "A-J")

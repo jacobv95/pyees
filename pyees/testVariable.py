@@ -2393,5 +2393,7 @@ class test(unittest.TestCase):
         self.assertEqual(A_vec.unit, 'L/min')
         np.testing.assert_equal(A_vec.uncert, [2.6, 5.4])
 
+## TODO test significance
+
 if __name__ == '__main__':
     unittest.main()

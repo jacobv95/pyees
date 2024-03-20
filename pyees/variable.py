@@ -598,13 +598,6 @@ class scalarVariable():
         unc = start.uncert + (stop.uncert - start.uncert) * t
         
         return variable(val, start.unit, unc)
-        
-
-
-    
-
-        
-
 
     def max(self):
         return self
@@ -630,7 +623,7 @@ class scalarVariable():
 
             if not isinstance(b, scalarVariable):
                 b = variable(b, a.unit)
-
+            
             if a.unit == b.unit:
                 return func(a, b)
 
@@ -688,6 +681,50 @@ class scalarVariable():
     def __hash__(self):
         return id(self)
 
+
+    def getUncertantyContributors(self):
+        
+        ## TODO
+        origin = []
+        significance = []
+        
+
+        variance = 0                   
+        for var, (uncertSI, grad) in self.dependsOn.items():
+            
+            sig =  np.abs((uncertSI * grad)**2)
+            variance += sig
+            if sig != 0:
+                significance.append(sig)
+                origin.append([var])
+        
+            if not var.covariance:
+                    continue
+            for var2 in filter(lambda x: x in self.dependsOn, var.covariance):
+                if [var2, var] in origin: continue
+                sig = np.abs(2 * grad * self.dependsOn[var2][1] * var.covariance[var2])
+                variance += sig
+                if sig != 0:
+                    origin.append([var, var2])
+                    significance.append(sig)
+        
+        significance = [elem / variance for elem in significance]
+        significance = variable(significance)
+        significance.convert('%')
+        
+        ## sort the lists based on significance
+        indexes = np.argsort(significance.value)
+        origin = [origin[i] for i in indexes]
+        significance = [significance[i] for i in indexes]
+        
+        ## reverse the lists
+        origin = origin[::-1]
+        significance = significance[::-1]
+        
+        ## return the lists
+        return origin, significance        
+               
+       
 
 class arrayVariable(scalarVariable):
 
@@ -1032,6 +1069,11 @@ class arrayVariable(scalarVariable):
     def pop(self, index=-1):
         self.scalarVariables.pop(index)
 
+    def getUncertantyContributors(self):
+        out = []
+        for elem in self:
+            out.append(elem.printUncertantyContributors())
+        return out
 
 def variable(value, unit='', uncert=None):
     try:
@@ -1078,49 +1120,6 @@ def variable(value, unit='', uncert=None):
         return arrayVariable(value=value, unitStr=unit, uncert=uncert)
     else:
         return scalarVariable(value, unit, uncert)
-    
-if __name__ == "__main__":
-    
-    asdf = variable(23, '', 1.2)
-    b = variable(12, '', 2.3)
-    asdf.addCovariance(b, -1, '')
-    c = asdf * b
-    
-    def getNames(x):
-        for name, object in globals().items():
-            try:
-                if object == x:
-                    return name
-            except: pass
-        return None
-    
-    ## TODO make this a method
-    ## TODO what about negative covariances? This results in a negative significance
-    origin = []
-    significance = []
-    for var, (uncertSI, grad) in c.dependsOn.items():
-        
-        s =  (uncertSI * grad)**2 / c.uncert**2
-        significance.append(variable(s*100, '%'))
-        
-        origin.append([var])
-    
-        if not var.covariance:
-                continue
-        for var2 in filter(lambda x: x in c.dependsOn, var.covariance):
-            if [var2, var] in origin: continue
-            s = 2 * grad * c.dependsOn[var2][1] * var.covariance[var2] / c.uncert**2
-            origin.append([var, var2])
-            significance.append(variable(s*100, '%'))
-    
-    
-    originNames = []
-    for o in origin:
-        if len(o) == 1:
-            originNames.append(f'Uncertanty of {getNames(o[0])}')
-        else:
-            originNames.append(f'Covariance between of {getNames(o[0])} and {getNames(o[1])}')
-            
-    n = max([len(elem) for elem in originNames]) + 5
-    for o, s in zip(originNames, significance):
-        print(o.ljust(n), s)
+
+
+## TODO document getUncertantyContributors
