@@ -1119,10 +1119,3 @@ def variable(value, unit='', uncert=None):
     else:
         return scalarVariable(value, unit, uncert)
 
-if __name__ == "__main__":
-    a = variable(23, 'L/min', 5.7)
-    b = variable(11, 'mbar', 1.1)
-    c = a * b
-    vars, sigs = c.getUncertantyContributors()
-    print(vars)
-    print(sigs)
