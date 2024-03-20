@@ -129,7 +129,7 @@ variables, significance = variable.getUncertantyContributors()
  The significance is defined as the ratio of the magnitude of the variance contribution from each contributor to the uncertanty of the parameter c
 
 ```math
-s_i = \frac{\left(\frac{\partial c}{\partial x_i}\sigma_{x_j}\right)^2}{\sum_j^n \left(\left(\frac{\partial c}{\partial x_j} \sigma_{x_j}\right)^2\right) + \mathop{\sum_k^n \sum_l^n}_{k\neq l} \left| \frac{\partial c}{\partial x_k}\frac{\partial c}{\partial x_l} \sigma_{x_l, x_k} \right|}
+s_i = \frac{\left(\frac{\partial c}{\partial x_i}\sigma_{x_j}\right)^2}{\sum_{j}^{n} \left(\left(\frac{\partial c}{\partial x_j} \sigma_{x_j}\right)^2\right) + \mathop{\sum_{k}^{n} \sum_l^n}_{k\neq l} \left| \frac{\partial c}{\partial x_k}\frac{\partial c}{\partial x_l} \sigma_{x_l, x_k} \right|}
 ```
 
 ### Example 1
