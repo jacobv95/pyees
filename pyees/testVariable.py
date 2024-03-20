@@ -1740,36 +1740,14 @@ class test(unittest.TestCase):
 
         a = variable(1, 'm')
         b = variable(2, 'C')
-        with self.assertRaises(Exception) as context:
-            a < b
-        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
-            context.exception))
-
-        with self.assertRaises(Exception) as context:
-            a <= b
-        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
-            context.exception))
-
-        with self.assertRaises(Exception) as context:
-            a > b
-        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
-            context.exception))
-
-        with self.assertRaises(Exception) as context:
-            a >= b
-        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
-            context.exception))
-
-        with self.assertRaises(Exception) as context:
-            a == b
-        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
-            context.exception))
-
-        with self.assertRaises(Exception) as context:
-            a != b
-        self.assertTrue("You cannot compare 1.0 [m] and 2.0 [C] as they do not have the same SI base unit" in str(
-            context.exception))
-
+        
+        self.assertFalse(a < b)
+        self.assertFalse(a <= b)
+        self.assertFalse(a > b)
+        self.assertFalse(a >= b)
+        self.assertFalse(a == b)
+        self.assertFalse(a != b)
+       
         a = variable([1, 2, 3], 'm')
         b = variable([2, 3, 4], 'm')
         np.testing.assert_equal(a < b, [True, True, True])
@@ -2393,7 +2371,56 @@ class test(unittest.TestCase):
         self.assertEqual(A_vec.unit, 'L/min')
         np.testing.assert_equal(A_vec.uncert, [2.6, 5.4])
 
-## TODO test significance
+    def testSignificance(self):
+        a = variable(23, 'L/min', 2.3)
+        b = variable(11, 'mbar', 1.1)
+        c = a * b
+        vars, sigs = c.getUncertantyContributors()
+        self.assertTrue([a] in vars)
+        self.assertTrue([b] in vars)
+        self.assertAlmostEqual(sigs[vars.index([a])].value, (11 * 2.3)**2 / ((11 * 2.3)**2 + (23 * 1.1)**2) * 100 )
+        self.assertAlmostEqual(sigs[vars.index([b])].value, (23 * 1.1)**2 / ((11 * 2.3)**2 + (23 * 1.1)**2) * 100 )
+        
+        
+        a = variable(23, 'L/min', 2.3)
+        b = variable(11, 'mbar', 1.1)
+        c = a * b
+        c.convert('Pa-m3/s')
+        vars, sigs = c.getUncertantyContributors()
+        self.assertTrue([a] in vars)
+        self.assertTrue([b] in vars)
+        scale = 100 / 1000 * 60
+        self.assertAlmostEqual(sigs[vars.index([a])].value, (11 * 2.3 * scale)**2 / ((11 * 2.3 * scale)**2 + (23 * 1.1 * scale)**2) * 100 )
+        self.assertAlmostEqual(sigs[vars.index([b])].value, (23 * 1.1 * scale)**2 / ((11 * 2.3 * scale)**2 + (23 * 1.1 * scale)**2) * 100 )
+        
+        a = variable(23, 'L/min', 2.3)
+        b = variable(11, 'mbar', 1.1)
+        a.addCovariance(b,  -0.02, 'L-mbar/min')
+        c = a * b
+        c.convert('Pa-m3/s')
+        scale = 100 / 1000 * 60
+        vars, sigs = c.getUncertantyContributors()
+        self.assertTrue([a] in vars)
+        self.assertTrue([b] in vars)
+        self.assertTrue([a,b] in vars)
+        self.assertAlmostEqual(sigs[vars.index([a])].value, (11 * 2.3 * scale)**2 / ((11 * 2.3 * scale)**2 + (23 * 1.1 * scale)**2 + 2 * 11 * 23 * 0.02 * scale**2) * 100 )
+        self.assertAlmostEqual(sigs[vars.index([b])].value, (23 * 1.1 * scale)**2 / ((11 * 2.3 * scale)**2 + (23 * 1.1 * scale)**2 + 2 * 11 * 23 * 0.02 * scale**2) * 100 )
+        self.assertAlmostEqual(sigs[vars.index([a,b])].value, (2 * 11 * 23 * 0.02 * scale**2) / ((11 * 2.3 * scale)**2 + (23 * 1.1 * scale)**2 + 2 * 11 * 23 * 0.02 * scale**2) * 100 )
+        
+        
+        a = variable(23, 'C', 2.3)
+        b = variable(11, 'C', 1.1)
+        a.addCovariance(b,  -0.02, 'C2')
+        c = a - b
+        vars, sigs = c.getUncertantyContributors()
+        self.assertTrue([a] in vars)
+        self.assertTrue([b] in vars)
+        self.assertTrue([a,b] in vars)
+        self.assertAlmostEqual(sigs[vars.index([a])].value, (1 * 2.3 * scale)**2 / ((1 * 2.3 * scale)**2 + (1 * 1.1 * scale)**2 + 2 * 1 * 1 * 0.02 * scale**2) * 100 )
+        self.assertAlmostEqual(sigs[vars.index([b])].value, (1 * 1.1 * scale)**2 / ((1 * 2.3 * scale)**2 + (1 * 1.1 * scale)**2 + 2 * 1 * 1 * 0.02 * scale**2) * 100 )
+        self.assertAlmostEqual(sigs[vars.index([a,b])].value, (2 * 1 * 1 * 0.02 * scale**2) / ((1 * 2.3 * scale)**2 + (1 * 1.1 * scale)**2 + 2 * 1 * 1 * 0.02 * scale**2) * 100 )
+        
+        
 
 if __name__ == '__main__':
     unittest.main()

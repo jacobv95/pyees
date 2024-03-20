@@ -88,6 +88,36 @@ Here <img src="https://render.githubusercontent.com/render/math?math=\sigma_{AB}
 
 When using variables from pyees these calculations happen automatically.
 
+## significant contributors
+
+The significant contributors to the uncertanty of a variable 'c' can be found using the getUncertantyContributors() method
+
+```
+variables, significance = variable.getUncertantyContributors()
+```
+
+ - significance is an array variable which contains the significance of the elements in the output 'variables'.
+ - variables in a list of lists. Each element of the list is it self a list which describes where what contributes to the significance. An element of the output 'variables' which has a length of 1 correspondons to the contribution from the uncertanty of that single element in the list. An element of the output 'variables' which has a length of 2 corresponds to the constribution from the covariance between the two elements in the list.
+
+ The significance is defined as follows:
+
+<img src="https://render.githubusercontent.com/render/math?math=s_i = \frac{\frac{\partianl c}{\partial x_i}\sigma_{x_j}}{\sum_j \left(\frac{\partial c}{\partial x_j} \sigma_{x_j}\right) + \mathop{\sum \sum}_{n\neq m} \left( \frac{\partial c}{\partial x_n}\frac{\partial c}{\partial x_m} \sigma_{x_n, x_m} \right)}">
+
+
+
+```
+a = variable(23, 'L/min', 5.7)
+b = variable(11, 'mbar', 1.1)
+c = a * b
+variables, significance = c.getUncertantyContributors()
+
+print(variables)
+>> [[11 +/- 1 [mbar]], [23 +/- 2 [L/min]]]
+
+print(significance)
+>> [85.99788247750134 [%], 14.002117522498677 [%]]
+```
+
 ## scalar variables vs array variables
 The return type is either "scalarVariable" or "arrayVariable" when initializing a variable. This depends on the supplied value is a list-like object or not. The arrayVariable is basically a list which holds scalarVariables. 
 
@@ -110,3 +140,4 @@ a.pop(1)
 print(a)
 >> [1,5] [m]
 ```
+

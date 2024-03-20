@@ -628,8 +628,7 @@ class scalarVariable():
                 return func(a, b)
 
             if not a._unitObject.unitDictSI == b._unitObject.unitDictSI:
-                raise ValueError(
-                    f'You cannot compare {a} and {b} as they do not have the same SI base unit')
+                return False
 
             aUnit = a.unit
             bUnit = b.unit
@@ -684,7 +683,6 @@ class scalarVariable():
 
     def getUncertantyContributors(self):
         
-        ## TODO
         origin = []
         significance = []
         
@@ -692,7 +690,7 @@ class scalarVariable():
         variance = 0                   
         for var, (uncertSI, grad) in self.dependsOn.items():
             
-            sig =  np.abs((uncertSI * grad)**2)
+            sig = (uncertSI * grad)**2
             variance += sig
             if sig != 0:
                 significance.append(sig)
@@ -701,7 +699,7 @@ class scalarVariable():
             if not var.covariance:
                     continue
             for var2 in filter(lambda x: x in self.dependsOn, var.covariance):
-                if [var2, var] in origin: continue
+                if [var2, var] in origin or [var, var2] in origin: continue
                 sig = np.abs(2 * grad * self.dependsOn[var2][1] * var.covariance[var2])
                 variance += sig
                 if sig != 0:
@@ -1121,5 +1119,10 @@ def variable(value, unit='', uncert=None):
     else:
         return scalarVariable(value, unit, uncert)
 
-
-## TODO document getUncertantyContributors
+if __name__ == "__main__":
+    a = variable(23, 'L/min', 5.7)
+    b = variable(11, 'mbar', 1.1)
+    c = a * b
+    vars, sigs = c.getUncertantyContributors()
+    print(vars)
+    print(sigs)
