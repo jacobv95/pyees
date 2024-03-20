@@ -88,7 +88,7 @@ Here <img src="https://render.githubusercontent.com/render/math?math=\sigma_{AB}
 
 When using variables from pyees these calculations happen automatically.
 
-## significant contributors
+<!-- ## significant contributors
 
 The significant contributors to the uncertanty of a variable 'c' can be found using the getUncertantyContributors() method
 
@@ -101,7 +101,7 @@ variables, significance = variable.getUncertantyContributors()
 
  The significance is defined as follows:
 
-<img src="https://render.githubusercontent.com/render/math?math=s_i = \frac{\frac{\partianl c}{\partial x_i}\sigma_{x_j}}{\sum_j \left(\frac{\partial c}{\partial x_j} \sigma_{x_j}\right) + \mathop{\sum \sum}_{n\neq m} \left( \frac{\partial c}{\partial x_n}\frac{\partial c}{\partial x_m} \sigma_{x_n, x_m} \right)}">
+<img src="https://render.githubusercontent.com/render/math?math=s_i = \frac{\frac{\partianl c}{\partial x_i}\sigma_{x_j}}{\sum_j \left(\frac{\partial c}{\partial x_j} \sigma_{x_j}\right) + \mathop{\sum \sum}_{n\neq m} \left( \frac{\partial c}{\partial x_n}\frac{\partial c}{\partial x_m} \sigma_{x_n, x_m} \right)}"> -->
 
 
 
