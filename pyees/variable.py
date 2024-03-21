@@ -291,9 +291,9 @@ class scalarVariable():
         # but the output is converted to 'C' if the inputs are in 'C' and 'DeltaK'
         SIBaseUnits = [self._unitObject.unitDictSI,
                        other._unitObject.unitDictSI]
-        if outputUnit.unitDict == {'K': {'': 1}} and {'DELTAK': {'': 1}} in SIBaseUnits and {'K': {'': 1}} in SIBaseUnits:
+        if outputUnit.unitDict == {('','K') : 1} and {('','DELTAK') : 1} in SIBaseUnits and {('','K') : 1} in SIBaseUnits:
             var.convert(str([selfUnit, otherUnit]
-                        [SIBaseUnits.index({'K': {'': 1}})]))
+                        [SIBaseUnits.index({('','K') : 1})]))
 
         return var
 
@@ -334,10 +334,10 @@ class scalarVariable():
 
         SIBaseUnits = [self._unitObject.unitDictSI,
                        other._unitObject.unitDictSI]
-        if outputUnit.unitDictSI == {'K': {'': 1}} and SIBaseUnits[0] == {'K': {'': 1}} and SIBaseUnits[1] == {'K': {'': 1}}:
-            if list(self._unitObject.unitDict.keys())[0] == list(other._unitObject.unitDict.keys())[0]:
-                var._unitObject = unit(
-                    'DELTA' + list(self._unitObject.unitDict.keys())[0])
+        if outputUnit.unitDictSI == {('','K') : 1} and SIBaseUnits[0] == {('','K') : 1} and SIBaseUnits[1] == {('','K') : 1}:
+            if list(self._unitObject.unitDict.keys())[0][1] == list(other._unitObject.unitDict.keys())[0][1]:
+                unitStr = 'DELTA' + list(self._unitObject.unitDict.keys())[0][1]
+                var._unitObject = unit(unitStr)
             else:
                 var._unitObject = unit('DELTAK')
             for elem in var:
@@ -366,7 +366,7 @@ class scalarVariable():
 
         # if all units were cancled during the multiplication, then convert to 1
         # this will remove any remaining prefixes
-        if var._unitObject.unitDictSI == {'1': {'': 1}} and var._unitObject.unitDict != {'1': {'': 1}}:
+        if var._unitObject.unitDictSI == {('','1') : 1} and var._unitObject.unitDict != {('','1') : 1}:
             var.convert('1')
 
         return var
@@ -444,7 +444,7 @@ class scalarVariable():
 
         # if all units were cancled during the multiplication, then convert to 1
         # this will remove any remaining prefixes
-        if var._unitObject.unitDictSI == {'1': {'': 1}} and var._unitObject.unitDict != {'1': {'': 1}}:
+        if var._unitObject.unitDictSI == {('','1') : 1} and var._unitObject.unitDict != {('','1') : 1}:
             var.convert('1')
 
         return var
@@ -503,7 +503,7 @@ class scalarVariable():
         return self**(1 / 2)
 
     def sin(self):
-        if self._unitObject.unitDictSI != {'rad': {'': 1}}:
+        if self._unitObject.unitDictSI != {('','rad') : 1}:
             raise ValueError('You can only take sin of an angle')
 
         outputUnit = '1'
@@ -521,7 +521,7 @@ class scalarVariable():
         return var
 
     def cos(self):
-        if self._unitObject.unitDictSI != {'rad': {'': 1}}:
+        if self._unitObject.unitDictSI != {('','rad') : 1}:
             raise ValueError('You can only take cos of an angle')
 
         outputUnit = '1'
@@ -539,7 +539,7 @@ class scalarVariable():
         return var
 
     def tan(self):
-        if self._unitObject.unitDictSI != {'rad': {'': 1}}:
+        if self._unitObject.unitDictSI != {('','rad') : 1}:
             raise ValueError('You can only take tan of an angle')
 
         outputUnit = '1'
@@ -1119,3 +1119,8 @@ def variable(value, unit='', uncert=None):
     else:
         return scalarVariable(value, unit, uncert)
 
+if __name__ == "__main__":
+    a = variable(10, 'C', 1.2)
+    b = variable(100, 'muC', 3.9)
+    c = a - b
+    print(c)

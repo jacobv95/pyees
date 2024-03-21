@@ -45,7 +45,6 @@ class test(unittest.TestCase):
         b = unit('N/cm')
         c = a * b
         self.assertTrue(c == unit('m/cm'))
-        
 
     def testDivide(self):
 
@@ -333,12 +332,6 @@ class test(unittest.TestCase):
         self.assertEqual(b.unitStrPretty, rf'\frac{{mbar}}{{\frac{{L}}{{min}}}}')
         self.assertEqual(c, unit('mbar'))
         self.assertEqual(c.unitStrPretty, rf'mbar')
-        
-        
-        
-        
-        
-        
 
     def testAddNewUnit(self):
         addNewUnit('gnA', 9.81, 'm/s2')

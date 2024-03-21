@@ -239,25 +239,25 @@ _conductance = {
 # Create a dictionary of all the si base units of each different type of measurement
 # the value of this dictionary is the dictionary representation of the si units
 _SIBaseUnits = {
-    'Force': {'g': {'k': 1}, 'm': {'': 1}, 's': {'': -2}},
-    'Pressure': {'g': {'k': 1}, 'm': {'': -1}, 's': {'': -2}},
-    'Time': {'s': {'': 1}},
-    'Temperature': {'K': {'': 1}},
-    'Volume': {'m': {'': 3}},
-    'Length': {'m': {'': 1}},
-    'Energy': {'g': {'k': 1}, 'm': {'': 2}, 's': {'': -2}},
-    'Power': {'g': {'k': 1}, 'm': {'': 2}, 's': {'': -3}},
-    'Mass': {'g': {'k': 1}},
-    'Current': {'A': {'': 1}},
-    'Voltage': {'g': {'k': 1}, 'm': {'': 2}, 's': {'': -3}, 'A': {'': -1}},
-    'BaseUnit': {'1': {'': 1}},
-    'Freqeuncy': {'s': {'': -1}},
-    'Angle': {'rad': {'': 1}},
-    'Resistance': {'g': {'k': 1}, 'm': {'': 2}, 's': {'': -3}, 'A': {'': -2}},
-    'KinematicViscosity': {'m': {'': 2}, 's': {'': -1}},
-    'LogarithmicUnit': {'Np': {'': 1}},
-    'TemperatureDifference': {'DELTAK': {'': 1}},
-    'Conductance': {'g': {'k': -1}, 'm': {'': -2}, 's': {'': 3}, 'A': {'': 2}},
+    'Force': {('k','g') : 1 , ('','m') : 1, ('','s') : -2},
+    'Pressure': {('k','g') : 1 , ('','m') : -1, ('','s') : -2},
+    'Time': {('','s') : 1},
+    'Temperature': {('','K') : 1},
+    'Volume': {('','m') : 3},
+    'Length': {('','m') : 1},
+    'Energy': {('k','g') : 1 , ('','m') : 2, ('','s') : -2},
+    'Power': {('k','g') : 1 , ('','m') : 2, ('','s') : -3},
+    'Mass': {('k','g') : 1 },
+    'Current': {('','A') : 1},
+    'Voltage': {('k','g') : 1 , ('','m') : 2, ('','s') : -3, ('','A') : -1},
+    'BaseUnit': {('','1') : 1},
+    'Freqeuncy': {('','s') : -1},
+    'Angle': {('','rad') : 1},
+    'Resistance': {('k','g') : 1 , ('','m') : 2, ('','s') : -3, ('','A') : -2},
+    'KinematicViscosity': {('','m') : 2, ('','s') : -1},
+    'LogarithmicUnit': {('','Np') : 1},
+    'TemperatureDifference': {('','DELTAK') :1},
+    'Conductance': {('k','g') : 1 , ('','m') : -2, ('','s') : 3, ('','A') : 2}
 }
 
 # create a dictionary of all units for each type of measurement.
@@ -484,17 +484,16 @@ class unit():
     def _getUnitStrFromDict(unitDict):
         upper, lower = '', ''
 
-        for u, item in unitDict.items():
-            for p, exp in item.items():
-                isUpper = exp > 0
-                if not isUpper:
-                    exp = - exp
-                exp = str(exp) if exp != 1 else ''
-                s = p + u + exp + '-'
-                if isUpper:
-                    upper += s
-                else:
-                    lower += s
+        for (p,u), exp in unitDict.items():
+            isUpper = exp > 0
+            if not isUpper:
+                exp = - exp
+            exp = str(exp) if exp != 1 else ''
+            s = p + u + exp + '-'
+            if isUpper:
+                upper += s
+            else:
+                lower += s
 
         upper = upper[:-1]
         if lower:
@@ -505,14 +504,13 @@ class unit():
 
         upper, lower = [], []
 
-        for key, item in self.unitDict.items():
-            exp = sum(item.values())
+        for (_,u), exp in self.unitDict.items():
             isUpper = exp > 0
             if not isUpper:
                 exp *= -1
             if exp == 1:
                 exp = ''
-            s = f'{key}{exp}'
+            s = f'{u}{exp}'
             if isUpper:
                 upper.append(s)
             else:
@@ -552,89 +550,74 @@ class unit():
         
         # check if 1 is in the unit
         n = len(unitDict)
-        if '1' in unitDict:
-            unitDict['1'][''] = 1
+        if ('','1') in unitDict:
+            unitDict[('','1')] = 1
             if n > 1:
                 otherUpper = False                
-                for key, item in unitDict.items():
-                    if key == '1': continue
-                    for exp in item.values():
-                        if exp > 0:
-                            otherUpper = True
-                            break
-                    if otherUpper: break
+                for key, exp in unitDict.items():
+                    if key == ('','1'): continue
+                    if exp > 0:
+                        otherUpper = True
+                        break
 
                 # if there are any other upper units, then remove 1
                 # else set the exponent of the unit '1' to 1
                 if otherUpper:
-                    unitDict.pop('1')
+                    unitDict.pop(('','1'))
                     n -= 1
 
         # make temperature units in to temperature differences, if there are any other units in the dict
         if n > 1:
             keysToChange = []
-            for key in _temperature.keys():
-                if key in unitDict:
+            for key in unitDict:
+                if key[1] in _temperature:
                     keysToChange.append(key)
-            for key in keysToChange:
-                if 'DELTA' + key in unitDict:
-                    for pre, exp in unitDict[key].items():
-                        if pre in unitDict['DELTA' + key]:
-                            unitDict['DELTA' + key][pre] += exp
-                        else:
-                            unitDict['DELTA' + key][pre] = exp
+                    
+            for (p,u) in keysToChange:
+                
+                oldKey = (p, u)
+                newKey = (p, 'DELTA' + u)
+                if newKey in unitDict:
+                    unitDict[newKey] += unitDict[oldKey]
                 else:
-                    unitDict['DELTA' + key] = unitDict[key]
-                unitDict.pop(key)
+                    unitDict[newKey] = unitDict[oldKey] 
+                unitDict.pop(oldKey)
 
         # loop over all units, and remove any prefixes, which has an exponenet of 0
-        keysToRemove = []
-        for key, item in unitDict.items():
-            prefixesToRemove = []
-            for pre, exp in item.items():
-                if exp == 0:
-                    prefixesToRemove.append(pre)
-            for pre in prefixesToRemove:
-                item.pop(pre)
-            if not item:
-                keysToRemove.append(key)
+        keysToRemove = [key for key, exp in unitDict.items() if exp == 0]
         n -= len(keysToRemove)
 
         # if all the keys in unitDict has to be removed, then return the unit '1'
         if n == 0:
             # return '1' if there are not other units
-            return {'1': {'': 1}}
+            return {('','1'):1}
 
         # remove the keys
         for key in keysToRemove:
             unitDict.pop(key)
 
-        if not '1' in unitDict:
+        if not ('','1') in unitDict:
             hasUpper = False
-            for key, item in unitDict.items():
-                for exp in item.values():
-                    if exp > 0:
-                        hasUpper = True
-                        break
-                if hasUpper:
+            for exp in unitDict.values():
+                if exp > 0:
+                    hasUpper = True
                     break
             if not hasUpper:
-                unitDict['1'] = {'': 1}
+                unitDict[('','1')] = 1
 
         return unitDict
 
     @staticmethod
     def _getUnitDictSI(unitDict):
         out = {}
-        for key, item in unitDict.items():
-            exp = sum(item.values())
-            unitSI = _knownUnits[key][0]
-            for kkey, iitem in unitSI.items():
-                for p, e in iitem.items():
-                    e = e * exp
-                    if kkey in out:
-                        e = e + out[kkey][p]
-                    out[kkey] = {p: e}
+        for key, exp in unitDict.items():
+            unitSI = _knownUnits[key[1]][0]
+            for kkey, e in unitSI.items():
+                e = e * exp
+                if kkey in out:
+                    out[kkey] += e
+                else:
+                    out[kkey] = e
         out = unit._reduceDict(out)
         return out
 
@@ -648,13 +631,11 @@ class unit():
             u, p, e = unit._splitUnitExponentAndPrefix(elem)
             if i > nUpper - 1:
                 e = - e
-            if not u in out:
-                out[u] = {p: e}
+            key = (p,u)
+            if not key in out:
+                out[key] = e
             else:
-                if p in out[u]:
-                    e += out[u][p]
-                out[u][p] = e
-
+                out[key] += e
         return unit._reduceDict(out)
 
     @staticmethod
@@ -987,26 +968,29 @@ class unit():
         return unit._splitUnitExponentAndPrefix(upper[0])[0] in _logrithmicUnits
 
     def __add__(self, other):
-        # determine the units of self without any prefixes and convert this to a string
-        selfUnitDictWithoutPrefixes = {}
-        for key, item in self.unitDict.items():
-            selfUnitDictWithoutPrefixes[key] = {}
-            selfUnitDictWithoutPrefixes[key][''] = 0
-            for exp in item.values():
-                selfUnitDictWithoutPrefixes[key][''] += exp
-
+        
         # determine if self is the same as other - then no conversions are necessary
         if self.unitDict == other.unitDict:
             return self
+        
+        # determine the units of self without any prefixes
+        selfUnitDictWithoutPrefixes = {}
+        for (_,u), exp in self.unitDict.items():
+            key = ('',u)
+            if u in selfUnitDictWithoutPrefixes:
+                selfUnitDictWithoutPrefixes[key] += exp
+            else:
+                selfUnitDictWithoutPrefixes[key] = exp
 
-        # determine the units of other without any prefixes and convert this to a string
+        # determine the units of other without any prefixes and convert
         otherUnitDictWithoutPrefixes = {}
-        for key, item in other.unitDict.items():
-            otherUnitDictWithoutPrefixes[key] = {}
-            otherUnitDictWithoutPrefixes[key][''] = 0
-            for exp in item.values():
-                otherUnitDictWithoutPrefixes[key][''] += exp
-
+        for (_,u), exp in other.unitDict.items():
+            key = ('',u)
+            if u in otherUnitDictWithoutPrefixes:
+                otherUnitDictWithoutPrefixes[key] += exp
+            else:
+                otherUnitDictWithoutPrefixes[key] = exp
+          
         # determine if the self and other are identical once any prefixes has been removed
         if selfUnitDictWithoutPrefixes == otherUnitDictWithoutPrefixes:
             return unit(unitDict=selfUnitDictWithoutPrefixes, unitDictSI=self.unitDictSI, selfUnitStrSI=self.unitStrSI)
@@ -1017,9 +1001,9 @@ class unit():
 
         # determine if "DELTAK" and "K" are the SI Baseunits of self and other
         SIBaseUnits = [self.unitDictSI, other.unitDictSI]
-        if {'DELTAK': {'': 1}} in SIBaseUnits and {'K': {'': 1}} in SIBaseUnits:
+        if {('','DELTAK') : 1} in SIBaseUnits and {('','K') : 1} in SIBaseUnits:
 
-            indexTemp = SIBaseUnits.index({'K': {'': 1}})
+            indexTemp = SIBaseUnits.index({('','K') : 1})
             indexDiff = 0 if indexTemp == 1 else 1
 
             units = [self.unitStr, other.unitStr]
@@ -1028,7 +1012,7 @@ class unit():
             if units[indexTemp] == units[indexDiff][-1]:
                 return [self, other][indexTemp]
 
-            return unit(unitDict={'K': {'': 1}}, unitDictSI={'K': {'': 1}}, selfUnitStr='K', selfUnitStrSI='K', converterToSI=_unitConversion(1, 0))
+            return unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, selfUnitStr='K', selfUnitStrSI='K', converterToSI=_unitConversion(1, 0))
 
         raise ValueError(
             f'You tried to add a variable in [{self}] to a variable in [{other}], but the units do not have the same SI base unit')
@@ -1037,29 +1021,31 @@ class unit():
 
         # determine the units of self without any prefixes
         selfUnitDictWithoutPrefixes = {}
-        for key, item in self.unitDict.items():
-            selfUnitDictWithoutPrefixes[key] = {}
-            selfUnitDictWithoutPrefixes[key][''] = 0
-            for exp in item.values():
-                selfUnitDictWithoutPrefixes[key][''] += exp
+        for (_,u), exp in self.unitDict.items():
+            key = ('',u)
+            if u in selfUnitDictWithoutPrefixes:
+                selfUnitDictWithoutPrefixes[key] += exp
+            else:
+                selfUnitDictWithoutPrefixes[key] = exp
 
         # determine the units of other without any prefixes and convert
         otherUnitDictWithoutPrefixes = {}
-        for key, item in other.unitDict.items():
-            otherUnitDictWithoutPrefixes[key] = {}
-            otherUnitDictWithoutPrefixes[key][''] = 0
-            for exp in item.values():
-                otherUnitDictWithoutPrefixes[key][''] += exp
-
+        for (_,u), exp in other.unitDict.items():
+            key = ('',u)
+            if u in otherUnitDictWithoutPrefixes:
+                otherUnitDictWithoutPrefixes[key] += exp
+            else:
+                otherUnitDictWithoutPrefixes[key] = exp
+            
         # determine if "DELTAK" and "K" are the SI Baseunits of self and other
         SIBaseUnits = [self.unitDictSI, other.unitDictSI]
-        if SIBaseUnits[0] == {'K': {'': 1}} and SIBaseUnits[1] == {'K': {'': 1}}:
+        if SIBaseUnits[0] == {('','K') : 1} and SIBaseUnits[1] == {('','K') : 1}:
             if self.unitDict == other.unitDict:
                 return self
-            return unit(unitDict={'K': {'': 1}}, unitDictSI={'K': {'': 1}}, selfUnitStr='K', selfUnitStrSI='K', converterToSI=_unitConversion(1, 0))
+            return unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, selfUnitStr='K', selfUnitStrSI='K', converterToSI=_unitConversion(1, 0))
 
-        if {'DELTAK': {'': 1}} in SIBaseUnits and {'K': {'': 1}} in SIBaseUnits:
-            indexTemp = SIBaseUnits.index({'K': {'': 1}})
+        if {('','DELTAK') : 1} in SIBaseUnits and {('','K') : 1} in SIBaseUnits:
+            indexTemp = SIBaseUnits.index({('','K') : 1})
             if indexTemp != 0:
                 raise ValueError(
                     'You tried to subtract a temperature from a temperature differnce. This is not possible.')
@@ -1089,25 +1075,16 @@ class unit():
         
     @staticmethod
     def staticMul(a,b):
-        
         unitDict = {}
-        for key, item in a.items():
-            unitDict[key] = {}
-            for pre, exp in item.items():
-                unitDict[key][pre] = exp
+        for key, exp in a.items():
+            unitDict[key] = exp
 
-        for key, item in b.items():
-            if not key in unitDict:
-                unitDict[key] = {}
-                for pre, exp in item.items():
-                    unitDict[key][pre] = exp
+        for key, exp in b.items():
+            if key in unitDict:
+                unitDict[key] += exp
             else:
-                for pre, exp in item.items():
-                    if not pre in unitDict[key]:
-                        unitDict[key][pre] = exp
-                    else:
-                        unitDict[key][pre] += exp
-
+                unitDict[key] = exp
+            
         unitDict = unit._reduceDict(unitDict)
         return unitDict
         
@@ -1120,26 +1097,18 @@ class unit():
 
     @staticmethod
     def staticTruediv(a, b):
-
         unitDict = {}
-        for key, item in a.items():
-            unitDict[key] = {}
-            for pre, exp in item.items():
-                unitDict[key][pre] = exp
+        for key, exp in a.items():
+            unitDict[key] = exp
 
-        for key, item in b.items():
-            if not key in unitDict:
-                unitDict[key] = {}
-                for pre, exp in item.items():
-                    unitDict[key][pre] = -exp
+        for key, exp in b.items():
+            if key in unitDict:
+                unitDict[key] -= exp
             else:
-                for pre, exp in item.items():
-                    if not pre in unitDict[key]:
-                        unitDict[key][pre] = -exp
-                    else:
-                        unitDict[key][pre] -= exp
-
-        return unit._reduceDict(unitDict)
+                unitDict[key] = -exp
+            
+        unitDict = unit._reduceDict(unitDict)
+        return unitDict
 
     def __pow__(self, power):
         unitDict = unit.staticPow(self.unitDict, self.unitDictSI, self.unitStr, power)
@@ -1164,10 +1133,10 @@ class unit():
     @staticmethod
     def staticPow(unitDict, unitDictSI, unitStr, power):
 
-        if unitDict == {'1': {'': 1}}:
+        if unitDict == {('','1') : 1}:
             return unitDict
 
-        if unitDictSI == {'1': {'':1}}:
+        if unitDictSI == {('','1') : 1}:
             return unitDictSI
         
         frac = Fraction(power).limit_denominator()
@@ -1175,39 +1144,32 @@ class unit():
 
         # determine if it is possible to take the power of the unitDict
         isPossible = True
-        out = {}
-        for key, item in unitDict.items():
-            for pre, exp in item.items():
-                if not (exp * num) % den == 0:
-                    isPossible = False
-                    break
-            if not isPossible:
+        for exp in unitDict.values():
+            if not (exp * num) % den == 0:
+                isPossible = False
                 break
+
 
         # if it is possible, then return a new unitDict
         if isPossible:
-            for key, item in unitDict.items():
-                out[key] = {}
-                for pre, exp in unitDict[key].items():
-                    out[key][pre] = int(num * exp / den)
+            out = {}
+            for key, exp in unitDict.items():
+                out[key] = int(num * exp / den) 
             out = unit._reduceDict(out)
             return out
 
         # determine if it is possible to take the power of the sibase unit
         isPossible = True
-        out = {}
-        for key, item in unitDictSI.items():
-            for pre, exp in item.items():
-                if not (exp * num) % den == 0:
-                    isPossible = False
-                    break
+        for exp in unitDictSI.values():
+            if not (exp * num) % den == 0:
+                isPossible = False
+                break
 
         # if it is possible, then return a new unitDict
         if isPossible:
-            for key, item in unitDictSI.items():
-                out[key] = {}
-                for pre, exp in item.items():
-                    out[key][pre] = int(num * exp / den)
+            out = {}
+            for key, exp in unitDictSI.items():
+                out[key] = int(num * exp / den)
             out = unit._reduceDict(out)
             return out
 
@@ -1219,16 +1181,15 @@ class unit():
         outScale, outOffset = 1, 0
 
         # loop over self.unitDict
-        for u, item in self.unitDict.items():
-            for pre, exp in item.items():
-                convScale, convOffset = _knownUnits[u][1]
-                convScale = convScale * _knownPrefixes[pre]
-                if convScale == 1 and convOffset == 0:
-                    continue
-                convScale, convOffset = _unitConversion.staticPow(
-                    convScale, convOffset, exp)
-                outScale, outOffset = _unitConversion.staticMul(
-                    outScale, outOffset, convScale, convOffset)
+        for (pre, u), exp in self.unitDict.items():
+            convScale, convOffset = _knownUnits[u][1]
+            convScale = convScale * _knownPrefixes[pre]
+            if convScale == 1 and convOffset == 0:
+                continue
+            convScale, convOffset = _unitConversion.staticPow(
+                convScale, convOffset, exp)
+            outScale, outOffset = _unitConversion.staticMul(
+                outScale, outOffset, convScale, convOffset)
 
         self._converterToSI = _unitConversion(outScale, outOffset)
 
@@ -1253,20 +1214,20 @@ class unit():
             outScale, outOffset = self._converterToSI.scale, self._converterToSI.offset
 
             # loop over newUnitDict
-            for u, item in newUnitDict.items():
-                for pre, exp in item.items():
-                    convScale, convOffset = _knownUnits[u][1]
-                    convScale = convScale * _knownPrefixes[pre]
-                    if convScale == 1 and convOffset == 0:
-                        continue
-                    convScale, convOffset = _unitConversion.staticPow(
-                        convScale, convOffset, exp)
-                    outScale, outOffset = _unitConversion.staticTruediv(
-                        outScale, outOffset, convScale, convOffset)
+            for (pre, u), exp in newUnitDict.items():
+                
+                convScale, convOffset = _knownUnits[u][1]
+                convScale = convScale * _knownPrefixes[pre]
+                if convScale == 1 and convOffset == 0:
+                    continue
+                convScale, convOffset = _unitConversion.staticPow(
+                    convScale, convOffset, exp)
+                outScale, outOffset = _unitConversion.staticTruediv(
+                    outScale, outOffset, convScale, convOffset)
 
             return _unitConversion(outScale, outOffset).convert
 
-        if (self.unitDictSI == {'Np': {'': 1}} and newUnitDictSI == {'1': {'': 1}}):
+        if (self.unitDictSI == {('','Np') : 1} and newUnitDictSI == {('','1') : 1}):
             # convert from logarithmic unit to signal
             converter = self.getLogarithmicConverter(
                 self._removePrefixFromUnit(self.unitStr)[0])
@@ -1274,7 +1235,7 @@ class unit():
                 self.getUnitWithoutPrefix())
             return converter.converterToSignal
 
-        if (self.unitDictSI == {'1': {'': 1}} and newUnitDictSI == {'Np': {'': 1}}):
+        if (self.unitDictSI == {('','1') : 1} and newUnitDictSI == {('','Np') : 1}):
             # convert from signal to logarithmic unit
             newUnit = unit(newUnitStr)
             newUnitWithoutPrefix = unit(newUnit.getUnitWithoutPrefix())
@@ -1303,4 +1264,9 @@ class unit():
 
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
 
-## TODO Represent the unit as a matrix on coloumn for each known unit, one row for each prefix - brug scipy dok_matrix
+
+if __name__ == "__main__":
+    a = unit('C')
+    b = unit('C')
+    c = a - b
+    print(c)
