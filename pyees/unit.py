@@ -883,10 +883,10 @@ class unit():
 
     @staticmethod
     def _unitStrPrettyPostProcessing(unitStrPretty):
-        unitStrPretty = unitStrPretty.replace(rf'\left', rf'\left(')
-        unitStrPretty = unitStrPretty.replace(rf'\right', rf'\right)')
-        pattern = r'(?<!\{)(?<!\\{)(\d+)(?=\}|\D|$)'
-        return resub(pattern, r'^{\1}', unitStrPretty)
+        unitStrPretty = resub(r'(?<!\\)\\right', r'\\right)', unitStrPretty)
+        unitStrPretty = resub(r'(?<!\\)\\left', r'\\left(', unitStrPretty)
+        unitStrPretty = resub(r'(?<!\\)%', r'\%', unitStrPretty)
+        return resub(r'(?<!\{)(?<!\\{)(\d+)(?=\}|\D|$)', r'^{\1}', unitStrPretty)
      
     @ staticmethod
     def _removeExponentFromUnit(u):
@@ -1266,7 +1266,5 @@ class unit():
 
 
 if __name__ == "__main__":
-    a = unit('C')
-    b = unit('C')
-    c = a - b
-    print(c)
+    a = unit('%')
+    print(a.unitStrPretty)

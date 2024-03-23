@@ -179,7 +179,7 @@ class test(unittest.TestCase):
         Fb = F.coefficients[1]
         Fc = F.coefficients[2]
         Fd = F.coefficients[3]
-
+        
         self.assertAlmostEqual(Fa.value, 2)
         self.assertEqual(str(Fa.unit), 'DELTAC/m3')
 
@@ -435,5 +435,5 @@ class test(unittest.TestCase):
         
 
 if __name__ == '__main__':
-    showPlots = True
+    # showPlots = True
     unittest.main()
