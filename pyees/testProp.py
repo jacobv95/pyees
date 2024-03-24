@@ -9,7 +9,11 @@ except ImportError:
 
 class test(unittest.TestCase):
 
-    def testAll(self):
+    def assertRelativeDifference(self, a, b, r):
+        assert abs(a-b) <= abs(b * r), f"The value {a} and {b} has a greater relative difference than {r}. The difference was {abs(a-b)} and was allowed to be {b*r}"
+    
+
+    def testWaterAndMEG(self):
         
         eesData = openpyxl.load_workbook('testData/testPropData.xlsx').active        
         def compareVariableAndEESData(var, row, col):
@@ -23,7 +27,6 @@ class test(unittest.TestCase):
         C = variable([50,40], '%', [2,2])
         P = variable([1, 0.5], 'bar', [0.1, 0.1])
         T = variable([20, 30], 'C', [1,1])
-        
         
         ## test scalar value inputs
         ## loop over all combinations of the concentration, pressure and temperature.
@@ -41,14 +44,14 @@ class test(unittest.TestCase):
                     mu_water = prop('dynamic_viscosity', 'water', T = t, P = p)       
                     compareVariableAndEESData(mu_water, row, 3)
                     
-                    rho_meg = prop('density', 'MEG', T = t, P = p, C = c)       
+                    rho_meg = prop('density', 'MEG', T = t, P = p, C=c)       
                     compareVariableAndEESData(rho_meg, row, 4)
                     
-                    cp_meg = prop('specific_heat', 'MEG', T = t, P = p, C = c)       
+                    cp_meg = prop('specific_heat', 'MEG', T = t, P = p, C=c)       
                     cp_meg.convert('kJ/kg-K')
                     compareVariableAndEESData(cp_meg, row, 0)
 
-                    mu_meg = prop('dynamic_viscosity', 'MEG', T = t, P = p, C = c)       
+                    mu_meg = prop('dynamic_viscosity', 'MEG', T = t, P = p, C=c)       
                     compareVariableAndEESData(mu_meg, row, 2)
                     
                     row += 1
@@ -283,7 +286,113 @@ class test(unittest.TestCase):
             self.assertAlmostEqual(elem.dependsOn[T[i]][1], dMassFlow_dT[i], 6)
             self.assertAlmostEqual(elem.dependsOn[P[i]][1], dMassFlow_dP[i], 6)
         
-      
+    def testAir(self):
+        
+        T = variable(20, 'C', 2)
+        P = variable(1, 'bar', 0.1)
+        rh = variable(60, '%', 5)
+        
+        rho = prop('density', 'air', t = T, p = P, rh = rh)
+        self.assertRelativeDifference(rho.value, 1.182100462245054920, 1e-3)
+        self.assertEqual(str(rho.unit), 'kg/m3')
 
+        cp = prop('specific_heat', 'air', t = T, p = P, rh = rh)
+        cp.convert('J/kg-K')                
+        self.assertRelativeDifference(cp.value, 1020.889735737790340, 1e-2)
+
+    def testExamples(self):
+        mu = prop('dynamic_viscosity', 'MPG', C = variable(60,'%'), p = variable(100e3, 'Pa'), t = variable(-20, 'C'))
+        self.assertAlmostEqual(mu.value, 0.13907391053938878)
+        self.assertEqual(mu.unit, 'Pa-s')
+        
+        rho = prop('density', ['water', 'Ethanol'], C = [variable(60, '%'), variable(40, '%')], p = variable(200e3, 'Pa'), T = variable(4, 'C'))
+        self.assertAlmostEqual(rho.value, 883.3922771627963)
+        self.assertEqual(rho.unit, 'kg/m3')
+        
+        wbt = prop('wet_bulb_temperature', 'air', altitude = variable(300, 'm'), t = variable(30, 'C'), rh = variable(50, '%'))
+        self.assertAlmostEqual(wbt.value, 21.917569033181564)
+        self.assertEqual(wbt.unit, 'C')
+    
+    
+    def testInputBrines(self):    
+        mu = prop('dynamic_viscosity', 'MPG', C = variable([60, 60],'%'), p = variable(100e3, 'Pa'), t = variable(-20, 'C'))
+        self.assertAlmostEqual(mu.value[0], 0.13907391053938878)
+        self.assertAlmostEqual(mu.value[1], 0.13907391053938878)
+        self.assertEqual(mu.unit, 'Pa-s')
+        
+        
+        mu = prop('dynamic_viscosity', 'MPG', C = variable(60,'%'), p = variable([100e3, 100e3], 'Pa'), t = variable(-20, 'C'))
+        self.assertAlmostEqual(mu.value[0], 0.13907391053938878)
+        self.assertAlmostEqual(mu.value[1], 0.13907391053938878)
+        self.assertEqual(mu.unit, 'Pa-s')
+    
+            
+        mu = prop('dynamic_viscosity', 'MPG', C = variable(60,'%'), p = variable(100e3, 'Pa'), t = variable([-20,-20], 'C'))
+        self.assertAlmostEqual(mu.value[0], 0.13907391053938878)
+        self.assertAlmostEqual(mu.value[1], 0.13907391053938878)
+        self.assertEqual(mu.unit, 'Pa-s')
+        
+                    
+        mu = prop('dynamic_viscosity', 'MPG', C = variable([60,60],'%'), p = variable([100e3, 100e3], 'Pa'), t = variable(-20, 'C'))
+        self.assertAlmostEqual(mu.value[0], 0.13907391053938878)
+        self.assertAlmostEqual(mu.value[1], 0.13907391053938878)
+        self.assertEqual(mu.unit, 'Pa-s')
+        
+        
+        mu = prop('dynamic_viscosity', 'MPG', C = variable([60,60],'%'), p = variable(100e3, 'Pa'), t = variable([-20,-20], 'C'))
+        self.assertAlmostEqual(mu.value[0], 0.13907391053938878)
+        self.assertAlmostEqual(mu.value[1], 0.13907391053938878)
+        self.assertEqual(mu.unit, 'Pa-s')
+        
+         
+        mu = prop('dynamic_viscosity', 'MPG', C = variable(60,'%'), p = variable([100e3,100e3], 'Pa'), t = variable([-20,-20], 'C'))
+        self.assertAlmostEqual(mu.value[0], 0.13907391053938878)
+        self.assertAlmostEqual(mu.value[1], 0.13907391053938878)
+        self.assertEqual(mu.unit, 'Pa-s')
+    
+       
+        mu = prop('dynamic_viscosity', 'MPG', C = variable([60,60],'%'), p = variable([100e3,100e3], 'Pa'), t = variable([-20,-20], 'C'))
+        self.assertAlmostEqual(mu.value[0], 0.13907391053938878)
+        self.assertAlmostEqual(mu.value[1], 0.13907391053938878)
+        self.assertEqual(mu.unit, 'Pa-s')
+    
+    def testInputsMixtures(self):
+        
+        rho = prop('density', ['water', 'Ethanol'], C = [variable([60, 60], '%'), variable([40,40], '%')], p = variable(200e3, 'Pa'), T = variable(4, 'C'))
+        self.assertAlmostEqual(rho.value[0], 883.3922771627963)
+        self.assertAlmostEqual(rho.value[1], 883.3922771627963)
+        self.assertEqual(rho.unit, 'kg/m3')
+        
+        rho = prop('density', ['water', 'Ethanol'], C = [variable(60, '%'), variable(40, '%')], p = variable([200e3, 200e3], 'Pa'), T = variable(4, 'C'))
+        self.assertAlmostEqual(rho.value[0], 883.3922771627963)
+        self.assertAlmostEqual(rho.value[1], 883.3922771627963)
+        self.assertEqual(rho.unit, 'kg/m3')
+        
+        rho = prop('density', ['water', 'Ethanol'], C = [variable(60, '%'), variable(40, '%')], p = variable(200e3, 'Pa'), T = variable([4,4], 'C'))
+        self.assertAlmostEqual(rho.value[0], 883.3922771627963)
+        self.assertAlmostEqual(rho.value[1], 883.3922771627963)
+        self.assertEqual(rho.unit, 'kg/m3')
+     
+        rho = prop('density', ['water', 'Ethanol'], C = [variable([60,60], '%'), variable([40,40], '%')], p = variable([200e3,200e3], 'Pa'), T = variable(4, 'C'))
+        self.assertAlmostEqual(rho.value[0], 883.3922771627963)
+        self.assertAlmostEqual(rho.value[1], 883.3922771627963)
+        self.assertEqual(rho.unit, 'kg/m3')
+           
+        rho = prop('density', ['water', 'Ethanol'], C = [variable([60,60], '%'), variable([40,40], '%')], p = variable(200e3, 'Pa'), T = variable([4,4], 'C'))
+        self.assertAlmostEqual(rho.value[0], 883.3922771627963)
+        self.assertAlmostEqual(rho.value[1], 883.3922771627963)
+        self.assertEqual(rho.unit, 'kg/m3')
+        
+        rho = prop('density', ['water', 'Ethanol'], C = [variable(60, '%'), variable(40, '%')], p = variable([200e3,200e3], 'Pa'), T = variable([4,4], 'C'))
+        self.assertAlmostEqual(rho.value[0], 883.3922771627963)
+        self.assertAlmostEqual(rho.value[1], 883.3922771627963)
+        self.assertEqual(rho.unit, 'kg/m3')
+        
+        rho = prop('density', ['water', 'Ethanol'], C = [variable([60,60], '%'), variable([40,40], '%')], p = variable([200e3,200e3], 'Pa'), T = variable([4,4], 'C'))
+        self.assertAlmostEqual(rho.value[0], 883.3922771627963)
+        self.assertAlmostEqual(rho.value[1], 883.3922771627963)
+        self.assertEqual(rho.unit, 'kg/m3')
+        
+        
 if __name__ == '__main__':
     unittest.main()

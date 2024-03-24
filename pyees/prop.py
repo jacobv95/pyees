@@ -1,58 +1,12 @@
-from pyfluids import Fluid, FluidsList, Input, HumidAir, InputHumidAir
+from pyfluids import Fluid, FluidsList, Input, HumidAir, InputHumidAir, Mixture
 try:
-    from variable import variable, scalarVariable, arrayVariable
-    from unit import unit
+    from variable import variable, arrayVariable
 except ImportError:
-    from pyees.unit import unit
-    from pyees.variable import variable, scalarVariable, arrayVariable
+    from pyees.variable import variable, arrayVariable
 dx = 0.000001
 
-def prop(property, fluid, **kwargs):
 
-    if not fluid in knownFluids:
-        raise ValueError(f"The fluid {fluid} is unknown")
-
-    method = knownFluids[fluid]
-        
-    return method(property, kwargs)
-
-def isAllArgumentsUsed(arguments: dict):
-    if (len(arguments.keys()) > 0):
-        raise ValueError(f'The inputs {list(arguments.keys())} are not appropriate for this fluid')
-
-def findArgument(arguments : dict, parameterName, unitStr, raiseError = True):
-
-    desiredSIBaseUnit = unit(unitStr).unitStrSI
-    
-    parameter = None
-    if  parameterName in arguments.keys():
-        parameter = arguments[parameterName]
-        del arguments[parameterName]
-    else:
-        if raiseError:
-            raise ValueError(f'Could not find an arugment matching that of a {parameterName}')
-    if not parameter is None:
-        if parameter._unitObject.unitStrSI != desiredSIBaseUnit:
-            raise ValueError(f'The input {parameterName} did not have to correct unit of {unitStr}')
-
-    return arguments, parameter
-
-def differentialsBrine(fluid : Fluid, fluidName,  property, C, parameters):
-
-    vars, grads = differentials(fluid, property, parameters)
-    
-    if (C.uncert == 0):
-        return  vars, grads
-
-
-    y1 = getattr(Fluid(fluidName,C.value*(1 + dx)).with_state(*fluid._inputs), property)
-    y2 = getattr(Fluid(fluidName,C.value*(1 - dx)).with_state(*fluid._inputs), property)
-
-    grads.append((y2-y1) / (2*dx * C.value))
-    vars.append(C)
-    return vars, grads
-
-def differentials(fluid : Fluid, property : str, parameters):
+def differentials(fluid : Fluid, property : str, concentration, parameters):
     vars = []
     indexes = []
     for i, param in enumerate(parameters):
@@ -66,39 +20,210 @@ def differentials(fluid : Fluid, property : str, parameters):
     for i in indexes:
         
         i0 = inputs[i]
-        i1 = Input(i0.coolprop_key, i0.value * (1-dx))
-        i2 = Input(i0.coolprop_key, i0.value * (1+dx))
         
-        inputs[i] = i1
-        fluid.update(*inputs)
-        y1 = getattr(fluid, property)
+        try:
+            i1 = Input(i0.coolprop_key, i0.value * (1-dx))
+            i2 = Input(i0.coolprop_key, i0.value)
+            inputs[i] = i1
+            fluid.update(*inputs)
+            y1 = getattr(fluid, property)
+            
+            inputs[i] = i2
+            fluid.update(*inputs)
+            y2 = getattr(fluid, property)
         
-        inputs[i] = i2
-        fluid.update(*inputs)
-        y2 = getattr(fluid, property)
+            inputs[i] = i0
+            fluid.update(*inputs)
+        except ValueError:
+            i1 = Input(i0.coolprop_key, i0.value)
+            i2 = Input(i0.coolprop_key, i0.value * (1 + dx))
+            inputs[i] = i1
+            fluid.update(*inputs)
+            y1 = getattr(fluid, property)
+            
+            inputs[i] = i2
+            fluid.update(*inputs)
+            y2 = getattr(fluid, property)
         
-        inputs[i] = i0
-        fluid.update(*inputs)
+            inputs[i] = i0
+            fluid.update(*inputs)
         
-        grads.append((y2-y1) / (2*dx*i0.value))
+        grads.append((y2-y1) / (dx*i0.value))
+    
+    if not concentration is None:
+    
+        if not hasattr(fluid, 'name'):
+            
+            for i in range(len(concentration)):
+                vars.append(concentration[i])
+                try:
+                    frac1 = [elem for elem in fluid.fractions]
+                    frac2 = [elem for elem in fluid.fractions]
+                    
+                    frac1[i] *= (1+dx)
+                    # frac2[i] *= (1-dx)
+                    
+                    frac1 = [elem / sum(frac1) * 100 for elem in frac1]
+                    frac2 = [elem / sum(frac2) * 100 for elem in frac2]
+                    
+                    f1 = Mixture(fluid.fluids, frac1)
+                    f2 = Mixture(fluid.fluids, frac2)
+                except ValueError:
+                    
+                    frac1 = [elem for elem in fluid.fractions]
+                    frac2 = [elem for elem in fluid.fractions]
+                    
+                    # frac1[i] *= (1+dx)
+                    frac2[i] *= (1-dx)
+                    
+                    frac1 = [elem / sum(frac1) * 100 for elem in frac1]
+                    frac2 = [elem / sum(frac2) * 100 for elem in frac2]
+                    
+                    f1 = Mixture(fluid.fluids, frac1)
+                    f2 = Mixture(fluid.fluids, frac2)
+                
+                f1.update(*inputs)
+                f2.update(*inputs)
+                
+                y1 = getattr(f1, property)
+                y2 = getattr(f2, property)
+                
+                grads.append((y2-y1) / (frac1[i] - frac2[i]))            
+        else:
+            vars.append(concentration)
+        
+            try:
+                f1 = Fluid(fluid.name, fluid.fraction * (1 + dx))
+                f2 = Fluid(fluid.name, fluid.fraction)
+            except ValueError:
+                f1 = Fluid(fluid.name, fluid.fraction)
+                f2 = Fluid(fluid.name, fluid.fraction * (1 - dx))
+                
+            f1.update(*inputs)
+            f2.update(*inputs)
+            
+            y1 = getattr(f1, property)
+            y2 = getattr(f2, property)
+            grads.append((y2-y1) / (dx*concentration.value))
+            
     
     return vars, grads
 
-def outputFromParameters(scalarMethod, property, params):
+    
+
+    
+fluidTranslator = {
+    'water': 'Water',
+    'WATER': 'Water',
+    'air': 'Air',
+    'AIR': 'Air',
+    'meg': 'MEG'
+}
+
+propertyTranslator = {
+    'T': 'temperature',
+    't' : 'temperature',
+    'P': 'pressure',
+    'p': 'pressure',
+    'Rh': 'relative_humidity',
+    'rh': 'relative_humidity'
+}
+
+propertyUnits = {
+    'compressibility':      '1',
+    'conductivity':         'W/m-K',
+    'critical_pressure':    'Pa',
+    'critical_temperature': 'C',
+    'density':              'kg/m3',
+    'dynamic_viscosity':    'Pa-s',
+    'enthalpy':             'J/kg',
+    'entropy':              'J/kg-K',
+    'freezing_temperature': 'C',
+    'internal_energy':      'J/kg',
+    'kinematic_viscosity':  'm2/s',
+    'max_pressure':         'Pa',
+    'max_temperature':      'C',
+    'min_pressure':         'Pa',
+    'min_temperature':      'C',
+    'molar_mass':           'kg/mol',
+    'prandtl':              '1',
+    'pressure':             'Pa',
+    'quality':              '%',
+    'sound_speed':          'm/s',
+    'specific_heat':        'J/kg-K',
+    'specific_volume':      'm3/kg',
+    'surface_tension':      'N/m',
+    'temperature':          'C',
+    'triple_pressure':      'Pa',
+    'triple_temperature':   'C',
+    'dew_temperature':      'C',
+    'humidity':             '1',
+    'partial_pressure':     'Pa',
+    'relative_humidity':    '%',
+    'wet_bulb_temperature': 'C'
+}
+
+def prop(property, fluid, C = None, **state):
+
+    params = list(state.values())
     
     ## determine which of the parameters that are arrayVariables
-    isArrayVariable = [hasattr(param, '__len__') for param in params]
+    isArrayVariable = [hasattr(param, '__len__') for param in params]    
     
-    ## return the scalarmethod if all parameters are scalarvariables
-    if sum(isArrayVariable) == 0:
-        return scalarMethod(property, *params)
-    
-    ## make sure, that all arrayVariables have the same length
     indexesOfArrayVariables = [i for i, elem in enumerate(isArrayVariable) if elem == True]
-    n = len(params[indexesOfArrayVariables[0]])
-    for i in indexesOfArrayVariables:
-        if len(params[i]) != n:
-            raise ValueError('All parameters has to have the same length')
+    if sum(isArrayVariable) > 0:
+        ## make sure, that all arrayVariables have the same length
+        n = len(params[indexesOfArrayVariables[0]])
+        for i in indexesOfArrayVariables:
+            if len(params[i]) != n:
+                raise ValueError('All parameters has to have the same length')
+    
+        concentrations = [None for i in range(n)]
+        if not C is None:
+            if isinstance(C, list):
+                if hasattr(C[0], '__len__'):
+                    n = len(C[0])
+                    for elem in C:
+                        if len(elem) != n:
+                            raise ValueError('All concentrations has to have the same length')
+                    concentrations = []
+                    for i in range(n):
+                        con = []
+                        for j in range(len(C)):
+                            con.append(C[j][i])
+                        concentrations.append(con)
+                else:
+                    concentrations = [C] * n
+            else:
+                if hasattr(C, '__len__'):
+                    if len(C) != n:
+                        raise ValueError('All parameters has to have the same length')
+                    concentrations = C
+                else:
+                    concentrations = [C for i in range(n)]
+    else:
+        if isinstance(C, list):
+            if hasattr(C[0], '__len__'):
+                n = len(C[0])
+                for elem in C:
+                    if len(elem) != n:
+                        raise ValueError('All concentrations has to have the same length')
+                concentrations = []
+                for i in range(n):
+                    con = []
+                    for j in range(len(C)):
+                        con.append(C[j][i])
+                    concentrations.append(con)
+            else:
+                n = 1
+                concentrations = [C]
+                    
+        else:
+            if hasattr(C, '__len__'):
+                n = len(C)
+                concentrations = C
+            else:
+                return _propScalar(property, fluid, C, **state)
     
     ## create a list of scalar variables. This list will have the same length as the arrayVariables supplied
     listOfScalarVariables = []
@@ -107,206 +232,114 @@ def outputFromParameters(scalarMethod, property, params):
     for i in range(n):
         
         ## create a list of scalarparameter
-        scalarParams = []
+        scalarParams = {}
         
         ## loop over the parameters
         for ii, param in enumerate(params):
             
             ## if the current parameter is an arrayVariable, then append the i'th scalarVaraible of the arrayVariable to the list of the scalar parameters
             if ii in indexesOfArrayVariables:
-                scalarParams.append(param[i])
+                # scalarParams.append(param[i])
+                scalarParams[list(state.keys())[ii]] = param[i]
             
             ## if the current parameter is a scalarvariable, then simply append the parameter to the scalarparameters
             else:
-                scalarParams.append(param)
+                scalarParams[list(state.keys())[ii]] = param
                 
         ## append the output of the scalarmethods to the list of scalar variables
-        listOfScalarVariables.append(scalarMethod(property, *scalarParams))
+        listOfScalarVariables.append(_propScalar(property, fluid, concentrations[i], **scalarParams))
         
+        
+    if n == 1: return listOfScalarVariables[0]
     ## return an arrayVariable, which is created from a list of scalarvariables
     return arrayVariable(scalarVariables=listOfScalarVariables)
     
+def _propScalar(property, fluid, concentration = None, **state):
     
-
-def propWater(property, arguments):
-    ## find the appropriate arguments from the list
-    arguments, T = findArgument(arguments, 'T', 'K')
-    arguments, P = findArgument(arguments, 'P', 'Pa')
-    isAllArgumentsUsed(arguments)
     
-    ## store the default unit of the arguments
-    Tunit = T.unit
-    Punit = P.unit
+    listOfNonInputs = []
+    if not concentration is None:
+        if isinstance(concentration, list):
+            originalConcentrationUnit = []
+            for elem in concentration:
+                originalConcentrationUnit.append(elem.unit)
+                elem.convert('%')
+            listOfNonInputs = concentration
+        else:
+            originalConcentrationUnit = concentration.unit
+            concentration.convert('%')
+            listOfNonInputs = [concentration.value]
     
-    ## convert in to the units of pyfluids
-    T.convert('C')
-    P.convert('Pa')
+    originalUnits = []
+    listOfInputs = []
+    if isinstance(fluid, list):
+        input = Input
+    else:
+        input = InputHumidAir if fluid.lower() == 'air' else Input
+    for key, value in state.items():
+        
+        originalUnits.append(value.unit)
+        if value._unitObject.unitStrSI == 'K':
+            value.convert('C')
+        elif value._unitObject.unitStrSI == '1':
+            value.convert('%')
+        else:
+            value.convert(value._unitObject.unitStrSI)
+            
+        try:
+            method = getattr(input, key)
+        except AttributeError:
+            method = getattr(input, propertyTranslator[key])
+            
+        i = method(value.value)
+        listOfInputs.append(i)
     
-    out = outputFromParameters(propWaterScalar, property, [T,P])
-
-    ## convert the arguments back in to the original units
-    T.convert(Tunit)
-    P.convert(Punit)
-    
-    return out
-
-def propWaterScalar(property, T,P):
-    ## update the fluid state
-    fluid = Fluid(FluidsList.Water)
-    fluid = fluid.with_state(Input.temperature(T.value), Input.pressure(P.value))
-    
-    ## create a variable from the fluid
-    var = getattr(fluid, property)
-    var = variable(var, propertyUnits[property])
-    vars, grads = differentials(fluid, property, [T, P])
-    for v, g in zip(vars, grads):
-        var._addDependent(v,g)
-    var._calculateUncertanty()
-    
-    ## return the variable
-    return var
-   
-    
-def propMEG(property, arguments):
- 
-    
-    ## find the appropriate arguments from the list
-    arguments, T = findArgument(arguments, 'T', 'C')
-    arguments, P = findArgument(arguments, 'P', 'Pa')
-    arguments, C = findArgument(arguments, 'C', '%')
-    isAllArgumentsUsed(arguments)
-
-    ## store the default unit of the arguments
-    Tunit = T.unit
-    Punit = P.unit
-    
-    ## convert in to the units of pyfluids
-    T.convert('C')
-    P.convert('Pa')
-
-    out = outputFromParameters(propMEGScalar, property, [T,P,C])
-
-    ## convert the arguments back in to the original units
-    T.convert(Tunit)
-    P.convert(Punit)
-
-    return out
-
-def propMEGScalar(property, T,P,C):
-    fluid = Fluid(FluidsList.MEG, C.value)    
-    
-    ## store the default unit of the arguments
-    Tunit = T.unit
-    Punit = P.unit
-    
-    ## convert in to the units of pyfluids
-    T.convert('C')
-    P.convert('Pa')
     
     ## update the fluid state
-    fluid = fluid.with_state(Input.temperature(T.value), Input.pressure(P.value))
+    if isinstance(fluid, list):
+        listOfFluids = []
+        for i in range(len(fluid)):
+            try:
+                elem = getattr(FluidsList, fluid[i])
+            except AttributeError:
+                elem = getattr(FluidsList, fluidTranslator[fluid[i]])
+            listOfFluids.append(elem)
+        fluid = Mixture(listOfFluids, [elem.value for elem in concentration])
+    else:
+        if fluid.lower() == 'air':
+            fluid = HumidAir(*listOfNonInputs)
+        else:
+            try:
+                fluid = Fluid(getattr(FluidsList, fluid), *listOfNonInputs) 
+            except AttributeError:
+                fluid = Fluid(getattr(FluidsList, fluidTranslator[fluid]), *listOfNonInputs) 
+            
+    fluid = fluid.with_state(*listOfInputs)
     
+    
+
+    vars = [item for item in state.values()]
+
     ## create a variable from the fluid
     var = getattr(fluid, property)
     var = variable(var, propertyUnits[property])
-    vars, grads = differentialsBrine(fluid, FluidsList.MEG, property, C, [T, P])
+    vars, grads = differentials(fluid, property, concentration, vars)
     for v, g in zip(vars, grads):
         var._addDependent(v,g)
     var._calculateUncertanty()
     
-    ## convert the arguments back in to the original units
-    T.convert(Tunit)
-    P.convert(Punit)
+    for i, (key, value) in enumerate(state.items()): value.convert(originalUnits[i])
+    if not concentration is None:
+        if isinstance(concentration, list):
+            for i, elem in enumerate(concentration):
+                elem.convert(originalConcentrationUnit[i])
+        else:
+            concentration.convert(originalConcentrationUnit)
     
-    ## return the variable
     return var
-    
-def propHumidAir(property, arguments):
 
 
-    arguments, H = findArgument(arguments, 'h', 'm', raiseError=False)
-    arguments, P = findArgument(arguments, 'P', 'Pa', raiseError=False)
-    arguments, T = findArgument(arguments, 'T', 'C', raiseError=True)
-    arguments, Rh = findArgument(arguments, 'Rh', '', raiseError=True)
-    isAllArgumentsUsed(arguments)
-
-    if H is None and P is None:
-        raise ValueError('You have to specify either an altitude or a pressure')
-    if not (H is None) and not (P is None):
-        raise ValueError('You cannot specify both an altitude and a pressure')
+if __name__ == "__main__":
     
-    vars = [T,Rh]
-    if not (H is None):
-        vars.append(H)
-    else:
-        vars.append(P)
-    
-    varUnits = [elem.unit for elem in vars]
-    
-    desiredUnits = ['C','']
-    if not (H is None):
-        desiredUnits.append('m')
-    else:
-        desiredUnits.append('Pa')
-        
-    for Var, desiredUnit in zip(vars, desiredUnits):
-        Var.convert(desiredUnit)
-    
-    out = outputFromParameters(propHumidAirScalar, property, [T,Rh, H, P])
-    
-    for Var, varUnit in zip(vars, varUnits):
-        Var.convert(varUnit)
-    
-    return out
-
-def propHumidAirScalar(property, T,Rh,H = None, P = None):
-    
-    inputs = []
-    inputs.append(InputHumidAir.temperature(T.value))
-    inputs.append(InputHumidAir.relative_humidity(Rh.value))
-    if not (H is None):
-        inputs.append(InputHumidAir.altitude(H.value))
-    else:
-        inputs.append(InputHumidAir.pressure(P.value))
-    
-    vars = []
-    vars.append(T)
-    vars.append(Rh)
-    if not (H is None):
-        vars.append(H)
-    else:
-        vars.append(P)
-        
-    fluid = HumidAir()    
-    fluid = fluid.with_state(*inputs)
-    
-    ## create a variable from the fluid
-    var = getattr(fluid, property)
-    var = variable(var, propertyUnits[property])
-    vars, grads = differentials(fluid, property, vars)
-    for v, g in zip(vars, grads):
-        var._addDependent(v,g)
-    var._calculateUncertanty()
-    
-    return var 
-
-propertyUnits = {
-    'density': 'kg/m3',
-    'specific_heat': 'J/kg-K',
-    'dynamic_viscosity': 'Pa-s'
-}
-
-knownProperties = [
-    "density",
-    "specific_heat",
-    "dynamic_viscosity"
-]
-
-knownFluids = {
-    'water': propWater,
-    'MEG': propMEG,
-    'air': propHumidAir
-}
-
-    
-    
+    rho = prop('density', ['water', 'Ethanol'], C = [variable(60, '%'), variable(40, '%')], p = variable([200e3, 200e3], 'Pa'), T = variable(4, 'C'))
+    print(rho)
