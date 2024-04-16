@@ -883,10 +883,22 @@ class unit():
 
     @staticmethod
     def _unitStrPrettyPostProcessing(unitStrPretty):
+        ## replace 'left' with '\left'
         unitStrPretty = resub(r'(?<!\\)\\right', r'\\right)', unitStrPretty)
+        
+        ## replace 'right' with '\right'
         unitStrPretty = resub(r'(?<!\\)\\left', r'\\left(', unitStrPretty)
+        
+        ## replace '%' with '\%'
         unitStrPretty = resub(r'(?<!\\)%', r'\%', unitStrPretty)
-        return resub(r'(?<!\{)(?<!\\{)(\d+)(?=\}|\D|$)', r'^{\1}', unitStrPretty)
+        
+        ## replace 'exp' with '^{exp}' if the exponent is not 1. Else remove the exponent
+        unitStrPretty = resub(r'(?<!\{)(?<!\\{)(\d+)(?=\}|\D|$)', r'^{\1}', unitStrPretty)
+     
+        ## replace 'DELTA' with '\DELTA '
+        unitStrPretty = resub(r'(?<!/)DELTA', r'\\Delta ', unitStrPretty)
+        
+        return unitStrPretty
      
     @ staticmethod
     def _removeExponentFromUnit(u):
@@ -1266,5 +1278,5 @@ class unit():
 
 
 if __name__ == "__main__":
-    a = unit('%')
+    a = unit('DELTAK')
     print(a.unitStrPretty)

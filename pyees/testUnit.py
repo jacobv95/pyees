@@ -408,7 +408,6 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A.uncert,  0.29166666666666666666667)
         self.assertAlmostEqual(A._uncertSI, 1)
         
-
     
 
 if __name__ == '__main__':

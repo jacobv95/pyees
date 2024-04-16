@@ -831,10 +831,12 @@ class arrayVariable(scalarVariable):
 
         if isinstance(index, int) or isinstance(index, np.integer):
             return self.scalarVariables[index]
-        elif isinstance(index, slice):
+        if isinstance(index, slice):
             return arrayVariable(scalarVariables=self.scalarVariables[index])
         if isinstance(index, list):
             return arrayVariable(scalarVariables=[self.scalarVariables[elem] for elem in index])
+        if isinstance(index, np.ndarray):
+            return arrayVariable(scalarVariables=[self.scalarVariables[elem] for elem in index])            
         else:
             raise NotImplementedError()
 
@@ -1119,8 +1121,3 @@ def variable(value, unit='', uncert=None):
     else:
         return scalarVariable(value, unit, uncert)
 
-if __name__ == "__main__":
-    a = variable(10, 'C', 1.2)
-    b = variable(100, 'muC', 3.9)
-    c = a - b
-    print(c)

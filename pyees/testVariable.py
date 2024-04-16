@@ -1204,11 +1204,13 @@ class test(unittest.TestCase):
         b = variable(12.3, 'm', 2.5)
         c = variable([12.3, 56.2], 'm')
         d = variable([12.3, 56.2], 'm', [2.5, 7.3])
-
+        e = variable(12.3, 'DELTAC')
+        
         self.assertEqual(a.__str__(pretty=False), '12.3 [m]')
         self.assertEqual(b.__str__(pretty=False), '12 +/- 2 [m]')
         self.assertEqual(c.__str__(pretty=False), '[12.3, 56.2] [m]')
         self.assertEqual(d.__str__(pretty=False), '[12, 56] +/- [2, 7] [m]')
+        self.assertEqual(e.__str__(pretty=False), '12.3 [DELTAC]')
 
         self.assertEqual(a.__str__(pretty=True), '12.3\\ \\left [m\\right ]')
         self.assertEqual(b.__str__(pretty=True),
@@ -1217,6 +1219,8 @@ class test(unittest.TestCase):
                          '[12.3, 56.2]\\ \\left [m\\right ]')
         self.assertEqual(d.__str__(pretty=True),
                          '[12, 56] \pm [2, 7]\\ \\left [m\\right ]')
+        self.assertEqual(e.__str__(pretty=True), '12.3\\ \\left [\\Delta C\\right ]')
+
 
     def testMax(self):
 
