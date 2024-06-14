@@ -1,8 +1,9 @@
 import numpy as np
 import scipy.odr as odr
 import string
-import sys
 import warnings
+import matplotlib.axes as axes
+import plotly.graph_objects as go
 try:
     from variable import variable, arrayVariable, scalarVariable
 except ImportError:
@@ -118,6 +119,21 @@ class _fit():
     def __str__(self):
         return self.func_name() + f', $R^2 = {self.r_squared.value:.5f}$'
 
+
+    @staticmethod
+    def splitPlotlyKeywordArguments(fig, kwargs):
+        addTraceKwargs = {}
+        if fig._has_subplots():
+            
+            if (not 'row' in kwargs or not 'col' in kwargs):
+                raise ValueError('The figure is a plotly.graph_object.Figure that has subplots. The keyworkd arguments has to include both "row" and "col" ')
+            
+            addTraceKwargs['row'] = kwargs['row']
+            addTraceKwargs['col'] = kwargs['col']
+            kwargs.pop('row')
+            kwargs.pop('col')
+        return kwargs, addTraceKwargs
+
     def scatter(self, ax, label=True, showUncert=True, **kwargs):
 
         if all(self.xUncert == 0) and all(self.yUncert == 0):
@@ -135,12 +151,37 @@ class _fit():
         else:
             raise ValueError('The label has to be a string, a bool or None')
 
-        # scatter
-        if showUncert:
-            return ax.errorbar(self.xVal, self.yVal, xerr=self.xUncert, yerr=self.yUncert, linestyle='', label=label, **kwargs)
-        else:
-            return ax.scatter(self.xVal, self.yVal, label=label, **kwargs)
 
+        if isinstance(ax, axes.Axes):
+            # scatter
+            if showUncert:
+                return ax.errorbar(self.xVal, self.yVal, xerr=self.xUncert, yerr=self.yUncert, linestyle='', label=label, **kwargs)
+            else:
+                return ax.scatter(self.xVal, self.yVal, label=label, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.splitPlotlyKeywordArguments(ax, kwargs)
+            
+            if showUncert:
+                ax.add_trace(
+                    go.Scatter(
+                        x = self.xVal,
+                        y = self.yVal,
+                        error_x = dict(array = self.xUncert),
+                        error_y = dict(array = self.yUncert),
+                        name = label,
+                        mode = 'markers',
+                        **kwargs),
+                    **addTraceKwargs
+                    )
+            else:
+                ax.add_trace(
+                    go.Scatter(x = self.xVal, y = self.yVal, name = label, mode = 'markers', **kwargs),
+                    **addTraceKwargs
+                    )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+        
     def scatterNormalizedResiduals(self, ax, label = True, **kwargs):
         
         # parse label
@@ -160,7 +201,25 @@ class _fit():
         normRes = scale * self._residualY
         np.seterr('warn')
         
-        return ax.errorbar(self.xVal, normRes.value, xerr=self.xUncert, yerr=normRes.uncert, linestyle='', label=label, **kwargs)
+        if isinstance(ax, axes.Axes):
+            return ax.errorbar(self.xVal, normRes.value, xerr=self.xUncert, yerr=normRes.uncert, label=label, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.splitPlotlyKeywordArguments(ax, kwargs)
+            ax.add_trace(
+                go.Scatter(
+                    x = self.xVal,
+                    y = normRes.value,
+                    error_x = dict(array = self.xUncert),
+                    error_y = dict(array = normRes.uncert),
+                    name = label,
+                    mode = 'markers',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+
 
     def scatterResiduals(self, ax, label = True, **kwargs):
         
@@ -176,7 +235,24 @@ class _fit():
         else:
             raise ValueError('The label has to be a string, a bool or None')
         
-        return ax.errorbar(self.xVal, self._residualY.value, xerr=self.xUncert, yerr=self._residualY.uncert, linestyle='', label=label, **kwargs)
+        if isinstance(ax, axes.Axes):
+            return ax.errorbar(self.xVal, self._residualY.value, xerr=self.xUncert, yerr=self._residualY.uncert, linestyle='', label=label, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.splitPlotlyKeywordArguments(ax, kwargs)
+            ax.add_trace(
+                go.Scatter(
+                    x = self.xVal,
+                    y = self._residualY.value,
+                    error_x = dict(array = self.xUncert),
+                    error_y = dict(array = self._residualY.uncert),
+                    name = label,
+                    mode = 'markers',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def plotData(self, ax, label=True, **kwargs):
 
@@ -192,7 +268,22 @@ class _fit():
         else:
             raise ValueError('The label has to be a string, a bool or None')
 
-        return ax.plot(self.xVal, self.yVal, label=label, **kwargs)
+        if isinstance(ax, axes.Axes):
+            return ax.plot(self.xVal, self.yVal, label=label, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.splitPlotlyKeywordArguments(ax, kwargs)
+            ax.add_trace(
+                go.Scatter(
+                    x = self.xVal,
+                    y = self.yVal,
+                    name = label,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def predict(self, x):
         if not isinstance(x, scalarVariable):
@@ -215,7 +306,22 @@ class _fit():
         y = self.predict(x)
         y = list(y.value + y.uncert) + [np.nan] + list(y.value - y.uncert)
         x = list(x.value) + [np.nan] + list(x.value)
-        return ax.plot(x, y, **kwargs)
+        
+        if isinstance(ax, axes.Axes):
+            return ax.plot(x, y, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.splitPlotlyKeywordArguments(ax, kwargs)
+            ax.add_trace(
+                go.Scatter(
+                    x = x,
+                    y = y,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def plot(self, ax, label=True, x=None, **kwargs):
 
@@ -240,25 +346,92 @@ class _fit():
         y = self.predict(x).value
         x = x.value
         
-        return ax.plot(x, y, label=label, **kwargs)
+        if isinstance(ax, axes.Axes):
+            return ax.plot(x, y, label=label, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.splitPlotlyKeywordArguments(ax, kwargs)
+            ax.add_trace(
+                go.Scatter(
+                    x = x,
+                    y = y,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
           
-    def addUnitToLabels(self, ax):
-        self.addUnitToXLabel(ax)
-        self.addUnitToYLabel(ax)
+    def addUnitToLabels(self, ax, **kwargs):
+        self.addUnitToXLabel(ax, **kwargs)
+        self.addUnitToYLabel(ax, **kwargs)
 
-    def addUnitToXLabel(self, ax):
-        xLabel = ax.get_xlabel()
-        if xLabel:
-            xLabel += ' '
-        xLabel += rf'$\left[{self.xUnit.__str__(pretty=True)}\right]$'
-        ax.set_xlabel(xLabel)
+    def addUnitToXLabel(self, ax, **kwargs):
+        if isinstance(ax, axes.Axes):
+            xLabel = ax.get_xlabel()
+            if xLabel:
+                xLabel += ' '
+            xLabel += rf'$\left[{self.xUnit.__str__(pretty=True)}\right]$'
+            ax.set_xlabel(xLabel)
+        elif isinstance(ax, go.Figure):
+            
+            if ax._has_subplots():
+                
+                _, kwargs = self.splitPlotlyKeywordArguments(ax, kwargs)
+                
+                subplot = ax.get_subplot(kwargs['row'], kwargs['col'])
+                xLabel = subplot.xaxis.title.text
+                if xLabel is None:
+                    xLabel = rf'$\left[{self.xUnit.__str__(pretty=True)}\right]$'
+                else:
+                    xLabel = rf'$\text{{{xLabel}}} \left[{self.xUnit.__str__(pretty=True)}\right]$'
+                subplot.xaxis.title = xLabel      
+                
+            else:
+                xLabel = ax.layout.xaxis.title.text
+                if xLabel is None:
+                    xLabel = rf'$\left[{self.xUnit.__str__(pretty=True)}\right]$'
+                else:
+                    xLabel = rf'$\text{{{xLabel}}} \left[{self.xUnit.__str__(pretty=True)}\right]$'
+                ax.update_xaxes(title = xLabel)            
+        
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+          
 
-    def addUnitToYLabel(self, ax):
-        yLabel = ax.get_ylabel()
-        if yLabel:
-            yLabel += ' '
-        yLabel += rf'$\left[{self.yUnit.__str__(pretty=True)}\right]$'
-        ax.set_ylabel(yLabel)
+    def addUnitToYLabel(self, ax, **kwargs):
+        if isinstance(ax, axes.Axes):
+            yLabel = ax.get_ylabel()
+            if yLabel:
+                yLabel += ' '
+            yLabel += rf'$\left[{self.yUnit.__str__(pretty=True)}\right]$'
+            ax.set_ylabel(yLabel)
+        
+        elif isinstance(ax, go.Figure):
+            
+            if ax._has_subplots():
+                _, kwargs = self.splitPlotlyKeywordArguments(ax, kwargs)
+                
+                subplot = ax.get_subplot(kwargs['row'], kwargs['col'])
+                yLabel = subplot.yaxis.title.text
+                if yLabel is None:
+                    yLabel = rf'$\left[{self.yUnit.__str__(pretty=True)}\right]$'
+                else:
+                    yLabel = rf'$\text{{{yLabel}}} \left[{self.yUnit.__str__(pretty=True)}\right]$'
+                subplot.yaxis.title = yLabel
+        
+            else:
+                yLabel = ax.layout.yaxis.title.text
+                if yLabel is None:
+                    yLabel = rf'$\left[{self.yUnit.__str__(pretty=True)}\right]$'
+                else:
+                    yLabel = rf'$\text{{{yLabel}}} \left[{self.yUnit.__str__(pretty=True)}\right]$'
+                ax.update_yaxes(title = yLabel)   
+        
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+          
+        
 
     def func(self, x):
         return self._func(self.coefficients, x)
@@ -537,3 +710,6 @@ def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
 
 
 
+    
+    
+    

@@ -433,8 +433,59 @@ class test(unittest.TestCase):
             fig.tight_layout()
             plt.show()
                         
+
+    def testPlotly(self):
+            
+        ## define some data and create a fit-object
+        x = variable([1,2,3], 'min', [0.3, 1.2, 2.1])
+        y = variable([5,8,11], 'L', [2.5, 5.3, 7.8])
+        f = lin_fit(x,y)
         
+        ## create a figure using matplotlib
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        f.scatter(ax)
+        f.plot(ax)
+        f.plotData(ax)
+        f.plotUncertanty(ax)
+        f.scatterResiduals(ax)
+        f.scatterNormalizedResiduals(ax)
+        ax.set_xlabel('Time')
+        ax.set_ylabel('Volume')
+        f.addUnitToLabels(ax)
+        if showPlots:
+            plt.show()
+        
+        ## create a figure using plotly
+        import plotly.graph_objects as go
+        fig = go.Figure()
+        f.scatter(fig)
+        f.plot(fig)
+        f.plotData(fig)
+        f.plotUncertanty(fig)
+        f.scatterResiduals(fig)
+        f.scatterNormalizedResiduals(fig)
+        fig.update_yaxes(title = 'Volume')
+        fig.update_xaxes(title = "Time")
+        f.addUnitToLabels(fig)
+        if showPlots:
+            fig.show()
+        
+        ## create a figure using plotly
+        from plotly.subplots import make_subplots
+        fig = make_subplots(rows=2, cols = 1)
+        f.scatter(fig, row = 2, col = 1)
+        f.plot(fig, row = 2, col = 1)
+        f.plotData(fig, row = 2, col = 1),
+        f.plotUncertanty(fig, row = 2, col = 1)
+        f.scatterResiduals(fig, row = 1, col = 1)
+        f.scatterNormalizedResiduals(fig, row = 1, col = 1)
+        fig.get_subplot(col = 1, row = 2).xaxis.title = "Time"
+        fig.get_subplot(col = 1, row = 2).yaxis.title = "Volume"
+        f.addUnitToLabels(fig, col = 1, row = 2)
+        if showPlots:
+            fig.show()
 
 if __name__ == '__main__':
-    # showPlots = True
+    showPlots = True
     unittest.main()
