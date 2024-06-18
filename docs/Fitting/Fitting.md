@@ -45,72 +45,96 @@ fit.predict(x: variable) -> variable
 The fit class has a function to plot
 
 ```
-fit.plot(ax, label: bool | str = True, x: variable = None, **kwargs) -> List[matplotlib.lines.Line2D]
+fit.plot(ax: matplotlib.axes.Axes | plotly.graph_objects.Figure, x: variable = None, **kwargs) -> List[matplotlib.lines.Line2D] | None
 ```
 
-- ax is the axis object from matplotlib
-- label is either a bool or a string. If True, the regression function will be written in the legend
+Parameters:
+- ax is the axis or figure to plot on
 - x is an arrayVariable of x values used to plot the regression. If None, then 100 points will be plotted within the range of the data used to create the fit.
-- **kwargs are key word arguments for matplotlib.pyplot.plot  
+- **kwargs are key word arguments for matplotlib.pyplot.plot or plotly.graph_objects.Scatter
+
+Returns:
+ - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a list of a single element. That being the matplotlib.lines.Line2D created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
+
 
 ## Scatter
 The fit class has a function to scatter the data used to generate the fit.
 
 ```
-fit.scatter(ax, label: bool|str = True, showUncert: bool = True, **kwargs) -> matplotlib.collections.PathCollection
+fit.scatter(ax: matplotlib.axes.Axes | plotly.graph_objects.Figure, showUncert: bool = True, **kwargs) -> matplotlib.collections.PathCollection | None
 ```
 
-- ax is the axis object from matplotlib
-- label is either a bool or a string. If True, the word "Data" is printed in the legend
+Parameters:
+- ax is the axis or figure to plot on
 - showUncert is a bool. Errorbars are shown if true
 - **kwargs are key word arguments for matplotlib.pyplot.scatter  
+
+Returns:
+ - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a matplotlib.collections.PathCollection objected created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 ## plotData
 The fit class has a function to plot the data used to generate the fit.
 
 ```
-fit.plotData(ax, label: bool|str = True, **kwargs) -> List[matplotlib.lines.Line2D]
+fit.plotData(ax: matplotlib.axes.Axes | plotly.graph_objects.Figure, **kwargs) -> List[matplotlib.lines.Line2D] | None
 ```
 
-- ax is the axis object from matplotlib
-- label is either a bool or a string. If True, the word "Data" is printed in the legend
+Parameters:
+- ax is the axis or figure to plot on
 - **kwargs are key word arguments for matplotlib.pyplot.plot  
+
+Returns:
+ - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a list of a single element. That being the matplotlib.lines.Line2D created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 
 ## plotUncertanty
 The fit class has a function to plot the uncertanty bands of the regression
 
 ```
-fit.plotUncertanty(ax, x: variable = None, **kwargs) -> List[matplotlib.lines.Line2D]
+fit.plotUncertanty(ax, x: variable = None, **kwargs) -> List[matplotlib.lines.Line2D] | None
 ```
 
-- ax is the axis object from matplotlib
+Parameters:
+- ax is the axis or figure to plot on
 - x is an arrayVariable of x values used to plot the regression. If None, then 100 points will be plotted within the range of the data used to create the fit.
 - **kwargs are key word arguments for matplotlib.pyplot.plot  
+
+Returns:
+ - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a list of a single element. That being the matplotlib.lines.Line2D created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 
 ## scatterResiduals
 The fit class has a function to scatter the residuals. This is usefull when evaluating the fit
 
 ```
-fit.scatterResiduals(ax, label: bool|str = True, **kwargs) -> matplotlib.collections.PathCollection
+fit.scatterResiduals(ax: matplotlib.axes.Axes | plotly.graph_objects.Figure, **kwargs) -> matplotlib.collections.PathCollection | None
 ```
 
-- ax is the axis object from matplotlib
+Parameters:
+- ax is the axis or figure to plot on
 - label is either a bool or a string. If True, the word "Residuals" is printed in the legend
 - **kwargs are key word arguments for matplotlib.pyplot.scatter  
+
+
+Returns:
+ - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a matplotlib.collections.PathCollection objected created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 
 ## scatterNormalizedResiduals
 The fit class has a function to scatter the normalized residuals. The fit uses orthogonal distance regression when creating the regression. Here the weights of the data points are scaled with respect to the uncertanty of the data. If some of the data has a larger uncertanty than other, then the method fit.scatterResiduals may results in a plot, where it seems as if the regression does not capture the data. However, using the methods fit.scatterNormalizedResiduals could shown, that the regression has captured the data, if it has deemed some of the datapoints less important than others.
 
 ```
-fit.scatterNormalizedResiduals(ax, label: bool|str = True, **kwargs) -> matplotlib.collections.PathCollection
+fit.scatterNormalizedResiduals(ax: matplotlib.axes.Axes | plotly.graph_objects.Figure, **kwargs) -> matplotlib.collections.PathCollection | None
 ```
 
-- ax is the axis object from matplotlib
+Parameters:
+- ax is the axis or figure to plot on
 - label is either a bool or a string. If True, the word "Normalized residuals" is printed in the legend
 - **kwargs are key word arguments for matplotlib.pyplot.scatter  
+
+
+Returns:
+ - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a matplotlib.collections.PathCollection objected created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 
 
