@@ -76,43 +76,43 @@ class test(unittest.TestCase):
         
         a = unit('L/min')
         b = unit('L/min')
-        outputUnit = a + b
+        _,_,outputUnit = a + b
         self.assertTrue(outputUnit == unit('L/min'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
 
         a = unit('m-K/L-bar')
         b = unit('K-m/bar-L')
-        outputUnit = a + b
+        _,_,outputUnit = a + b
         self.assertTrue(outputUnit == unit('DELTAK-m/bar-L'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
         
         a = unit('J/kg-DELTAK')
         b = unit('J/kg-DELTAK')
-        outputUnit = a + b
+        _,_,outputUnit = a + b
         self.assertTrue(outputUnit == unit('J/kg-DELTAK'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
         
         a = unit('J/g-DELTAK')
         b = unit('J/kg-DELTAK')
-        outputUnit = a + b
+        _,_,outputUnit = a + b
         self.assertTrue(outputUnit == unit('J/g-DELTAK'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
         
         a = unit('dB')
         b = unit('dB')
-        outputUnit = a + b
+        _,_,outputUnit = a + b
         self.assertTrue(outputUnit == unit('dB'))
         self.assertTrue(outputUnit.isLogarithmicUnit())
         
         a = unit('mB')
         b = unit('dB')
-        outputUnit = a + b
+        _,_,outputUnit = a + b
         self.assertTrue(outputUnit == unit('B'))
         self.assertTrue(outputUnit.isLogarithmicUnit())
         
         a = unit('L/min')
         b = unit('m3/h')
-        outputUnit = a + b
+        _,_,outputUnit = a + b
         self.assertTrue(outputUnit == unit('m3/s'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
         
@@ -126,52 +126,52 @@ class test(unittest.TestCase):
         
         a = unit('L/min')
         b = unit('L/min')
-        outputUnit = a - b
+        _,_, outputUnit = a - b
         self.assertTrue(outputUnit == unit('L/min'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
 
         a = unit('m-K/L-bar')
         b = unit('K-m/bar-L')
-        outputUnit = a - b
+        _,_, outputUnit = a - b
         self.assertEqual(outputUnit.unitStr, 'm-DELTAK/L-bar')
         self.assertFalse(outputUnit.isLogarithmicUnit())
         self.assertEqual(outputUnit.unitStrPretty, r'\frac{m\cdot \Delta K}{L\cdot bar}')
         
         a = unit('J/kg-DELTAK')
         b = unit('J/kg-DELTAK')
-        outputUnit = a - b
+        _,_, outputUnit = a - b
         self.assertTrue(outputUnit == unit('J/kg-DELTAK'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
         self.assertEqual(outputUnit.unitStrPretty, r'\frac{J}{kg\cdot \Delta K}')
         
         a = unit('J/g-DELTAK')
         b = unit('J/kg-DELTAK')
-        outputUnit = a - b
+        _,_, outputUnit = a - b
         self.assertTrue(outputUnit == unit('J/g-DELTAK'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
         
         a = unit('dB')
         b = unit('dB')
-        outputUnit = a - b
+        _,_, outputUnit = a - b
         self.assertTrue(outputUnit == unit('dB'))
         self.assertTrue(outputUnit.isLogarithmicUnit())
         
         a = unit('mB')
         b = unit('dB')
-        outputUnit = a - b
+        _,_, outputUnit = a - b
         self.assertTrue(outputUnit == unit('B'))
         self.assertTrue(outputUnit.isLogarithmicUnit())
         
         a = unit('L/min')
         b = unit('m3/h')
-        outputUnit = a - b
+        _,_, outputUnit = a - b
         self.assertTrue(outputUnit == unit('m3/s'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
         self.assertEqual(outputUnit.unitStrPretty, r'\frac{m^{3}}{s}')
 
     def testConvert(self):
         a = unit('L/min')
-        converter = a.getConverter('m3/h')
+        converter, _ = a.getConverter('m3/h')
         A = variable(1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 0.06)
@@ -179,7 +179,7 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('K')
-        converter = a.getConverter('C')
+        converter, _ = a.getConverter('C')
         A = variable(300,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 26.85)
@@ -187,7 +187,7 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('C')
-        converter = a.getConverter('K')
+        converter, _ = a.getConverter('K')
         A = variable(0,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 273.15)
@@ -195,7 +195,7 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('kJ/kg-C')
-        converter = a.getConverter('J/kg-K')
+        converter, _ = a.getConverter('J/kg-K')
         A = variable(1,'',1)
         converter(A, useOffset=False)
         self.assertAlmostEqual(A.value, 1000)
@@ -203,7 +203,7 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('kJ/kg-K')
-        converter = a.getConverter('J/kg-F')
+        converter, _ = a.getConverter('J/kg-F')
         A = variable(1,'',1)
         converter(A, useOffset=False)
         self.assertAlmostEqual(A.value, 555.555555555555)
@@ -211,7 +211,7 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('K')
-        converter = a.getConverter('F')
+        converter, _ = a.getConverter('F')
         A = variable(300,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 80.33)
@@ -219,7 +219,7 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A._uncertSI, 1)
 
         a = unit('mm2')
-        converter = a.getConverter('m2')
+        converter, _ = a.getConverter('m2')
         A = variable(1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 1/1000 * 1/1000)
@@ -229,12 +229,12 @@ class test(unittest.TestCase):
         a = unit('A')
         b = unit('V')
         c = a * b
-        converter = c.getConverter('W')
+        converter, _ = c.getConverter('W')
         
         a = unit('A')
         b = unit('ohm')
         c = a * b
-        converter = c.getConverter('V')
+        converter, _ = c.getConverter('V')
         A = variable(1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 1)
@@ -346,7 +346,7 @@ class test(unittest.TestCase):
 
     def testAddNewUnit(self):
         addNewUnit('gnA', 9.81, 'm/s2')
-        converter = unit('gnA').getConverter('m/s2')
+        converter, _ = unit('gnA').getConverter('m/s2')
         A = variable(1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 9.81)
@@ -354,14 +354,14 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A._uncertSI, 1)
         
         addNewUnit('gnB', 9.81, 'm/s2', 0)
-        converter = unit('gnB').getConverter('m/s2')
+        converter, _ = unit('gnB').getConverter('m/s2')
         A = variable(1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 9.81)
         self.assertAlmostEqual(A.uncert, 9.81)
         self.assertAlmostEqual(A._uncertSI, 1)
 
-        converter = unit('gnB').getConverter('mm/h2')
+        converter, _ = unit('gnB').getConverter('mm/h2')
         A = variable(1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 127137600000)
@@ -369,21 +369,21 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A._uncertSI, 1)
         
         addNewUnit('Rø', 40/21, 'C', -7.5 * 40/21)
-        converter = unit('Rø').getConverter('C')
+        converter, _ = unit('Rø').getConverter('C')
         A = variable(100,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 176.190476190476190476)
         self.assertAlmostEqual(A.uncert, 1.9047619047619047619048)
         self.assertAlmostEqual(A._uncertSI, 1)
         
-        converter = unit('Rø').getConverter('F')
+        converter, _ = unit('Rø').getConverter('F')
         A = variable(100,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 349.142857142857142857142857142857)
         self.assertAlmostEqual(A.uncert,  3.4285714285714285714286)
         self.assertAlmostEqual(A._uncertSI, 1)
             
-        converter = unit('Rø').getConverter('K')
+        converter, _ = unit('Rø').getConverter('K')
         A = variable(100,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 449.340476190476190476)
@@ -391,28 +391,28 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(A._uncertSI, 1)
         
         addNewUnit('Ra', 5/9 ,'C', -491.67 * 5 / 9)
-        converter = unit('Ra').getConverter('C')
+        converter, _ = unit('Ra').getConverter('C')
         A = variable(83.1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, -226.98333333333333333333333)
         self.assertAlmostEqual(A.uncert,  0.5555555555555556)
         self.assertAlmostEqual(A._uncertSI, 1)
         
-        converter = unit('Ra').getConverter('F')
+        converter, _ = unit('Ra').getConverter('F')
         A = variable(83.1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, -376.57)
         self.assertAlmostEqual(A.uncert,  1)
         self.assertAlmostEqual(A._uncertSI, 1)
         
-        converter = unit('Ra').getConverter('K')
+        converter, _ = unit('Ra').getConverter('K')
         A = variable(83.1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, 46.1666666666666666666667)
         self.assertAlmostEqual(A.uncert,  0.5555555555555556)
         self.assertAlmostEqual(A._uncertSI, 1)
           
-        converter = unit('Ra').getConverter('Rø')
+        converter, _ = unit('Ra').getConverter('Rø')
         A = variable(83.1,'',1)
         converter(A)
         self.assertAlmostEqual(A.value, -111.66625)

@@ -320,14 +320,14 @@ class test(unittest.TestCase):
         b = variable(100, 'muC', 3.9)
         c = a - b
         self.assertAlmostEqual(c.value, 10 - 100 * 1e-6)
-        self.assertEqual(c.unit, 'DELTAC')
+        self.assertEqual(c.unit, 'DELTAK')
         self.assertEqual(c.uncert, np.sqrt((1 * 1.2)**2 + (1 * 3.9*1e-6)**2))
 
         a = variable(100, 'muC', 3.9)
         b = variable(10, 'C', 1.2)
         c = a - b
         self.assertAlmostEqual(c.value, -10 + 100 * 1e-6)
-        self.assertEqual(c.unit, 'DELTAC')
+        self.assertEqual(c.unit, 'DELTAK')
         self.assertEqual(c.uncert, np.sqrt((1 * 1.2)**2 + (1 * 3.9*1e-6)**2))
 
     def test_multiply(self):
@@ -1553,7 +1553,6 @@ class test(unittest.TestCase):
         self.assertEqual(d.unit, 'dB')
         self.assertAlmostEqual(d.uncert, ud)
         
-
     def testCovariance(self):
         a = variable(123, 'L/min', 9.7)
         b = variable(93, 'Pa', 1.2)
@@ -2236,8 +2235,8 @@ class test(unittest.TestCase):
         a = variable(100, 'DELTAK')
         b = variable(20, 'C')
         c = a + b
-        self.assertEqual(c.value, 100 + 20)
-        self.assertEqual(c.unit, 'C')
+        self.assertEqual(c.value, 100+273.15 + 20)
+        self.assertEqual(c.unit, 'K')
 
         a = variable(100, 'K')
         b = variable(20, 'DELTAC')
@@ -2286,8 +2285,8 @@ class test(unittest.TestCase):
         a = variable(20, 'C')
         b = variable(100, 'DELTAK')
         c = a-b
-        self.assertEqual(c.value, 20 - 100)
-        self.assertEqual(c.unit, 'C')
+        self.assertEqual(c.value, 20 + 273.15 - 100)
+        self.assertEqual(c.unit, 'K')
 
         a = variable(100, 'DELTAK')
         b = variable(20, 'C')

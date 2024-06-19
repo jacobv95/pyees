@@ -546,7 +546,7 @@ class unit():
 
     @staticmethod
     def _reduceDict(unitDict):
-        
+
         # check if 1 is in the unit
         n = len(unitDict)
         if ('','1') in unitDict:
@@ -1031,7 +1031,7 @@ class unit():
         
         # determine if self is the same as other - then no conversions are necessary
         if self.unitDict == other.unitDict:
-            return self
+            return self.unitStr, other.unitStr, self
         
         # determine the units of self without any prefixes
         selfUnitDictWithoutPrefixes = {}
@@ -1053,11 +1053,12 @@ class unit():
           
         # determine if the self and other are identical once any prefixes has been removed
         if selfUnitDictWithoutPrefixes == otherUnitDictWithoutPrefixes:
-            return unit(unitDict=selfUnitDictWithoutPrefixes, unitDictSI=self.unitDictSI, unitStrSI=self.unitStrSI)
+            out = unit(unitDict=selfUnitDictWithoutPrefixes, unitDictSI=self.unitDictSI, unitStrSI=self.unitStrSI)
+            return out.unitStr, out.unitStr, out
 
         # determine if the SI base units of self and other are equal
         if self.unitDictSI == other.unitDictSI:
-            return unit(unitDict=self.unitDictSI, unitDictSI=self.unitDictSI, unitStr=self.unitStrSI, unitStrSI=self.unitStrSI, converterToSI=_unitConversion(1, 0))
+            return self.unitStrSI, self.unitStrSI, unit(unitDict=self.unitDictSI, unitDictSI=self.unitDictSI, unitStr=self.unitStrSI, unitStrSI=self.unitStrSI, converterToSI=_unitConversion(1, 0))
 
         # determine if "DELTAK" and "K" are the SI Baseunits of self and other
         SIBaseUnits = [self.unitDictSI, other.unitDictSI]
@@ -1065,19 +1066,46 @@ class unit():
 
             indexTemp = SIBaseUnits.index({('','K') : 1})
             indexDiff = 0 if indexTemp == 1 else 1
-
+            
             units = [self.unitStr, other.unitStr]
-
+                        
             # check to see if the temperature differnce has the same unit as the temperature
             if units[indexTemp] == units[indexDiff][-1]:
-                return [self, other][indexTemp]
+                return self.unitStr, other.unitStr, [self, other][indexTemp]
 
-            return unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, unitStr='K', unitStrSI='K', converterToSI=_unitConversion(1, 0))
+            out = unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, unitStr='K', unitStrSI='K', converterToSI=_unitConversion(1, 0))
+            if indexTemp == 0:
+                return 'K', 'DELTAK', out
+            return 'DELTAK', 'K', out
 
         raise ValueError(
             f'You tried to add a variable in [{self}] to a variable in [{other}], but the units do not have the same SI base unit')
 
     def __sub__(self, other):
+
+        # determine if "K" and "K" are the SI Baseunits of self and other
+        SIBaseUnits = [self.unitDictSI, other.unitDictSI]
+        if SIBaseUnits[0] == {('','K') : 1} and SIBaseUnits[1] == {('','K') : 1}:
+            if self.unitDict == other.unitDict:
+                return self.unitStr, other.unitStr, unit(unitStr = 'DELTA' + self.unitStr, unitStrPretty=rf'\Delta {self.unitStr}')
+            return 'K', 'K', unit(unitDict={('','DELTAK') : 1}, unitDictSI={('','DELTAK') : 1}, unitStr='DELTAK', unitStrSI='DELTAK', converterToSI=_unitConversion(1, 0))
+
+        if {('','DELTAK') : 1} in SIBaseUnits and {('','K') : 1} in SIBaseUnits:
+            indexTemp = SIBaseUnits.index({('','K') : 1})
+            if indexTemp != 0:
+                raise ValueError('You tried to subtract a temperature from a temperature differnce. This is not possible.')
+            
+            temp = list(self.unitDict.keys())[0][1]
+            tempDiff = list(other.unitDict.keys())[0][1]
+            
+            if temp == tempDiff[5:]:
+                return self.unitStr, other.unitStr, self
+            
+            return 'K', 'DELTAK', unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, unitStr='K', unitStrSI='K', converterToSI=_unitConversion(1, 0))
+
+        # determine if self is the same as other - then no conversions are necessary
+        if self.unitDict == other.unitDict:
+            return self.unitStr, other.unitStr, self
 
         # determine the units of self without any prefixes
         selfUnitDictWithoutPrefixes = {}
@@ -1097,46 +1125,14 @@ class unit():
             else:
                 otherUnitDictWithoutPrefixes[key] = exp
             
-        # determine if "DELTAK" and "K" are the SI Baseunits of self and other
-        SIBaseUnits = [self.unitDictSI, other.unitDictSI]
-        if SIBaseUnits[0] == {('','K') : 1} and SIBaseUnits[1] == {('','K') : 1}:
-            if self.unitDict == other.unitDict:
-                return unit(
-                    unitStr = 'DELTA' + self.unitStr,
-                    unitDict = self.unitDict,
-                    unitDictSI= self.unitDictSI,
-                    unitStrPretty=rf'\Delta {self.unitStr}'
-                    )
-            return unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, unitStr='K', unitStrSI='K', converterToSI=_unitConversion(1, 0))
-
-        if {('','DELTAK') : 1} in SIBaseUnits and {('','K') : 1} in SIBaseUnits:
-            indexTemp = SIBaseUnits.index({('','K') : 1})
-            if indexTemp != 0:
-                raise ValueError(
-                    'You tried to subtract a temperature from a temperature differnce. This is not possible.')
-            return [self, other][indexTemp]
-
-        # determine if self is the same as other - then no conversions are necessary
-        if self.unitDict == other.unitDict:
-            return self
-
         # determine if the self and other are identical once any prefixes has been removed
         if selfUnitDictWithoutPrefixes == otherUnitDictWithoutPrefixes:
-            return unit(
-                unitDict=selfUnitDictWithoutPrefixes,
-                unitDictSI=self.unitDictSI,
-                unitStrSI=self.unitStrSI
-                )
+            out = unit(unitDict=selfUnitDictWithoutPrefixes, unitDictSI=self.unitDictSI, unitStrSI=self.unitStrSI)
+            return out.unitStr, out.unitStr, out
 
         # determine if the SI base units of self and other are equal
         if self.unitDictSI == other.unitDictSI:
-            return unit(
-                unitStr=self.unitStrSI,
-                unitDict=self.unitDictSI,
-                unitDictSI=self.unitDictSI,
-                unitStrSI=self.unitStrSI,
-                converterToSI=_unitConversion(1, 0)
-            )
+            return self.unitStrSI, self.unitStrSI, unit(unitStr=self.unitStrSI, unitDict=self.unitDictSI, unitDictSI=self.unitDictSI, unitStrSI=self.unitStrSI, converterToSI=_unitConversion(1, 0))
 
         raise ValueError(
             f'You tried to subtract a variable in [{other}] from a variable in [{self}], but the units do not have the same SI base unit')
@@ -1266,7 +1262,7 @@ class unit():
         newUnitStr = self._formatUnitStr(newUnitStr)
         newUnitDict = unit._getUnitDict(newUnitStr)
         if newUnitDict == self.unitDictSI:
-            return self._converterToSI.convert
+            return self._converterToSI.convert, {'unitStr': newUnitStr, 'unitDict': newUnitDict, 'unitStrSI': self.unitStrSI, 'unitDictSI': self.unitDictSI}
 
         newUnitDictSI = unit._getUnitDictSI(newUnitDict)
         if self.unitDictSI == newUnitDictSI:
@@ -1285,24 +1281,24 @@ class unit():
                 outScale, outOffset = _unitConversion.staticTruediv(
                     outScale, outOffset, convScale, convOffset)
 
-            return _unitConversion(outScale, outOffset).convert
+            return _unitConversion(outScale, outOffset).convert, {'unitStr': newUnitStr, 'unitDict': newUnitDict, 'unitDictSI': newUnitDictSI, 'unitStrSI': self.unitStrSI}
 
         if (self.unitDictSI == {('','Np') : 1} and newUnitDictSI == {('','1') : 1}):
             # convert from logarithmic unit to signal
             converter = self.getLogarithmicConverter(
                 self._removePrefixFromUnit(self.unitStr)[0])
-            converter.linearConverter = self.getConverter(
+            converter.linearConverter, _ = self.getConverter(
                 self.getUnitWithoutPrefix())
-            return converter.converterToSignal
+            return converter.converterToSignal, {'unitStr': newUnitStr}
 
         if (self.unitDictSI == {('','1') : 1} and newUnitDictSI == {('','Np') : 1}):
             # convert from signal to logarithmic unit
             newUnit = unit(newUnitStr)
             newUnitWithoutPrefix = unit(newUnit.getUnitWithoutPrefix())
             converter = self.getLogarithmicConverter(newUnit.getUnitWithoutPrefix())
-            converter.linearConverter = newUnitWithoutPrefix.getConverter(
+            converter.linearConverter, _ = newUnitWithoutPrefix.getConverter(
                 newUnitStr)
-            return converter.converterFromSignal
+            return converter.converterFromSignal, {'unitStr': newUnitStr}
 
         raise ValueError(
             f'You tried to convert from {self} to {newUnitStr}. But these do not have the same base units')
@@ -1324,5 +1320,9 @@ class unit():
 
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
 
-
+if __name__ == "__main__":
+    a = unit('C')
+    b = unit('µC')
+    out = a - b
+    print(out)
     

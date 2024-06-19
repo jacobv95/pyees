@@ -100,21 +100,14 @@ class scalarVariable():
     def uncert(self):
         return self._uncert
 
-  
     def convert(self, newUnit):
-        converter = self._unitObject.getConverter(newUnit)
+        if newUnit == self._unitObject.unitStr: return
+        converter, newUnitKwargs = self._unitObject.getConverter(newUnit)        
+        newUnit = unit(**newUnitKwargs)
+        
         converter(self, useOffset=not self._unitObject.isCombinationUnit())
-        if converter.__name__ == 'converterToSignal':
-            unitDictSI = None
-            unitStrSI = None
-        else:
-            unitDictSI = self._unitObject.unitDictSI
-            unitStrSI = self._unitObject.unitStrSI
-        self._unitObject = unit(
-            unitStr=newUnit, 
-            unitStrSI=deepcopy(unitStrSI),
-            unitDictSI=deepcopy(unitDictSI),
-            )
+        
+        self._unitObject = newUnit
 
     def printUncertanty(self, value, uncert):
         # function to print number
@@ -268,41 +261,27 @@ class scalarVariable():
         if not isinstance(other, scalarVariable):
             return self + variable(other, self.unit)
 
-        # determine if the two variable can be added
-        outputUnit = self._unitObject + other._unitObject
+        # determine if the variables can be added
+        # and return a string, that dictates what unit to convert self and other into
+        selfConvertUnit, otherConvertUnit, outputUnit = self._unitObject + other._unitObject
 
-        # convert self and other
+        # store the units of self and other
         selfUnit = self._unitObject
         otherUnit = other._unitObject
 
         # convert the units if the SI unit is identical to that of the output unit and the unit is not equal to the output unit
-        if self._unitObject.unitDictSI == outputUnit.unitDictSI and not self._unitObject == outputUnit:
-            self.convert(str(outputUnit))
-        if other._unitObject.unitDictSI == outputUnit.unitDictSI and not other._unitObject == outputUnit:
-            other.convert(str(outputUnit))
-
-        # determine the value
-        val = self.value + other.value
+        self.convert(selfConvertUnit)
+        other.convert(otherConvertUnit)
 
         # create the new variable and add the self and other as dependencies
-        var = variable(val, outputUnit)
+        var = variable(self.value + other.value, outputUnit)
         var._addDependent(self, 1)
         var._addDependent(other, 1)
         var._calculateUncertanty()
 
         # convert all units back to their original units
-        if not self._unitObject == selfUnit:
-            self.convert(str(selfUnit))
-        if not other._unitObject == otherUnit:
-            other.convert(str(otherUnit))
-
-        # if the output unit is 'K' and one of the inputs is a temperature and the other is a tempreature difference
-        # then return the output in the same unit as the temperature
-        # this has no affect if the inputs are in 'K' and 'DeltaK'
-        # but the output is converted to 'C' if the inputs are in 'C' and 'DeltaK'
-        SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
-        if {('','DELTAK') : 1} in SIBaseUnits and {('','K') : 1} in SIBaseUnits:
-            var.convert(str([selfUnit, otherUnit][SIBaseUnits.index({('','K') : 1})]))
+        self.convert(selfUnit.unitStr)
+        other.convert(otherUnit.unitStr)
 
         return var
 
@@ -314,43 +293,27 @@ class scalarVariable():
             return self - variable(other, self.unit)
 
         # determine if the variables can be subtracted
-        outputUnit = self._unitObject - other._unitObject
+        # and return a string, that dictates what unit to convert self and other into
+        selfConvertUnit, otherConvertUnit, outputUnit = self._unitObject - other._unitObject
 
-        # convert self and other
+        # store the units of self and other
         selfUnit = self._unitObject
         otherUnit = other._unitObject
 
-        # convert the units if the SI unit is identical to that of the output unit and the unit is not equal to the output unit
-        if self._unitObject.unitDictSI == outputUnit.unitDictSI and not self._unitObject == outputUnit:
-            self.convert(str(outputUnit))
-        if other._unitObject.unitDictSI == outputUnit.unitDictSI and not other._unitObject == outputUnit:
-            other.convert(str(outputUnit))
-
-        # determine the value
-        val = self.value - other.value
+        # convert self and other
+        self.convert(selfConvertUnit)
+        other.convert(otherConvertUnit)
 
         # create the new variable and add the self and other as dependencies
-        var = variable(val, outputUnit)
+        var = variable(self.value - other.value, outputUnit)
         var._addDependent(self, 1)
         var._addDependent(other, -1)
         var._calculateUncertanty()
 
         # convert all units back to their original units
-        if not self._unitObject == selfUnit:
-            self.convert(str(selfUnit))
-        if not other._unitObject == otherUnit:
-            other.convert(str(otherUnit))
-
-        SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
-        if SIBaseUnits[0] == {('','K') : 1} and SIBaseUnits[1] == {('','K') : 1}:
-            if list(self._unitObject.unitDict.keys())[0][1] == list(other._unitObject.unitDict.keys())[0][1]:
-                unitStr = 'DELTA' + list(self._unitObject.unitDict.keys())[0][1]
-                var._unitObject = unit(unitStr, unitStrSI='DELTAK', unitDictSI={('','DELTAK') : 1})
-            else:
-                var._unitObject = unit('DELTAK', unitStrSI='DELTAK', unitDictSI={('','DELTAK') : 1})
-            for elem in var:
-                elem._unitObject = var._unitObject
-            
+        self.convert(selfUnit.unitStr)
+        other.convert(otherUnit.unitStr)
+        
         return var
 
     def __rsub__(self, other):
@@ -1056,20 +1019,10 @@ class arrayVariable(scalarVariable):
         return np.argmax(self.value)
 
     def convert(self, newUnit):
-        converter = self._unitObject.getConverter(newUnit)
-
-        if converter.__name__ == 'converterToSignal':
-            unitDictSI = None
-            unitStrSI = None
-        else:
-            unitDictSI = self._unitObject.unitDictSI
-            unitStrSI = self._unitObject.unitStrSI
+        if newUnit == self._unitObject.unitStr: return
         
-        newUnit = unit(
-            unitStr=newUnit, 
-            unitStrSI=deepcopy(unitStrSI),
-            unitDictSI=deepcopy(unitDictSI)
-            )
+        converter, newUnitKwargs = self._unitObject.getConverter(newUnit)        
+        newUnit = unit(**newUnitKwargs)
 
         for elem in self.scalarVariables:
             converter(elem, useOffset=not self._unitObject.isCombinationUnit())
@@ -1143,3 +1096,7 @@ def variable(value, unit='', uncert=None):
     else:
         return scalarVariable(value, unit, uncert)
 
+if __name__ == "__main__":
+    c = variable(13, 'dB')
+    c.convert('1')
+    
