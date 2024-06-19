@@ -374,6 +374,7 @@ class test(unittest.TestCase):
         a = variable(1.2, 'm/N', 0.15)
         b = variable(7.43, 'N/cm', 2.5)
         c = a * b
+
         self.assertAlmostEqual(c.value, 891.6)
         self.assertTrue(c._unitObject == unit('1'))
         self.assertAlmostEqual(c.uncert, 320.032970958)
@@ -2331,7 +2332,7 @@ class test(unittest.TestCase):
         b = variable(1, 'DELTAC')
         c = a * b
         self.assertEqual(c.value, 1)
-        self.assertEqual(c.unit, '1')
+        self.assertEqual(c.unit, 'DELTAC/DELTAK')
         self.assertEqual(c.uncert, 0)
 
     def testTemperatureDivide(self):

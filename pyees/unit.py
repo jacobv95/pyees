@@ -256,7 +256,7 @@ _SIBaseUnits = {
     'Voltage': {('k','g') : 1 , ('','m') : 2, ('','s') : -3, ('','A') : -1},
     'BaseUnit': {('','1') : 1},
     'Freqeuncy': {('','s') : -1},
-    'Angle': {('','rad') : 1},
+    'Angle': {('','1') : 1},
     'Resistance': {('k','g') : 1 , ('','m') : 2, ('','s') : -3, ('','A') : -2},
     'KinematicViscosity': {('','m') : 2, ('','s') : -1},
     'LogarithmicUnit': {('','Np') : 1},
@@ -1158,7 +1158,43 @@ class unit():
                 unitDict[key] = exp
             
         unitDict = unit._reduceDict(unitDict)
+        
         return unitDict
+
+    def convertToDimensionless(self):
+        unitDict = unit.__staticConvertToDimensionless(self.unitDict)
+        if unitDict != self.unitDict:
+            return unit._getUnitStrFromDict(unitDict)
+        return self.unitStr
+        
+    
+    @staticmethod
+    def __staticConvertToDimensionless(unitDict):
+        unitDictWithoutPrefix = {}
+        for (_,key), exp in unitDict.items():
+            if key in unitDictWithoutPrefix:
+                unitDictWithoutPrefix[key] += exp
+            else:
+                unitDictWithoutPrefix[key] = exp
+        
+        keys = [key for key, exp in unitDictWithoutPrefix.items() if exp == 0]
+        if not keys:
+            return unitDict
+        
+        keysToRemove = []
+        for key in unitDict.keys():
+            if key[1] in keys:
+                keysToRemove.append(key)
+        
+        if len(keysToRemove) == len(unitDict):
+            return {('','1'):1}
+        
+        for key in keysToRemove:
+            unitDict.pop(key)
+    
+        return unitDict
+
+        
         
     def __truediv__(self, other):
         unitDict = unit.staticTruediv(self.unitDict, other.unitDict)
@@ -1218,9 +1254,6 @@ class unit():
 
         if unitDict == {('','1') : 1}:
             return unitDict
-
-        if unitDictSI == {('','1') : 1}:
-            return unitDictSI
         
         out = {}
         for key, exp in unitDict.items():
@@ -1320,9 +1353,5 @@ class unit():
 
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
 
-if __name__ == "__main__":
-    a = unit('C')
-    b = unit('µC')
-    out = a - b
-    print(out)
+    
     

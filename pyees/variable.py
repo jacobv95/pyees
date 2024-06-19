@@ -336,10 +336,7 @@ class scalarVariable():
         var._addDependent(other, self.value)
         var._calculateUncertanty()
 
-        # if all units were cancled during the multiplication, then convert to 1
-        # this will remove any remaining prefixes
-        if var._unitObject.unitDictSI == {('','1') : 1} and var._unitObject.unitDict != {('','1') : 1}:
-            var.convert('1')
+        var.convert(var._unitObject.convertToDimensionless())
 
         return var
 
@@ -475,54 +472,51 @@ class scalarVariable():
         return self**(1 / 2)
 
     def sin(self):
-        if self._unitObject.unitDictSI != {('','rad') : 1}:
-            raise ValueError('You can only take sin of an angle')
-
-        outputUnit = '1'
-        if self.unit == 'rad':
-            val = np.sin(self.value)
-            grad = np.cos(self.value)
-        else:
+        if self._unitObject.unitStrSI != '1':
+            raise ValueError('You can only take the sine of a dimensionless variables')
+        
+        if self.unit == 'deg':
             val = np.sin(np.pi / 180 * self.value)
             grad = np.pi / 180 * np.cos(np.pi / 180 * self.value)
+        else:
+            val = np.sin(self.value)
+            grad = np.cos(self.value)
 
-        var = variable(val, outputUnit)
+        var = variable(val, '1')
         var._addDependent(self, grad)
         var._calculateUncertanty()
 
         return var
 
     def cos(self):
-        if self._unitObject.unitDictSI != {('','rad') : 1}:
-            raise ValueError('You can only take cos of an angle')
-
-        outputUnit = '1'
-        if self.unit == 'rad':
-            val = np.cos(self.value)
-            grad = -np.sin(self.value)
-        else:
+        if self._unitObject.unitStrSI != '1':
+            raise ValueError('You can only take the sine of a dimensionless variables')
+        
+        if self.unit == 'deg':
             val = np.cos(np.pi / 180 * self.value)
             grad = -np.pi / 180 * np.sin(np.pi / 180 * self.value)
+        else:
+            val = np.cos(self.value)
+            grad = -np.sin(self.value)
 
-        var = variable(val, outputUnit)
+        var = variable(val, '1')
         var._addDependent(self, grad)
         var._calculateUncertanty()
 
         return var
 
     def tan(self):
-        if self._unitObject.unitDictSI != {('','rad') : 1}:
-            raise ValueError('You can only take tan of an angle')
-
-        outputUnit = '1'
-        if self.unit == 'rad':
-            val = np.tan(self.value)
-            grad = 2 / (np.cos(2 * self.value) + 1)
-        else:
+        if self._unitObject.unitStrSI != '1':
+            raise ValueError('You can only take the sine of a dimensionless variables')
+        
+        if self.unit == 'deg':
             val = np.tan(np.pi / 180 * self.value)
             grad = np.pi / (90 * (np.cos(np.pi / 90 * self.value) + 1))
+        else:
+            val = np.tan(self.value)
+            grad = 2 / (np.cos(2 * self.value) + 1)
 
-        var = variable(val, outputUnit)
+        var = variable(val, '1')
         var._addDependent(self, grad)
         var._calculateUncertanty()
 
@@ -1095,8 +1089,3 @@ def variable(value, unit='', uncert=None):
         return arrayVariable(value=value, unitStr=unit, uncert=uncert)
     else:
         return scalarVariable(value, unit, uncert)
-
-if __name__ == "__main__":
-    c = variable(13, 'dB')
-    c.convert('1')
-    
