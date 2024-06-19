@@ -133,14 +133,16 @@ class test(unittest.TestCase):
         a = unit('m-K/L-bar')
         b = unit('K-m/bar-L')
         outputUnit = a - b
-        self.assertTrue(outputUnit == unit('DELTAK-m/bar-L'))
+        self.assertEqual(outputUnit.unitStr, 'm-DELTAK/L-bar')
         self.assertFalse(outputUnit.isLogarithmicUnit())
+        self.assertEqual(outputUnit.unitStrPretty, r'\frac{m\cdot \Delta K}{L\cdot bar}')
         
         a = unit('J/kg-DELTAK')
         b = unit('J/kg-DELTAK')
         outputUnit = a - b
         self.assertTrue(outputUnit == unit('J/kg-DELTAK'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
+        self.assertEqual(outputUnit.unitStrPretty, r'\frac{J}{kg\cdot \Delta K}')
         
         a = unit('J/g-DELTAK')
         b = unit('J/kg-DELTAK')
@@ -165,6 +167,7 @@ class test(unittest.TestCase):
         outputUnit = a - b
         self.assertTrue(outputUnit == unit('m3/s'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
+        self.assertEqual(outputUnit.unitStrPretty, r'\frac{m^{3}}{s}')
 
     def testConvert(self):
         a = unit('L/min')
@@ -262,6 +265,14 @@ class test(unittest.TestCase):
         
         a = unit('m / s')
         self.assertTrue(a == unit('m/s'))
+
+        a = unit('K2-m/bar-L')
+        self.assertEqual(a.unitStr, 'DELTAK2-m/bar-L')
+        self.assertEqual(a.unitStrPretty, r'\frac{\Delta K^{2}\cdot m}{bar\cdot L}')
+        
+        a = unit('K2.5-m/bar-L')
+        self.assertEqual(a.unitStr, 'DELTAK2.5-m/bar-L')
+        self.assertEqual(a.unitStrPretty, r'\frac{\Delta K^{2.5}\cdot m}{bar\cdot L}')
 
         with self.assertRaises(Exception) as context:
             a = unit('m!/s')

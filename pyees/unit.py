@@ -2,6 +2,7 @@ import numpy as np
 from fractions import Fraction
 from re import sub as resub
 
+
 class _unitConversion():
     def __init__(self, scale, offset=0) -> None:
         self.scale, self.offset = scale, offset
@@ -13,20 +14,23 @@ class _unitConversion():
         return scale, offset
 
     @staticmethod
-    def staticPow(scale, offset, pow):
+    def staticPow(scale, offset, pow, num = None, den = None):
         if pow == 1:
             return scale, offset
-
-        # invert the scale and the offset if the power is negative
-        positivePower = pow > 0
-        if not positivePower:
-            scale, offset = _unitConversion.staticTruediv(
-                1, 0, scale, offset) * (not positivePower)
-            pow = - pow
-
-        # raise the scale and the offset to the power
-        offset = offset * sum([scale ** (i) for i in range(pow)])
-        scale = scale ** pow
+        
+        if num is None and den is None:
+            frac = Fraction(pow).limit_denominator()
+            num, den = frac._numerator, frac._denominator
+        
+        if num != 1:
+            offset = offset * sum([scale ** (i) for i in range(num)])
+            scale = scale ** pow
+        
+        if den != 1:
+            scale, offset = _unitConversion.staticTruediv(1, 0, scale, offset)
+            offset = offset * sum([scale ** (i) for i in range(num)])
+            scale = scale ** (-pow)
+        
         return scale, offset
 
     @staticmethod
@@ -321,9 +325,7 @@ for key in _SIBaseUnits.keys():
 # determine the known characters within the unit system
 _knownCharacters = list(_knownUnits.keys()) + list(_knownPrefixes.keys())
 _knownCharacters = ''.join(_knownCharacters)
-_knownCharacters += '-/ '
-_knownCharacters += '0123456789'
-_knownCharacters += '()'
+_knownCharacters += '-/ 0123456789.()'
 _knownCharacters = set(_knownCharacters)
 
 # check if all unit and prefix combinations can be distiguished
@@ -434,8 +436,8 @@ integers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 class unit():
 
-    def __init__(self, unitStr=None, unitDict=None, unitDictSI=None, selfUnitStr=None, selfUnitStrSI=None, converterToSI=None, unitStrPretty=None):
-        
+    def __init__(self, unitStr=None, unitDict=None, unitDictSI=None, unitStrSI=None, converterToSI=None, unitStrPretty=None):
+       
         if unitStr is None:
             unitStr = ''
 
@@ -460,20 +462,18 @@ class unit():
         else:
             self.unitDictSI = unitDictSI
 
-        if selfUnitStr is None:
+        if not hasattr(self, 'unitStr'):
             self.unitStr = self._getUnitStrFromDict(self.unitDict)
-        else:
-            self.unitStr = selfUnitStr
 
         if unitStrPretty is None:
-            self.unitStrPretty = self._unitStrPrettyPostProcessing(self._formatUnitStrPretty(unitStr))
+            self.unitStrPretty = self._formatUnitStrPretty(unitStr)
         else:
             self.unitStrPretty = unitStrPretty
 
-        if selfUnitStrSI is None:
+        if unitStrSI is None:
             self.unitStrSI = self._getUnitStrFromDict(self.unitDictSI)
         else:
-            self.unitStrSI = selfUnitStrSI
+            self.unitStrSI = unitStrSI
 
         if converterToSI is None:
             self.getConverterToSI()
@@ -525,17 +525,16 @@ class unit():
     @ staticmethod
     def _splitCompositeUnit(compositeUnit):
         if not slash in compositeUnit:
-            upper = compositeUnit.split(hyphen)
+            upper = [elem for elem in compositeUnit.split(hyphen) if not elem == '']
             return upper, []
 
-        compositeUnit = compositeUnit.split(slash)
+        compositeUnit = [elem for elem in compositeUnit.split(slash) if not elem == '']
 
         if len(compositeUnit) > 2:
             raise ValueError(f'A unit can only have a single slash ({slash})')
 
-        upper = compositeUnit[0].split(hyphen)
-        lower = compositeUnit[1].split(
-            hyphen) if len(compositeUnit) == 2 else []
+        upper = [elem for elem in compositeUnit[0].split(hyphen) if not elem == '']
+        lower = [elem for elem in compositeUnit[1].split(hyphen) if not elem == ''] if len(compositeUnit) == 2 else []
 
         return upper, lower
 
@@ -650,9 +649,31 @@ class unit():
         stopParenIndexes = [i for i, s in enumerate(unitStr) if s == ')']
         
         if not startParenIndexes and not stopParenIndexes:
-            unitStr = unitStr.split('-')
-            unitStr = [elem for elem in unitStr if not elem == '']
-            unitStr = '-'.join(unitStr) if unitStr else '1'
+
+            upper,lower = unit._splitCompositeUnit(unitStr)
+            if len(upper) + len(lower) > 1:
+                out = []
+                for elem in upper:
+                    e, _ = unit._removeExponentFromUnit(elem)
+                    if e in _temperature:
+                        out.append('DELTA' + elem)
+                    else:
+                        out.append(elem)
+                upper = out
+                
+                out = []
+                for elem in lower:
+                    e, _ = unit._removeExponentFromUnit(elem)
+                    if e in _temperature:
+                        out.append('DELTA' + elem)
+                    else:
+                        out.append(elem)
+                lower = out
+                
+            unitStr = '-'.join(upper)
+            if lower:
+                unitStr += '/' + '-'.join(lower)
+            if not unitStr: return '1'
             return unitStr
         
 
@@ -742,9 +763,12 @@ class unit():
             # try to cast the exponent to an integer
             # if this works, then raise the unitDict to the exponent
             try:
-                exponent = int(exponent)
+                if hasattr(exponent, 'is_integer') and exponent.is_integer():
+                    exponent = int(exponent)
+                else:
+                    exponent = float(exponent)
                 _unitDict = unit.staticPow(
-                    _unitDict, None, _unitStr, exponent)
+                    _unitDict, None, exponent)
                 _unitStr = unit._getUnitStrFromDict(_unitDict)                
                 currentParens[1] += len(str(exponent))
             except ValueError:
@@ -768,17 +792,51 @@ class unit():
         
         if not startParenIndexesPretty and not stopParenIndexesPretty:
             
-            unitStrPretty = unitStrPretty.split('/')
-            if (len(unitStrPretty)) == 1:
-                upper, lower = unitStrPretty[0], ''
-            else:
-                upper, lower = unitStrPretty
+            upper,lower = unit._splitCompositeUnit(unitStrPretty)
+            if len(upper) + len(lower) > 1:
+                out = []
+                for elem in upper:
+                    e, _ = unit._removeExponentFromUnit(elem)
+                    if e in _temperature:
+                        out.append('DELTA' + elem)
+                    else:
+                        out.append(elem)
+                upper = out
+                
+                out = []
+                for elem in lower:
+                    e, _ = unit._removeExponentFromUnit(elem)
+                    if e in _temperature:
+                        out.append('DELTA' + elem)
+                    else:
+                        out.append(elem)
+                lower = out
+                
+                
+            out = []
             
-            upper = upper.split('-')
-            lower = lower.split('-')
-                        
-            upper = '\cdot '.join(upper)
-            lower = '\cdot '.join(lower)
+            for up in upper:
+                up, exp = unit._removeExponentFromUnit(up)
+                if up in _temperatureDifference:
+                    up = up.replace('DELTA', '\Delta ')
+                if exp != 1:
+                    out.append(rf'{up}^{{{exp}}}')
+                else:
+                    out.append(up)
+            
+            upper = '\cdot '.join(out)
+            
+            out = []
+            for low in lower:
+                low, exp = unit._removeExponentFromUnit(low)
+                if low in _temperatureDifference:
+                    low = low.replace('DELTA', '\Delta ')
+                if exp != 1:
+                    out.append(rf'{low}^{{{exp}}}')
+                else:
+                    out.append(low)
+            
+            lower = '\cdot '.join(out)
             
             if lower:
                 unitStrPretty = rf'\frac{{{upper}}}{{{lower}}}'
@@ -868,42 +926,28 @@ class unit():
             # try to cast the exponent to an integer
             # if this works, then raise the unitDict to the exponent
             try:
-                exponent = int(exponent)
+                exponent = float(exponent)
+                if exponent.is_integer():
+                    exponent = int(exponent)
+                    
                 if exponent != 1:
                     
-                    _unitStrPretty = rf'\left {_unitStrPretty} \right^{{{int(exponent)}}}'
+                    _unitStrPretty = rf'\left( {_unitStrPretty} \right)^{{{exponent}}}'
                 
                 currentParensPretty[1] += len(str(exponent))
             except ValueError:
                 pass
+            except UnboundLocalError:
+                pass
         
         # update unitStr
-        unitStrPretty = unitStrPretty[0:currentParensPretty[0]] + _unitStrPretty + unitStrPretty[currentParensPretty[1]+1:]
-        return unit._formatUnitStrPretty(unitStrPretty)
+        return unitStrPretty[0:currentParensPretty[0]] + _unitStrPretty + unitStrPretty[currentParensPretty[1]+1:]
+        # return unit._formatUnitStrPretty(unitStrPretty)
 
-    @staticmethod
-    def _unitStrPrettyPostProcessing(unitStrPretty):
-        ## replace 'left' with '\left'
-        unitStrPretty = resub(r'(?<!\\)\\right', r'\\right)', unitStrPretty)
-        
-        ## replace 'right' with '\right'
-        unitStrPretty = resub(r'(?<!\\)\\left', r'\\left(', unitStrPretty)
-        
-        ## replace '%' with '\%'
-        unitStrPretty = resub(r'(?<!\\)%', r'\%', unitStrPretty)
-        
-        ## replace 'exp' with '^{exp}' if the exponent is not 1. Else remove the exponent
-        unitStrPretty = resub(r'(?<!\{)(?<!\\{)(\d+)(?=\}|\D|$)', r'^{\1}', unitStrPretty)
-     
-        ## replace 'DELTA' with '\DELTA '
-        unitStrPretty = resub(r'(?<!/)DELTA', r'\\Delta ', unitStrPretty)
-        
-        return unitStrPretty
-     
     @ staticmethod
     def _removeExponentFromUnit(u):
 
-        integerIndexes = [i for i, char in enumerate(u) if char in integers]
+        integerIndexes = [i for i, char in enumerate(u) if char in integers or char == '.']
 
         if not integerIndexes:
             return u, 1
@@ -918,8 +962,11 @@ class unit():
             raise ValueError(
                 'Any number has to be placed at the end of the unit')
 
-        u, exponent = u[:integerIndexes[0]], int(u[integerIndexes[0]:])
-
+        exponent = u[integerIndexes[0]:]
+        exponent = float(exponent) if '.' in exponent else int(exponent)
+        u = u[:integerIndexes[0]]
+        
+        
         # Ensure that the entire use was not removed by removing the integers
         if not u:
             # No symbols are left after removing the integers
@@ -927,6 +974,7 @@ class unit():
                 raise ValueError(
                     f'The unit {u} was stripped of all integers which left no symbols in the unit. This is normally due to the integers removed being equal to 1, as the unit is THE unit. Howver, the intergers removed was not equal to 1. The unit is therefore not known.')
             u = '1'
+        
         return u, exponent
 
     @staticmethod
@@ -1005,11 +1053,11 @@ class unit():
           
         # determine if the self and other are identical once any prefixes has been removed
         if selfUnitDictWithoutPrefixes == otherUnitDictWithoutPrefixes:
-            return unit(unitDict=selfUnitDictWithoutPrefixes, unitDictSI=self.unitDictSI, selfUnitStrSI=self.unitStrSI)
+            return unit(unitDict=selfUnitDictWithoutPrefixes, unitDictSI=self.unitDictSI, unitStrSI=self.unitStrSI)
 
         # determine if the SI base units of self and other are equal
         if self.unitDictSI == other.unitDictSI:
-            return unit(unitDict=self.unitDictSI, unitDictSI=self.unitDictSI, selfUnitStr=self.unitStrSI, selfUnitStrSI=self.unitStrSI, converterToSI=_unitConversion(1, 0))
+            return unit(unitDict=self.unitDictSI, unitDictSI=self.unitDictSI, unitStr=self.unitStrSI, unitStrSI=self.unitStrSI, converterToSI=_unitConversion(1, 0))
 
         # determine if "DELTAK" and "K" are the SI Baseunits of self and other
         SIBaseUnits = [self.unitDictSI, other.unitDictSI]
@@ -1024,7 +1072,7 @@ class unit():
             if units[indexTemp] == units[indexDiff][-1]:
                 return [self, other][indexTemp]
 
-            return unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, selfUnitStr='K', selfUnitStrSI='K', converterToSI=_unitConversion(1, 0))
+            return unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, unitStr='K', unitStrSI='K', converterToSI=_unitConversion(1, 0))
 
         raise ValueError(
             f'You tried to add a variable in [{self}] to a variable in [{other}], but the units do not have the same SI base unit')
@@ -1053,8 +1101,13 @@ class unit():
         SIBaseUnits = [self.unitDictSI, other.unitDictSI]
         if SIBaseUnits[0] == {('','K') : 1} and SIBaseUnits[1] == {('','K') : 1}:
             if self.unitDict == other.unitDict:
-                return self
-            return unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, selfUnitStr='K', selfUnitStrSI='K', converterToSI=_unitConversion(1, 0))
+                return unit(
+                    unitStr = 'DELTA' + self.unitStr,
+                    unitDict = self.unitDict,
+                    unitDictSI= self.unitDictSI,
+                    unitStrPretty=rf'\Delta {self.unitStr}'
+                    )
+            return unit(unitDict={('','K') : 1}, unitDictSI={('','K') : 1}, unitStr='K', unitStrSI='K', converterToSI=_unitConversion(1, 0))
 
         if {('','DELTAK') : 1} in SIBaseUnits and {('','K') : 1} in SIBaseUnits:
             indexTemp = SIBaseUnits.index({('','K') : 1})
@@ -1069,11 +1122,21 @@ class unit():
 
         # determine if the self and other are identical once any prefixes has been removed
         if selfUnitDictWithoutPrefixes == otherUnitDictWithoutPrefixes:
-            return unit(unitDict=selfUnitDictWithoutPrefixes, unitDictSI=self.unitDictSI, selfUnitStrSI=self.unitStrSI)
+            return unit(
+                unitDict=selfUnitDictWithoutPrefixes,
+                unitDictSI=self.unitDictSI,
+                unitStrSI=self.unitStrSI
+                )
 
         # determine if the SI base units of self and other are equal
         if self.unitDictSI == other.unitDictSI:
-            return unit(unitDict=self.unitDictSI, unitDictSI=self.unitDictSI, selfUnitStr=self.unitStrSI, selfUnitStrSI=self.unitStrSI, converterToSI=_unitConversion(1, 0))
+            return unit(
+                unitStr=self.unitStrSI,
+                unitDict=self.unitDictSI,
+                unitDictSI=self.unitDictSI,
+                unitStrSI=self.unitStrSI,
+                converterToSI=_unitConversion(1, 0)
+            )
 
         raise ValueError(
             f'You tried to subtract a variable in [{other}] from a variable in [{self}], but the units do not have the same SI base unit')
@@ -1083,7 +1146,8 @@ class unit():
         converterToSI = _unitConversion(*_unitConversion.staticMul(self._converterToSI.scale,
                                         self._converterToSI.offset, other._converterToSI.scale, other._converterToSI.offset))
         unitStrPretty = rf'{{{self.unitStrPretty}}} \cdot {{{other.unitStrPretty}}}'
-        return unit(unitDict=unitDict, converterToSI=converterToSI, unitStrPretty = unitStrPretty)
+        unitStr=f'({self.unitStr})-({other.unitStr})'
+        return unit(unitStr=unitStr, unitDict=unitDict, converterToSI=converterToSI, unitStrPretty = unitStrPretty)
         
     @staticmethod
     def staticMul(a,b):
@@ -1105,7 +1169,8 @@ class unit():
         converterToSI = _unitConversion(*_unitConversion.staticTruediv(self._converterToSI.scale,
                                         self._converterToSI.offset, other._converterToSI.scale, other._converterToSI.offset))
         unitStrPretty = rf'\frac{{{self.unitStrPretty}}}{{{other.unitStrPretty}}}'
-        return unit(unitDict=unitDict, converterToSI=converterToSI, unitStrPretty=unitStrPretty)
+        unitStr=f'({self.unitStr})/({other.unitStr})'
+        return unit(unitStr = unitStr, unitDict=unitDict, converterToSI=converterToSI, unitStrPretty=unitStrPretty)
 
     @staticmethod
     def staticTruediv(a, b):
@@ -1123,11 +1188,13 @@ class unit():
         return unitDict
 
     def __pow__(self, power):
-        unitDict = unit.staticPow(self.unitDict, self.unitDictSI, self.unitStr, power)
+        
+        frac = Fraction(power).limit_denominator()
+        num, den = frac._numerator, frac._denominator
+        
+        unitDict = unit.staticPow(self.unitDict, self.unitDictSI, power)
         
         if power != 1:
-            frac = Fraction(power).limit_denominator()
-            num, den = frac._numerator, frac._denominator
             if den == 1:
                 unitStrPretty = rf'\left( {self.unitStrPretty} \right)^{{{num}}}'
             else:
@@ -1140,10 +1207,18 @@ class unit():
                     unitStrPretty = rf'\left( {self.unitStrPretty} \right)^{{\frac{{{num}}}{{{den}}}}}'
         else:
             unitStrPretty = self.unitStrPretty
-        return unit(unitDict=unitDict, unitStrPretty = unitStrPretty)
+        unitStr = f'({self.unitStr}){power}'
+        converterToSI = _unitConversion(*_unitConversion.staticPow(self._converterToSI.scale, self._converterToSI.offset, power, num, den))
+        return unit(
+            unitStr=unitStr,
+            unitStrPretty=unitStrPretty, 
+            unitDict=unitDict,
+            converterToSI=converterToSI
+            )
+    
 
     @staticmethod
-    def staticPow(unitDict, unitDictSI, unitStr, power):
+    def staticPow(unitDict, unitDictSI, power):
 
         if unitDict == {('','1') : 1}:
             return unitDict
@@ -1151,42 +1226,15 @@ class unit():
         if unitDictSI == {('','1') : 1}:
             return unitDictSI
         
-        frac = Fraction(power).limit_denominator()
-        num, den = frac._numerator, frac._denominator
+        out = {}
+        for key, exp in unitDict.items():
+            newExp = power * exp
+            if hasattr(newExp, 'is_integer') and newExp.is_integer():
+                newExp = int(newExp)
+            out[key] = newExp
+        out = unit._reduceDict(out)
+        return out
 
-        # determine if it is possible to take the power of the unitDict
-        isPossible = True
-        for exp in unitDict.values():
-            if not (exp * num) % den == 0:
-                isPossible = False
-                break
-
-
-        # if it is possible, then return a new unitDict
-        if isPossible:
-            out = {}
-            for key, exp in unitDict.items():
-                out[key] = int(num * exp / den) 
-            out = unit._reduceDict(out)
-            return out
-
-        # determine if it is possible to take the power of the sibase unit
-        isPossible = True
-        for exp in unitDictSI.values():
-            if not (exp * num) % den == 0:
-                isPossible = False
-                break
-
-        # if it is possible, then return a new unitDict
-        if isPossible:
-            out = {}
-            for key, exp in unitDictSI.items():
-                out[key] = int(num * exp / den)
-            out = unit._reduceDict(out)
-            return out
-
-        raise ValueError(
-            f'You can not raise a variable with the unit {unitStr} to the power of {power}')
 
     def getConverterToSI(self):
         # initialize the scale and offset
@@ -1277,6 +1325,4 @@ class unit():
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
 
 
-if __name__ == "__main__":
-    a = unit('DELTAK')
-    print(a.unitStrPretty)
+    

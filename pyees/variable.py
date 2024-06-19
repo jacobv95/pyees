@@ -1,5 +1,6 @@
 
 import numpy as np
+from copy import deepcopy
 try:
     from unit import unit
 except ImportError:
@@ -103,7 +104,17 @@ class scalarVariable():
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
         converter(self, useOffset=not self._unitObject.isCombinationUnit())
-        self._unitObject = unit(newUnit)
+        if converter.__name__ == 'converterToSignal':
+            unitDictSI = None
+            unitStrSI = None
+        else:
+            unitDictSI = self._unitObject.unitDictSI
+            unitStrSI = self._unitObject.unitStrSI
+        self._unitObject = unit(
+            unitStr=newUnit, 
+            unitStrSI=deepcopy(unitStrSI),
+            unitDictSI=deepcopy(unitDictSI),
+            )
 
     def printUncertanty(self, value, uncert):
         # function to print number
@@ -289,11 +300,9 @@ class scalarVariable():
         # then return the output in the same unit as the temperature
         # this has no affect if the inputs are in 'K' and 'DeltaK'
         # but the output is converted to 'C' if the inputs are in 'C' and 'DeltaK'
-        SIBaseUnits = [self._unitObject.unitDictSI,
-                       other._unitObject.unitDictSI]
-        if outputUnit.unitDict == {('','K') : 1} and {('','DELTAK') : 1} in SIBaseUnits and {('','K') : 1} in SIBaseUnits:
-            var.convert(str([selfUnit, otherUnit]
-                        [SIBaseUnits.index({('','K') : 1})]))
+        SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
+        if {('','DELTAK') : 1} in SIBaseUnits and {('','K') : 1} in SIBaseUnits:
+            var.convert(str([selfUnit, otherUnit][SIBaseUnits.index({('','K') : 1})]))
 
         return var
 
@@ -332,16 +341,16 @@ class scalarVariable():
         if not other._unitObject == otherUnit:
             other.convert(str(otherUnit))
 
-        SIBaseUnits = [self._unitObject.unitDictSI,
-                       other._unitObject.unitDictSI]
-        if outputUnit.unitDictSI == {('','K') : 1} and SIBaseUnits[0] == {('','K') : 1} and SIBaseUnits[1] == {('','K') : 1}:
+        SIBaseUnits = [self._unitObject.unitDictSI, other._unitObject.unitDictSI]
+        if SIBaseUnits[0] == {('','K') : 1} and SIBaseUnits[1] == {('','K') : 1}:
             if list(self._unitObject.unitDict.keys())[0][1] == list(other._unitObject.unitDict.keys())[0][1]:
                 unitStr = 'DELTA' + list(self._unitObject.unitDict.keys())[0][1]
-                var._unitObject = unit(unitStr)
+                var._unitObject = unit(unitStr, unitStrSI='DELTAK', unitDictSI={('','DELTAK') : 1})
             else:
-                var._unitObject = unit('DELTAK')
+                var._unitObject = unit('DELTAK', unitStrSI='DELTAK', unitDictSI={('','DELTAK') : 1})
             for elem in var:
                 elem._unitObject = var._unitObject
+            
         return var
 
     def __rsub__(self, other):
@@ -1048,7 +1057,20 @@ class arrayVariable(scalarVariable):
 
     def convert(self, newUnit):
         converter = self._unitObject.getConverter(newUnit)
-        newUnit = unit(newUnit)
+
+        if converter.__name__ == 'converterToSignal':
+            unitDictSI = None
+            unitStrSI = None
+        else:
+            unitDictSI = self._unitObject.unitDictSI
+            unitStrSI = self._unitObject.unitStrSI
+        
+        newUnit = unit(
+            unitStr=newUnit, 
+            unitStrSI=deepcopy(unitStrSI),
+            unitDictSI=deepcopy(unitDictSI)
+            )
+
         for elem in self.scalarVariables:
             converter(elem, useOffset=not self._unitObject.isCombinationUnit())
             elem._unitObject = newUnit

@@ -1079,24 +1079,11 @@ class test(unittest.TestCase):
             self.assertAlmostEqual(a.value, 10**(1 / (i + 1)))
             self.assertEqual(a.unit, 'L/min')
 
-            scale = uniform(0.5, 0.99)
-            with self.assertRaises(Exception) as context:
-                A ** (power * scale)
-            self.assertTrue(
-                f'You can not raise a variable with the unit {u} to the power of {power * scale}' in str(context.exception))
-
-            scale = uniform(1.01, 1.5)
-            with self.assertRaises(Exception) as context:
-                A ** (power * scale)
-            self.assertTrue(
-                f'You can not raise a variable with the unit {u} to the power of {power * scale}' in str(context.exception))
-
         A = variable(10, 'L2/m')
-        with self.assertRaises(Exception) as context:
-            np.sqrt(A)
-        self.assertTrue(
-            'You can not raise a variable with the unit L2/m to the power of 0.5' in str(context.exception))
-
+        a = np.sqrt(A)
+        self.assertEqual(a.value, np.sqrt(10))
+        self.assertEqual(a.unit, 'L/m0.5')
+        
         dP = variable(10, 'Pa')
         rho = variable(2.5, 'kg/m3')
         v = np.sqrt(2 * dP / rho)
@@ -1105,7 +1092,10 @@ class test(unittest.TestCase):
         dP = variable(1, 'bar')
         rho = variable(2.5, 'kg/L')
         v = np.sqrt(2 * dP / rho)
-        self.assertEqual(v.value, 8.9442719099991585541)
+        
+        self.assertEqual(v.value, np.sqrt(2 * 1 / 2.5))
+        v.convert('m/s')
+        self.assertAlmostEqual(v.value, 8.944271909999158554072096194 )
 
     def testLargerUncertThenValue(self):
 
@@ -1220,7 +1210,12 @@ class test(unittest.TestCase):
         self.assertEqual(d.__str__(pretty=True),
                          '[12, 56] \pm [2, 7]\\ \\left [m\\right ]')
         self.assertEqual(e.__str__(pretty=True), '12.3\\ \\left [\\Delta C\\right ]')
-
+        
+        a = variable(23.1, 'L/min')
+        b = variable(0.83, 'm3/h')
+        c = a - b
+        self.assertTrue(c.unit, 'm3/s')
+        self.assertEqual(c.__str__(pretty=True), rf'{23.1 / 1000 / 60 - 0.83 / 3600}\ \left [\frac{{m^{{3}}}}{{s}}\right ]')
 
     def testMax(self):
 
