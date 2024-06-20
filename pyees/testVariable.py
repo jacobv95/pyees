@@ -1530,8 +1530,6 @@ class test(unittest.TestCase):
         c1 = a1 + b
         self.assertEqual(c0, c1)
         
-        
-
         a = variable([65,66], 'dB', [1,2])
         b = logarithmic.mean(a)
         c = variable(0.8, 'dB')
@@ -1553,6 +1551,19 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(d.value, dVal)
         self.assertEqual(d.unit, 'dB')
         self.assertAlmostEqual(d.uncert, ud)
+        
+        
+        c = variable(1, 'cm/m', 0.1)
+        d = np.sin(c)
+        self.assertEqual(d.value, np.sin(1/100))
+        self.assertEqual(d.unit, '1')
+        self.assertEqual(d.uncert, np.sqrt((0.1 * 1/100 * np.cos(1/100 * 1 + 0))**2))
+        
+        c.convert('1')
+        e = np.sin(c)
+        self.assertEqual(e.value, np.sin(1/100))
+        self.assertEqual(e.unit, '1')
+        self.assertEqual(e.uncert, np.sqrt((0.1 * 1/100 * np.cos(1/100 * 1 + 0))**2))
         
     def testCovariance(self):
         a = variable(123, 'L/min', 9.7)

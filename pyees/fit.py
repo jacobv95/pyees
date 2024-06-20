@@ -671,41 +671,14 @@ def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
     
     
 if __name__ == "__main__":
-     ## create a figure using plotly
-    import plotly.graph_objects as go
-    
-    ## define some data and create a fit-object
-    x = variable([1,2,3], 'min', [0.3, 1.2, 2.1])
-    y = variable([5,8,11], 'L', [2.5, 5.3, 7.8])
-    f = lin_fit(x,y)
-    
-    fig = go.Figure()
-    f.scatter(fig, name = 'hej')
-    f.plot(fig, name = 'hej')
-    f.plotData(fig)
-    f.plotUncertanty(fig)
-    f.scatterResiduals(fig)
-    f.scatterNormalizedResiduals(fig)
-    fig.update_layout(showlegend = True)
-    fig.update_yaxes(title = 'Volume')
-    fig.update_xaxes(title = "Time")
-    f.addUnitToLabels(fig)
-    fig.write_image('test.png')
-    
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    
-    f.scatter(ax, label = 'hej')
-    out = f.plot(ax, label='hej')
-    print(out)
-    f.plotData(ax)
-    f.plotUncertanty(ax)
-    f.scatterResiduals(ax)
-    f.scatterNormalizedResiduals(ax)
-    ax.set_xlabel('Volume')
-    ax.set_ylabel('Time')
-    f.addUnitToLabels(ax)
-    ax.legend()
-    fig.savefig('test2.png')
-    
+    a = 2
+    b = 10
+    n = 100
+    x = np.linspace(0, 100, n)
+    y = a * x + b
+
+    x = variable(x, 'm')
+    y = variable(y, 'C')
+
+    F = lin_fit(x, y)
     

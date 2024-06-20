@@ -19,6 +19,7 @@ for _ in range(50_000):
     air_speed = variable([6.5, 6, 5.5, 5, 4.5, 4, 3.5], 'm/s', [0.1, 0.15, 0.12, 0.13, 0.9, 1.1, 1.0])
     q = c * rho * v_dot * (t_in - t_out)
     q.convert('kW')
+    
 
 
 pr.disable()

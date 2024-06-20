@@ -475,13 +475,12 @@ class scalarVariable():
         if self._unitObject.unitStrSI != '1':
             raise ValueError('You can only take the sine of a dimensionless variables')
         
-        if self.unit == 'deg':
-            val = np.sin(np.pi / 180 * self.value)
-            grad = np.pi / 180 * np.cos(np.pi / 180 * self.value)
-        else:
-            val = np.sin(self.value)
-            grad = np.cos(self.value)
-
+        converter = self._unitObject._converterToSI
+        scale, offset = converter.scale, converter.offset
+        
+        val = np.sin(scale * self.value + offset)
+        grad = scale * np.cos(scale * self.value + offset)
+    
         var = variable(val, '1')
         var._addDependent(self, grad)
         var._calculateUncertanty()
@@ -492,13 +491,12 @@ class scalarVariable():
         if self._unitObject.unitStrSI != '1':
             raise ValueError('You can only take the sine of a dimensionless variables')
         
-        if self.unit == 'deg':
-            val = np.cos(np.pi / 180 * self.value)
-            grad = -np.pi / 180 * np.sin(np.pi / 180 * self.value)
-        else:
-            val = np.cos(self.value)
-            grad = -np.sin(self.value)
-
+        converter = self._unitObject._converterToSI
+        scale, offset = converter.scale, converter.offset
+        
+        val = np.cos(scale * self.value + offset)
+        grad = -scale * np.sin(scale * self.value + offset)
+    
         var = variable(val, '1')
         var._addDependent(self, grad)
         var._calculateUncertanty()
@@ -509,13 +507,12 @@ class scalarVariable():
         if self._unitObject.unitStrSI != '1':
             raise ValueError('You can only take the sine of a dimensionless variables')
         
-        if self.unit == 'deg':
-            val = np.tan(np.pi / 180 * self.value)
-            grad = np.pi / (90 * (np.cos(np.pi / 90 * self.value) + 1))
-        else:
-            val = np.tan(self.value)
-            grad = 2 / (np.cos(2 * self.value) + 1)
-
+        converter = self._unitObject._converterToSI
+        scale, offset = converter.scale, converter.offset
+         
+        val = np.tan(scale * self.value + offset)
+        grad = scale / ( (np.cos(scale * self.value + offset))**2 )
+        
         var = variable(val, '1')
         var._addDependent(self, grad)
         var._calculateUncertanty()
@@ -1089,3 +1086,4 @@ def variable(value, unit='', uncert=None):
         return arrayVariable(value=value, unitStr=unit, uncert=uncert)
     else:
         return scalarVariable(value, unit, uncert)
+

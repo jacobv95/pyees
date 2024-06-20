@@ -1,6 +1,5 @@
 import numpy as np
 from fractions import Fraction
-from re import sub as resub
 
 
 class _unitConversion():
