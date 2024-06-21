@@ -1087,3 +1087,7 @@ def variable(value, unit='', uncert=None):
     else:
         return scalarVariable(value, unit, uncert)
 
+if __name__ == "__main__":
+    a = variable(100, 'K')
+    b = variable(20, 'C')
+    c = a + b

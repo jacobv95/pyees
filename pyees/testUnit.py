@@ -69,7 +69,6 @@ class test(unittest.TestCase):
     def testAdd(self):
         a = unit('L/min')
         b = unit('kg-m/L')
-
         with self.assertRaises(Exception) as context:
             a + b
         self.assertTrue('You tried to add a variable in [L/min] to a variable in [kg-m/L], but the units do not have the same SI base unit' in str(context.exception))
@@ -95,6 +94,7 @@ class test(unittest.TestCase):
         a = unit('J/g-DELTAK')
         b = unit('J/kg-DELTAK')
         _,_,outputUnit = a + b
+
         self.assertTrue(outputUnit == unit('J/g-DELTAK'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
         
@@ -147,6 +147,7 @@ class test(unittest.TestCase):
         a = unit('J/g-DELTAK')
         b = unit('J/kg-DELTAK')
         _,_, outputUnit = a - b
+        
         self.assertTrue(outputUnit == unit('J/g-DELTAK'))
         self.assertFalse(outputUnit.isLogarithmicUnit())
         
