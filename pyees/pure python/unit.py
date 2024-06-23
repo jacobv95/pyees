@@ -1,6 +1,6 @@
 import numpy as np
 from fractions import Fraction
-
+print('hej')
 
 class _unitConversion():
     def __init__(self, scale, offset=0) -> None:

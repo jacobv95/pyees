@@ -1,6 +1,5 @@
 
 import numpy as np
-from copy import deepcopy
 try:
     from unit import unit
 except ImportError:
@@ -143,7 +142,7 @@ class scalarVariable():
 
         return value, uncert
 
-    def __str__(self, pretty=None) -> str:
+    def __str__(self, pretty=None):
 
         # standard values
         uncert = None
@@ -177,7 +176,7 @@ class scalarVariable():
         else:
             return rf'{value} {pm} {uncert}{space}{unitStr}'
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return self.__str__()
 
     def _addDependent(self, var, grad):
@@ -523,21 +522,21 @@ class scalarVariable():
         return variable(np.abs(self.value), self.unit, self.uncert)
 
     def __array_function__(self, func, types, args, kwargs):
-        match func:
-            case np.max:
-                return self.max()
-            case np.min:
-                return self.min()
-            case np.mean:
-                return self.mean()
-            case np.argmin:
-                return self.argmin()
-            case np.argmax:
-                return self.argmax()
-            case np.abs:
-                return self.__abs__()
-            case np.linspace:
-                return self._linspace(*args, **kwargs)
+        
+        if func == np.max:
+            return self.max()
+        elif func == np.min:
+            return self.min()
+        elif func == np.mean:
+            return self.mean()
+        elif func == np.argmin:
+            return self.argmin()
+        elif func == np.argmax:
+            return self.argmax()
+        elif func == np.abs:
+            return self.__abs__()
+        elif func == np.linspace:
+            return self._linspace(*args, **kwargs)
         raise NotImplementedError()
 
     @staticmethod
@@ -866,7 +865,7 @@ class arrayVariable(scalarVariable):
 
         return value, uncert
 
-    def __str__(self, pretty=None) -> str:
+    def __str__(self, pretty=None):
         unitStr = self._unitObject.__str__(pretty=pretty)
 
         if pretty:
@@ -961,23 +960,23 @@ class arrayVariable(scalarVariable):
         return out
 
     def __array_ufunc__(self, ufunc, *args, **kwargs):
-        match ufunc:
-            case np.log:
-                return self.log()
-            case np.log10:
-                return self.log10()
-            case np.exp:
-                return self.exp()
-            case np.sin:
-                return self.sin()
-            case np.cos:
-                return self.cos()
-            case np.tan:
-                return self.tan()
-            case np.sqrt:
-                return self.sqrt()
-            case np.abs:
-                return self.__abs__()
+        
+        if ufunc == np.log:
+            return self.log()
+        elif ufunc == np.log10:
+            return self.log10()
+        elif ufunc == np.exp:
+            return self.exp()
+        elif ufunc == np.sin:
+            return self.sin()
+        elif ufunc == np.cos:
+            return self.cos()
+        elif ufunc == np.tan:
+            return self.tan()
+        elif ufunc == np.sqrt:
+            return self.sqrt()
+        elif ufunc == np.abs:
+            return self.__abs__()
         raise NotImplementedError()
 
     def min(self):
