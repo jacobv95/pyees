@@ -1,0 +1,20 @@
+         500006 function calls in 0.289 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   100000    0.143    0.000    0.251    0.000 C:\Users\jacob\AppData\Local\Programs\Python\Python312\Lib\fractions.py:186(__new__)
+    50000    0.037    0.000    0.197    0.000 C:\Users\jacob\AppData\Local\Programs\Python\Python312\Lib\fractions.py:340(limit_denominator)
+    50000    0.030    0.000    0.071    0.000 {built-in method builtins.isinstance}
+    50000    0.026    0.000    0.026    0.000 {built-in method _abc._abc_instancecheck}
+   100000    0.025    0.000    0.025    0.000 {built-in method __new__ of type object at 0x00007FF8C91248F0}
+    50000    0.014    0.000    0.040    0.000 <frozen abc>:117(__instancecheck__)
+    50000    0.007    0.000    0.007    0.000 C:\Users\jacob\AppData\Local\Programs\Python\Python312\Lib\fractions.py:397(numerator)
+    50000    0.005    0.000    0.005    0.000 C:\Users\jacob\AppData\Local\Programs\Python\Python312\Lib\fractions.py:401(denominator)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.print}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        2    0.000    0.000    0.000    0.000 {built-in method time.time}
+        1    0.000    0.000    0.000    0.000 {built-in method _abc._abc_subclasscheck}
+        1    0.000    0.000    0.000    0.000 <frozen abc>:121(__subclasscheck__)
+
+
