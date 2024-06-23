@@ -1,0 +1,6 @@
+include fit.cp312-win_amd64.pyd
+include prop.cp312-win_amd64.pyd
+include sheet.cp312-win_amd64.pyd
+include solve.cp312-win_amd64.pyd
+include unit.cp312-win_amd64.pyd
+include variable.cp312-win_amd64.pyd
