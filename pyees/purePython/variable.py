@@ -3,7 +3,7 @@ import numpy as np
 try:
     from unit import unit
 except ImportError:
-    from pyees.unit import unit
+    from .unit import unit
 
 
 class logarithmic:

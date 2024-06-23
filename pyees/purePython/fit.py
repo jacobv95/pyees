@@ -7,8 +7,7 @@ import plotly.graph_objects as go
 try:
     from variable import variable, arrayVariable, scalarVariable
 except ImportError:
-    from pyees.variable import variable, arrayVariable, scalarVariable
-    from pyees.unit import unit
+    from .variable import variable, arrayVariable, scalarVariable
 
 
 

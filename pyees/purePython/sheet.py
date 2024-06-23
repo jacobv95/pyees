@@ -9,7 +9,7 @@ import string
 try:
     from variable import variable, scalarVariable, arrayVariable, unit
 except ImportError:
-    from pyees.variable import variable, scalarVariable, arrayVariable, unit
+    from .variable import variable, scalarVariable, arrayVariable, unit
 
 
 

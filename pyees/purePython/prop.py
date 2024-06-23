@@ -2,7 +2,7 @@ from pyfluids import Fluid, FluidsList, Input, HumidAir, InputHumidAir, Mixture
 try:
     from variable import variable, arrayVariable
 except ImportError:
-    from pyees.variable import variable, arrayVariable
+    from .variable import variable, arrayVariable
 dx = 0.000001
 
 

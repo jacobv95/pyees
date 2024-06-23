@@ -5,7 +5,7 @@ from copy import deepcopy
 try:
     from variable import variable, scalarVariable, arrayVariable
 except ImportError:
-    from pyees.variable import variable, scalarVariable, arrayVariable
+    from .variable import variable, scalarVariable, arrayVariable
 
 class _solve:
     
