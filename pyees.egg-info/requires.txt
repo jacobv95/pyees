@@ -4,3 +4,5 @@ openpyxl
 xlrd
 pyfluids
 xlwt
+plotly
+matplotlib

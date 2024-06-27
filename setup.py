@@ -1,8 +1,26 @@
-from distutils.core import setup
+from setuptools import setup
+from setuptools_cythonize import get_cmdclass
+
 setup(
+    python_requires = '>=3.10',
     name='pyees',
     packages=['pyees'],
-    version='2.0.1',
+    version='2.0.4',
+    cmdclass=get_cmdclass(),
+    options={
+        'build_py':
+            {'exclude_cythonize': [
+                'pyees.testFit',
+                'pyees.testProp',
+                'pyees.testPyees',
+                'pyees.testSheet',
+                'pyees.testSolve',
+                'pyees.testUnit',
+                'pyees.testVariable',
+                'pyees.profilePyees',
+                'pyees.profileFit'
+                ]}
+    },
     license='MIT',
     description='EES but for python. Pyees can be used do perform uncertanty (error) propagation. Furthermore, it can solve nonlinear systems of equations and look up material properties.',
     author='Jacob Vestergaard',
@@ -11,7 +29,7 @@ setup(
     download_url='https://github.com/jacobv95/pyees/archive/refs/tags/v1.0.tar.gz',
     keywords=['python', 'data processing', 'uncertanty', 'EES'],
     install_requires=[            # I get to this in a second
-        'numpy', 'scipy', 'openpyxl', 'xlrd', 'pyfluids', 'xlwt'
+        'numpy', 'scipy', 'openpyxl', 'xlrd', 'pyfluids', 'xlwt', 'plotly', 'matplotlib'
     ],
     classifiers=[
         # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package

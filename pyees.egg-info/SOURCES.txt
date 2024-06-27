@@ -9,7 +9,6 @@ pyees/profilePyees.py
 pyees/prop.py
 pyees/sheet.py
 pyees/solve.py
-pyees/stackOverflowODR.py
 pyees/testFit.py
 pyees/testProp.py
 pyees/testPyees.py
