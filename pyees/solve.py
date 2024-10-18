@@ -315,6 +315,10 @@ class _solve:
             callback=self.keepVariablesFeasible if callable(self.bounds) else None
             )
         warnings.filterwarnings('default')
+
+        if np.isnan(self.out.fun):
+            raise ValueError(f'The solver encountered a NaN value of the minimization function. Try to change the initial value or add boundaries to the variables.')
+
         if callable(self.bounds): self.keepVariablesFeasible()
 
     def solveUncertanty(self):

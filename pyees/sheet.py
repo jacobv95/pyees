@@ -403,6 +403,13 @@ class sheet():
                 setattr(sh, key, item[index])
         return sh
 
+    def __len__(self):
+        
+        for _, item in self.__dict__.items():
+            if isinstance(item, scalarVariable):
+                return len(item)
+        raise 0
+
     def append(self, other):
         if not isinstance(other, sheet):
             raise ValueError('You can only append two sheets together')

@@ -311,6 +311,13 @@ class test(unittest.TestCase):
         sheetsFromFile("testData/data12.xls", "D-CF", sheets=0)
         sheetsFromFile("testData/data12.xlsx", "D-CF", sheets=0)
         
+    def testLen(self):
+        dat = sheetsFromFile('testData/data1.xlsx', 'A-B')
+        self.assertEqual(len(dat), 5)
+
+        dat = dat[0:3]
+        self.assertEqual(len(dat), 3)
+
         
         
         

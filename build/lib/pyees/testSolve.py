@@ -665,6 +665,92 @@ class test(unittest.TestCase):
             self.assertRelativeDifference(x.value[i], correct.value[i], tol)
             self.assertRelativeDifference(x.uncert[i], correct.uncert[i], tol)
 
+    def testBadlyFormulatedSetOfEquations(self):
+            
+        from sheet import sheetsFromFile
+        from prop import prop
+
+        data = sheetsFromFile("testData/solveData.xlsx", dataRange = "A-AG", uncertRange = "AH-BN")
+        
+        
+        ## override the relative desity the sensor was not connected during this test
+        for elem in data.rh_air:
+            elem._value = 60
+            elem._uncert = 0
+
+        ## calculate the average of the inlet and outlet temperature on the air side
+        ## NOTE: the measurement t_air_out_12 was faulty. Therefore the ranges has been set to 11 and not 12
+        data.t_air_in = sum([getattr(data, f't_air_in_{str(i+1).zfill(2)}') for i in range(12)]) / 12
+        data.t_air_out = sum([getattr(data, f't_air_out_{str(i+1).zfill(2)}') for i in range(11)]) / 11
+
+        d_nozzle = variable(225, 'mm')
+        dp_nozzle = data.dP_nozzle
+        p_atm = data.p_atm
+        T_5 = data.t_air_out 
+        T_6 = data.t_air_out 
+        P_s5 = data.p_atm - data.dP_air
+        P_s6 = data.p_atm - data.dP_air - data.dP_nozzle
+        rh_5 = data.rh_air
+        rh_6 = data.rh_air
+        C_initial = 1
+        
+        
+        ## determine all necessary constants
+        alpha = (P_s6 + p_atm) / (P_s5 + p_atm)         ## Eq. 7.11 AMCA 210
+        # alpha = P_s6 / P_s5
+
+        ## Ratio of the diameters of the nozzles
+        ## Beta is zero due to the chamber approach
+        beta = 0
+        
+        ## ratio of the specific heats of the air
+        ## this is set to 1.4 as a constant
+        gamma =  1.4
+
+        ## detemine the expansion factor, Y             ## Eq. 7.14 AMCA 210
+        Y = np.sqrt(((gamma)/(gamma-1)) * (alpha **(2/gamma)) * ((1-alpha**((gamma-1)/gamma))/(1 - alpha)) * ((1 - beta**4)/(1 - beta**4*alpha**(2/gamma))))
+
+        def SolveDischargeCoefficientAndReynoldsNumber(C,Re, y, rho5, mu6, dp_nozzle):
+
+            Re2 = C * d_nozzle * y / mu6 * np.sqrt(2 * dp_nozzle * rho5)
+            C2 = 0.9986 - (7.006/np.sqrt(Re)) + (134.6/Re)
+            
+            eq1 = [C, C2]
+            eq2 = [Re, Re2]
+            
+            return [eq1, eq2]
+            
+            
+        rho_5 = prop('density', 'air', T = T_5, P = P_s5, rh = rh_5)
+        mu_6 = prop('dynamic_viscosity', 'air', T = T_6, P = P_s6, rh = rh_6)
+        
+        ## unbounded set of equations with bad initial guess
+        with self.assertRaises(Exception) as context:
+            C, Re = solve(
+                SolveDischargeCoefficientAndReynoldsNumber,
+                [variable(C_initial), variable(2e5)], 
+                tol = 1e-100,
+                parametric = [Y, rho_5, mu_6, dp_nozzle]
+            )  
+        self.assertEqual(str(context.exception), "The solver encountered a NaN value of the minimization function. Try to change the initial value or add boundaries to the variables.")
+
+        ## better initial guesses
+        C, Re = solve(
+            SolveDischargeCoefficientAndReynoldsNumber,
+            [variable(C_initial), variable(1e3)], 
+            tol = 1e-100,
+            parametric = [Y, rho_5, mu_6, dp_nozzle]
+        )  
+
+        ## included bounds
+        C, Re = solve(
+            SolveDischargeCoefficientAndReynoldsNumber,
+            [variable(C_initial), variable(2e5)], 
+            tol = 1e-100,
+            parametric = [Y, rho_5, mu_6, dp_nozzle],
+            bounds = [[variable(1e-10), variable(np.inf)],[variable(1e-10), variable(np.inf)]]
+        )  
+    
 
 if __name__ == '__main__':
     unittest.main()
