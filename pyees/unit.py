@@ -660,18 +660,18 @@ class unit():
                 for elem in upper:
                     e, _ = unit._removeExponentFromUnit(elem)
                     if e in _temperature:
-                        out.append('DELTA' + elem)
-                    else:
-                        out.append(elem)
+                        elem = 'DELTA' + elem
+                    out.append(elem)
+
                 upper = out
                 
                 out = []
                 for elem in lower:
                     e, _ = unit._removeExponentFromUnit(elem)
                     if e in _temperature:
-                        out.append('DELTA' + elem)
-                    else:
-                        out.append(elem)
+                        elem = 'DELTA' + elem
+                    out.append(elem)
+
                 lower = out
                 
             unitStr = '-'.join(upper)
@@ -685,8 +685,8 @@ class unit():
                 unitStrPrettyUpper = []
                 for up in upper:
                     up, exp = unit._removeExponentFromUnit(up)
-                    if up in _temperatureDifference:
-                        up = up.replace('DELTA', r'\Delta ')
+                    up = up.replace('DELTA', r'\Delta ')
+                    up = up.replace('%', r'\%')
                     if exp != 1:
                         unitStrPrettyUpper.append(rf'{up}^{{{exp}}}')
                     else:
@@ -696,8 +696,8 @@ class unit():
                 unitStrPrettyLower = []
                 for low in lower:
                     low, exp = unit._removeExponentFromUnit(low)
-                    if low in _temperatureDifference:
-                        low = low.replace('DELTA', r'\Delta ')
+                    low = low.replace('DELTA', r'\Delta ')
+                    low = low.replace('%', r'\%')
                     if exp != 1:
                         unitStrPrettyLower.append(rf'{low}^{{{exp}}}')
                     else:
@@ -987,26 +987,26 @@ class unit():
                 for elem in upper:
                     e, _ = unit._removeExponentFromUnit(elem)
                     if e in _temperature:
-                        out.append('DELTA' + elem)
-                    else:
-                        out.append(elem)
+                        elem = 'DELTA' + elem
+                    out.append(elem)
+
                 upper = out
                 
                 out = []
                 for elem in lower:
                     e, _ = unit._removeExponentFromUnit(elem)
                     if e in _temperature:
-                        out.append('DELTA' + elem)
-                    else:
-                        out.append(elem)
+                        elem = 'DELTA' + elem
+                    out.append(elem)
+
                 lower = out
               
             
             out = []
             for up in upper:
                 up, exp = unit._removeExponentFromUnit(up)
-                if up in _temperatureDifference:
-                    up = up.replace('DELTA', r'\Delta ')
+                up = up.replace('DELTA', r'\Delta ')
+                up = up.replace('%', r'\%')
                 if exp != 1:
                     out.append(rf'{up}^{{{exp}}}')
                 else:
@@ -1017,8 +1017,8 @@ class unit():
             out = []
             for low in lower:
                 low, exp = unit._removeExponentFromUnit(low)
-                if low in _temperatureDifference:
-                    low = low.replace('DELTA', r'\Delta ')
+                low = low.replace('DELTA', r'\Delta ')
+                low = low.replace('%', r'\%')
                 if exp != 1:
                     out.append(rf'{low}^{{{exp}}}')
                 else:
@@ -1547,3 +1547,7 @@ class unit():
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
 
     
+if __name__ == "__main__":
+    a = unit('%')
+    print(a)
+    print(a.unitStrPretty)

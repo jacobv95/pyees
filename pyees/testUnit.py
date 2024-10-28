@@ -341,6 +341,10 @@ class test(unittest.TestCase):
         self.assertEqual(c, unit('mbar'))
         self.assertEqual(c.unitStrPretty, rf'mbar')
 
+        a = unit('%')
+        self.assertEqual(str(a), '%')
+        self.assertEqual(a.unitStrPretty, r'\%')
+
     def testAddNewUnit(self):
         addNewUnit('gnA', 9.81, 'm/s2')
         converter, _ = unit('gnA').getConverter('m/s2')
