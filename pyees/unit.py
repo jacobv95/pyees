@@ -686,7 +686,7 @@ class unit():
                 for up in upper:
                     up, exp = unit._removeExponentFromUnit(up)
                     if up in _temperatureDifference:
-                        up = up.replace('DELTA', '\Delta ')
+                        up = up.replace('DELTA', r'\Delta ')
                     if exp != 1:
                         unitStrPrettyUpper.append(rf'{up}^{{{exp}}}')
                     else:
@@ -697,15 +697,15 @@ class unit():
                 for low in lower:
                     low, exp = unit._removeExponentFromUnit(low)
                     if low in _temperatureDifference:
-                        low = low.replace('DELTA', '\Delta ')
+                        low = low.replace('DELTA', r'\Delta ')
                     if exp != 1:
                         unitStrPrettyLower.append(rf'{low}^{{{exp}}}')
                     else:
                         unitStrPrettyLower.append(low)
                 
-                unitStrPretty = '\cdot '.join(unitStrPrettyUpper)           
+                unitStrPretty = r'\cdot '.join(unitStrPrettyUpper)           
                 if unitStrPrettyLower:
-                    unitStrPrettyLower = '\cdot '.join(unitStrPrettyLower)
+                    unitStrPrettyLower = r'\cdot '.join(unitStrPrettyLower)
                     unitStrPretty = rf'\frac{{{unitStrPretty}}}{{{unitStrPrettyLower}}}'
             
             return unitStr, unitStrPretty
@@ -1006,25 +1006,25 @@ class unit():
             for up in upper:
                 up, exp = unit._removeExponentFromUnit(up)
                 if up in _temperatureDifference:
-                    up = up.replace('DELTA', '\Delta ')
+                    up = up.replace('DELTA', r'\Delta ')
                 if exp != 1:
                     out.append(rf'{up}^{{{exp}}}')
                 else:
                     out.append(up)
             
-            upper = '\cdot '.join(out)
+            upper = r'\cdot '.join(out)
             
             out = []
             for low in lower:
                 low, exp = unit._removeExponentFromUnit(low)
                 if low in _temperatureDifference:
-                    low = low.replace('DELTA', '\Delta ')
+                    low = low.replace('DELTA', r'\Delta ')
                 if exp != 1:
                     out.append(rf'{low}^{{{exp}}}')
                 else:
                     out.append(low)
             
-            lower = '\cdot '.join(out)
+            lower = r'\cdot '.join(out)
             
             if lower:
                 unitStrPretty = rf'\frac{{{upper}}}{{{lower}}}'
@@ -1348,36 +1348,42 @@ class unit():
         
         return unitDict
 
-    def convertToDimensionless(self):
+    def isConvertableToDimensionless(self):
         unitDict = unit.__staticConvertToDimensionless(self.unitDict)
         if unitDict != self.unitDict:
-            return unit._getUnitStrFromDict(unitDict)
-        return self.unitStr
-        
+            return True, unit._getUnitStrFromDict(unitDict)
+        return False, None
+            
     
     @staticmethod
     def __staticConvertToDimensionless(unitDict):
+
         unitDictWithoutPrefix = {}
         for (_,key), exp in unitDict.items():
-            if key in unitDictWithoutPrefix:
-                unitDictWithoutPrefix[key] += exp
-            else:
-                unitDictWithoutPrefix[key] = exp
+            key = _knownUnits[key][0]
+            for (_,k), e in key.items():
+
+                if k in unitDictWithoutPrefix:
+                    unitDictWithoutPrefix[k] += exp * e
+                else:
+                    unitDictWithoutPrefix[k] = exp * e
         
         keys = [key for key, exp in unitDictWithoutPrefix.items() if exp == 0]
         if not keys:
             return unitDict
         
         keysToRemove = []
-        for key in unitDict.keys():
-            if key[1] in keys:
+        for key in unitDictWithoutPrefix.keys():
+            if key in keys:
                 keysToRemove.append(key)
         
-        if len(keysToRemove) == len(unitDict):
+        for key in keysToRemove:
+            unitDictWithoutPrefix.pop(key)
+
+        if len(unitDictWithoutPrefix) == 0:
             return {('','1'):1}
         
-        for key in keysToRemove:
-            unitDict.pop(key)
+
     
         return unitDict
 
@@ -1541,8 +1547,3 @@ class unit():
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
 
     
-    
-if __name__ == '__main__':
-    a = unit('((m-s2)2/(Hz))2')
-    print(a, unit('m4-s8/Hz2'), sep = '\n', end = '\n\n')
-    print(a.unitStrPretty, rf'\left( \frac{{\left( m\cdot s^{{2}} \right)^{{2}}}}{{Hz}} \right)^{{2}}', sep = '\n', end = '\n\n')

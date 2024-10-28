@@ -334,10 +334,16 @@ class scalarVariable():
         var._addDependent(self, other.value)
         var._addDependent(other, self.value)
         var._calculateUncertanty()
-
-        var.convert(var._unitObject.convertToDimensionless())
+        
+        var.__convertToDimensionless()
 
         return var
+
+    def __convertToDimensionless(self):
+        isConvertableToDimensionless, outputUnit = self._unitObject.isConvertableToDimensionless()
+        if isConvertableToDimensionless:
+            self.convert(outputUnit)
+
 
     def __rmul__(self, other):
         return self * other
@@ -410,10 +416,7 @@ class scalarVariable():
         var._addDependent(other, -self.value / (other.value**2))
         var._calculateUncertanty()
 
-        # if all units were cancled during the multiplication, then convert to 1
-        # this will remove any remaining prefixes
-        if var._unitObject.unitDictSI == {('','1') : 1} and var._unitObject.unitDict != {('','1') : 1}:
-            var.convert('1')
+        var.__convertToDimensionless()
 
         return var
 
@@ -1009,8 +1012,7 @@ class arrayVariable(scalarVariable):
         return np.argmax(self.value)
 
     def convert(self, newUnit):
-        if newUnit == self._unitObject.unitStr: return
-        
+      
         converter, newUnitKwargs = self._unitObject.getConverter(newUnit)        
         newUnit = unit(**newUnitKwargs)
 
@@ -1085,8 +1087,3 @@ def variable(value, unit='', uncert=None):
         return arrayVariable(value=value, unitStr=unit, uncert=uncert)
     else:
         return scalarVariable(value, unit, uncert)
-
-if __name__ == "__main__":
-    a = variable(100, 'K')
-    b = variable(20, 'C')
-    c = a + b

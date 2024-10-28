@@ -2763,7 +2763,7 @@ static const char __pyx_k_fit_scatterResiduals[] = "_fit.scatterResiduals";
 static const char __pyx_k_getVariableUnitsFunc[] = "getVariableUnitsFunc";
 static const char __pyx_k_plotly_graph_objects[] = "plotly.graph_objects";
 static const char __pyx_k_logistic_fit_func_name[] = "logistic_fit.func_name";
-static const char __pyx_k_frac_L_1_e_k_cdot_x_x_0[] = "$\\frac{L}{1 + e^{-k\\cdot (x-x_0)}}";
+static const char __pyx_k_frac_L_1_e_k_cdot_x_x_0[] = "$\\\\frac{L}{1 + e^{-k\\cdot (x-x_0)}}";
 static const char __pyx_k_exp_fit_getVariableUnits[] = "exp_fit.getVariableUnits";
 static const char __pyx_k_pol_fit_getVariableUnits[] = "pol_fit.getVariableUnits";
 static const char __pyx_k_pow_fit_getVariableUnits[] = "pow_fit.getVariableUnits";
@@ -7112,7 +7112,7 @@ static PyObject *__pyx_pf_5pyees_3fit_4_fit_2getOnlyUsedTerms(CYTHON_UNUSED PyOb
  *         return B
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return self.func_name() + f', $R^2 = {self.r_squared.value:.5f}$'
+ *         return self.func_name() + fr', $R^2 = {self.r_squared.value:.5f}$'
  * 
  */
 
@@ -7230,7 +7230,7 @@ static PyObject *__pyx_pf_5pyees_3fit_4_fit_4__str__(CYTHON_UNUSED PyObject *__p
   /* "pyees/fit.py":120
  * 
  *     def __str__(self):
- *         return self.func_name() + f', $R^2 = {self.r_squared.value:.5f}$'             # <<<<<<<<<<<<<<
+ *         return self.func_name() + fr', $R^2 = {self.r_squared.value:.5f}$'             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -7299,7 +7299,7 @@ static PyObject *__pyx_pf_5pyees_3fit_4_fit_4__str__(CYTHON_UNUSED PyObject *__p
  *         return B
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return self.func_name() + f', $R^2 = {self.r_squared.value:.5f}$'
+ *         return self.func_name() + fr', $R^2 = {self.r_squared.value:.5f}$'
  * 
  */
 
@@ -16794,7 +16794,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7exp_fit_4_func(CYTHON_UNUSED PyObject *__
  * 
  *     def func_name(self):             # <<<<<<<<<<<<<<
  *         a,b,c = self.coefficients
- *         return f'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
+ *         return fr'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
  */
 
 /* Python wrapper */
@@ -16916,7 +16916,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7exp_fit_6func_name(CYTHON_UNUSED PyObject
  * 
  *     def func_name(self):
  *         a,b,c = self.coefficients             # <<<<<<<<<<<<<<
- *         return f'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
+ *         return fr'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
  * 
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_coefficients); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
@@ -16984,7 +16984,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7exp_fit_6func_name(CYTHON_UNUSED PyObject
   /* "pyees/fit.py":487
  *     def func_name(self):
  *         a,b,c = self.coefficients
- *         return f'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'             # <<<<<<<<<<<<<<
+ *         return fr'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -17072,7 +17072,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7exp_fit_6func_name(CYTHON_UNUSED PyObject
  * 
  *     def func_name(self):             # <<<<<<<<<<<<<<
  *         a,b,c = self.coefficients
- *         return f'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
+ *         return fr'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
  */
 
   /* function exit code */
@@ -17881,7 +17881,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7pow_fit_4_func(CYTHON_UNUSED PyObject *__
  *         return a * x**b+c
  * 
  *     def func_name(self):             # <<<<<<<<<<<<<<
- *         return f'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
+ *         return fr'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
  * 
  */
 
@@ -17998,7 +17998,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7pow_fit_6func_name(CYTHON_UNUSED PyObject
   /* "pyees/fit.py":521
  * 
  *     def func_name(self):
- *         return f'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'             # <<<<<<<<<<<<<<
+ *         return fr'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -18103,7 +18103,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7pow_fit_6func_name(CYTHON_UNUSED PyObject
  *         return a * x**b+c
  * 
  *     def func_name(self):             # <<<<<<<<<<<<<<
- *         return f'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
+ *         return fr'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
  * 
  */
 
@@ -19566,7 +19566,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
  *         for i in range(n + 1):
  *             exponent = n - i             # <<<<<<<<<<<<<<
  *             if i == 0:
- *                 out += f'{string.ascii_lowercase[i]}'
+ *                 out += fr'{string.ascii_lowercase[i]}'
  */
     __pyx_t_2 = PyNumber_Subtract(__pyx_v_n, __pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 587, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -19577,7 +19577,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
  *         for i in range(n + 1):
  *             exponent = n - i
  *             if i == 0:             # <<<<<<<<<<<<<<
- *                 out += f'{string.ascii_lowercase[i]}'
+ *                 out += fr'{string.ascii_lowercase[i]}'
  *             else:
  */
     __pyx_t_5 = (__Pyx_PyInt_BoolEqObjC(__pyx_v_i, __pyx_int_0, 0, 0)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 588, __pyx_L1_error)
@@ -19586,9 +19586,9 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
       /* "pyees/fit.py":589
  *             exponent = n - i
  *             if i == 0:
- *                 out += f'{string.ascii_lowercase[i]}'             # <<<<<<<<<<<<<<
+ *                 out += fr'{string.ascii_lowercase[i]}'             # <<<<<<<<<<<<<<
  *             else:
- *                 out += f'+{string.ascii_lowercase[i]}'
+ *                 out += fr'+{string.ascii_lowercase[i]}'
  */
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_string); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 589, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
@@ -19611,18 +19611,18 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
  *         for i in range(n + 1):
  *             exponent = n - i
  *             if i == 0:             # <<<<<<<<<<<<<<
- *                 out += f'{string.ascii_lowercase[i]}'
+ *                 out += fr'{string.ascii_lowercase[i]}'
  *             else:
  */
       goto __pyx_L5;
     }
 
     /* "pyees/fit.py":591
- *                 out += f'{string.ascii_lowercase[i]}'
+ *                 out += fr'{string.ascii_lowercase[i]}'
  *             else:
- *                 out += f'+{string.ascii_lowercase[i]}'             # <<<<<<<<<<<<<<
+ *                 out += fr'+{string.ascii_lowercase[i]}'             # <<<<<<<<<<<<<<
  *             if exponent != 0:
- *                 out += f'x'
+ *                 out += fr'x'
  */
     /*else*/ {
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_string); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 591, __pyx_L1_error)
@@ -19649,20 +19649,20 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
 
     /* "pyees/fit.py":592
  *             else:
- *                 out += f'+{string.ascii_lowercase[i]}'
+ *                 out += fr'+{string.ascii_lowercase[i]}'
  *             if exponent != 0:             # <<<<<<<<<<<<<<
- *                 out += f'x'
+ *                 out += fr'x'
  *             if exponent > 1:
  */
     __pyx_t_5 = (__Pyx_PyInt_BoolNeObjC(__pyx_v_exponent, __pyx_int_0, 0, 0)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 592, __pyx_L1_error)
     if (__pyx_t_5) {
 
       /* "pyees/fit.py":593
- *                 out += f'+{string.ascii_lowercase[i]}'
+ *                 out += fr'+{string.ascii_lowercase[i]}'
  *             if exponent != 0:
- *                 out += f'x'             # <<<<<<<<<<<<<<
+ *                 out += fr'x'             # <<<<<<<<<<<<<<
  *             if exponent > 1:
- *                     out += f'^{exponent}'
+ *                     out += fr'^{exponent}'
  */
       __pyx_t_6 = __Pyx_PyUnicode_ConcatInPlace(__pyx_v_out, __pyx_n_u_x); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 593, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
@@ -19671,18 +19671,18 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
 
       /* "pyees/fit.py":592
  *             else:
- *                 out += f'+{string.ascii_lowercase[i]}'
+ *                 out += fr'+{string.ascii_lowercase[i]}'
  *             if exponent != 0:             # <<<<<<<<<<<<<<
- *                 out += f'x'
+ *                 out += fr'x'
  *             if exponent > 1:
  */
     }
 
     /* "pyees/fit.py":594
  *             if exponent != 0:
- *                 out += f'x'
+ *                 out += fr'x'
  *             if exponent > 1:             # <<<<<<<<<<<<<<
- *                     out += f'^{exponent}'
+ *                     out += fr'^{exponent}'
  * 
  */
     __pyx_t_6 = PyObject_RichCompare(__pyx_v_exponent, __pyx_int_1, Py_GT); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 594, __pyx_L1_error)
@@ -19691,9 +19691,9 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
     if (__pyx_t_5) {
 
       /* "pyees/fit.py":595
- *                 out += f'x'
+ *                 out += fr'x'
  *             if exponent > 1:
- *                     out += f'^{exponent}'             # <<<<<<<<<<<<<<
+ *                     out += fr'^{exponent}'             # <<<<<<<<<<<<<<
  * 
  *         for i in range(n + 1):
  */
@@ -19710,9 +19710,9 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
 
       /* "pyees/fit.py":594
  *             if exponent != 0:
- *                 out += f'x'
+ *                 out += fr'x'
  *             if exponent > 1:             # <<<<<<<<<<<<<<
- *                     out += f'^{exponent}'
+ *                     out += fr'^{exponent}'
  * 
  */
     }
@@ -19728,10 +19728,10 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "pyees/fit.py":597
- *                     out += f'^{exponent}'
+ *                     out += fr'^{exponent}'
  * 
  *         for i in range(n + 1):             # <<<<<<<<<<<<<<
- *             out += f', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
+ *             out += fr', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
  *         out += '$'
  */
   __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_n, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 597, __pyx_L1_error)
@@ -19798,7 +19798,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
     /* "pyees/fit.py":598
  * 
  *         for i in range(n + 1):
- *             out += f', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'             # <<<<<<<<<<<<<<
+ *             out += fr', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'             # <<<<<<<<<<<<<<
  *         out += '$'
  *         return out
  */
@@ -19863,10 +19863,10 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
     __pyx_t_6 = 0;
 
     /* "pyees/fit.py":597
- *                     out += f'^{exponent}'
+ *                     out += fr'^{exponent}'
  * 
  *         for i in range(n + 1):             # <<<<<<<<<<<<<<
- *             out += f', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
+ *             out += fr', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
  *         out += '$'
  */
   }
@@ -19874,7 +19874,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
 
   /* "pyees/fit.py":599
  *         for i in range(n + 1):
- *             out += f', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
+ *             out += fr', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
  *         out += '$'             # <<<<<<<<<<<<<<
  *         return out
  * 
@@ -19885,7 +19885,7 @@ static PyObject *__pyx_pf_5pyees_3fit_7pol_fit_6func_name(CYTHON_UNUSED PyObject
   __pyx_t_1 = 0;
 
   /* "pyees/fit.py":600
- *             out += f', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
+ *             out += fr', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
  *         out += '$'
  *         return out             # <<<<<<<<<<<<<<
  * 
@@ -20870,7 +20870,7 @@ static PyObject *__pyx_pf_5pyees_3fit_12logistic_fit_6func_name(CYTHON_UNUSED Py
  *         k = self.coefficients[1].__str__(pretty=True)
  *         x0 = self.coefficients[2].__str__(pretty=True)             # <<<<<<<<<<<<<<
  * 
- *         out = f'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'
+ *         out = fr'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_coefficients); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 636, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -20893,19 +20893,19 @@ static PyObject *__pyx_pf_5pyees_3fit_12logistic_fit_6func_name(CYTHON_UNUSED Py
   /* "pyees/fit.py":638
  *         x0 = self.coefficients[2].__str__(pretty=True)
  * 
- *         out = f'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'             # <<<<<<<<<<<<<<
- *         out += f'\quad L={L}'
- *         out += f'\quad k={k}'
+ *         out = fr'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'             # <<<<<<<<<<<<<<
+ *         out += fr'\quad L={L}'
+ *         out += fr'\quad k={k}'
  */
   __Pyx_INCREF(__pyx_kp_u_frac_L_1_e_k_cdot_x_x_0);
   __pyx_v_out = __pyx_kp_u_frac_L_1_e_k_cdot_x_x_0;
 
   /* "pyees/fit.py":639
  * 
- *         out = f'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'
- *         out += f'\quad L={L}'             # <<<<<<<<<<<<<<
- *         out += f'\quad k={k}'
- *         out += f'\quad x_0={x0}$'
+ *         out = fr'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'
+ *         out += fr'\quad L={L}'             # <<<<<<<<<<<<<<
+ *         out += fr'\quad k={k}'
+ *         out += fr'\quad x_0={x0}$'
  */
   __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_L, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 639, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -20919,10 +20919,10 @@ static PyObject *__pyx_pf_5pyees_3fit_12logistic_fit_6func_name(CYTHON_UNUSED Py
   __pyx_t_3 = 0;
 
   /* "pyees/fit.py":640
- *         out = f'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'
- *         out += f'\quad L={L}'
- *         out += f'\quad k={k}'             # <<<<<<<<<<<<<<
- *         out += f'\quad x_0={x0}$'
+ *         out = fr'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'
+ *         out += fr'\quad L={L}'
+ *         out += fr'\quad k={k}'             # <<<<<<<<<<<<<<
+ *         out += fr'\quad x_0={x0}$'
  *         return out
  */
   __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_k, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 640, __pyx_L1_error)
@@ -20937,9 +20937,9 @@ static PyObject *__pyx_pf_5pyees_3fit_12logistic_fit_6func_name(CYTHON_UNUSED Py
   __pyx_t_3 = 0;
 
   /* "pyees/fit.py":641
- *         out += f'\quad L={L}'
- *         out += f'\quad k={k}'
- *         out += f'\quad x_0={x0}$'             # <<<<<<<<<<<<<<
+ *         out += fr'\quad L={L}'
+ *         out += fr'\quad k={k}'
+ *         out += fr'\quad x_0={x0}$'             # <<<<<<<<<<<<<<
  *         return out
  * 
  */
@@ -20972,8 +20972,8 @@ static PyObject *__pyx_pf_5pyees_3fit_12logistic_fit_6func_name(CYTHON_UNUSED Py
   __pyx_t_3 = 0;
 
   /* "pyees/fit.py":642
- *         out += f'\quad k={k}'
- *         out += f'\quad x_0={x0}$'
+ *         out += fr'\quad k={k}'
+ *         out += fr'\quad x_0={x0}$'
  *         return out             # <<<<<<<<<<<<<<
  * 
  * 
@@ -22898,7 +22898,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         return B
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return self.func_name() + f', $R^2 = {self.r_squared.value:.5f}$'
+ *         return self.func_name() + fr', $R^2 = {self.r_squared.value:.5f}$'
  * 
  */
   __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyees_fit_py, __pyx_n_s_str, 119, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 119, __pyx_L1_error)
@@ -23133,7 +23133,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *     def func_name(self):             # <<<<<<<<<<<<<<
  *         a,b,c = self.coefficients
- *         return f'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
+ *         return fr'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
  */
   __pyx_tuple__67 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_a, __pyx_n_s_b, __pyx_n_s_c); if (unlikely(!__pyx_tuple__67)) __PYX_ERR(0, 485, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__67);
@@ -23171,7 +23171,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         return a * x**b+c
  * 
  *     def func_name(self):             # <<<<<<<<<<<<<<
- *         return f'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
+ *         return fr'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
  * 
  */
   __pyx_codeobj__72 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyees_fit_py, __pyx_n_s_func_name, 520, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__72)) __PYX_ERR(0, 520, __pyx_L1_error)
@@ -23974,7 +23974,7 @@ if (!__Pyx_RefNanny) {
  *         return B
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return self.func_name() + f', $R^2 = {self.r_squared.value:.5f}$'
+ *         return self.func_name() + fr', $R^2 = {self.r_squared.value:.5f}$'
  * 
  */
   __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_3fit_4_fit_5__str__, 0, __pyx_n_s_fit___str, NULL, __pyx_n_s_pyees_fit, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
@@ -24341,7 +24341,7 @@ if (!__Pyx_RefNanny) {
  * 
  *     def func_name(self):             # <<<<<<<<<<<<<<
  *         a,b,c = self.coefficients
- *         return f'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
+ *         return fr'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
  */
   __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_3fit_7exp_fit_7func_name, 0, __pyx_n_s_exp_fit_func_name, NULL, __pyx_n_s_pyees_fit, __pyx_d, ((PyObject *)__pyx_codeobj__68)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 485, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -24452,7 +24452,7 @@ if (!__Pyx_RefNanny) {
  *         return a * x**b+c
  * 
  *     def func_name(self):             # <<<<<<<<<<<<<<
- *         return f'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
+ *         return fr'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
  * 
  */
   __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_3fit_7pow_fit_7func_name, 0, __pyx_n_s_pow_fit_func_name, NULL, __pyx_n_s_pyees_fit, __pyx_d, ((PyObject *)__pyx_codeobj__72)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 520, __pyx_L1_error)

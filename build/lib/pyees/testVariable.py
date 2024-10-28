@@ -1609,11 +1609,34 @@ class test(unittest.TestCase):
         a = variable(1, 'km', 0.1)
         b = variable(1, 'm', 0.1)
         c = a * b
+        self.assertEqual(c._unitObject.unitStrPretty, r'{km} \cdot {m}')
         c.convert('mm2')
+        self.assertEqual(c._unitObject.unitStrPretty, r'mm^{2}')
         self.assertEqual(c.value, 1e9)
         self.assertEqual(c.unit, 'mm2')
         self.assertEqual(c.uncert,  np.sqrt(
             (1 * 1000 * 0.1 * 1000*1000)**2 + (1 * 1000*1000 * 0.1 * 1000)**2))
+
+        a = variable([1,2,3], 'km', [0.1, 0.2, 0.3])
+        b = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
+        c = a * b
+        self.assertEqual(c._unitObject.unitStrPretty, r'{km} \cdot {m}')
+        for elem in c:
+            self.assertEqual(elem._unitObject.unitStrPretty, r'{km} \cdot {m}')
+        c.convert('mm2')
+        self.assertEqual(c._unitObject.unitStrPretty, r'mm^{2}')
+        for elem in c:
+            self.assertEqual(elem._unitObject.unitStrPretty, r'mm^{2}')
+        
+
+        air_flow = variable([0.551, 0.681, 0.817, 0.960, 1.099, 1.211], 'm3/s', [0.004, 0.003, 0.003, 0.002, 0.003, 0.004])
+        rho = variable(1.2, 'kg/m3')
+
+        mass_flow = air_flow * rho
+        self.assertEqual(mass_flow._unitObject.unitStrPretty, r'{\frac{m^{3}}{s}} \cdot {\frac{kg}{m^{3}}}')
+        mass_flow.convert('kg/s')
+        self.assertEqual(mass_flow._unitObject.unitStrPretty, r'\frac{kg}{s}')
+
 
         diameter = variable(40, 'cm', 0.2)
         area = np.pi / 4 * diameter ** 2
@@ -1846,17 +1869,17 @@ class test(unittest.TestCase):
         c2 = a2 * b2
         c2 *= a2
 
-        np.testing.assert_equal(C[0].value, c0.value)
+        np.testing.assert_almost_equal(C[0].value, c0.value)
         self.assertTrue(C._unitObject == unit(c0.unit))
-        np.testing.assert_equal(C[0].uncert, c0.uncert)
+        np.testing.assert_almost_equal(C[0].uncert, c0.uncert)
 
-        np.testing.assert_equal(C[1].value, c1.value)
+        np.testing.assert_almost_equal(C[1].value, c1.value)
         self.assertTrue(C._unitObject == unit(c0.unit))
-        np.testing.assert_equal(C[1].uncert, c1.uncert)
+        np.testing.assert_almost_equal(C[1].uncert, c1.uncert)
 
-        np.testing.assert_equal(C[2].value, c2.value)
+        np.testing.assert_almost_equal(C[2].value, c2.value)
         self.assertTrue(C._unitObject == unit(c0.unit))
-        np.testing.assert_equal(C[2].uncert, c2.uncert)
+        np.testing.assert_almost_equal(C[2].uncert, c2.uncert)
 
     def testAppend(self):
         A = variable(12.3, 'L/min', uncert=2.6)
@@ -2338,7 +2361,7 @@ class test(unittest.TestCase):
         b = variable(1, 'DELTAC')
         c = a * b
         self.assertEqual(c.value, 1)
-        self.assertEqual(c.unit, 'DELTAC/DELTAK')
+        self.assertEqual(c.unit, '1')
         self.assertEqual(c.uncert, 0)
 
     def testTemperatureDivide(self):

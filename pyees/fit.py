@@ -117,7 +117,7 @@ class _fit():
         return B
         
     def __str__(self):
-        return self.func_name() + f', $R^2 = {self.r_squared.value:.5f}$'
+        return self.func_name() + fr', $R^2 = {self.r_squared.value:.5f}$'
 
 
     @staticmethod
@@ -484,7 +484,7 @@ class exp_fit(_fit):
 
     def func_name(self):
         a,b,c = self.coefficients
-        return f'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
+        return fr'$a\cdot b^(b\cdot x)+d,\quad a={a.__str__(pretty = True)}, \quad b={b.__str__(pretty = True)}, \quad c={c.__str__(pretty = True)}$'
 
 
 class pow_fit(_fit):
@@ -518,7 +518,7 @@ class pow_fit(_fit):
         return a * x**b+c
 
     def func_name(self):
-        return f'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
+        return fr'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
 
 
 def lin_fit(x : variable, y: variable, p0 : List[float] = None, useParameters : List[bool] | None = None):
@@ -586,16 +586,16 @@ class pol_fit(_fit):
         for i in range(n + 1):
             exponent = n - i
             if i == 0:
-                out += f'{string.ascii_lowercase[i]}'
+                out += fr'{string.ascii_lowercase[i]}'
             else:
-                out += f'+{string.ascii_lowercase[i]}'
+                out += fr'+{string.ascii_lowercase[i]}'
             if exponent != 0:
-                out += f'x'
+                out += fr'x'
             if exponent > 1:
-                    out += f'^{exponent}'
+                    out += fr'^{exponent}'
        
         for i in range(n + 1):
-            out += f', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
+            out += fr', {string.ascii_lowercase[i]}={self.coefficients[i].__str__(pretty = True)}'
         out += '$'
         return out
 
@@ -635,10 +635,10 @@ class logistic_fit(_fit):
         k = self.coefficients[1].__str__(pretty=True)
         x0 = self.coefficients[2].__str__(pretty=True)
 
-        out = f'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'
-        out += f'\quad L={L}'
-        out += f'\quad k={k}'
-        out += f'\quad x_0={x0}$'
+        out = fr'$\\frac{{L}}{{1 + e^{{-k\cdot (x-x_0)}}}}'
+        out += fr'\quad L={L}'
+        out += fr'\quad k={k}'
+        out += fr'\quad x_0={x0}$'
         return out
 
 
