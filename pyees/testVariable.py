@@ -1609,11 +1609,25 @@ class test(unittest.TestCase):
         a = variable(1, 'km', 0.1)
         b = variable(1, 'm', 0.1)
         c = a * b
+        self.assertEqual(c._unitObject.unitStrPretty, r'{km} \cdot {m}')
         c.convert('mm2')
+        self.assertEqual(c._unitObject.unitStrPretty, r'mm^{2}')
         self.assertEqual(c.value, 1e9)
         self.assertEqual(c.unit, 'mm2')
         self.assertEqual(c.uncert,  np.sqrt(
             (1 * 1000 * 0.1 * 1000*1000)**2 + (1 * 1000*1000 * 0.1 * 1000)**2))
+
+        a = variable([1,2,3], 'km', [0.1, 0.2, 0.3])
+        b = variable([1,2,3], 'm', [0.1, 0.2, 0.3])
+        c = a * b
+        self.assertEqual(c._unitObject.unitStrPretty, r'{km} \cdot {m}')
+        for elem in c:
+            self.assertEqual(elem._unitObject.unitStrPretty, r'{km} \cdot {m}')
+        c.convert('mm2')
+        self.assertEqual(c._unitObject.unitStrPretty, r'mm^{2}')
+        for elem in c:
+            self.assertEqual(elem._unitObject.unitStrPretty, r'mm^{2}')
+        
 
         diameter = variable(40, 'cm', 0.2)
         area = np.pi / 4 * diameter ** 2

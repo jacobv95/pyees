@@ -318,6 +318,18 @@ class test(unittest.TestCase):
         dat = dat[0:3]
         self.assertEqual(len(dat), 3)
 
+    def testConvert(self):
+        dat1 = sheetsFromFile('testData/data1.xlsx', 'A-B')
+        np.testing.assert_array_equal(dat1.A.value, [1, 2, 3, 4, 5])
+        self.assertEqual(str(dat1.A.unit), 'L/min')
+        np.testing.assert_array_equal(dat1.A.uncert, [0, 0, 0, 0, 0])
+        np.testing.assert_array_equal(dat1.B.value, [5, 6, 7, 8, 9])
+        self.assertEqual(str(dat1.B.unit), 'mA')
+        np.testing.assert_array_equal(dat1.B.uncert, [0, 0, 0, 0, 0])
+
+        self.assertEqual(dat1.A._unitObject.unitStrPretty, r'\frac{L}{min}')
+        dat1.A.convert('m3/s')
+        self.assertEqual(dat1.A._unitObject.unitStrPretty, r'\frac{m^{3}}{s}')
         
         
         
