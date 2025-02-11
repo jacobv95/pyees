@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import matplotlib.pyplot as plt
 
-from fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit, crateNewFitClass
+from fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit, crateNewFitClass, multi_variable_lin_fit
 
 showPlots = False
 
@@ -23,7 +23,7 @@ class gaussian(_fit):
 
     def func_name(self):
         mu,sigma,y_mu = self.coefficients
-        return f'$y_mu \cdot exp(-(x-mu)^2/(2 sigma ^ 2)),\quad mu={mu.__str__(pretty = True)}, \quad sigma={sigma.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
+        return fr'$y_mu \cdot exp(-(x-mu)^2/(2 sigma ^ 2)),\quad mu={mu.__str__(pretty = True)}, \quad sigma={sigma.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
 
 class absolute_power(_fit):
     def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = [True, True, True]):
@@ -39,7 +39,7 @@ class absolute_power(_fit):
 
     def func_name(self):
         mu,nu,y_mu = self.coefficients
-        return f'$ y_mu*abs(x-mu)^*u,\quad mu={mu.__str__(pretty = True)}, \quad nu={nu.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
+        return fr'$ y_mu*abs(x-mu)^*u,\quad mu={mu.__str__(pretty = True)}, \quad nu={nu.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
 
 
 class test(unittest.TestCase):
@@ -214,8 +214,65 @@ class test(unittest.TestCase):
             f = exp_fit(x,y, p0 = [1,1,1,1])
         self.assertTrue('The variable "x" cannot have a unit' in str(context.exception))
        
+    def testPolFitUnits(self):
+        a = 2
+        c = 15
+        n = 100
+        x = np.linspace(0, 100, n)
+        y = a * x**2 + c
+
+        x = variable(x, 'm')
+        y = variable(y, 'C')
+
+        F = pol_fit(x, y, useParameters=[True, False, True])
+
+        F.predict(x)
+
+    def testMultiVariableFit(self):
+        from prop import prop
+
+        ## determine the inputs for the regression
+        temperature = variable([-20, -10, 0, 10, 20, 30, 40, 50, 60], 'C')
+        temperature.convert('K')
+        pressures = variable(np.array([0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3]) * 101325, 'Pa')
+        humidity = variable([10, 20, 30, 40, 50, 60, 70, 80, 90], '%')
         
-    
+
+        ## determine the density for each combination of inputs
+        ## and store the maxtrix of inputs and outputs
+        T, P, RH, D = variable([], 'K'),variable([], 'Pa'),variable([], '%'),variable([], 'kg/m3')
+        for t in temperature:
+            for p in pressures:
+                for h in humidity:
+                    
+                    d = prop('density', 'air', T = t, P = p, rh = h)
+                    
+                    ## store the values in lists
+                    T.append(t)
+                    P.append(p)
+                    RH.append(h)
+                    D.append(d)
+
+
+
+        f = multi_variable_lin_fit( [1 / T, P, RH, T * P, T * RH], D)
+
+
+        res = [
+            variable(20.20928106, 'kg-DELTAK/m3', 7e-08),
+            variable(0.000023512096813, 'kg/m3-Pa', 2e-15),
+            variable(0.002157800109, 'kg/m3-%', 2e-12),
+            variable(-0.000000039310176563, 'kg/m3-Pa-DELTAK', 7e-18),
+            variable(-0.000008111835383, 'kg/m3-%-DELTAK', 6e-15),
+            variable(-0.0700479212, 'kg/m3', 2e-10),
+        ]
+
+
+        for i in range(len(res)):
+            self.assertAlmostEqual(res[i].value, f.coefficients[i].value)
+            self.assertEqual(res[i].unit, f.coefficients[i].unit)
+            self.assertAlmostEqual(res[i].uncert, f.coefficients[i].uncert)
+            
 
     def testPowFit(self):    
         x = variable([20, 30, 40, 50, 60, 70, 80, 90, 100])

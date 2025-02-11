@@ -16,6 +16,7 @@ except ImportError:
 class _fit():
     def __init__(self, func, x, y, p0 = None, useParameters = None) -> None:
 
+        self._hasRun = False
         if p0 is None:
             p0 = [0] * self._nParameters
         if len(p0) != self._nParameters:
@@ -109,11 +110,15 @@ class _fit():
                 ( (self.yUncert*delta)**2 + (self.xUncert*epsilon)**2 ) ) )
         sigma_odr = np.sqrt(dx_star**2 + dy_star**2)
         self._residualY = variable(residuals, self.yUnit, sigma_odr) 
+        self._hasRun = True
         
     def getOnlyUsedTerms(self, B):
         for i in range(len(B)):
             if not self.useParameters[i]:
-                B[i] = self.p0[i]
+                if self._hasRun:
+                    B[i] = variable(self.p0[i], self.getVariableUnits()[i])
+                else:
+                    B[i] = self.p0[i]
         return B
         
     def __str__(self):
@@ -197,7 +202,6 @@ class _fit():
                 )
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
-
 
     def scatterResiduals(self, ax, **kwargs):
         
@@ -355,7 +359,6 @@ class _fit():
         
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
-          
 
     def addUnitToYLabel(self, ax, **kwargs):
         if isinstance(ax, axes.Axes):
@@ -667,18 +670,412 @@ def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
     return newFit
 
 
+class multi_variable_lin_fit(_fit):
+    def __init__(self, x : List[variable], y: variable, p0 : List[float] = None, useParameters : List[bool] | None = None):
+        
+        self._nParameters = len(x) + 1
 
+        self._hasRun = False
+        if p0 is None:
+            p0 = [0] * self._nParameters
+        if len(p0) != self._nParameters:
+            raise ValueError(f'The input "p0" has to be None or have a length of {self._nParameters}')
+
+        if useParameters is None:
+            useParameters = [True] * self._nParameters   
+        if len(useParameters) != self._nParameters:
+            raise ValueError(f'The input "useParameters" has to have a length of {self._nParameters}')
+        
+        self.p0 = p0
+        self.useParameters = useParameters
+
+        if not isinstance(x, List):
+            raise ValueError('The argument "x" has to be List of variables')
+
+        for elem in x:
+            if not isinstance(elem, arrayVariable):
+                raise ValueError('The argument "x" has to be a list of variables')
+
+        if not isinstance(y, arrayVariable):
+            raise ValueError('The argument "y" has to be variables')
+
+
+        self.yVal = y.value
+        self.yUnit = y._unitObject
+        self.yUncert = y.uncert
+        self.xVal = [elem.value for elem in x]
+        self.xUnit = [elem._unitObject for elem in x]
+        self.xUncert = [elem.uncert for elem in x]
+        
+        
+
+
+        indexesNotToUse = []
+        for i in range(len(self.yVal)):
+            if np.isnan(self.yVal[i]):
+                indexesNotToUse.apd(i)
+                continue
+            if np.isnan(self.yUncert[i]):
+                indexesNotToUse.append(i)
+                continue
+
+            for xValue, xUncert in zip(self.xVal, self.xUncert):
+
+                if np.isnan(xValue[i]):
+                    indexesNotToUse.append(i)
+                    continue
+                if np.isnan(xUncert[i]):
+                    indexesNotToUse.append(i)
+                    continue
+         
+        
+        if indexesNotToUse:
+            indexesToUse = [i for i in range(len(self.yVal)) if not i in indexesNotToUse]
+            self.yVal = self.yVal[indexesToUse]
+            self.yUncert = self.yUncert[indexesToUse]
+            for i in range(len(self.xVal)):
+                self.xVal[i] = self.xVal[i][indexesToUse]
+                self.xUncert[i] = self.xUncert[i][indexesToUse]
+
+        
+
+        # uncertanties can not be 0
+        self._sx = []
+        for elem in self.xUncert:
+            self._sx.append([e if e != 0 else 1e-10 for e in elem])
+        self._sy = [elem if elem != 0 else 1e-10 for elem in self.yUncert]
+
+        # create the regression
+        np.seterr('ignore')
+        data = odr.RealData(self.xVal, self.yVal, sx = self._sx, sy=self._sy)
+        regression = odr.ODR(data, odr.Model(self._ffunc), beta0=self.p0)
+        regression = regression.run()   
+            
+
+        ## create a list of coefficients
+        self.coefficients = []
     
+        units = self.getVariableUnits()
+        for i in range(len(regression.beta)):
+            var = variable(regression.beta[i], units[i], np.sqrt(regression.cov_beta[i,i]))
+            self.coefficients.append(var)
+        
+        ## add the covariance between the coefficients
+        for i in range(len(self.coefficients)):
+            for j in range(len(self.coefficients)):
+                if i == j:
+                    continue
+                self.coefficients[i].addCovariance(
+                    var = self.coefficients[j],
+                    covariance = regression.cov_beta[i,j],
+                    unitStr = str(self.coefficients[i]._unitObject * self.coefficients[j]._unitObject)
+                )
+
+        # determine r-squared
+        delta, epsilon = regression.delta, regression.eps
+        out = np.zeros(epsilon.shape)
+        for i in range(len(delta)):
+            out[i] = np.sqrt(sum([delta[i,j]**2]))
+        delta = out
+        residuals = ( np.sign(self.yVal-self._func(regression.beta, self.xVal)) * np.sqrt(delta**2 + epsilon**2) )
+        
+        ss_res = sum(residuals**2)
+        ss_tot = sum((self.yVal - np.mean(self.yVal))**2)
+        if ss_tot != 0:
+            self.r_squared = variable(1 - (ss_res / ss_tot))
+        else:
+            self.r_squared = variable(1)
+        
+        
+        
+        out = []
+        for i in range(len(self.yVal)):
+            o = 0
+            for j in range(len(self.xUncert)):
+                o += self.xUncert[j][i]**2
+            out.append(np.sqrt(o))
+        xUncert = out
+        
+        dx_star = ( xUncert*np.sqrt( ((self.yUncert*delta)**2) /
+                ( (self.yUncert*delta)**2 + (xUncert*epsilon)**2 ) ) )
+        dy_star = ( self.yUncert*np.sqrt( ((xUncert*epsilon)**2) /
+                ( (self.yUncert*delta)**2 + (xUncert*epsilon)**2 ) ) )
+        sigma_odr = np.sqrt(dx_star**2 + dy_star**2)
+        self._residualY = variable(residuals, self.yUnit, sigma_odr) 
+        self._hasRun = True
+
+    def predict(self, x):
+        return self._func(self.coefficients, x)
+
+    def getVariableUnits(self):
+        out = []
+        for i in range(len(self.xUnit)):
+            out.append(self.yUnit / self.xUnit[i])
+        out.append(self.yUnit)
+        return out
     
-if __name__ == "__main__":
-    a = 2
-    b = 10
-    n = 100
-    x = np.linspace(0, 100, n)
-    y = a * x + b
+    def _ffunc(self, B, X):
+                
+        B = self.getOnlyUsedTerms(B)
+        out = 0
+        for i in range(len(B)-1):
+            ## I DO NOT KNOWN WHY I HAVE TO USE XVAL INSTEAD OF X
+            ## BUT THIS WORKS
+            out += B[i] * self.xVal[i]
+        out += B[-1]
 
-    x = variable(x, 'm')
-    y = variable(y, 'C')
+        return out
+    
+    def _func(self, B, x):
+                
+        B = self.getOnlyUsedTerms(B)
+        out = 0
+        for i in range(len(B)-1):
+            out += B[i] * x[i]
+        out += B[-1]
 
-    F = lin_fit(x, y)
+        return out
+
+    def func_name(self):
+        B = [elem.__str__(pretty=True) for elem in self.coefficients]
+        
+        out = ""
+        for i in range(len(B)-1):
+            if out:
+                out += " + "
+            out += fr"a_{i+1}\cdot x_{i+1}"
+        if out:
+            out += " + "
+        out += fr"a_{len(B)}"
+
+        for i in range(len(B)):
+            out += fr"\quad a_{i+1}={B[i]}"
+
+        return out
+
+    def scatter(self, ax, index, showUncert=True, **kwargs):
+
+        if all(self.xUncert[index] == 0) and all(self.yUncert == 0):
+            showUncert = False
+
+
+        if isinstance(ax, axes.Axes):
+            # scatter
+            if showUncert:
+                return ax.errorbar(self.xVal[index], self.yVal, xerr=self.xUncert, yerr=self.yUncert, linestyle='', **kwargs)
+            else:
+                return ax.scatter(self.xVal[index], self.yVal, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            
+            if showUncert:
+                ax.add_trace(
+                    go.Scatter(
+                        x = self.xVal[index],
+                        y = self.yVal,
+                        error_x = dict(array = self.xUncert),
+                        error_y = dict(array = self.yUncert),
+                        mode = 'markers',
+                        **kwargs),
+                    **addTraceKwargs
+                    )
+            else:
+                ax.add_trace(
+                    go.Scatter(x = self.xVal[index], y = self.yVal, mode = 'markers', **kwargs),
+                    **addTraceKwargs
+                    )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+        
+    def scatterNormalizedResiduals(self, ax, index, **kwargs):
+
+        np.seterr('ignore')
+        scale = variable(np.array([1 / ((elemX**2 + elemY**2)**(1/2)) for elemX, elemY in zip(self._sx[index], self._sy)]))
+        normRes = scale * self._residualY
+        np.seterr('warn')
+        
+        if isinstance(ax, axes.Axes):
+            if not 'label' in kwargs:
+                kwargs['label'] = 'Normalized residuals'
+            return ax.errorbar(self.xVal[index], normRes.value, xerr=self.xUncert[index], yerr=normRes.uncert, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            if not 'name' in kwargs:
+                kwargs['name'] = 'Normalized residuals'
+            ax.add_trace(
+                go.Scatter(
+                    x = self.xVal[index],
+                    y = normRes.value,
+                    error_x = dict(array = self.xUncert[index]),
+                    error_y = dict(array = normRes.uncert),
+                    mode = 'markers',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+
+    def scatterResiduals(self, ax, index, **kwargs):
+        
+        if isinstance(ax, axes.Axes):
+            if not 'label' in kwargs:
+                kwargs['label'] = 'Residuals'
+            return ax.errorbar(self.xVal[index], self._residualY.value, xerr=self.xUncert[index], yerr=self._residualY.uncert, linestyle='', **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            if not 'name' in kwargs:
+                kwargs['name'] = 'Residuals'
+            ax.add_trace(
+                go.Scatter(
+                    x = self.xVal[index],
+                    y = self._residualY.value,
+                    error_x = dict(array = self.xUncert[index]),
+                    error_y = dict(array = self._residualY.uncert),
+                    mode = 'markers',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+
+    def plotData(self, ax, index, **kwargs):
+        if isinstance(ax, axes.Axes):
+            if not 'label' in kwargs:
+                kwargs['label'] = 'Data'
+            return ax.plot(self.xVal[index], self.yVal, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            if not 'name' in kwargs:
+                kwargs['name'] = 'Data'
+            ax.add_trace(
+                go.Scatter(
+                    x = self.xVal[index],
+                    y = self.yVal,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+
+    def plotUncertanty(self, ax, index, x = None, **kwargs):
+        if x is None:
+            x = []
+            for i in range(len(self.xVal)):
+                if i != index:
+                    x.append(variable([np.mean(self.xVal[i])] * 100, self.xUnit[i]))
+                else:
+                    x.append(variable(np.linspace(np.min(self.xVal[i]), np.max(self.xVal[i]), 100), self.xUnit[i]))
+        else:
+            if not isinstance(x, List):
+                raise ValueError('The argument "x" has to be List of variables')
+
+            for elem in x:
+                if not isinstance(elem, arrayVariable):
+                    raise ValueError('The argument "x" has to be a list of variables')
+              
+        y = self.predict(x)
+        y = list(y.value + y.uncert) + [np.nan] + list(y.value - y.uncert)
+        x = list(x[index].value) + [np.nan] + list(x[index].value)
+        
+        if isinstance(ax, axes.Axes):
+            return ax.plot(x, y, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+                                            
+            
+            ax.add_trace(
+                go.Scatter(
+                    x = x,
+                    y = y,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+
+    def plot(self, ax, index, x=None, **kwargs):
+        if x is None:
+            x = []
+            for i in range(len(self.xVal)):
+                if i != index:
+                    x.append(variable([np.mean(self.xVal[i])] * 100, self.xUnit[i]))
+                else:
+                    x.append(variable(np.linspace(np.min(self.xVal[i]), np.max(self.xVal[i]), 100), self.xUnit[i]))
+        else:
+            if not isinstance(x, List):
+                raise ValueError('The argument "x" has to be List of variables')
+
+            for elem in x:
+                if not isinstance(elem, arrayVariable):
+                    raise ValueError('The argument "x" has to be a list of variables')
+            
+        y = self.predict(x).value
+        x = x[index].value
+        
+        if isinstance(ax, axes.Axes):
+            if not 'label' in kwargs:
+                kwargs['label'] = self.__str__()
+            return ax.plot(x, y, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            
+            if not 'name' in kwargs:
+                kwargs['name'] = self.__str__()
+                                
+            ax.add_trace(
+                go.Scatter(
+                    x = x,
+                    y = y,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+                    
+    def addUnitToLabels(self, ax, index, **kwargs):
+        self.addUnitToXLabel(ax, index, **kwargs)
+        self.addUnitToYLabel(ax, **kwargs)
+
+    def addUnitToXLabel(self, ax, index, **kwargs):
+
+        if isinstance(ax, axes.Axes):
+            xLabel = ax.get_xlabel()
+            if xLabel:
+                xLabel += ' '
+            xLabel += rf'$\left[{self.xUnit[index].__str__(pretty=True)}\right]$'
+            ax.set_xlabel(xLabel)
+        elif isinstance(ax, go.Figure):
+            
+            if ax._has_subplots():
+                
+                _, kwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+                
+                subplot = ax.get_subplot(kwargs['row'], kwargs['col'])
+                xLabel = subplot.xaxis.title.text
+                if xLabel is None:
+                    xLabel = rf'$\left[{self.xUnit[index].__str__(pretty=True)}\right]$'
+                else:
+                    xLabel = rf'$\text{{{xLabel}}} \left[{self.xUnit[index].__str__(pretty=True)}\right]$'
+                subplot.xaxis.title = xLabel      
+                
+            else:
+                xLabel = ax.layout.xaxis.title.text
+                if xLabel is None:
+                    xLabel = rf'$\left[{self.xUnit[index].__str__(pretty=True)}\right]$'
+                else:
+                    xLabel = rf'$\text{{{xLabel}}} \left[{self.xUnit[index].__str__(pretty=True)}\right]$'
+                ax.update_xaxes(title = xLabel)            
+        
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+
     
