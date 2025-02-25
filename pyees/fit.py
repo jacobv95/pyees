@@ -727,14 +727,27 @@ class _fit():
 
         xCoordinates = xCoordinates1 + xCoordinates4 + xCoordinates2 + xCoordinates3
         yCoordinates = yCoordinates1 + yCoordinates4 + yCoordinates2 + yCoordinates3
-
-        xy = []
-        for i in range(len(xCoordinates)):
-            xy.append([xCoordinates[i], yCoordinates[i]])
         
-        return ax.add_patch(patches.Polygon(xy, **kwargs))
+        if isinstance(ax, axes.Axes):
+            xy = []
+            for i in range(len(xCoordinates)):
+                xy.append([xCoordinates[i], yCoordinates[i]])
+        
+            return ax.add_patch(patches.Polygon(xy, **kwargs))
+        
+        if isinstance(ax, go.Figure):
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            ax.add_trace(go.Scatter(
+                x = xCoordinates,
+                y = yCoordinates,
+                fill = "toself",
+                **kwargs),
+                **addTraceKwargs
+            )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
-    def scatterUncertatyAsEllipses(self, ax, **kwargs):
+    def scatterUncertatyAsEllipses(self, ax, n = 100, **kwargs):
             
         class Ellipse:
             def __init__(self, x, y, w, h):
@@ -761,18 +774,38 @@ class _fit():
                 )
             )
 
-        out = []
-        for ellipse in ellipses:
-            theta = np.linspace(0, 2 * np.pi, 100)
+        if isinstance(ax, axes.Axes):
+            out = []
+            for ellipse in ellipses:
+                theta = np.linspace(0, 2 * np.pi, n)
 
-            # Parametric equations for an ellipse
-            ellipse_x = ellipse.x + (ellipse.w / 2) * np.cos(theta)
-            ellipse_y = ellipse.y + (ellipse.h / 2) * np.sin(theta)
+                # Parametric equations for an ellipse
+                ellipse_x = ellipse.x + (ellipse.w / 2) * np.cos(theta)
+                ellipse_y = ellipse.y + (ellipse.h / 2) * np.sin(theta)
+                
+                out.append(ax.plot(ellipse_x, ellipse_y, **kwargs))
+            return out
+        if isinstance(ax, go.Figure):
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            for ellipse in ellipses:
+                theta = np.linspace(0, 2 * np.pi, n)
 
-            out.append(ax.plot(ellipse_x, ellipse_y, **kwargs))
+                # Parametric equations for an ellipse
+                ellipse_x = ellipse.x + (ellipse.w / 2) * np.cos(theta)
+                ellipse_y = ellipse.y + (ellipse.h / 2) * np.sin(theta)
+            
+                ax.add_trace(
+                    go.Scatter(
+                        x = ellipse_x,
+                        y = ellipse_y,
+                        mode = 'lines',
+                        **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
-        return out
-         
+
     def func(self, x):
         return self._func(self.coefficients, x)
 

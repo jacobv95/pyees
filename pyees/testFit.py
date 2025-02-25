@@ -506,6 +506,8 @@ class test(unittest.TestCase):
         f.plotUncertanty(ax)
         f.scatterResiduals(ax)
         f.scatterNormalizedResiduals(ax)
+        f.plotUncertantyOfInputs(ax)
+        f.scatterUncertatyAsEllipses(ax)
         ax.set_xlabel('Time')
         ax.set_ylabel('Volume')
         f.addUnitToLabels(ax)
@@ -521,6 +523,8 @@ class test(unittest.TestCase):
         f.plotUncertanty(fig)
         f.scatterResiduals(fig)
         f.scatterNormalizedResiduals(fig)
+        f.plotUncertantyOfInputs(fig)
+        f.scatterUncertatyAsEllipses(fig)
         fig.update_yaxes(title = 'Volume')
         fig.update_xaxes(title = "Time")
         f.addUnitToLabels(fig)
@@ -536,6 +540,8 @@ class test(unittest.TestCase):
         f.plotUncertanty(fig, row = 2, col = 1)
         f.scatterResiduals(fig, row = 1, col = 1)
         f.scatterNormalizedResiduals(fig, row = 1, col = 1)
+        f.plotUncertantyOfInputs(fig, row = 2, col = 1)
+        f.scatterUncertatyAsEllipses(fig, row = 2, col = 1)
         fig.get_subplot(col = 1, row = 2).xaxis.title = "Time"
         fig.get_subplot(col = 1, row = 2).yaxis.title = "Volume"
         f.addUnitToLabels(fig, col = 1, row = 2)
