@@ -1,8 +1,11 @@
 import numpy as np
 import scipy.odr as odr
+from scipy.optimize import fsolve
 import string
 import warnings
 import matplotlib.axes as axes
+import matplotlib.patches as patches
+from matplotlib.patches import Ellipse
 import plotly.graph_objects as go
 from typing import List
 try:
@@ -391,9 +394,385 @@ class _fit():
         
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
-          
-        
 
+    def plotUncertantyOfInputs(self, ax, n = 100, **kwargs):
+            
+        class Ellipse:
+            def __init__(self, x, y, w, h):
+                self.x = x
+                self.y = y
+                self.w = w
+                self.h = h
+
+                self.lineIn1 = None
+                self.lineOut1 = None
+                self.lineIn2 = None
+                self.lineOut2 = None
+
+        indexes = np.argsort(self.xVal)
+        
+        ellipses = []
+        for i in indexes:
+            ellipses.append(
+                Ellipse(
+                    self.xVal[i],
+                    self.yVal[i],
+                    2*self.xUncert[i],
+                    2*self.yUncert[i]
+                )
+            )
+
+
+        # Tangency conditions (discriminant zero)
+        def tangency_conditions(vars):
+            m, b = vars
+            # Quadratic coefficients for intersection with ellipses
+            def quad_coeffs(ellipse):
+                A = (m**2 / ((ellipse.h/2)**2)) + (1 / ((ellipse.w/2)**2))
+                B = (2*m*(b - ellipse.y) / ((ellipse.h/2)**2)) - (2*ellipse.x / ((ellipse.w/2)**2))
+                C = ((b - ellipse.y)**2 / ((ellipse.h/2)**2)) + (ellipse.x**2 / ((ellipse.w/2)**2)) - 1
+                return A, B, C
+
+            A0, B0, C0 = quad_coeffs(ellipseA)
+            A1, B1, C1 = quad_coeffs(ellipseB)
+
+            # Tangency means discriminant is zero
+            eq1 = B0**2 - 4*A0*C0
+            eq2 = B1**2 - 4*A1*C1
+
+            return [eq1, eq2]
+
+
+        def find_tangent_intersection(m, b, x0, y0, w, h):
+            
+            def equations(x):
+                y = m * x + b
+                return ((x - x0)**2 / w**2) + ((y - y0)**2 / h**2) - 1
+            warnings.filterwarnings("ignore")
+            x = fsolve(equations, x0)[0]
+            warnings.filterwarnings("default")
+            
+            return [[x, m * x + b]]
+            
+
+        def getPointsOnEllipseFurthestFromLine(ellipse, theta):
+            x1 = ellipse.x + (ellipse.w / 2) * np.cos(theta + np.pi/2)
+            y1 = ellipse.y + (ellipse.h / 2) * np.sin(theta + np.pi/2)
+            
+            x2 = ellipse.x + (ellipse.w / 2) * np.cos(theta - np.pi/2)
+            y2 = ellipse.y + (ellipse.h / 2) * np.sin(theta - np.pi/2)
+
+            return (x1, y1), (x2, y2)    
+
+
+
+        def ccw(A,B,C):
+            return (C[1]-A[1]) * (B[0]-A[0]) > (B[1]-A[1]) * (C[0]-A[0])
+
+        # Return true if line segments AB and CD intersect
+        def intersect(A,B,C,D):
+            return ccw(A,C,D) != ccw(B,C,D) and ccw(A,B,C) != ccw(A,B,D)
+
+        def line_intersection(line1, line2):
+            xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
+            ydiff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])
+
+            def det(a, b):
+                return a[0] * b[1] - a[1] * b[0]
+
+            div = det(xdiff, ydiff)
+            if div == 0:
+                return None, None
+
+            d = (det(*line1), det(*line2))
+            x = det(d, xdiff) / div
+            y = det(d, ydiff) / div
+            return x, y
+
+
+        xCoordinates1 = []
+        yCoordinates1 = []
+
+        for i in range(len(ellipses)-1):
+            ellipseA = ellipses[i]
+            ellipseB = ellipses[i+1]
+
+            ## find the 2 points on each ellipse, where the points are perpendicular to the line between the centers of the two ellipses
+            theta = np.atan2((ellipseB.y - ellipseA.y), (ellipseB.x - ellipseA.x))
+            (x00, y00), (x01, y01) = getPointsOnEllipseFurthestFromLine(ellipseA, theta)
+            (x10, y10), (x11, y11) = getPointsOnEllipseFurthestFromLine(ellipseB, theta)
+            
+            ## create all 2 lines between the 2 points
+            lines = [
+                [[x00,y00], [x10,y10]],
+                [[x00,y00], [x11,y11]]
+            ]
+
+
+            # create a line from the center of ellipseA to ellipseB. Keep the line, that do not cross this line
+            testLine = [[ellipseA.x, ellipseA.y], [ellipseB.x, ellipseB.y]]
+            bools = [not intersect(line[0], line[1], testLine[0], testLine[1]) for line in lines]    
+            index = np.where(bools)[0][0]
+            line = lines[index]
+
+            ## move the two lines such that they are tangent to the two ellipses        
+            m = (line[1][1] - line[0][1]) / (line[1][0] - line[0][0])
+            b = line[1][1] - m * line[1][0]
+            
+            m, b = fsolve(tangency_conditions, [m,b])
+            line[0] = find_tangent_intersection(m,b, ellipseA.x, ellipseA.y, ellipseA.w/2, ellipseA.h/2)[0]
+            line[1] = find_tangent_intersection(m,b, ellipseB.x, ellipseB.y, ellipseB.w/2, ellipseB.h/2)[0]
+
+            ellipseA.lineOut1 = line
+            ellipseB.lineIn1 = line
+
+
+        for ellipse in ellipses:
+
+            if ellipse.lineIn1 is None or ellipse.lineOut1 is None: continue
+
+            intersects = intersect(ellipse.lineIn1[0], ellipse.lineIn1[1], ellipse.lineOut1[0], ellipse.lineOut1[1])
+            
+            if not intersects: continue
+
+            intersection = line_intersection(ellipse.lineIn1, ellipse.lineOut1)
+
+            ellipse.lineIn1[1] = intersection
+            ellipse.lineOut1[0] = intersection
+
+
+        def getCoordinatesOfEllipseBetweenTangencyPoints(x, y, w, h, lineIn, lineOut):
+            tangencyPointA = lineIn[1]
+            tangencyPointB = lineOut[0]
+
+            if tangencyPointA == tangencyPointB: return [], []
+            
+
+            theta = np.linspace(0, 2 * np.pi, n)
+
+            # Parametric equations for an ellipse
+            ellipse_x = x + (w / 2) * np.cos(theta)
+            ellipse_y = y + (h / 2) * np.sin(theta)
+            
+            diff = [np.sqrt((x - tangencyPointA[0])**2 + (y - tangencyPointA[1])**2) for x, y in zip(ellipse_x, ellipse_y)]
+            index1 = np.argmin(diff)
+            
+            diff = [np.sqrt((x - tangencyPointB[0])**2 + (y - tangencyPointB[1])**2) for x, y in zip(ellipse_x, ellipse_y)]
+            index2 = np.argmin(diff)
+            
+            iMin = np.min([index1, index2])
+            iMax = np.max([index1, index2])
+            indexes = list(range(iMin, iMax+1))
+
+            i1 = (index1 - 1) % n
+            i2 = (index1 + 1) % n
+            coord1 = [ellipse_x[i1], ellipse_y[i1]]
+            coord2 = [ellipse_x[i2], ellipse_y[i2]]
+
+            d1 = np.sqrt((coord1[0] - lineIn[0][0])**2 + (coord1[1] - lineIn[0][1])**2)
+            d2 = np.sqrt((coord2[0] - lineIn[0][0])**2 + (coord2[1] - lineIn[0][1])**2)
+
+            if d1 >= d2:
+                indexToTest = i2
+            else:
+                indexToTest = i1
+            
+
+            if indexToTest in indexes:
+                index = indexes[-1]
+                out = []
+                for i in range(n - len(indexes)):
+                    out.append(index)
+                    if index == n-1:
+                        index = 0
+                    else:
+                        index += 1
+                indexes = out
+
+            xs = [ellipse_x[i] for i in indexes]
+            ys = [ellipse_y[i] for i in indexes]
+
+            coord1 = [xs[0], ys[0]]
+            coord2 = [xs[-1], ys[-1]]
+
+            d1 = np.sqrt((coord1[0] - lineIn[1][0])**2 + (coord1[1] - lineIn[1][1])**2)
+            d2 = np.sqrt((coord2[0] - lineIn[1][0])**2 + (coord2[1] - lineIn[1][1])**2)
+
+            if d2 < d1:
+                xs = list(reversed(xs))
+                ys = list(reversed(ys))
+            
+            return xs, ys
+
+        for ellipseA in ellipses:
+            
+            if not ellipseA.lineIn1 is None:
+                xCoordinates1.append(ellipseA.lineIn1[0][0])
+                yCoordinates1.append(ellipseA.lineIn1[0][1])
+                xCoordinates1.append(ellipseA.lineIn1[1][0])
+                yCoordinates1.append(ellipseA.lineIn1[1][1])
+                
+            
+            if (not ellipseA.lineIn1 is None) and (not ellipseA.lineOut1 is None):
+
+                xs, ys = getCoordinatesOfEllipseBetweenTangencyPoints(
+                    ellipseA.x,
+                    ellipseA.y,
+                    ellipseA.w,
+                    ellipseA.h,
+                    ellipseA.lineIn1,
+                    ellipseA.lineOut1
+                )
+
+                xCoordinates1 += xs
+                yCoordinates1 += ys   
+                
+                
+        xCoordinates2 = []
+        yCoordinates2 = []
+
+        for i in range(len(ellipses)-1):
+            ellipseA = ellipses[i]
+            ellipseB = ellipses[i+1]
+
+            ## find the 2 points on each ellipse, where the points are perpendicular to the line between the centers of the two ellipses
+            theta = np.atan2((ellipseB.y - ellipseA.y), (ellipseB.x - ellipseA.x))
+            (x00, y00), (x01, y01) = getPointsOnEllipseFurthestFromLine(ellipseA, theta)
+            (x10, y10), (x11, y11) = getPointsOnEllipseFurthestFromLine(ellipseB, theta)
+
+            ## create all 2 lines between the 2 points
+            lines = [
+                [[x01,y01], [x10,y10]],
+                [[x01,y01], [x11,y11]]
+            ]
+
+            # create a line from the center of ellipseA to ellipseB. Keep the line, that do not cross this line
+            testLine = [[ellipseA.x, ellipseA.y], [ellipseB.x, ellipseB.y]]
+            bools = [not intersect(line[0], line[1], testLine[0], testLine[1]) for line in lines]    
+            index = np.where(bools)[0][0]
+            line = lines[index]
+            
+            ## move the two lines such that they are tangent to the two ellipses        
+            m = (line[1][1] - line[0][1]) / (line[1][0] - line[0][0])
+            b = line[1][1] - m * line[1][0]
+            
+            m, b = fsolve(tangency_conditions, [m,b])
+            line[0] = find_tangent_intersection(m,b, ellipseA.x, ellipseA.y, ellipseA.w/2, ellipseA.h/2)[0]
+            line[1] = find_tangent_intersection(m,b, ellipseB.x, ellipseB.y, ellipseB.w/2, ellipseB.h/2)[0]
+
+            ellipseA.lineOut2 = line
+            ellipseB.lineIn2 = line
+
+
+
+        for ellipse in ellipses:
+
+            if ellipse.lineIn2 is None or ellipse.lineOut2 is None: continue
+
+            intersects = intersect(ellipse.lineIn2[0], ellipse.lineIn2[1], ellipse.lineOut2[0], ellipse.lineOut2[1])
+            
+            if not intersects: continue
+
+            intersection = line_intersection(ellipse.lineIn2, ellipse.lineOut2)
+
+            ellipse.lineIn2[1] = intersection
+            ellipse.lineOut2[0] = intersection
+
+            
+        for ellipseA in ellipses:
+            if not ellipseA.lineIn2 is None:
+                xCoordinates2.append(ellipseA.lineIn2[0][0])
+                yCoordinates2.append(ellipseA.lineIn2[0][1])
+                xCoordinates2.append(ellipseA.lineIn2[1][0])
+                yCoordinates2.append(ellipseA.lineIn2[1][1])
+            
+            if (not ellipseA.lineIn2 is None) and (not ellipseA.lineOut2 is None):
+                
+                xs, ys = getCoordinatesOfEllipseBetweenTangencyPoints(
+                        ellipseA.x,
+                        ellipseA.y,
+                        ellipseA.w,
+                        ellipseA.h,
+                        ellipseA.lineIn2,
+                        ellipseA.lineOut2
+                )
+                
+                xCoordinates2 += xs
+                yCoordinates2 += ys            
+
+
+        ellipses[0].lineIn2 = [ellipses[0].lineOut2[1], ellipses[0].lineOut2[0]]
+        xCoordinates3, yCoordinates3 = getCoordinatesOfEllipseBetweenTangencyPoints(
+            ellipses[0].x,
+            ellipses[0].y,
+            ellipses[0].w,
+            ellipses[0].h,
+            ellipses[0].lineIn2,
+            ellipses[0].lineOut1
+        )
+
+        ellipses[-1].lineOut2 = [ellipses[-1].lineIn2[1], ellipses[-1].lineIn2[0]]
+        xCoordinates4, yCoordinates4 = getCoordinatesOfEllipseBetweenTangencyPoints(
+            ellipses[-1].x,
+            ellipses[-1].y,
+            ellipses[-1].w,
+            ellipses[-1].h,
+            ellipses[-1].lineIn1,
+            ellipses[-1].lineOut2
+        )
+
+
+        xCoordinates2 = list(reversed(xCoordinates2)) 
+        yCoordinates2 = list(reversed(yCoordinates2)) 
+
+        xCoordinates = xCoordinates1 + xCoordinates4 + xCoordinates2 + xCoordinates3
+        yCoordinates = yCoordinates1 + yCoordinates4 + yCoordinates2 + yCoordinates3
+
+        xy = []
+        for i in range(len(xCoordinates)):
+            xy.append([xCoordinates[i], yCoordinates[i]])
+        
+        return ax.add_patch(patches.Polygon(xy, **kwargs))
+
+    def scatterUncertatyAsEllipses(self, ax, **kwargs):
+            
+        class Ellipse:
+            def __init__(self, x, y, w, h):
+                self.x = x
+                self.y = y
+                self.w = w
+                self.h = h
+
+                self.lineIn1 = None
+                self.lineOut1 = None
+                self.lineIn2 = None
+                self.lineOut2 = None
+
+        indexes = np.argsort(self.xVal)
+        
+        ellipses = []
+        for i in indexes:
+            ellipses.append(
+                Ellipse(
+                    self.xVal[i],
+                    self.yVal[i],
+                    2*self.xUncert[i],
+                    2*self.yUncert[i]
+                )
+            )
+
+        out = []
+        for ellipse in ellipses:
+            theta = np.linspace(0, 2 * np.pi, 100)
+
+            # Parametric equations for an ellipse
+            ellipse_x = ellipse.x + (ellipse.w / 2) * np.cos(theta)
+            ellipse_y = ellipse.y + (ellipse.h / 2) * np.sin(theta)
+
+            out.append(ax.plot(ellipse_x, ellipse_y, **kwargs))
+
+        return out
+         
     def func(self, x):
         return self._func(self.coefficients, x)
 
@@ -1078,4 +1457,32 @@ class multi_variable_lin_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
-    
+    def plotUncertantyOfInputs(self, ax, index, n = 100, **kwargs):
+                
+            xUncert = np.interp(np.linspace(0, len(self.xUncert[index])-1, n), range(len(self.xUncert[index])), self.xUncert[index])
+            yUncert = np.interp(np.linspace(0, len(self.yUncert)-1, n), range(len(self.yUncert)), self.yUncert)
+            xValue = np.interp(np.linspace(0, len(self.xVal[index])-1, n), range(len(self.xVal[index])), self.xVal[index])
+            yValue = np.interp(np.linspace(0, len(self.yVal)-1, n), range(len(self.yVal)), self.yVal)
+            
+            for i in range(n):
+                ax.add_patch(Ellipse((xValue[i], yValue[i]), 2*xUncert[i], 2*yUncert[i], **kwargs))
+                if 'label' in kwargs: kwargs['label'] = None
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
+    flow = variable([9.14, 13.32, 18.17, 24.33, 29.18, 34.13, 39.20, 44.70, 50.10, 55.71, 60.56, 66.17, 70.36, 74.65, 78.39, 81.92, 86.10], 'm3/h')
+    dp = variable([79.20, 78.39, 77.43, 75.50, 73.90, 72.29, 70.20, 67.63, 64.42, 61.85, 58.31, 54.62, 51.41, 47.71, 44.50, 40.80, 36.63], 'h')
+
+    flow = variable(flow.value, flow.unit, flow.value * 0.08)
+    dp = variable(dp.value, dp.unit, dp.value * 0.10)
+
+    f = pol_fit(flow, dp)
+
+    fig, ax = plt.subplots()
+    f.scatter(ax)
+    f.plot(ax)
+    a = f.plotUncertantyOfInputs(ax, alpha = 0.5)
+    f.scatterUncertatyAsEllipses(ax, color = 'red')
+    plt.show()
+    print(type(a))

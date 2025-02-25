@@ -137,7 +137,29 @@ Returns:
  - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a matplotlib.collections.PathCollection objected created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 
+## plotUncertantyOfInputs
 
+The fit class has a function to plot the uncertanty area of the inputs. The uncertanty of each input are represented as an ellipse under the hood. The ellipses are combined using tangents. From this a matplotlib.pathces.Polygon is created and plottet to the axes.
+
+```
+fit.plotUncertantyOfInputs(ax: matplotlib.axes.Axes, n = 100: int, **kwargs) -> matplotlib.patches.Polygon
+```
+
+Parameters:
+- ax is the axis or figure to plot on
+- n is an integer representing the angle resolution used to plot the uncertanty of the inputs represented as ellipses
+- **kwargs are key word arguments for the matplotlib.patches.Polygon 
+
+## scatterUncertatyAsEllipses
+The fit class has a function to plot the uncertanty area of the inputs. The uncertanty of each input are represented as an ellipse which is plotted as a matplotlib.lines.Line2D.
+
+```
+fit.scatterUncertatyAsEllipses(ax: matplotlib.axes.Axes, **kwargs) -> List[matplotlib.lines.Line2D]
+```
+
+Parameters:
+- ax is the axis or figure to plot on
+- **kwargs are key word arguments for the list of matplotlib.lines.Line2D 
 
 ## Axis labels
 A fit object has a function to set the units of the axis. The units are set to the unit of the variables at the instance when the fit object was created. If the units are converted after the fit object was made, then this has no affect on the methods to set the units of the axis.
