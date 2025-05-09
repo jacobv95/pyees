@@ -291,12 +291,20 @@ class test(unittest.TestCase):
         rh = variable(60, '%', 5)
         
         rho = prop('density', 'air', t = T, p = P, rh = rh)
-        self.assertRelativeDifference(rho.value, 1.182100462245054920, 1e-3)
+        self.assertRelativeDifference(rho.value, 1.182554388576558, 1e-10)
         self.assertEqual(str(rho.unit), 'kg/m3')
 
         cp = prop('specific_heat', 'air', t = T, p = P, rh = rh)
         cp.convert('J/kg-K')                
-        self.assertRelativeDifference(cp.value, 1020.889735737790340, 1e-2)
+        self.assertRelativeDifference(cp.value, 1013.8442346246147, 1e-10)
+
+        humidity = prop('humidity', 'air', t = T, p = P, rh = rh)
+        self.assertRelativeDifference(humidity.value, 0.008890559976462207, 1e-10)
+        cp = prop('specific_heat', 'air', t = variable(35, 'C'), p = P, humidity = humidity)
+        self.assertRelativeDifference(cp.value, 1014.3730005996277, 1e-10)
+
+        
+
 
     def testExamples(self):
         mu = prop('dynamic_viscosity', 'MPG', C = variable(60,'%'), p = variable(100e3, 'Pa'), t = variable(-20, 'C'))

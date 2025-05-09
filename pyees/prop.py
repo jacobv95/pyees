@@ -130,6 +130,7 @@ propertyTranslator = {
 }
 
 propertyUnits = {
+    'altitude':             'm',
     'compressibility':      '1',
     'conductivity':         'W/m-K',
     'critical_pressure':    'Pa',
@@ -161,6 +162,7 @@ propertyUnits = {
     'partial_pressure':     'Pa',
     'relative_humidity':    '%',
     'wet_bulb_temperature': 'C'
+    ''
 }
 
 def prop(property, fluid, C = None, **state):
@@ -279,20 +281,14 @@ def _propScalar(property, fluid, concentration = None, **state):
     for key, value in state.items():
         
         originalUnits.append(value.unit)
-        if value._unitObject.unitStrSI == 'K':
-            value.convert('C')
-        elif value._unitObject.unitStrSI == '1':
-            value.convert('%')
-        else:
-            value.convert(value._unitObject.unitStrSI)
+
+        if key in propertyTranslator:
+            key = propertyTranslator[key]
+        value.convert(propertyUnits[key])        
+
+        method = getattr(input, key)
             
-        try:
-            method = getattr(input, key)
-        except AttributeError:
-            method = getattr(input, propertyTranslator[key])
-            
-        i = method(value.value)
-        listOfInputs.append(i)
+        listOfInputs.append(method(value.value))
     
     
     ## update the fluid state
@@ -341,5 +337,11 @@ def _propScalar(property, fluid, concentration = None, **state):
 
 if __name__ == "__main__":
     
-    rho = prop('density', ['water', 'Ethanol'], C = [variable(60, '%'), variable(40, '%')], p = variable([200e3, 200e3], 'Pa'), T = variable(4, 'C'))
-    print(rho)
+    # humidity = prop('humidity', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
+    # print(humidity)
+    humid_air = HumidAir().with_state(
+        InputHumidAir.pressure(1e5),
+        InputHumidAir.temperature(35),
+        InputHumidAir.humidity(0.008890559976462207),
+    )   
+    print(humid_air.specific_heat)
