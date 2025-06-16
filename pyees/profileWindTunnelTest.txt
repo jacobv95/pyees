@@ -1,0 +1,108 @@
+         4961337 function calls (4847356 primitive calls) in 4.170 seconds
+
+   Ordered by: internal time
+   List reduced from 6866 to 100 due to restriction <100>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      873    0.336    0.000    0.336    0.000 {built-in method _io.open_code}
+        8    0.308    0.039    0.308    0.039 {built-in method _tkinter.create}
+     3795    0.141    0.000    0.141    0.000 {built-in method nt.stat}
+     1320    0.105    0.000    0.105    0.000 {method 'call' of '_tkinter.tkapp' objects}
+   100/98    0.081    0.001    0.089    0.001 {built-in method _imp.create_dynamic}
+       64    0.079    0.001    0.079    0.001 {method 'encode' of 'ImagingEncoder' objects}
+      871    0.072    0.000    0.072    0.000 {built-in method marshal.loads}
+      122    0.058    0.000    0.058    0.000 {built-in method _io.open}
+    39754    0.055    0.000    0.055    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+     7178    0.051    0.000    0.093    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\inspect.py:882(cleandoc)
+        2    0.047    0.024    0.047    0.024 {built-in method _wmi.exec_query}
+      570    0.046    0.000    0.048    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\pyfluids\humid_air\humid_air.py:505(_keyed_output)
+   348141    0.045    0.000    0.067    0.000 {built-in method builtins.isinstance}
+      783    0.041    0.000    0.041    0.000 {method 'set_text' of 'matplotlib.ft2font.FT2Font' objects}
+     1973    0.036    0.000    0.036    0.000 {method 'read' of '_io.BufferedReader' objects}
+      634    0.035    0.000    0.038    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:15(staticPow)
+181512/181272    0.033    0.000    0.100    0.000 {built-in method builtins.getattr}
+     6700    0.031    0.000    0.047    0.000 <frozen importlib._bootstrap_external>:96(_path_join)
+     5620    0.030    0.000    0.106    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\transforms.py:569(count_contains)
+319174/308892    0.030    0.000    0.032    0.000 {built-in method builtins.len}
+     1452    0.028    0.000    0.400    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\text.py:358(_get_layout)
+      533    0.027    0.000    0.036    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:695(__init__)
+        1    0.025    0.025    0.026    0.026 {built-in method _winapi._mimetypes_read_windows_registry}
+        2    0.025    0.012    0.025    0.013 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\openpyxl\worksheet\_writer.py:106(rows)
+2524/2423    0.022    0.000    0.338    0.000 {built-in method builtins.__build_class__}
+ 2288/482    0.022    0.000    0.058    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\re\_parser.py:512(_parse)
+    11021    0.021    0.000    0.032    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\font_manager.py:645(__hash__)
+       27    0.020    0.001    0.082    0.003 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\font_manager.py:1398(_findfont_cached)
+  6781/45    0.019    0.000    0.137    0.003 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\pyparsing\core.py:962(_parseCache)
+   144163    0.019    0.000    0.019    0.000 {method 'append' of 'list' objects}
+   118855    0.019    0.000    0.021    0.000 {method 'get' of 'dict' objects}
+20849/357    0.019    0.000    0.043    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\copy.py:118(deepcopy)
+      218    0.018    0.000    0.056    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\artist.py:1441(get_aliases)
+ 3675/369    0.017    0.000    0.037    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\re\_compiler.py:37(_compile)
+    50935    0.017    0.000    0.039    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\__init__.py:745(__getitem__)
+   117758    0.017    0.000    0.017    0.000 {method 'startswith' of 'str' objects}
+12139/12137    0.016    0.000    0.041    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\copy.py:61(copy)
+     3603    0.016    0.000    0.075    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\artist.py:1173(_update_props)
+4690/2937    0.015    0.000    0.030    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\transforms.py:2450(get_affine)
+   100636    0.015    0.000    0.015    0.000 {method 'items' of 'dict' objects}
+        1    0.015    0.015    0.027    0.027 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\CoolProp\__init__.py:1(<module>)
+      224    0.015    0.000    0.015    0.000 {built-in method nt._getfinalpathname}
+    16890    0.014    0.000    0.038    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\fromnumeric.py:69(_wrapreduction)
+   100/89    0.014    0.000    0.046    0.001 {built-in method _imp.exec_dynamic}
+      464    0.014    0.000    0.014    0.000 {built-in method builtins.dir}
+     9633    0.014    0.000    0.014    0.000 {method 'search' of 're.Pattern' objects}
+    51256    0.013    0.000    0.023    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\__init__.py:694(_get)
+     6183    0.013    0.000    0.016    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\font_manager.py:1178(score_stretch)
+     4511    0.013    0.000    0.020    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:238(_calculateUncertanty)
+    27218    0.012    0.000    0.012    0.000 {method 'copy' of 'numpy.ndarray' objects}
+     5350    0.012    0.000    0.014    0.000 {built-in method matplotlib._path.path_intersects_rectangle}
+52005/43278    0.012    0.000    0.025    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\artist.py:316(stale)
+     7472    0.011    0.000    0.023    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\transforms.py:759(__init__)
+    69379    0.011    0.000    0.012    0.000 {built-in method builtins.min}
+     5735    0.011    0.000    0.011    0.000 {built-in method matplotlib._path.affine_transform}
+  6787/53    0.011    0.000    0.140    0.003 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\pyparsing\core.py:811(_parseNoCache)
+      218    0.011    0.000    0.036    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\artist.py:1519(get_setters)
+     5247    0.011    0.000    0.022    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\fromnumeric.py:41(_wrapit)
+17829/16973    0.011    0.000    0.018    0.000 {built-in method __new__ of type object at 0x00007FFCC68858F0}
+    86125    0.011    0.000    0.011    0.000 {method 'lstrip' of 'str' objects}
+47432/46495    0.011    0.000    0.264    0.000 {built-in method builtins.hasattr}
+     3729    0.010    0.000    0.096    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\fit.py:928(_func)
+     2651    0.010    0.000    0.013    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\cbook.py:1795(normalize_kwargs)
+     8566    0.010    0.000    0.018    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\cbook.py:285(process)
+      928    0.010    0.000    0.011    0.000 {method '__exit__' of '_io._IOBase' objects}
+      643    0.010    0.000    0.068    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\lines.py:287(__init__)
+     8838    0.010    0.000    0.015    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\cbook.py:2063(_setattr_cm)
+      871    0.010    0.000    0.083    0.000 <frozen importlib._bootstrap_external>:751(_compile_bytecode)
+     1664    0.010    0.000    0.012    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\openpyxl\cell\_writer.py:89(lxml_write_cell)
+    51261    0.010    0.000    0.010    0.000 {function RcParams.__getitem__ at 0x000001F264CF0D60}
+     3482    0.009    0.000    0.016    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\ma\core.py:3013(_update_from)
+   103390    0.009    0.000    0.009    0.000 {built-in method builtins.id}
+     4144    0.009    0.000    0.118    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\artist.py:1469(get_valid_values)
+     1390    0.009    0.000    0.173    0.000 <frozen importlib._bootstrap_external>:1593(find_spec)
+24167/24142    0.009    0.000    0.012    0.000 {method 'join' of 'str' objects}
+     6059    0.009    0.000    0.034    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\copy.py:247(_reconstruct)
+    14721    0.009    0.000    0.013    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\transforms.py:1779(__init__)
+3535/1565    0.009    0.000    0.012    0.000 <frozen abc>:121(__subclasscheck__)
+    10600    0.009    0.000    0.009    0.000 {built-in method numpy.array}
+     9099    0.008    0.000    0.020    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\transforms.py:1899(__init__)
+      177    0.008    0.000    0.011    0.000 {method 'draw_path' of 'matplotlib.backends._backend_agg.RendererAgg' objects}
+    19625    0.008    0.000    0.009    0.000 {built-in method numpy.asarray}
+    52128    0.008    0.000    0.012    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:646(__hash__)
+    17641    0.008    0.000    0.011    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\_api\__init__.py:99(check_in_list)
+    928/1    0.008    0.000    4.148    4.148 {built-in method builtins.exec}
+      998    0.008    0.000    0.055    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\lines.py:743(draw)
+    24675    0.008    0.000    0.008    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\transforms.py:113(__init__)
+      352    0.008    0.000    0.054    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\ticker.py:2100(_raw_ticks)
+     6391    0.008    0.000    0.010    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:549(_reduceDict)
+     3252    0.007    0.000    0.051    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:438(__init__)
+      110    0.007    0.000    0.007    0.000 {built-in method nt.listdir}
+      374    0.007    0.000    0.007    0.000 {method 'load_char' of 'matplotlib.ft2font.FT2Font' objects}
+    16632    0.007    0.000    0.007    0.000 {method 'split' of 'str' objects}
+      872    0.007    0.000    0.521    0.001 <frozen importlib._bootstrap_external>:1062(get_code)
+     1031    0.007    0.000    0.202    0.000 <frozen importlib._bootstrap>:1240(_find_spec)
+    32867    0.007    0.000    0.010    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\re\_parser.py:168(__getitem__)
+     6183    0.007    0.000    0.011    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\font_manager.py:1120(score_family)
+     3965    0.007    0.000    0.008    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\transforms.py:182(set_children)
+      279    0.007    0.000    0.009    0.000 {built-in method builtins.eval}
+23542/23372    0.007    0.000    0.007    0.000 {method 'update' of 'dict' objects}
+
+

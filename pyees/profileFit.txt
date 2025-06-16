@@ -1,95 +1,91 @@
-         125678 function calls in 0.184 seconds
+         125592 function calls in 0.201 seconds
 
    Ordered by: internal time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.056    0.056    0.078    0.078 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:679(__init__)
-        1    0.047    0.047    0.184    0.184 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\fit.py:17(__init__)
-        1    0.021    0.021    0.022    0.022 {built-in method _odrpack.odr}
-    15554    0.017    0.000    0.020    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:92(__init__)
-        2    0.007    0.003    0.011    0.005 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:785(<listcomp>)
-        2    0.007    0.003    0.011    0.005 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:789(<listcomp>)
-    46692    0.006    0.000    0.006    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:116(uncert)
-    31138    0.004    0.000    0.004    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:108(value)
-        4    0.003    0.001    0.003    0.001 {built-in method numpy.array}
-        1    0.003    0.003    0.003    0.003 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\fit.py:59(<listcomp>)
-        1    0.002    0.002    0.002    0.002 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\fit.py:66(<listcomp>)
-        1    0.002    0.002    0.002    0.002 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\fit.py:67(<listcomp>)
-       31    0.002    0.000    0.002    0.000 {built-in method builtins.sum}
-       26    0.002    0.000    0.002    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\fit.py:448(_func)
-        4    0.002    0.000    0.002    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:390(_sd2wt)
-    15580    0.002    0.000    0.002    0.000 {method 'append' of 'list' objects}
-    15590    0.002    0.000    0.002    0.000 {built-in method builtins.isinstance}
+        1    0.121    0.121    0.123    0.123 {built-in method _odrpack.odr}
+        1    0.047    0.047    0.201    0.201 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\fit.py:20(__init__)
+        1    0.008    0.008    0.017    0.017 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:694(__init__)
+    15554    0.006    0.000    0.008    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:76(__init__)
+        2    0.003    0.001    0.005    0.003 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:812(uncert)
+    46692    0.003    0.000    0.003    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:98(uncert)
+        2    0.002    0.001    0.005    0.002 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:808(value)
+       26    0.002    0.000    0.002    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\fit.py:989(_func)
+        4    0.002    0.000    0.002    0.000 {built-in method numpy.array}
+    31138    0.002    0.000    0.002    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:90(value)
+        9    0.002    0.000    0.002    0.000 {built-in method builtins.sum}
+    15586    0.001    0.000    0.001    0.000 {method 'append' of 'list' objects}
+    15629    0.001    0.000    0.001    0.000 {built-in method builtins.isinstance}
         5    0.001    0.000    0.001    0.000 {built-in method numpy.asarray}
-        1    0.000    0.000    0.184    0.184 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\fit.py:431(__init__)
-       44    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:457(_reduceDict)
-       23    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:532(_getUnitDictSI)
-       23    0.000    0.000    0.001    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:367(__init__)
-       46    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:396(_getUnitStrFromDict)
-        2    0.000    0.000    0.012    0.006 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:787(uncert)
-        2    0.000    0.000    0.012    0.006 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:783(value)
-       12    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:880(__mul__)
-       26    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\fit.py:115(getOnlyUsedTerms)
-      365    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+        1    0.000    0.000    0.201    0.201 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\fit.py:972(__init__)
+        4    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:388(_sd2wt)
+       23    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:438(__init__)
+       26    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\fit.py:118(getOnlyUsedTerms)
+       44    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:549(_reduceDict)
         1    0.000    0.000    0.000    0.000 {method 'reduce' of 'numpy.ufunc' objects}
-        7    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:564(_formatUnitStr)
-        1    0.000    0.000    0.024    0.024 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:1074(run)
-        9    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:986(getConverterToSI)
-      150    0.000    0.000    0.000    0.000 {built-in method builtins.len}
-        7    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:546(_getUnitDict)
-        5    0.000    0.000    0.078    0.016 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:994(variable)
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:731(__init__)
-        7    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:692(_removeExponentFromUnit)
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:593(__init__)
-        6    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:244(addCovariance)
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\_methods.py:164(_mean)
-        7    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:451(_splitUnitExponentAndPrefix)
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:786(_check)
-        2    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:933(__pow__)
-        4    0.000    0.000    0.002    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:412(__getattr__)
-        1    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\fit.py:437(getVariableUnits)
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\_ufunc_config.py:33(seterr)
-        6    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:14(staticPow)
-        1    0.000    0.000    0.001    0.001 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:357(__init__)
-        2    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:905(__truediv__)
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\fromnumeric.py:3345(mean)
-       20    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:8(staticMul)
-       17    0.000    0.000    0.001    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:86(_conv)
-       65    0.000    0.000    0.000    0.000 {method 'values' of 'dict' objects}
-        2    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:910(staticTruediv)
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\_methods.py:67(_count_reduce_items)
-       10    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:996(evaluateInput)
-       23    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:5(__init__)
-       12    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\variable.py:674(__hash__)
-        7    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:695(<listcomp>)
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\_ufunc_config.py:132(geterr)
-        7    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:435(_splitCompositeUnit)
-        1    0.000    0.000    0.000    0.000 <__array_function__ internals>:177(mean)
-        1    0.000    0.000    0.000    0.000 {built-in method numpy.core._multiarray_umath.implement_array_function}
-       13    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
-        6    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:25(<listcomp>)
-        6    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:580(<listcomp>)
-        7    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:719(_removePrefixFromUnit)
-        6    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:581(<listcomp>)
-        1    0.000    0.000    0.000    0.000 {built-in method numpy.core._multiarray_umath.normalize_axis_index}
-        2    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:29(staticTruediv)
-       17    0.000    0.000    0.000    0.000 {built-in method builtins.getattr}
-        6    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:585(<listcomp>)
-        1    0.000    0.000    0.000    0.000 {built-in method numpy.seterrobj}
-       12    0.000    0.000    0.000    0.000 {built-in method builtins.id}
-        2    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:937(staticPow)
-        2    0.000    0.000    0.000    0.000 {built-in method numpy.geterrobj}
-        6    0.000    0.000    0.000    0.000 \\ymerdkdc01\folder redirections\DJAVE\My Documents\GitHub\pyees\pyees\unit.py:748(__str__)
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:104(_report_error)
-        7    0.000    0.000    0.000    0.000 {method 'replace' of 'str' objects}
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\scipy\odr\_odrpack.py:508(__init__)
-        1    0.000    0.000    0.000    0.000 {method 'update' of 'dict' objects}
-        6    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
-        1    0.000    0.000    0.000    0.000 {built-in method builtins.hasattr}
+        2    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1415(__pow__)
+       23    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:611(_getUnitDictSI)
+        7    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:642(_formatUnitStrAndUnitStrPretty)
+       12    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1327(__mul__)
+       39    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:485(_getUnitStrFromDict)
+      174    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+       16    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\fractions.py:186(__new__)
+        1    0.000    0.000    0.123    0.123 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:1082(run)
+      166    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+       13    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1134(_removeExponentFromUnit)
+        5    0.000    0.000    0.017    0.003 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:1045(variable)
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
-        2    0.000    0.000    0.000    0.000 {method 'pop' of 'dict' objects}
-        2    0.000    0.000    0.000    0.000 {built-in method builtins.issubclass}
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:595(__init__)
+        7    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:625(_getUnitDict)
+        8    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:15(staticPow)
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\_methods.py:119(_mean)
+        7    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1461(getConverterToSI)
+        6    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:225(addCovariance)
+       12    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1335(staticMul)
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:733(__init__)
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:788(_check)
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\fit.py:978(getVariableUnits)
+        4    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:410(__getattr__)
+        2    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1392(__truediv__)
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\_ufunc_config.py:21(seterr)
+        1    0.000    0.000    0.001    0.001 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:356(__init__)
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\_methods.py:77(_count_reduce_items)
+       17    0.000    0.000    0.001    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:86(_conv)
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\fromnumeric.py:3783(mean)
+       13    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:527(_splitCompositeUnit)
+        7    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:543(_splitUnitExponentAndPrefix)
+       20    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:9(staticMul)
+        8    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\fractions.py:340(limit_denominator)
+       40    0.000    0.000    0.000    0.000 {method 'values' of 'dict' objects}
+       24    0.000    0.000    0.000    0.000 {built-in method builtins.hasattr}
+        1    0.000    0.000    0.000    0.000 {built-in method numpy._core._multiarray_umath._get_extobj_dict}
+       10    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:1054(evaluateInput)
+        8    0.000    0.000    0.000    0.000 <frozen abc>:117(__instancecheck__)
+       12    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\variable.py:645(__hash__)
+        1    0.000    0.000    0.000    0.000 {built-in method numpy.lib.array_utils.normalize_axis_index}
+        2    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1400(staticTruediv)
+        8    0.000    0.000    0.000    0.000 {built-in method _abc._abc_instancecheck}
+       19    0.000    0.000    0.000    0.000 {method 'replace' of 'str' objects}
+       16    0.000    0.000    0.000    0.000 {built-in method __new__ of type object at 0x00007FFDAE8A58F0}
+       23    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:6(__init__)
+        4    0.000    0.000    0.000    0.000 {method 'pop' of 'dict' objects}
+       13    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:506(__init__)
+       12    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:35(staticTruediv)
+        1    0.000    0.000    0.000    0.000 {method 'update' of 'dict' objects}
+       17    0.000    0.000    0.000    0.000 {built-in method builtins.getattr}
+        7    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1167(_removePrefixFromUnit)
+        2    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1445(staticPow)
+       12    0.000    0.000    0.000    0.000 {built-in method builtins.id}
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\odr\_odrpack.py:104(_report_error)
+        6    0.000    0.000    0.000    0.000 C:\Users\DJAVE\OneDrive - HydraSpecma\Documents\GitHub\pyees\pyees\unit.py:1201(__str__)
+        8    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\fractions.py:397(numerator)
+        1    0.000    0.000    0.000    0.000 {built-in method numpy._core._multiarray_umath._make_extobj}
         1    0.000    0.000    0.000    0.000 {built-in method numpy.asanyarray}
-        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\core\fromnumeric.py:3340(_mean_dispatcher)
+        8    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\fractions.py:401(denominator)
+        1    0.000    0.000    0.000    0.000 {method 'set' of '_contextvars.ContextVar' objects}
+        2    0.000    0.000    0.000    0.000 {built-in method builtins.issubclass}
+        1    0.000    0.000    0.000    0.000 C:\Users\DJAVE\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\fromnumeric.py:3778(_mean_dispatcher)
 
 

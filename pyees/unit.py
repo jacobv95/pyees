@@ -1413,7 +1413,7 @@ class unit():
         return unitDict
 
     def __pow__(self, power):
-        
+
         frac = Fraction(power).limit_denominator()
         num, den = frac._numerator, frac._denominator
         

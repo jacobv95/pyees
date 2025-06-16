@@ -115,10 +115,13 @@ class _fit():
         self._residualY = variable(residuals, self.yUnit, sigma_odr) 
         self._hasRun = True
         
-    def getOnlyUsedTerms(self, B):
+    def getOnlyUsedTerms(self, x, B):
+        useVariables = False
+        if isinstance(x, scalarVariable):
+            useVariables = True
         for i in range(len(B)):
             if not self.useParameters[i]:
-                if self._hasRun:
+                if useVariables:
                     B[i] = variable(self.p0[i], self.getVariableUnits()[i])
                 else:
                     B[i] = self.p0[i]
@@ -256,12 +259,8 @@ class _fit():
     def predict(self, x):
         if not isinstance(x, scalarVariable):
             raise ValueError('The input "x" has to be a variable')
-        return self.func(x)
+        return self._func(self.coefficients, x)
     
-    def _predict(self, coeffs, x):
-        # if not isinstance(x, scalarVariable):
-        #     x = variable(x, self.xUnit)
-        return self._func(coeffs, x)
 
     def plotUncertanty(self, ax, x = None, **kwargs):
         
@@ -295,15 +294,15 @@ class _fit():
 
     def plot(self, ax, x=None, **kwargs):
 
-       
         if x is None:
             x = variable(np.linspace(np.min(self.xVal), np.max(self.xVal), 100), self.xUnit)
         else:
             if not isinstance(x, arrayVariable):
                 raise ValueError('The input "x" has to be a variable')
 
-        y = self.predict(x).value
         x = x.value
+        coeffs = [elem.value for elem in self.coefficients]
+        y = self._func(coeffs, x)
         
         if isinstance(ax, axes.Axes):
             if not 'label' in kwargs:
@@ -806,8 +805,6 @@ class _fit():
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
 
-    def func(self, x):
-        return self._func(self.coefficients, x)
 
     def evaluateFit(self):
         ## TODO evaluate the fit - use the degrees of freedom as in the book
@@ -888,13 +885,13 @@ class exp_fit(_fit):
         self._nParameters = 3
         if x.unit != '1':
             raise ValueError('The variable "x" cannot have a unit')
-        _fit.__init__(self, self.func, x, y, p0=p0, useParameters = useParameters)
+        _fit.__init__(self, self._func, x, y, p0=p0, useParameters = useParameters)
 
     def getVariableUnits(self):
         return [self.yUnit, '', self.yUnit]
 
     def _func(self, B, x):
-        a,b,c = self.getOnlyUsedTerms(B)
+        a,b,c = self.getOnlyUsedTerms(x, B)
         return a * np.exp(b * x) + c
 
     def func_name(self):
@@ -923,14 +920,14 @@ class pow_fit(_fit):
         if x.unit != '1':
             raise ValueError('The variable "x" cannot have a unit')
         
-        _fit.__init__(self, self.func, x, y, p0=p0, useParameters=useParameters)
+        _fit.__init__(self, self._func, x, y, p0=p0, useParameters=useParameters)
 
     def getVariableUnits(self):
         return [self.yUnit, '1', self.yUnit]
 
     def _func(self, B, x):
-        a,b,c = self.getOnlyUsedTerms(B)
-        return a * x**b+c
+        a,b,c = self.getOnlyUsedTerms(x, B)
+        return a * x**b + c
 
     def func_name(self):
         return fr'$a x^b+c,\quad a={self.coefficients[0].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}, \quad b={self.coefficients[1].__str__(pretty = True)}$'
@@ -975,7 +972,7 @@ class pol_fit(_fit):
         self._nParameters = deg + 1
         self.deg = deg
 
-        _fit.__init__(self, self.func, x, y, p0=p0, useParameters=useParameters)
+        _fit.__init__(self, self._func, x, y, p0=p0, useParameters=useParameters)
 
     def getVariableUnits(self):
         units = []
@@ -989,7 +986,7 @@ class pol_fit(_fit):
         return units
 
     def _func(self, B, x):
-        B = self.getOnlyUsedTerms(B)
+        B = self.getOnlyUsedTerms(x, B)
         out = 0
         for i,b in enumerate(B):
             out += b * x**(self.deg - i)
@@ -1036,13 +1033,13 @@ class logistic_fit(_fit):
 
         if x.unit != '1':
             raise ValueError('The variable "x" cannot have a unit')
-        _fit.__init__(self, self.func, x, y, p0=p0, useParameters=useParameters)
+        _fit.__init__(self, self._func, x, y, p0=p0, useParameters=useParameters)
 
     def getVariableUnits(self):
         return [self.yUnit,'1','1']
     
     def _func(self, B, x):
-        L,k,x0 = self.getOnlyUsedTerms(B)
+        L,k,x0 = self.getOnlyUsedTerms(x, B)
         return L / (1 + np.exp(-k * (x - x0)))
 
     def func_name(self):
@@ -1064,11 +1061,11 @@ def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
         def __init__(self, x : variable, y: variable, p0 : List[float] | None = None, useParameters : List[bool] | None = None):
             
             self.getVariableUnitsFunc = getVariableUnitsFunc
-            self.func = func
+            self._func = func
             self.func_nameFunc = funcNameFunc
             self._nParameters = nParameters
             
-            _fit.__init__(self, self.func, x, y, p0=p0, useParameters = useParameters)
+            _fit.__init__(self, self._func, x, y, p0=p0, useParameters = useParameters)
 
         def _func(self,B,x):
             return self.func(B,x)
@@ -1228,7 +1225,7 @@ class multi_variable_lin_fit(_fit):
     
     def _ffunc(self, B, X):
                 
-        B = self.getOnlyUsedTerms(B)
+        B = self.getOnlyUsedTerms(X, B)
         out = 0
         for i in range(len(B)-1):
             ## I DO NOT KNOWN WHY I HAVE TO USE XVAL INSTEAD OF X
@@ -1240,7 +1237,7 @@ class multi_variable_lin_fit(_fit):
     
     def _func(self, B, x):
                 
-        B = self.getOnlyUsedTerms(B)
+        B = self.getOnlyUsedTerms(x, B)
         out = 0
         for i in range(len(B)-1):
             out += B[i] * x[i]
@@ -1503,19 +1500,17 @@ class multi_variable_lin_fit(_fit):
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
+    a = 2
+    c = 15
+    n = 100
+    x = np.linspace(0, 100, n)
+    y = a * x**2 + c
 
-    flow = variable([9.14, 13.32, 18.17, 24.33, 29.18, 34.13, 39.20, 44.70, 50.10, 55.71, 60.56, 66.17, 70.36, 74.65, 78.39, 81.92, 86.10], 'm3/h')
-    dp = variable([79.20, 78.39, 77.43, 75.50, 73.90, 72.29, 70.20, 67.63, 64.42, 61.85, 58.31, 54.62, 51.41, 47.71, 44.50, 40.80, 36.63], 'h')
+    x = variable(x, 'm')
+    y = variable(y, 'C')
 
-    flow = variable(flow.value, flow.unit, flow.value * 0.08)
-    dp = variable(dp.value, dp.unit, dp.value * 0.10)
+    F = pol_fit(x, y, useParameters=[True, False, True])
 
-    f = pol_fit(flow, dp)
 
     fig, ax = plt.subplots()
-    f.scatter(ax)
-    f.plot(ax)
-    a = f.plotUncertantyOfInputs(ax, alpha = 0.5)
-    f.scatterUncertatyAsEllipses(ax, color = 'red')
-    plt.show()
-    print(type(a))
+    F.plot(ax)

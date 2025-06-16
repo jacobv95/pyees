@@ -1,0 +1,1375 @@
+<?xml version="1.0" encoding="utf-16"?>
+<AppSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <dataFileSettings>
+    <loggingPeriod>1</loggingPeriod>
+    <loggingDuration>3600</loggingDuration>
+    <meanValueDuration>30</meanValueDuration>
+    <numberOfLogsBeforeWritingToDataFile>0</numberOfLogsBeforeWritingToDataFile>
+    <fileLocation>C:\Users\DJAVE\OneDrive - HydraSpecma\Desktop</fileLocation>
+  </dataFileSettings>
+  <Setpoints>
+    <setpoint>
+      <description>Description</description>
+      <terminationCriteria>Manual</terminationCriteria>
+      <durationTime>300</durationTime>
+      <terminationProcedure>Next Setpoint</terminationProcedure>
+      <repeatSetpoint />
+      <numberOfRepeats>2</numberOfRepeats>
+      <logicalConditions />
+    </setpoint>
+  </Setpoints>
+  <Connectors>
+    <ConnectorData xsi:type="KeysightConnectorData">
+      <dataObjectDatas>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>t_liq_in</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>true</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>138</r>
+              <g>43</g>
+              <b>226</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>103</channel>
+          <sensorType>Temperature</sensorType>
+          <sensorId>S13.01</sensorId>
+          <keysigntSensorType>4-wire RTD type 85</keysigntSensorType>
+          <a0>0</a0>
+          <a1>1</a1>
+          <a2>0</a2>
+          <unit>C</unit>
+          <lowerSelectedRange>-30</lowerSelectedRange>
+          <upperSelectedRange>150</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>t_liq_out</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>true</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>165</r>
+              <g>42</g>
+              <b>42</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>102</channel>
+          <sensorType>Temperature</sensorType>
+          <sensorId>S13.02</sensorId>
+          <keysigntSensorType>4-wire RTD type 85</keysigntSensorType>
+          <a0>0</a0>
+          <a1>1</a1>
+          <a2>0</a2>
+          <unit>C</unit>
+          <lowerSelectedRange>-30</lowerSelectedRange>
+          <upperSelectedRange>150</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>t_air_in_pt100</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>true</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>222</r>
+              <g>184</g>
+              <b>135</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>201</channel>
+          <sensorType>Temperature</sensorType>
+          <sensorId>S13.03</sensorId>
+          <keysigntSensorType>4-wire RTD type 85</keysigntSensorType>
+          <a0>0</a0>
+          <a1>1</a1>
+          <a2>0</a2>
+          <unit>C</unit>
+          <lowerSelectedRange>-30</lowerSelectedRange>
+          <upperSelectedRange>150</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>t_air_out_pt100</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>true</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>95</r>
+              <g>158</g>
+              <b>160</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>202</channel>
+          <sensorType>Temperature</sensorType>
+          <sensorId>S13.04</sensorId>
+          <keysigntSensorType>4-wire RTD type 85</keysigntSensorType>
+          <a0>0</a0>
+          <a1>1</a1>
+          <a2>0</a2>
+          <unit>C</unit>
+          <lowerSelectedRange>-30</lowerSelectedRange>
+          <upperSelectedRange>150</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>t_air_fan_pt100</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>true</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>127</r>
+              <g>255</g>
+              <b>0</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>203</channel>
+          <sensorType>Temperature</sensorType>
+          <sensorId>S13.05</sensorId>
+          <keysigntSensorType>4-wire RTD type 85</keysigntSensorType>
+          <a0>0</a0>
+          <a1>1</a1>
+          <a2>0</a2>
+          <unit>C</unit>
+          <lowerSelectedRange>-30</lowerSelectedRange>
+          <upperSelectedRange>150</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>flow_liq</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>148</r>
+              <g>0</g>
+              <b>211</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>109</channel>
+          <sensorType>Flow</sensorType>
+          <sensorId>S50.01</sensorId>
+          <keysigntSensorType>Voltage DC</keysigntSensorType>
+          <a0>-296.784592731715</a0>
+          <a1>148.474099831331</a1>
+          <a2>-0.0960507694859198</a2>
+          <unit>L/min</unit>
+          <lowerSelectedRange>0</lowerSelectedRange>
+          <upperSelectedRange>500</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>dP_air</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>true</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>255</r>
+              <g>20</g>
+              <b>147</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>110</channel>
+          <sensorType>Differential pressure</sensorType>
+          <sensorId>S47.02</sensorId>
+          <keysigntSensorType>Voltage DC</keysigntSensorType>
+          <a0>-7498.68165383752</a0>
+          <a1>1249.84049825702</a1>
+          <a2>-0.0217300186430608</a2>
+          <unit>Pa</unit>
+          <lowerSelectedRange>-5000</lowerSelectedRange>
+          <upperSelectedRange>5000</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>dp_liq</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>178</r>
+              <g>34</g>
+              <b>34</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>101</channel>
+          <sensorType>Differential pressure</sensorType>
+          <sensorId>S20.01</sensorId>
+          <keysigntSensorType>Voltage DC</keysigntSensorType>
+          <a0>-1249.9933035958</a0>
+          <a1>624.997973496335</a1>
+          <a2>0.000104807278310462</a2>
+          <unit>mbar</unit>
+          <lowerSelectedRange>0</lowerSelectedRange>
+          <upperSelectedRange>5000</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>p_atm</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>34</r>
+              <g>139</g>
+              <b>34</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>106</channel>
+          <sensorType>Pressure</sensorType>
+          <sensorId>S46.01</sensorId>
+          <keysigntSensorType>Voltage DC</keysigntSensorType>
+          <a0>-493.821000201175</a0>
+          <a1>249.202165872901</a1>
+          <a2>0.0601425249826539</a2>
+          <unit>mbar</unit>
+          <lowerSelectedRange>0</lowerSelectedRange>
+          <upperSelectedRange>2000</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>rh_air</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>255</r>
+              <g>0</g>
+              <b>255</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>107</channel>
+          <sensorType>Humidity</sensorType>
+          <sensorId>S52.01</sensorId>
+          <keysigntSensorType>Voltage DC</keysigntSensorType>
+          <a0>-33.2951169122974</a0>
+          <a1>13.17156850917</a1>
+          <a2>0</a2>
+          <unit>%</unit>
+          <lowerSelectedRange>0</lowerSelectedRange>
+          <upperSelectedRange>100</upperSelectedRange>
+        </DataObjectData>
+        <DataObjectData xsi:type="KeysightSensorData">
+          <name>dP_nozzle</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>173</r>
+              <g>255</g>
+              <b>47</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <channel>108</channel>
+          <sensorType>Differential pressure</sensorType>
+          <sensorId>S47.04</sensorId>
+          <keysigntSensorType>Voltage DC</keysigntSensorType>
+          <a0>-7506.76298627361</a0>
+          <a1>1254.68672855342</a1>
+          <a2>-0.609426778141029</a2>
+          <unit>Pa</unit>
+          <lowerSelectedRange>-5000</lowerSelectedRange>
+          <upperSelectedRange>5000</upperSelectedRange>
+        </DataObjectData>
+      </dataObjectDatas>
+      <useDefaultLoggingPeriod>true</useDefaultLoggingPeriod>
+      <desiredLoggingPeriod>-1</desiredLoggingPeriod>
+      <logger>Logger 1</logger>
+    </ConnectorData>
+    <ConnectorData xsi:type="CalculationConnectorData">
+      <dataObjectDatas>
+        <DataObjectData xsi:type="CalculationData">
+          <name>t_air_in</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>0</r>
+              <g>191</g>
+              <b>255</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_air_in_pt100</expression>
+          <unit>C</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>t_air_out</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>105</r>
+              <g>105</g>
+              <b>105</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_air_out_pt100</expression>
+          <unit>C</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>T_5</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>128</r>
+              <g>128</g>
+              <b>128</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_air_out + 273.15</expression>
+          <unit>K</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>P_atm</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>0</r>
+              <g>128</g>
+              <b>0</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>p_atm * 1e2</expression>
+          <unit>Pa</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>P_s5</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>255</r>
+              <g>105</g>
+              <b>180</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>P_atm - dP_air</expression>
+          <unit>Pa</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>P_s6</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>205</r>
+              <g>92</g>
+              <b>92</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>P_atm - dP_air - dP_nozzle</expression>
+          <unit>Pa</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>dT_air</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>75</r>
+              <g>0</g>
+              <b>130</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_air_out - t_air_in</expression>
+          <unit>K</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>dT_liq</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>240</r>
+              <g>230</g>
+              <b>140</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_liq_in - t_liq_out</expression>
+          <unit>K</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>alpha</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>124</r>
+              <g>252</g>
+              <b>0</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>(P_s6 + P_atm) / (P_s5 + P_atm)</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>beta</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>173</r>
+              <g>216</g>
+              <b>230</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>0</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>gamma</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>240</r>
+              <g>128</g>
+              <b>128</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>1.4</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>Y_squared</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>144</r>
+              <g>238</g>
+              <b>144</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>(gamma / (gamma - 1)) * alpha ^ (2/gamma) * ( (1-alpha^((gamma - 1)/gamma)) / (1 - alpha) ) * ((1 - beta^4)/(1-beta^4*alpha^(2/gamma)))</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>Y</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>255</r>
+              <g>160</g>
+              <b>122</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>sqrt(Y_squared)</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>rho_5</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>32</r>
+              <g>178</g>
+              <b>170</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>-0.0700479211937284000000000 + 20.2092810569781000000000000 * 1/T_5 + 0.0000235120968132076000000 * P_s5 + 0.0021578001089806400000000 * rh_air - 0.0000000393101765628985000 * T_5 * P_s5 - 0.0000081118353834283900000 * T_5 * rh_air</expression>
+          <unit>kg/m3</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>n_nozzle</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>135</r>
+              <g>206</g>
+              <b>250</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>2</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>C_nozzle</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>119</r>
+              <g>136</g>
+              <b>153</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>0.99</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>A_nozzle</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>135</r>
+              <g>206</g>
+              <b>250</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>pi/4 * 0.225^2</expression>
+          <unit>m2</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>Q</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>true</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>119</r>
+              <g>136</g>
+              <b>153</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>Y *sqrt(2 * dP_nozzle / rho_5) * n_nozzle * C_nozzle * A_nozzle</expression>
+          <unit>m3/s</unit>
+        </DataObjectData>
+      </dataObjectDatas>
+      <useDefaultLoggingPeriod>true</useDefaultLoggingPeriod>
+      <desiredLoggingPeriod>-1</desiredLoggingPeriod>
+      <calculationDatas>
+        <DataObjectData xsi:type="CalculationData">
+          <name>t_air_in</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>0</r>
+              <g>191</g>
+              <b>255</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_air_in_pt100</expression>
+          <unit>C</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>t_air_out</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>105</r>
+              <g>105</g>
+              <b>105</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_air_out_pt100</expression>
+          <unit>C</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>T_5</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>128</r>
+              <g>128</g>
+              <b>128</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_air_out + 273.15</expression>
+          <unit>K</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>P_atm</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>0</r>
+              <g>128</g>
+              <b>0</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>p_atm * 1e2</expression>
+          <unit>Pa</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>P_s5</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>255</r>
+              <g>105</g>
+              <b>180</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>P_atm - dP_air</expression>
+          <unit>Pa</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>P_s6</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>205</r>
+              <g>92</g>
+              <b>92</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>P_atm - dP_air - dP_nozzle</expression>
+          <unit>Pa</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>dT_air</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>75</r>
+              <g>0</g>
+              <b>130</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_air_out - t_air_in</expression>
+          <unit>K</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>dT_liq</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>240</r>
+              <g>230</g>
+              <b>140</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>t_liq_in - t_liq_out</expression>
+          <unit>K</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>alpha</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>124</r>
+              <g>252</g>
+              <b>0</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>(P_s6 + P_atm) / (P_s5 + P_atm)</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>beta</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>173</r>
+              <g>216</g>
+              <b>230</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>0</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>gamma</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>240</r>
+              <g>128</g>
+              <b>128</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>1.4</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>Y_squared</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>144</r>
+              <g>238</g>
+              <b>144</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>(gamma / (gamma - 1)) * alpha ^ (2/gamma) * ( (1-alpha^((gamma - 1)/gamma)) / (1 - alpha) ) * ((1 - beta^4)/(1-beta^4*alpha^(2/gamma)))</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>Y</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>255</r>
+              <g>160</g>
+              <b>122</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>sqrt(Y_squared)</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>rho_5</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>32</r>
+              <g>178</g>
+              <b>170</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>-0.0700479211937284000000000 + 20.2092810569781000000000000 * 1/T_5 + 0.0000235120968132076000000 * P_s5 + 0.0021578001089806400000000 * rh_air - 0.0000000393101765628985000 * T_5 * P_s5 - 0.0000081118353834283900000 * T_5 * rh_air</expression>
+          <unit>kg/m3</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>n_nozzle</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>135</r>
+              <g>206</g>
+              <b>250</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>2</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>C_nozzle</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>119</r>
+              <g>136</g>
+              <b>153</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>0.99</expression>
+          <unit />
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>A_nozzle</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>false</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>135</r>
+              <g>206</g>
+              <b>250</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>pi/4 * 0.225^2</expression>
+          <unit>m2</unit>
+        </DataObjectData>
+        <DataObjectData xsi:type="CalculationData">
+          <name>Q</name>
+          <plotObjectsDatas>
+            <PlotObjectData>
+              <valueCheckBoxState>true</valueCheckBoxState>
+              <meanCheckBoxState>false</meanCheckBoxState>
+              <a>255</a>
+              <r>119</r>
+              <g>136</g>
+              <b>153</b>
+            </PlotObjectData>
+          </plotObjectsDatas>
+          <dataObjectSettingsWindowData>
+            <controllerNames>
+              <string />
+            </controllerNames>
+            <controllerActive>
+              <boolean>true</boolean>
+            </controllerActive>
+          </dataObjectSettingsWindowData>
+          <expression>Y *sqrt(2 * dP_nozzle / rho_5) * n_nozzle * C_nozzle * A_nozzle</expression>
+          <unit>m3/s</unit>
+        </DataObjectData>
+      </calculationDatas>
+    </ConnectorData>
+  </Connectors>
+  <graph>
+    <Normalize>false</Normalize>
+    <showTolerances>false</showTolerances>
+  </graph>
+  <diagram>
+    <isOnCanvas>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+    </isOnCanvas>
+    <posX>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+    </posX>
+    <posY>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+      <double>0</double>
+    </posY>
+    <isBold>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+    </isBold>
+    <isItalic>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+      <boolean>false</boolean>
+    </isItalic>
+    <width>500</width>
+    <height>500</height>
+  </diagram>
+</AppSettings>

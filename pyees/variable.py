@@ -349,7 +349,6 @@ class scalarVariable():
         return self * other
 
     def __pow__(self, other):
-
         if not isinstance(other, scalarVariable):
             return self ** variable(other, '')
 
@@ -398,7 +397,9 @@ class scalarVariable():
         return var
 
     def __rpow__(self, other):
-        return variable(other, '1') ** self
+        if not isinstance(other, scalarVariable):
+            return variable(other, '1') ** self
+        return scalarVariable.__pow__(other, self)
 
     def __truediv__(self, other):
         if not isinstance(other, scalarVariable):
@@ -738,14 +739,6 @@ class arrayVariable(scalarVariable):
         self.__checkUnitOfScalarVariables()
         return scalarVariable.__rmul__(self, other)
 
-    def __pow__(self, other):
-        self.__checkUnitOfScalarVariables()
-        return scalarVariable.__pow__(self, other)
-
-    def __rpow__(self, other):
-        self.__checkUnitOfScalarVariables()
-        return scalarVariable.__rpow__(self, other)
-
     def __truediv__(self, other):
         self.__checkUnitOfScalarVariables()
         return scalarVariable.__truediv__(self, other)
@@ -926,7 +919,6 @@ class arrayVariable(scalarVariable):
             return out
 
     def __pow__(self, other):
-
         if not (isinstance(other, scalarVariable) or isinstance(other, arrayVariable)):
             return self ** variable(other)
 
@@ -935,20 +927,17 @@ class arrayVariable(scalarVariable):
                 raise ValueError(
                     f'operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}')
             out = [a**b for a, b in zip(self, other)]
+            if all([out[0].unit == elem.unit for elem in out]):
+                out = arrayVariable(scalarVariables=out)
         else:
-            out = [a**other for a in self]
-
-        # if other is an arrayVariable, then this could imply that the unit of each element in out are not equal
-        # if the units of the scalarVariables are equel, then collect them in an arrayVariable
-        # else return the list of scalarVariables
-        if all([out[0].unit == elem.unit for elem in out]):
-            return arrayVariable(scalarVariables=out)
+            out = scalarVariable.__pow__(self, other)
 
         return out
 
     def __rpow__(self, other):
         if not (isinstance(other, scalarVariable) or isinstance(other, arrayVariable)):
             return variable(other) ** self
+    
 
         if isinstance(other, arrayVariable):
             if len(self) != len(other):
@@ -956,10 +945,10 @@ class arrayVariable(scalarVariable):
                     f'operands could not be broadcast together with shapes {self.value.shape} {other.value.shape}')
             out = [a**b for a, b in zip(other, self)]
         else:
-            out = [other**a for a in self]
+            out = [other ** a for a in self]
 
         if all([out[0].unit == elem.unit for elem in out]):
-            return variable([elem.value for elem in out], out[0].unit, [elem.uncert for elem in out])
+            out = arrayVariable(scalarVariables=out)
         return out
 
     def __array_ufunc__(self, ufunc, *args, **kwargs):
@@ -1087,3 +1076,4 @@ def variable(value, unit='', uncert=None):
         return arrayVariable(value=value, unitStr=unit, uncert=uncert)
     else:
         return scalarVariable(value, unit, uncert)
+

@@ -8,38 +8,34 @@ showPlots = False
 
 
 
-class gaussian(_fit):
-    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = [True, True, True]):
-        self._nParameters = 3
-        _fit.__init__(self, self.func, x, y, p0=p0, useParameters = useParameters)
+def gaussianFunc(B, x):
+    from numpy import exp
+    mu,sigma,y_mu = B
+    return y_mu*exp(-(x-mu)**2/(2*sigma**2))
 
-    def getVariableUnits(self):
-        return ['', '', '']
+def gaussianFuncVariableUnits(xUnit, yUnit):
+    return ['', '', '']
 
-    def _func(self, B, x):
-        from numpy import exp
-        mu,sigma,y_mu = self.getOnlyUsedTerms(B)
-        return y_mu*exp(-(x-mu)**2/(2*sigma**2))
+def gaussianFuncName(B):
+    mu,sigma,y_mu = B
+    return fr'$y_mu \cdot exp(-(x-mu)^2/(2 sigma ^ 2)),\quad mu={mu.__str__(pretty = True)}, \quad sigma={sigma.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
 
-    def func_name(self):
-        mu,sigma,y_mu = self.coefficients
-        return fr'$y_mu \cdot exp(-(x-mu)^2/(2 sigma ^ 2)),\quad mu={mu.__str__(pretty = True)}, \quad sigma={sigma.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
+gaussian = crateNewFitClass(gaussianFunc, gaussianFuncName, gaussianFuncVariableUnits, 3)
 
-class absolute_power(_fit):
-    def __init__(self, x : variable, y: variable, p0 : list[float] = None, useParameters : list[bool] = [True, True, True]):
-        self._nParameters = 3
-        _fit.__init__(self, self.func, x, y, p0=p0, useParameters = useParameters)
 
-    def getVariableUnits(self):
-        return ['', '', '']
+def absolutePowerFuncVariableUnits(xUnit, yUnit):
+    return ['', '', '']
 
-    def _func(self, B, x):
-        mu,nu,y_mu = self.getOnlyUsedTerms(B)
-        return  y_mu*abs(x-mu)**nu
+def absolutePowerFunc(B, x):
+    mu,nu,y_mu = B
+    return  y_mu*abs(x-mu)**nu
 
-    def func_name(self):
-        mu,nu,y_mu = self.coefficients
-        return fr'$ y_mu*abs(x-mu)^*u,\quad mu={mu.__str__(pretty = True)}, \quad nu={nu.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
+def absolutePowerFuncName(B):
+    mu,nu,y_mu = B
+    return fr'$ y_mu*abs(x-mu)^*u,\quad mu={mu.__str__(pretty = True)}, \quad nu={nu.__str__(pretty = True)}, \quad y_mu={y_mu.__str__(pretty = True)}$'
+
+absolute_power = crateNewFitClass(absolutePowerFunc, absolutePowerFuncName, absolutePowerFuncVariableUnits, 3)
+
 
 
 class test(unittest.TestCase):
