@@ -5,7 +5,7 @@ setup(
     python_requires = '>=3.10',
     name='pyees',
     packages=['pyees'],
-    version='2.2.2',
+    version='2.2.6',
     cmdclass=get_cmdclass(),
     options={
         'build_py':
@@ -18,7 +18,8 @@ setup(
                 'pyees.testUnit',
                 'pyees.testVariable',
                 'pyees.profilePyees',
-                'pyees.profileFit'
+                'pyees.profileFit',
+                'pyees.profileWindTunnelTest'
                 ]}
     },
     license='MIT',

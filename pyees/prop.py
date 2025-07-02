@@ -337,11 +337,11 @@ def _propScalar(property, fluid, concentration = None, **state):
 
 if __name__ == "__main__":
     
-    # humidity = prop('humidity', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
-    # print(humidity)
+    cp = prop('specific_heat', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
+    print(cp)
     humid_air = HumidAir().with_state(
-        InputHumidAir.pressure(1e5),
-        InputHumidAir.temperature(35),
-        InputHumidAir.humidity(0.008890559976462207),
+        InputHumidAir.pressure(101325),
+        InputHumidAir.temperature(20),
+        InputHumidAir.relative_humidity(60),
     )   
     print(humid_air.specific_heat)

@@ -42,8 +42,7 @@ The unit is used to determine which computations can be performed on the variabl
  - Two variables can be added together or subtracted from each other if their units are identical
  - Any two units can be multiplied or divided
  - Exponents cannot have any units
- - A variable with a unit can be raised to an integer power
- - The n'th root of a variable can be taken if the exponent of the unit of the variable is divisible by n
+ - A variable with a unit can be raised to a fractional power regardless of the fraction
 
 
 

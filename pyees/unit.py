@@ -1545,9 +1545,3 @@ class unit():
             return _bellConversion()
 
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
-
-    
-if __name__ == "__main__":
-    a = unit('%')
-    print(a)
-    print(a.unitStrPretty)

@@ -96,8 +96,8 @@ class _fit():
                 )
 
         # determine r-squared
-        delta, epsilon = regression.delta, regression.eps
-        residuals = ( np.sign(self.yVal-self._func(regression.beta, self.xVal)) * np.sqrt(delta**2 + epsilon**2) )
+        self.delta, self.epsilon = regression.delta, regression.eps
+        residuals = ( np.sign(self.yVal-self._func(regression.beta, self.xVal)) * np.sqrt(self.delta**2 + self.epsilon**2) )
         ss_res = sum(residuals**2)
         ss_tot = sum((self.yVal - np.mean(self.yVal))**2)
         if ss_tot != 0:
@@ -107,10 +107,10 @@ class _fit():
         
         
         
-        dx_star = ( self.xUncert*np.sqrt( ((self.yUncert*delta)**2) /
-                ( (self.yUncert*delta)**2 + (self.xUncert*epsilon)**2 ) ) )
-        dy_star = ( self.yUncert*np.sqrt( ((self.xUncert*epsilon)**2) /
-                ( (self.yUncert*delta)**2 + (self.xUncert*epsilon)**2 ) ) )
+        dx_star = ( self.xUncert*np.sqrt( ((self.yUncert*self.delta)**2) /
+                ( (self.yUncert*self.delta)**2 + (self.xUncert*self.epsilon)**2 ) ) )
+        dy_star = ( self.yUncert*np.sqrt( ((self.xUncert*self.epsilon)**2) /
+                ( (self.yUncert*self.delta)**2 + (self.xUncert*self.epsilon)**2 ) ) )
         sigma_odr = np.sqrt(dx_star**2 + dy_star**2)
         self._residualY = variable(residuals, self.yUnit, sigma_odr) 
         self._hasRun = True
@@ -260,8 +260,40 @@ class _fit():
         if not isinstance(x, scalarVariable):
             raise ValueError('The input "x" has to be a variable')
         return self._func(self.coefficients, x)
-    
 
+    def plotResiduals(self, ax, **kwargs):    
+        
+        x = []
+        y = []
+        for i in range(len(self.xVal)):
+            
+            x += [self.xVal[i], self.xVal[i] + self.delta[i], np.nan]
+            y += [self.yVal[i], self.yVal[i] + self.epsilon[i], np.nan]
+        
+
+
+        if isinstance(ax, axes.Axes):
+            if not 'label' in kwargs:
+                kwargs['label'] = self.__str__()
+            return ax.plot(x, y, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            
+            if not 'name' in kwargs:
+                kwargs['name'] = self.__str__()
+                                
+            ax.add_trace(
+                go.Scatter(
+                    x = x,
+                    y = y,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+      
     def plotUncertanty(self, ax, x = None, **kwargs):
         
         if x is None:
@@ -325,7 +357,7 @@ class _fit():
                 )
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
-          
+      
     def addUnitToLabels(self, ax, **kwargs):
         self.addUnitToXLabel(ax, **kwargs)
         self.addUnitToYLabel(ax, **kwargs)
@@ -1079,11 +1111,9 @@ def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
     return newFit
 
 
-class multi_variable_lin_fit(_fit):
+class _multi_variable_fit(_fit):
     def __init__(self, x : List[variable], y: variable, p0 : List[float] = None, useParameters : List[bool] | None = None):
         
-        self._nParameters = len(x) + 1
-
         self._hasRun = False
         if p0 is None:
             p0 = [0] * self._nParameters
@@ -1153,11 +1183,14 @@ class multi_variable_lin_fit(_fit):
         for elem in self.xUncert:
             self._sx.append([e if e != 0 else 1e-10 for e in elem])
         self._sy = [elem if elem != 0 else 1e-10 for elem in self.yUncert]
+        fix = [0 for i in range(len(self.xVal))]
+        
 
         # create the regression
         np.seterr('ignore')
-        data = odr.RealData(self.xVal, self.yVal, sx = self._sx, sy=self._sy)
-        regression = odr.ODR(data, odr.Model(self._ffunc), beta0=self.p0)
+        data = odr.RealData(self.xVal, self.yVal, sx = self._sx, sy=self._sy, fix=fix)
+
+        regression = odr.ODR(data, odr.Model(self._func), beta0=self.p0)
         regression = regression.run()   
             
 
@@ -1181,12 +1214,13 @@ class multi_variable_lin_fit(_fit):
                 )
 
         # determine r-squared
-        delta, epsilon = regression.delta, regression.eps
-        out = np.zeros(epsilon.shape)
-        for i in range(len(delta)):
-            out[i] = np.sqrt(sum([delta[i,j]**2]))
-        delta = out
-        residuals = ( np.sign(self.yVal-self._func(regression.beta, self.xVal)) * np.sqrt(delta**2 + epsilon**2) )
+        self.delta, self.epsilon = regression.delta, regression.eps
+        
+        delta = np.zeros(self.epsilon.shape)
+        for i in range(len(self.delta)):
+            delta[i] = np.sqrt(sum(self.delta[i,:]**2))
+            
+        residuals = ( np.sign(self.yVal-self._func(regression.beta, self.xVal)) * np.sqrt(delta**2 + self.epsilon**2) )
         
         ss_res = sum(residuals**2)
         ss_tot = sum((self.yVal - np.mean(self.yVal))**2)
@@ -1195,72 +1229,22 @@ class multi_variable_lin_fit(_fit):
         else:
             self.r_squared = variable(1)
         
-        
-        
+    
         out = []
         for i in range(len(self.yVal)):
-            o = 0
-            for j in range(len(self.xUncert)):
-                o += self.xUncert[j][i]**2
-            out.append(np.sqrt(o))
+            out.append(np.sqrt(sum([self.xUncert[j][i]**2 for j in range(len(self.xUncert))])))
         xUncert = out
         
         dx_star = ( xUncert*np.sqrt( ((self.yUncert*delta)**2) /
-                ( (self.yUncert*delta)**2 + (xUncert*epsilon)**2 ) ) )
-        dy_star = ( self.yUncert*np.sqrt( ((xUncert*epsilon)**2) /
-                ( (self.yUncert*delta)**2 + (xUncert*epsilon)**2 ) ) )
+                ( (self.yUncert*delta)**2 + (xUncert*self.epsilon)**2 ) ) )
+        dy_star = ( self.yUncert*np.sqrt( ((xUncert*self.epsilon)**2) /
+                ( (self.yUncert*delta)**2 + (xUncert*self.epsilon)**2 ) ) )
         sigma_odr = np.sqrt(dx_star**2 + dy_star**2)
         self._residualY = variable(residuals, self.yUnit, sigma_odr) 
         self._hasRun = True
 
     def predict(self, x):
         return self._func(self.coefficients, x)
-
-    def getVariableUnits(self):
-        out = []
-        for i in range(len(self.xUnit)):
-            out.append(self.yUnit / self.xUnit[i])
-        out.append(self.yUnit)
-        return out
-    
-    def _ffunc(self, B, X):
-                
-        B = self.getOnlyUsedTerms(X, B)
-        out = 0
-        for i in range(len(B)-1):
-            ## I DO NOT KNOWN WHY I HAVE TO USE XVAL INSTEAD OF X
-            ## BUT THIS WORKS
-            out += B[i] * self.xVal[i]
-        out += B[-1]
-
-        return out
-    
-    def _func(self, B, x):
-                
-        B = self.getOnlyUsedTerms(x, B)
-        out = 0
-        for i in range(len(B)-1):
-            out += B[i] * x[i]
-        out += B[-1]
-
-        return out
-
-    def func_name(self):
-        B = [elem.__str__(pretty=True) for elem in self.coefficients]
-        
-        out = ""
-        for i in range(len(B)-1):
-            if out:
-                out += " + "
-            out += fr"a_{i+1}\cdot x_{i+1}"
-        if out:
-            out += " + "
-        out += fr"a_{len(B)}"
-
-        for i in range(len(B)):
-            out += fr"\quad a_{i+1}={B[i]}"
-
-        return out
 
     def scatter(self, ax, index, showUncert=True, **kwargs):
 
@@ -1271,7 +1255,7 @@ class multi_variable_lin_fit(_fit):
         if isinstance(ax, axes.Axes):
             # scatter
             if showUncert:
-                return ax.errorbar(self.xVal[index], self.yVal, xerr=self.xUncert, yerr=self.yUncert, linestyle='', **kwargs)
+                return ax.errorbar(self.xVal[index], self.yVal, xerr=self.xUncert[index], yerr=self.yUncert, linestyle='', **kwargs)
             else:
                 return ax.scatter(self.xVal[index], self.yVal, **kwargs)
         elif isinstance(ax, go.Figure):
@@ -1283,7 +1267,7 @@ class multi_variable_lin_fit(_fit):
                     go.Scatter(
                         x = self.xVal[index],
                         y = self.yVal,
-                        error_x = dict(array = self.xUncert),
+                        error_x = dict(array = self.xUncert[index]),
                         error_y = dict(array = self.yUncert),
                         mode = 'markers',
                         **kwargs),
@@ -1383,10 +1367,13 @@ class multi_variable_lin_fit(_fit):
             if not isinstance(x, List):
                 raise ValueError('The argument "x" has to be List of variables')
 
-            for elem in x:
-                if not isinstance(elem, arrayVariable):
-                    raise ValueError('The argument "x" has to be a list of variables')
-              
+            for i, elem in enumerate(x):
+                if i == index:
+                    if not isinstance(elem, arrayVariable):
+                        raise ValueError('The argument "x" has to be a list of variables')
+                else:
+                    if not isinstance(elem, scalarVariable):
+                        raise ValueError('The argument "x" has to be a list of variables')    
         y = self.predict(x)
         y = list(y.value + y.uncert) + [np.nan] + list(y.value - y.uncert)
         x = list(x[index].value) + [np.nan] + list(x[index].value)
@@ -1409,6 +1396,39 @@ class multi_variable_lin_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
+    def plotResiduals(self, ax, index, **kwargs):    
+        
+        x = []
+        y = []
+        for i in range(len(self.xVal[index])):
+            
+            x += [self.xVal[index][i], self.xVal[index][i] + self.delta[index][i], np.nan]
+            y += [self.yVal[i], self.yVal[i] + self.epsilon[i], np.nan]
+        
+
+
+        if isinstance(ax, axes.Axes):
+            if not 'label' in kwargs:
+                kwargs['label'] = self.__str__()
+            return ax.plot(x, y, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            
+            if not 'name' in kwargs:
+                kwargs['name'] = self.__str__()
+                                
+            ax.add_trace(
+                go.Scatter(
+                    x = x,
+                    y = y,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+      
     def plot(self, ax, index, x=None, **kwargs):
         if x is None:
             x = []
@@ -1421,10 +1441,14 @@ class multi_variable_lin_fit(_fit):
             if not isinstance(x, List):
                 raise ValueError('The argument "x" has to be List of variables')
 
-            for elem in x:
-                if not isinstance(elem, arrayVariable):
-                    raise ValueError('The argument "x" has to be a list of variables')
-            
+            for i, elem in enumerate(x):
+                if i == index:
+                    if not isinstance(elem, arrayVariable):
+                        raise ValueError('The argument "x" has to be a list of variables')
+                else:
+                    if not isinstance(elem, scalarVariable):
+                        raise ValueError('The argument "x" has to be a list of variables')
+                    
         y = self.predict(x).value
         x = x[index].value
         
@@ -1498,19 +1522,71 @@ class multi_variable_lin_fit(_fit):
                 ax.add_patch(Ellipse((xValue[i], yValue[i]), 2*xUncert[i], 2*yUncert[i], **kwargs))
                 if 'label' in kwargs: kwargs['label'] = None
 
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    a = 2
-    c = 15
-    n = 100
-    x = np.linspace(0, 100, n)
-    y = a * x**2 + c
-
-    x = variable(x, 'm')
-    y = variable(y, 'C')
-
-    F = pol_fit(x, y, useParameters=[True, False, True])
 
 
-    fig, ax = plt.subplots()
-    F.plot(ax)
+class multi_variable_lin_fit(_multi_variable_fit):
+    
+    def __init__(self, x, y, p0 = None, useParameters = None):
+        
+        self._nParameters = len(x) + 1
+
+        super().__init__(x, y, p0, useParameters)
+
+    def getVariableUnits(self):
+        out = []
+        for i in range(len(self.xUnit)):
+            out.append(self.yUnit / self.xUnit[i])
+        out.append(self.yUnit)
+        return out
+    
+    def _func(self, B, X):
+        
+        B = self.getOnlyUsedTerms(X, B)
+        out = 0
+        for i in range(len(B)-1):
+            out += B[i] * X[i]
+        out += B[-1]
+        return out
+
+    def func_name(self):
+        B = [elem.__str__(pretty=True) for elem in self.coefficients]
+        
+        out = ""
+        for i in range(len(B)-1):
+            if out:
+                out += " + "
+            out += fr"a_{i+1}\cdot x_{i+1}"
+        if out:
+            out += " + "
+        out += fr"a_{len(B)}"
+
+        for i in range(len(B)):
+            out += fr"\quad a_{i+1}={B[i]}"
+
+        return out
+
+
+def crateNewMultiVariableFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
+    
+    class newFit(_multi_variable_fit):
+        
+        def __init__(self, x : variable, y: variable, p0 : List[float] | None = None, useParameters : List[bool] | None = None):
+            
+            self.getVariableUnitsFunc = getVariableUnitsFunc
+            self._func = func
+            self.func_nameFunc = funcNameFunc
+            self._nParameters = nParameters
+            
+            _multi_variable_fit.__init__(self, x, y, p0=p0, useParameters = useParameters)
+
+        def _func(self,B,x):
+            return self.func(B,x)
+
+        def func_name(self):
+            return self.func_nameFunc(self.coefficients)
+        
+        def getVariableUnits(self):
+            return self.getVariableUnitsFunc(self.xUnit, self.yUnit)
+
+    return newFit
+
