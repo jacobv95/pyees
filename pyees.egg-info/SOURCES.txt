@@ -6,6 +6,7 @@ pyees/__init__.py
 pyees/fit.py
 pyees/profileFit.py
 pyees/profilePyees.py
+pyees/profileWindTunnelTest.py
 pyees/prop.py
 pyees/sheet.py
 pyees/solve.py

@@ -1501,7 +1501,7 @@ class test(unittest.TestCase):
         self.assertAlmostEqual(d.uncert, np.sqrt(
             (dd_da * 0.11)**2 + (dd_db * 0.89)**2))
 
-        """
+        r"""
         e = \sum^{\infty}_{n=0} 1/(n!)
         b = \sum^{\infty}_{n=0} 1/(n!) * a = e*a
         \frac{\partial b}{\partial a} = e

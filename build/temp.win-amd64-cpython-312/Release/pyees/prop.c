@@ -2328,6 +2328,7 @@ static const char __pyx_k_Pa[] = "Pa";
 static const char __pyx_k_Rh[] = "Rh";
 static const char __pyx_k__3[] = "%";
 static const char __pyx_k__4[] = ".";
+static const char __pyx_k_cp[] = "cp";
 static const char __pyx_k_dx[] = "dx";
 static const char __pyx_k_f1[] = "f1";
 static const char __pyx_k_f2[] = "f2";
@@ -2342,7 +2343,7 @@ static const char __pyx_k_AIR[] = "AIR";
 static const char __pyx_k_Air[] = "Air";
 static const char __pyx_k_MEG[] = "MEG";
 static const char __pyx_k_N_m[] = "N/m";
-static const char __pyx_k__15[] = "?";
+static const char __pyx_k__19[] = "?";
 static const char __pyx_k_air[] = "air";
 static const char __pyx_k_con[] = "con";
 static const char __pyx_k_key[] = "key";
@@ -2536,12 +2537,13 @@ typedef struct {
   PyObject *__pyx_n_u_Pa;
   PyObject *__pyx_kp_u_Pa_s;
   PyObject *__pyx_n_u_Rh;
+  PyObject *__pyx_n_s_T;
   PyObject *__pyx_n_u_T;
   PyObject *__pyx_n_s_ValueError;
   PyObject *__pyx_n_u_WATER;
   PyObject *__pyx_kp_u_W_m_K;
   PyObject *__pyx_n_u_Water;
-  PyObject *__pyx_n_s__15;
+  PyObject *__pyx_n_s__19;
   PyObject *__pyx_kp_u__3;
   PyObject *__pyx_kp_u__4;
   PyObject *__pyx_n_s_addDependent;
@@ -2560,6 +2562,7 @@ typedef struct {
   PyObject *__pyx_n_u_conductivity;
   PyObject *__pyx_n_s_convert;
   PyObject *__pyx_n_s_coolprop_key;
+  PyObject *__pyx_n_s_cp;
   PyObject *__pyx_n_u_critical_pressure;
   PyObject *__pyx_n_u_critical_temperature;
   PyObject *__pyx_n_u_density;
@@ -2584,7 +2587,6 @@ typedef struct {
   PyObject *__pyx_n_s_g;
   PyObject *__pyx_n_s_grads;
   PyObject *__pyx_n_s_humid_air;
-  PyObject *__pyx_n_s_humidity;
   PyObject *__pyx_n_u_humidity;
   PyObject *__pyx_n_s_i;
   PyObject *__pyx_n_s_i0;
@@ -2633,6 +2635,7 @@ typedef struct {
   PyObject *__pyx_n_s_name_2;
   PyObject *__pyx_n_s_originalConcentrationUnit;
   PyObject *__pyx_n_s_originalUnits;
+  PyObject *__pyx_n_s_p;
   PyObject *__pyx_n_u_p;
   PyObject *__pyx_n_s_param;
   PyObject *__pyx_n_s_parameters;
@@ -2653,7 +2656,9 @@ typedef struct {
   PyObject *__pyx_n_s_pyfluids;
   PyObject *__pyx_n_u_quality;
   PyObject *__pyx_n_s_range;
+  PyObject *__pyx_n_s_relative_humidity;
   PyObject *__pyx_n_u_relative_humidity;
+  PyObject *__pyx_n_s_rh;
   PyObject *__pyx_n_u_rh;
   PyObject *__pyx_n_s_scalarParams;
   PyObject *__pyx_n_s_scalarVariables;
@@ -2686,13 +2691,13 @@ typedef struct {
   PyObject *__pyx_n_s_y1;
   PyObject *__pyx_n_s_y2;
   PyObject *__pyx_n_s_zip;
-  PyObject *__pyx_float_1e5;
   PyObject *__pyx_float_0_000001;
-  PyObject *__pyx_float_0_008890559976462207;
   PyObject *__pyx_int_0;
   PyObject *__pyx_int_1;
-  PyObject *__pyx_int_35;
+  PyObject *__pyx_int_20;
+  PyObject *__pyx_int_60;
   PyObject *__pyx_int_100;
+  PyObject *__pyx_int_101325;
   PyObject *__pyx_tuple_;
   PyObject *__pyx_tuple__2;
   PyObject *__pyx_tuple__5;
@@ -2702,6 +2707,10 @@ typedef struct {
   PyObject *__pyx_tuple__12;
   PyObject *__pyx_tuple__13;
   PyObject *__pyx_tuple__14;
+  PyObject *__pyx_tuple__15;
+  PyObject *__pyx_tuple__16;
+  PyObject *__pyx_tuple__17;
+  PyObject *__pyx_tuple__18;
   PyObject *__pyx_codeobj__6;
   PyObject *__pyx_codeobj__8;
   PyObject *__pyx_codeobj__11;
@@ -2770,12 +2779,13 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_u_Pa);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Pa_s);
   Py_CLEAR(clear_module_state->__pyx_n_u_Rh);
+  Py_CLEAR(clear_module_state->__pyx_n_s_T);
   Py_CLEAR(clear_module_state->__pyx_n_u_T);
   Py_CLEAR(clear_module_state->__pyx_n_s_ValueError);
   Py_CLEAR(clear_module_state->__pyx_n_u_WATER);
   Py_CLEAR(clear_module_state->__pyx_kp_u_W_m_K);
   Py_CLEAR(clear_module_state->__pyx_n_u_Water);
-  Py_CLEAR(clear_module_state->__pyx_n_s__15);
+  Py_CLEAR(clear_module_state->__pyx_n_s__19);
   Py_CLEAR(clear_module_state->__pyx_kp_u__3);
   Py_CLEAR(clear_module_state->__pyx_kp_u__4);
   Py_CLEAR(clear_module_state->__pyx_n_s_addDependent);
@@ -2794,6 +2804,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_u_conductivity);
   Py_CLEAR(clear_module_state->__pyx_n_s_convert);
   Py_CLEAR(clear_module_state->__pyx_n_s_coolprop_key);
+  Py_CLEAR(clear_module_state->__pyx_n_s_cp);
   Py_CLEAR(clear_module_state->__pyx_n_u_critical_pressure);
   Py_CLEAR(clear_module_state->__pyx_n_u_critical_temperature);
   Py_CLEAR(clear_module_state->__pyx_n_u_density);
@@ -2818,7 +2829,6 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_g);
   Py_CLEAR(clear_module_state->__pyx_n_s_grads);
   Py_CLEAR(clear_module_state->__pyx_n_s_humid_air);
-  Py_CLEAR(clear_module_state->__pyx_n_s_humidity);
   Py_CLEAR(clear_module_state->__pyx_n_u_humidity);
   Py_CLEAR(clear_module_state->__pyx_n_s_i);
   Py_CLEAR(clear_module_state->__pyx_n_s_i0);
@@ -2867,6 +2877,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_name_2);
   Py_CLEAR(clear_module_state->__pyx_n_s_originalConcentrationUnit);
   Py_CLEAR(clear_module_state->__pyx_n_s_originalUnits);
+  Py_CLEAR(clear_module_state->__pyx_n_s_p);
   Py_CLEAR(clear_module_state->__pyx_n_u_p);
   Py_CLEAR(clear_module_state->__pyx_n_s_param);
   Py_CLEAR(clear_module_state->__pyx_n_s_parameters);
@@ -2887,7 +2898,9 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_pyfluids);
   Py_CLEAR(clear_module_state->__pyx_n_u_quality);
   Py_CLEAR(clear_module_state->__pyx_n_s_range);
+  Py_CLEAR(clear_module_state->__pyx_n_s_relative_humidity);
   Py_CLEAR(clear_module_state->__pyx_n_u_relative_humidity);
+  Py_CLEAR(clear_module_state->__pyx_n_s_rh);
   Py_CLEAR(clear_module_state->__pyx_n_u_rh);
   Py_CLEAR(clear_module_state->__pyx_n_s_scalarParams);
   Py_CLEAR(clear_module_state->__pyx_n_s_scalarVariables);
@@ -2920,13 +2933,13 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_y1);
   Py_CLEAR(clear_module_state->__pyx_n_s_y2);
   Py_CLEAR(clear_module_state->__pyx_n_s_zip);
-  Py_CLEAR(clear_module_state->__pyx_float_1e5);
   Py_CLEAR(clear_module_state->__pyx_float_0_000001);
-  Py_CLEAR(clear_module_state->__pyx_float_0_008890559976462207);
   Py_CLEAR(clear_module_state->__pyx_int_0);
   Py_CLEAR(clear_module_state->__pyx_int_1);
-  Py_CLEAR(clear_module_state->__pyx_int_35);
+  Py_CLEAR(clear_module_state->__pyx_int_20);
+  Py_CLEAR(clear_module_state->__pyx_int_60);
   Py_CLEAR(clear_module_state->__pyx_int_100);
+  Py_CLEAR(clear_module_state->__pyx_int_101325);
   Py_CLEAR(clear_module_state->__pyx_tuple_);
   Py_CLEAR(clear_module_state->__pyx_tuple__2);
   Py_CLEAR(clear_module_state->__pyx_tuple__5);
@@ -2936,6 +2949,10 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_tuple__12);
   Py_CLEAR(clear_module_state->__pyx_tuple__13);
   Py_CLEAR(clear_module_state->__pyx_tuple__14);
+  Py_CLEAR(clear_module_state->__pyx_tuple__15);
+  Py_CLEAR(clear_module_state->__pyx_tuple__16);
+  Py_CLEAR(clear_module_state->__pyx_tuple__17);
+  Py_CLEAR(clear_module_state->__pyx_tuple__18);
   Py_CLEAR(clear_module_state->__pyx_codeobj__6);
   Py_CLEAR(clear_module_state->__pyx_codeobj__8);
   Py_CLEAR(clear_module_state->__pyx_codeobj__11);
@@ -2982,12 +2999,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_u_Pa);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Pa_s);
   Py_VISIT(traverse_module_state->__pyx_n_u_Rh);
+  Py_VISIT(traverse_module_state->__pyx_n_s_T);
   Py_VISIT(traverse_module_state->__pyx_n_u_T);
   Py_VISIT(traverse_module_state->__pyx_n_s_ValueError);
   Py_VISIT(traverse_module_state->__pyx_n_u_WATER);
   Py_VISIT(traverse_module_state->__pyx_kp_u_W_m_K);
   Py_VISIT(traverse_module_state->__pyx_n_u_Water);
-  Py_VISIT(traverse_module_state->__pyx_n_s__15);
+  Py_VISIT(traverse_module_state->__pyx_n_s__19);
   Py_VISIT(traverse_module_state->__pyx_kp_u__3);
   Py_VISIT(traverse_module_state->__pyx_kp_u__4);
   Py_VISIT(traverse_module_state->__pyx_n_s_addDependent);
@@ -3006,6 +3024,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_u_conductivity);
   Py_VISIT(traverse_module_state->__pyx_n_s_convert);
   Py_VISIT(traverse_module_state->__pyx_n_s_coolprop_key);
+  Py_VISIT(traverse_module_state->__pyx_n_s_cp);
   Py_VISIT(traverse_module_state->__pyx_n_u_critical_pressure);
   Py_VISIT(traverse_module_state->__pyx_n_u_critical_temperature);
   Py_VISIT(traverse_module_state->__pyx_n_u_density);
@@ -3030,7 +3049,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_g);
   Py_VISIT(traverse_module_state->__pyx_n_s_grads);
   Py_VISIT(traverse_module_state->__pyx_n_s_humid_air);
-  Py_VISIT(traverse_module_state->__pyx_n_s_humidity);
   Py_VISIT(traverse_module_state->__pyx_n_u_humidity);
   Py_VISIT(traverse_module_state->__pyx_n_s_i);
   Py_VISIT(traverse_module_state->__pyx_n_s_i0);
@@ -3079,6 +3097,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_name_2);
   Py_VISIT(traverse_module_state->__pyx_n_s_originalConcentrationUnit);
   Py_VISIT(traverse_module_state->__pyx_n_s_originalUnits);
+  Py_VISIT(traverse_module_state->__pyx_n_s_p);
   Py_VISIT(traverse_module_state->__pyx_n_u_p);
   Py_VISIT(traverse_module_state->__pyx_n_s_param);
   Py_VISIT(traverse_module_state->__pyx_n_s_parameters);
@@ -3099,7 +3118,9 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_pyfluids);
   Py_VISIT(traverse_module_state->__pyx_n_u_quality);
   Py_VISIT(traverse_module_state->__pyx_n_s_range);
+  Py_VISIT(traverse_module_state->__pyx_n_s_relative_humidity);
   Py_VISIT(traverse_module_state->__pyx_n_u_relative_humidity);
+  Py_VISIT(traverse_module_state->__pyx_n_s_rh);
   Py_VISIT(traverse_module_state->__pyx_n_u_rh);
   Py_VISIT(traverse_module_state->__pyx_n_s_scalarParams);
   Py_VISIT(traverse_module_state->__pyx_n_s_scalarVariables);
@@ -3132,13 +3153,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_y1);
   Py_VISIT(traverse_module_state->__pyx_n_s_y2);
   Py_VISIT(traverse_module_state->__pyx_n_s_zip);
-  Py_VISIT(traverse_module_state->__pyx_float_1e5);
   Py_VISIT(traverse_module_state->__pyx_float_0_000001);
-  Py_VISIT(traverse_module_state->__pyx_float_0_008890559976462207);
   Py_VISIT(traverse_module_state->__pyx_int_0);
   Py_VISIT(traverse_module_state->__pyx_int_1);
-  Py_VISIT(traverse_module_state->__pyx_int_35);
+  Py_VISIT(traverse_module_state->__pyx_int_20);
+  Py_VISIT(traverse_module_state->__pyx_int_60);
   Py_VISIT(traverse_module_state->__pyx_int_100);
+  Py_VISIT(traverse_module_state->__pyx_int_101325);
   Py_VISIT(traverse_module_state->__pyx_tuple_);
   Py_VISIT(traverse_module_state->__pyx_tuple__2);
   Py_VISIT(traverse_module_state->__pyx_tuple__5);
@@ -3148,6 +3169,10 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_tuple__12);
   Py_VISIT(traverse_module_state->__pyx_tuple__13);
   Py_VISIT(traverse_module_state->__pyx_tuple__14);
+  Py_VISIT(traverse_module_state->__pyx_tuple__15);
+  Py_VISIT(traverse_module_state->__pyx_tuple__16);
+  Py_VISIT(traverse_module_state->__pyx_tuple__17);
+  Py_VISIT(traverse_module_state->__pyx_tuple__18);
   Py_VISIT(traverse_module_state->__pyx_codeobj__6);
   Py_VISIT(traverse_module_state->__pyx_codeobj__8);
   Py_VISIT(traverse_module_state->__pyx_codeobj__11);
@@ -3204,12 +3229,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_u_Pa __pyx_mstate_global->__pyx_n_u_Pa
 #define __pyx_kp_u_Pa_s __pyx_mstate_global->__pyx_kp_u_Pa_s
 #define __pyx_n_u_Rh __pyx_mstate_global->__pyx_n_u_Rh
+#define __pyx_n_s_T __pyx_mstate_global->__pyx_n_s_T
 #define __pyx_n_u_T __pyx_mstate_global->__pyx_n_u_T
 #define __pyx_n_s_ValueError __pyx_mstate_global->__pyx_n_s_ValueError
 #define __pyx_n_u_WATER __pyx_mstate_global->__pyx_n_u_WATER
 #define __pyx_kp_u_W_m_K __pyx_mstate_global->__pyx_kp_u_W_m_K
 #define __pyx_n_u_Water __pyx_mstate_global->__pyx_n_u_Water
-#define __pyx_n_s__15 __pyx_mstate_global->__pyx_n_s__15
+#define __pyx_n_s__19 __pyx_mstate_global->__pyx_n_s__19
 #define __pyx_kp_u__3 __pyx_mstate_global->__pyx_kp_u__3
 #define __pyx_kp_u__4 __pyx_mstate_global->__pyx_kp_u__4
 #define __pyx_n_s_addDependent __pyx_mstate_global->__pyx_n_s_addDependent
@@ -3228,6 +3254,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_u_conductivity __pyx_mstate_global->__pyx_n_u_conductivity
 #define __pyx_n_s_convert __pyx_mstate_global->__pyx_n_s_convert
 #define __pyx_n_s_coolprop_key __pyx_mstate_global->__pyx_n_s_coolprop_key
+#define __pyx_n_s_cp __pyx_mstate_global->__pyx_n_s_cp
 #define __pyx_n_u_critical_pressure __pyx_mstate_global->__pyx_n_u_critical_pressure
 #define __pyx_n_u_critical_temperature __pyx_mstate_global->__pyx_n_u_critical_temperature
 #define __pyx_n_u_density __pyx_mstate_global->__pyx_n_u_density
@@ -3252,7 +3279,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_g __pyx_mstate_global->__pyx_n_s_g
 #define __pyx_n_s_grads __pyx_mstate_global->__pyx_n_s_grads
 #define __pyx_n_s_humid_air __pyx_mstate_global->__pyx_n_s_humid_air
-#define __pyx_n_s_humidity __pyx_mstate_global->__pyx_n_s_humidity
 #define __pyx_n_u_humidity __pyx_mstate_global->__pyx_n_u_humidity
 #define __pyx_n_s_i __pyx_mstate_global->__pyx_n_s_i
 #define __pyx_n_s_i0 __pyx_mstate_global->__pyx_n_s_i0
@@ -3301,6 +3327,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_name_2 __pyx_mstate_global->__pyx_n_s_name_2
 #define __pyx_n_s_originalConcentrationUnit __pyx_mstate_global->__pyx_n_s_originalConcentrationUnit
 #define __pyx_n_s_originalUnits __pyx_mstate_global->__pyx_n_s_originalUnits
+#define __pyx_n_s_p __pyx_mstate_global->__pyx_n_s_p
 #define __pyx_n_u_p __pyx_mstate_global->__pyx_n_u_p
 #define __pyx_n_s_param __pyx_mstate_global->__pyx_n_s_param
 #define __pyx_n_s_parameters __pyx_mstate_global->__pyx_n_s_parameters
@@ -3321,7 +3348,9 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_pyfluids __pyx_mstate_global->__pyx_n_s_pyfluids
 #define __pyx_n_u_quality __pyx_mstate_global->__pyx_n_u_quality
 #define __pyx_n_s_range __pyx_mstate_global->__pyx_n_s_range
+#define __pyx_n_s_relative_humidity __pyx_mstate_global->__pyx_n_s_relative_humidity
 #define __pyx_n_u_relative_humidity __pyx_mstate_global->__pyx_n_u_relative_humidity
+#define __pyx_n_s_rh __pyx_mstate_global->__pyx_n_s_rh
 #define __pyx_n_u_rh __pyx_mstate_global->__pyx_n_u_rh
 #define __pyx_n_s_scalarParams __pyx_mstate_global->__pyx_n_s_scalarParams
 #define __pyx_n_s_scalarVariables __pyx_mstate_global->__pyx_n_s_scalarVariables
@@ -3354,13 +3383,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_y1 __pyx_mstate_global->__pyx_n_s_y1
 #define __pyx_n_s_y2 __pyx_mstate_global->__pyx_n_s_y2
 #define __pyx_n_s_zip __pyx_mstate_global->__pyx_n_s_zip
-#define __pyx_float_1e5 __pyx_mstate_global->__pyx_float_1e5
 #define __pyx_float_0_000001 __pyx_mstate_global->__pyx_float_0_000001
-#define __pyx_float_0_008890559976462207 __pyx_mstate_global->__pyx_float_0_008890559976462207
 #define __pyx_int_0 __pyx_mstate_global->__pyx_int_0
 #define __pyx_int_1 __pyx_mstate_global->__pyx_int_1
-#define __pyx_int_35 __pyx_mstate_global->__pyx_int_35
+#define __pyx_int_20 __pyx_mstate_global->__pyx_int_20
+#define __pyx_int_60 __pyx_mstate_global->__pyx_int_60
 #define __pyx_int_100 __pyx_mstate_global->__pyx_int_100
+#define __pyx_int_101325 __pyx_mstate_global->__pyx_int_101325
 #define __pyx_tuple_ __pyx_mstate_global->__pyx_tuple_
 #define __pyx_tuple__2 __pyx_mstate_global->__pyx_tuple__2
 #define __pyx_tuple__5 __pyx_mstate_global->__pyx_tuple__5
@@ -3370,6 +3399,10 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_tuple__12 __pyx_mstate_global->__pyx_tuple__12
 #define __pyx_tuple__13 __pyx_mstate_global->__pyx_tuple__13
 #define __pyx_tuple__14 __pyx_mstate_global->__pyx_tuple__14
+#define __pyx_tuple__15 __pyx_mstate_global->__pyx_tuple__15
+#define __pyx_tuple__16 __pyx_mstate_global->__pyx_tuple__16
+#define __pyx_tuple__17 __pyx_mstate_global->__pyx_tuple__17
+#define __pyx_tuple__18 __pyx_mstate_global->__pyx_tuple__18
 #define __pyx_codeobj__6 __pyx_mstate_global->__pyx_codeobj__6
 #define __pyx_codeobj__8 __pyx_mstate_global->__pyx_codeobj__8
 #define __pyx_codeobj__11 __pyx_mstate_global->__pyx_codeobj__11
@@ -9321,12 +9354,13 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_u_Pa, __pyx_k_Pa, sizeof(__pyx_k_Pa), 0, 1, 0, 1},
     {&__pyx_kp_u_Pa_s, __pyx_k_Pa_s, sizeof(__pyx_k_Pa_s), 0, 1, 0, 0},
     {&__pyx_n_u_Rh, __pyx_k_Rh, sizeof(__pyx_k_Rh), 0, 1, 0, 1},
+    {&__pyx_n_s_T, __pyx_k_T, sizeof(__pyx_k_T), 0, 0, 1, 1},
     {&__pyx_n_u_T, __pyx_k_T, sizeof(__pyx_k_T), 0, 1, 0, 1},
     {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
     {&__pyx_n_u_WATER, __pyx_k_WATER, sizeof(__pyx_k_WATER), 0, 1, 0, 1},
     {&__pyx_kp_u_W_m_K, __pyx_k_W_m_K, sizeof(__pyx_k_W_m_K), 0, 1, 0, 0},
     {&__pyx_n_u_Water, __pyx_k_Water, sizeof(__pyx_k_Water), 0, 1, 0, 1},
-    {&__pyx_n_s__15, __pyx_k__15, sizeof(__pyx_k__15), 0, 0, 1, 1},
+    {&__pyx_n_s__19, __pyx_k__19, sizeof(__pyx_k__19), 0, 0, 1, 1},
     {&__pyx_kp_u__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0, 0},
     {&__pyx_kp_u__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 1, 0, 0},
     {&__pyx_n_s_addDependent, __pyx_k_addDependent, sizeof(__pyx_k_addDependent), 0, 0, 1, 1},
@@ -9345,6 +9379,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_u_conductivity, __pyx_k_conductivity, sizeof(__pyx_k_conductivity), 0, 1, 0, 1},
     {&__pyx_n_s_convert, __pyx_k_convert, sizeof(__pyx_k_convert), 0, 0, 1, 1},
     {&__pyx_n_s_coolprop_key, __pyx_k_coolprop_key, sizeof(__pyx_k_coolprop_key), 0, 0, 1, 1},
+    {&__pyx_n_s_cp, __pyx_k_cp, sizeof(__pyx_k_cp), 0, 0, 1, 1},
     {&__pyx_n_u_critical_pressure, __pyx_k_critical_pressure, sizeof(__pyx_k_critical_pressure), 0, 1, 0, 1},
     {&__pyx_n_u_critical_temperature, __pyx_k_critical_temperature, sizeof(__pyx_k_critical_temperature), 0, 1, 0, 1},
     {&__pyx_n_u_density, __pyx_k_density, sizeof(__pyx_k_density), 0, 1, 0, 1},
@@ -9369,7 +9404,6 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_g, __pyx_k_g, sizeof(__pyx_k_g), 0, 0, 1, 1},
     {&__pyx_n_s_grads, __pyx_k_grads, sizeof(__pyx_k_grads), 0, 0, 1, 1},
     {&__pyx_n_s_humid_air, __pyx_k_humid_air, sizeof(__pyx_k_humid_air), 0, 0, 1, 1},
-    {&__pyx_n_s_humidity, __pyx_k_humidity, sizeof(__pyx_k_humidity), 0, 0, 1, 1},
     {&__pyx_n_u_humidity, __pyx_k_humidity, sizeof(__pyx_k_humidity), 0, 1, 0, 1},
     {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
     {&__pyx_n_s_i0, __pyx_k_i0, sizeof(__pyx_k_i0), 0, 0, 1, 1},
@@ -9418,6 +9452,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
     {&__pyx_n_s_originalConcentrationUnit, __pyx_k_originalConcentrationUnit, sizeof(__pyx_k_originalConcentrationUnit), 0, 0, 1, 1},
     {&__pyx_n_s_originalUnits, __pyx_k_originalUnits, sizeof(__pyx_k_originalUnits), 0, 0, 1, 1},
+    {&__pyx_n_s_p, __pyx_k_p, sizeof(__pyx_k_p), 0, 0, 1, 1},
     {&__pyx_n_u_p, __pyx_k_p, sizeof(__pyx_k_p), 0, 1, 0, 1},
     {&__pyx_n_s_param, __pyx_k_param, sizeof(__pyx_k_param), 0, 0, 1, 1},
     {&__pyx_n_s_parameters, __pyx_k_parameters, sizeof(__pyx_k_parameters), 0, 0, 1, 1},
@@ -9438,7 +9473,9 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_pyfluids, __pyx_k_pyfluids, sizeof(__pyx_k_pyfluids), 0, 0, 1, 1},
     {&__pyx_n_u_quality, __pyx_k_quality, sizeof(__pyx_k_quality), 0, 1, 0, 1},
     {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+    {&__pyx_n_s_relative_humidity, __pyx_k_relative_humidity, sizeof(__pyx_k_relative_humidity), 0, 0, 1, 1},
     {&__pyx_n_u_relative_humidity, __pyx_k_relative_humidity, sizeof(__pyx_k_relative_humidity), 0, 1, 0, 1},
+    {&__pyx_n_s_rh, __pyx_k_rh, sizeof(__pyx_k_rh), 0, 0, 1, 1},
     {&__pyx_n_u_rh, __pyx_k_rh, sizeof(__pyx_k_rh), 0, 1, 0, 1},
     {&__pyx_n_s_scalarParams, __pyx_k_scalarParams, sizeof(__pyx_k_scalarParams), 0, 0, 1, 1},
     {&__pyx_n_s_scalarVariables, __pyx_k_scalarVariables, sizeof(__pyx_k_scalarVariables), 0, 0, 1, 1},
@@ -9478,7 +9515,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
 /* #### Code section: cached_builtins ### */
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(0, 4, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 347, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 341, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 12, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 37, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 57, __pyx_L1_error)
@@ -9556,38 +9593,58 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__10);
   __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 22, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyees_prop_py, __pyx_n_s_propScalar, 259, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 259, __pyx_L1_error)
 
-  /* "pyees/prop.py":343
- *     # print(humidity)
+  /* "pyees/prop.py":340
+ * if __name__ == "__main__":
+ * 
+ *     cp = prop('specific_heat', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))             # <<<<<<<<<<<<<<
+ *     print(cp)
  *     humid_air = HumidAir().with_state(
- *         InputHumidAir.pressure(1e5),             # <<<<<<<<<<<<<<
- *         InputHumidAir.temperature(35),
- *         InputHumidAir.humidity(0.008890559976462207),
  */
-  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_float_1e5); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 343, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(2, __pyx_n_u_specific_heat, __pyx_n_u_air); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 340, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
+  __pyx_tuple__13 = PyTuple_Pack(2, __pyx_int_60, __pyx_kp_u__3); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__13);
+  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_tuple__14 = PyTuple_Pack(2, __pyx_int_101325, __pyx_n_u_Pa); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
+  __pyx_tuple__15 = PyTuple_Pack(2, __pyx_int_20, __pyx_n_u_C); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
+
+  /* "pyees/prop.py":343
+ *     print(cp)
+ *     humid_air = HumidAir().with_state(
+ *         InputHumidAir.pressure(101325),             # <<<<<<<<<<<<<<
+ *         InputHumidAir.temperature(20),
+ *         InputHumidAir.relative_humidity(60),
+ */
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_int_101325); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 343, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
 
   /* "pyees/prop.py":344
  *     humid_air = HumidAir().with_state(
- *         InputHumidAir.pressure(1e5),
- *         InputHumidAir.temperature(35),             # <<<<<<<<<<<<<<
- *         InputHumidAir.humidity(0.008890559976462207),
+ *         InputHumidAir.pressure(101325),
+ *         InputHumidAir.temperature(20),             # <<<<<<<<<<<<<<
+ *         InputHumidAir.relative_humidity(60),
  *     )
  */
-  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_int_35); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 344, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__13);
-  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_int_20); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 344, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__17);
+  __Pyx_GIVEREF(__pyx_tuple__17);
 
   /* "pyees/prop.py":345
- *         InputHumidAir.pressure(1e5),
- *         InputHumidAir.temperature(35),
- *         InputHumidAir.humidity(0.008890559976462207),             # <<<<<<<<<<<<<<
+ *         InputHumidAir.pressure(101325),
+ *         InputHumidAir.temperature(20),
+ *         InputHumidAir.relative_humidity(60),             # <<<<<<<<<<<<<<
  *     )
  *     print(humid_air.specific_heat)
  */
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_float_0_008890559976462207); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 345, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
+  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_int_60); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 345, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__18);
+  __Pyx_GIVEREF(__pyx_tuple__18);
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -9602,13 +9659,13 @@ static CYTHON_SMALL_CODE int __Pyx_InitConstants(void) {
   __pyx_umethod_PyDict_Type_values.type = (PyObject*)&PyDict_Type;
   __pyx_umethod_PyDict_Type_values.method_name = &__pyx_n_s_values;
   if (__Pyx_CreateStringTabAndInitStrings() < 0) __PYX_ERR(0, 1, __pyx_L1_error);
-  __pyx_float_1e5 = PyFloat_FromDouble(1e5); if (unlikely(!__pyx_float_1e5)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_float_0_000001 = PyFloat_FromDouble(0.000001); if (unlikely(!__pyx_float_0_000001)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_float_0_008890559976462207 = PyFloat_FromDouble(0.008890559976462207); if (unlikely(!__pyx_float_0_008890559976462207)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_35 = PyInt_FromLong(35); if (unlikely(!__pyx_int_35)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_20 = PyInt_FromLong(20); if (unlikely(!__pyx_int_20)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_60 = PyInt_FromLong(60); if (unlikely(!__pyx_int_60)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_100 = PyInt_FromLong(100); if (unlikely(!__pyx_int_100)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_101325 = PyInt_FromLong(101325L); if (unlikely(!__pyx_int_101325)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -10288,7 +10345,7 @@ if (!__Pyx_RefNanny) {
  * 
  * if __name__ == "__main__":             # <<<<<<<<<<<<<<
  * 
- *     # humidity = prop('humidity', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
+ *     cp = prop('specific_heat', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_name_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 338, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -10296,116 +10353,169 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_10) {
 
-    /* "pyees/prop.py":342
- *     # humidity = prop('humidity', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
- *     # print(humidity)
- *     humid_air = HumidAir().with_state(             # <<<<<<<<<<<<<<
- *         InputHumidAir.pressure(1e5),
- *         InputHumidAir.temperature(35),
+    /* "pyees/prop.py":340
+ * if __name__ == "__main__":
+ * 
+ *     cp = prop('specific_heat', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))             # <<<<<<<<<<<<<<
+ *     print(cp)
+ *     humid_air = HumidAir().with_state(
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_HumidAir); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 342, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_prop); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 340, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_7 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 342, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 340, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_variable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_rh, __pyx_t_9) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_variable); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_p, __pyx_t_2) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_variable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_T, __pyx_t_9) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__12, __pyx_t_7); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_with_state); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 342, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    if (PyDict_SetItem(__pyx_d, __pyx_n_s_cp, __pyx_t_9) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+
+    /* "pyees/prop.py":341
+ * 
+ *     cp = prop('specific_heat', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
+ *     print(cp)             # <<<<<<<<<<<<<<
+ *     humid_air = HumidAir().with_state(
+ *         InputHumidAir.pressure(101325),
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_cp); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 341, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 341, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "pyees/prop.py":343
- *     # print(humidity)
- *     humid_air = HumidAir().with_state(
- *         InputHumidAir.pressure(1e5),             # <<<<<<<<<<<<<<
- *         InputHumidAir.temperature(35),
- *         InputHumidAir.humidity(0.008890559976462207),
+    /* "pyees/prop.py":342
+ *     cp = prop('specific_heat', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
+ *     print(cp)
+ *     humid_air = HumidAir().with_state(             # <<<<<<<<<<<<<<
+ *         InputHumidAir.pressure(101325),
+ *         InputHumidAir.temperature(20),
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_InputHumidAir); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 343, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_HumidAir); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 342, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_pressure); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 343, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_9 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 342, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 343, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_with_state); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 342, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+
+    /* "pyees/prop.py":343
+ *     print(cp)
+ *     humid_air = HumidAir().with_state(
+ *         InputHumidAir.pressure(101325),             # <<<<<<<<<<<<<<
+ *         InputHumidAir.temperature(20),
+ *         InputHumidAir.relative_humidity(60),
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_InputHumidAir); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 343, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_pressure); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 343, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 343, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "pyees/prop.py":344
  *     humid_air = HumidAir().with_state(
- *         InputHumidAir.pressure(1e5),
- *         InputHumidAir.temperature(35),             # <<<<<<<<<<<<<<
- *         InputHumidAir.humidity(0.008890559976462207),
+ *         InputHumidAir.pressure(101325),
+ *         InputHumidAir.temperature(20),             # <<<<<<<<<<<<<<
+ *         InputHumidAir.relative_humidity(60),
  *     )
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_InputHumidAir); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 344, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_InputHumidAir); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 344, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_temperature); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 344, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_temperature); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 344, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 344, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 344, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
     /* "pyees/prop.py":345
- *         InputHumidAir.pressure(1e5),
- *         InputHumidAir.temperature(35),
- *         InputHumidAir.humidity(0.008890559976462207),             # <<<<<<<<<<<<<<
+ *         InputHumidAir.pressure(101325),
+ *         InputHumidAir.temperature(20),
+ *         InputHumidAir.relative_humidity(60),             # <<<<<<<<<<<<<<
  *     )
  *     print(humid_air.specific_heat)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_InputHumidAir); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 345, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_humidity); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 345, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_InputHumidAir); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 345, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_relative_humidity); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 345, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 345, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 345, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
     /* "pyees/prop.py":342
- *     # humidity = prop('humidity', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
- *     # print(humidity)
+ *     cp = prop('specific_heat', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
+ *     print(cp)
  *     humid_air = HumidAir().with_state(             # <<<<<<<<<<<<<<
- *         InputHumidAir.pressure(1e5),
- *         InputHumidAir.temperature(35),
+ *         InputHumidAir.pressure(101325),
+ *         InputHumidAir.temperature(20),
  */
     __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 342, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_GIVEREF(__pyx_t_7);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_7)) __PYX_ERR(0, 342, __pyx_L1_error);
-    __Pyx_GIVEREF(__pyx_t_2);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_2)) __PYX_ERR(0, 342, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_9);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 2, __pyx_t_9)) __PYX_ERR(0, 342, __pyx_L1_error);
-    __pyx_t_7 = 0;
-    __pyx_t_2 = 0;
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_9)) __PYX_ERR(0, 342, __pyx_L1_error);
+    __Pyx_GIVEREF(__pyx_t_3);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_3)) __PYX_ERR(0, 342, __pyx_L1_error);
+    __Pyx_GIVEREF(__pyx_t_2);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 2, __pyx_t_2)) __PYX_ERR(0, 342, __pyx_L1_error);
     __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_8, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 342, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = 0;
+    __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 342, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (PyDict_SetItem(__pyx_d, __pyx_n_s_humid_air, __pyx_t_9) < 0) __PYX_ERR(0, 342, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    if (PyDict_SetItem(__pyx_d, __pyx_n_s_humid_air, __pyx_t_2) < 0) __PYX_ERR(0, 342, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
     /* "pyees/prop.py":347
- *         InputHumidAir.humidity(0.008890559976462207),
+ *         InputHumidAir.relative_humidity(60),
  *     )
  *     print(humid_air.specific_heat)             # <<<<<<<<<<<<<<
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_humid_air); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 347, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_specific_heat); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 347, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_humid_air); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 347, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_specific_heat); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 347, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 347, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 347, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
     /* "pyees/prop.py":338
  * 
  * 
  * if __name__ == "__main__":             # <<<<<<<<<<<<<<
  * 
- *     # humidity = prop('humidity', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
+ *     cp = prop('specific_heat', 'air', rh = variable(60, '%'), p = variable( 101325, 'Pa'), T = variable(20, 'C'))
  */
   }
 
@@ -10414,10 +10524,10 @@ if (!__Pyx_RefNanny) {
  * try:
  *     from variable import variable, arrayVariable
  */
-  __pyx_t_9 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_9) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /*--- Wrapped vars code ---*/
 
@@ -14802,7 +14912,7 @@ __Pyx_PyType_GetName(PyTypeObject* tp)
     if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
         PyErr_Clear();
         Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__15);
+        name = __Pyx_NewRef(__pyx_n_s__19);
     }
     return name;
 }

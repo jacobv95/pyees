@@ -1387,7 +1387,10 @@ class unit():
     
         return unitDict
 
+    def __rtruediv__(self, other):
         
+        other = unit(str(other))
+        return other / self
         
     def __truediv__(self, other):
         unitDict = unit.staticTruediv(self.unitDict, other.unitDict)
@@ -1545,3 +1548,5 @@ class unit():
             return _bellConversion()
 
         raise ValueError(f'The logarithmic conversion of {u} is not knwon')
+
+

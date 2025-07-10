@@ -1086,6 +1086,8 @@ class logistic_fit(_fit):
         return out
 
 
+
+
 def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
     
     class newFit(_fit):
@@ -1246,7 +1248,7 @@ class _multi_variable_fit(_fit):
     def predict(self, x):
         return self._func(self.coefficients, x)
 
-    def scatter(self, ax, index, showUncert=True, **kwargs):
+    def scatterInPlane(self, ax, index, showUncert=True, **kwargs):
 
         if all(self.xUncert[index] == 0) and all(self.yUncert == 0):
             showUncert = False
@@ -1281,7 +1283,7 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
         
-    def scatterNormalizedResiduals(self, ax, index, **kwargs):
+    def scatterNormalizedResidualsInPlane(self, ax, index, **kwargs):
 
         np.seterr('ignore')
         scale = variable(np.array([1 / ((elemX**2 + elemY**2)**(1/2)) for elemX, elemY in zip(self._sx[index], self._sy)]))
@@ -1310,7 +1312,7 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
-    def scatterResiduals(self, ax, index, **kwargs):
+    def scatterResidualsInPlane(self, ax, index, **kwargs):
         
         if isinstance(ax, axes.Axes):
             if not 'label' in kwargs:
@@ -1334,7 +1336,7 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
-    def plotData(self, ax, index, **kwargs):
+    def plotDataInPlane(self, ax, index, **kwargs):
         if isinstance(ax, axes.Axes):
             if not 'label' in kwargs:
                 kwargs['label'] = 'Data'
@@ -1355,7 +1357,7 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
-    def plotUncertanty(self, ax, index, x = None, **kwargs):
+    def plotUncertantyInPlane(self, ax, index, x = None, **kwargs):
         if x is None:
             x = []
             for i in range(len(self.xVal)):
@@ -1396,7 +1398,7 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
-    def plotResiduals(self, ax, index, **kwargs):    
+    def plotResidualsInPlane(self, ax, index, **kwargs):    
         
         x = []
         y = []
@@ -1429,7 +1431,7 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
       
-    def plot(self, ax, index, x=None, **kwargs):
+    def plotInPlane(self, ax, index, x=None, **kwargs):
         if x is None:
             x = []
             for i in range(len(self.xVal)):
@@ -1511,7 +1513,7 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
-    def plotUncertantyOfInputs(self, ax, index, n = 100, **kwargs):
+    def plotUncertantyOfInputsInPlane(self, ax, index, n = 100, **kwargs):
                 
             xUncert = np.interp(np.linspace(0, len(self.xUncert[index])-1, n), range(len(self.xUncert[index])), self.xUncert[index])
             yUncert = np.interp(np.linspace(0, len(self.yUncert)-1, n), range(len(self.yUncert)), self.yUncert)
@@ -1521,6 +1523,100 @@ class _multi_variable_fit(_fit):
             for i in range(n):
                 ax.add_patch(Ellipse((xValue[i], yValue[i]), 2*xUncert[i], 2*yUncert[i], **kwargs))
                 if 'label' in kwargs: kwargs['label'] = None
+
+    def plot3D(self, ax, x=None, **kwargs):
+        
+        if (len(self.xVal) != 2):
+            raise ValueError('You do not have excatly two independent variable. Therefore you cannot plot the data in 3D')
+        
+        if x is None:
+            x = []
+            for i in range(len(self.xVal)):
+                
+                x.append(variable(np.linspace(np.min(self.xVal[i]), np.max(self.xVal[i]), 100), self.xUnit[i]))
+        else:
+            if not isinstance(x, List):
+                raise ValueError('The argument "x" has to be List of variables')
+
+            for i, elem in enumerate(x):
+                if not isinstance(elem, arrayVariable):
+                    raise ValueError('The argument "x" has to be a list of variables')
+
+
+        x, y = np.meshgrid(x[0], x[1])
+        z = []
+        for i in range(len(x)):
+            z.append(self.predict([x[i], y[i]]).value)
+        
+        x = [elem.value for elem in x]
+        y = [elem.value for elem in y]
+        
+        z = np.array(z)
+
+        if isinstance(ax, axes.Axes):
+            if not 'label' in kwargs:
+                kwargs['label'] = self.__str__()
+            return ax.plot_surface(x, y, z, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            
+            if not 'name' in kwargs:
+                kwargs['name'] = self.__str__()
+                                
+            ax.add_trace(
+                go.Surface(
+                    x = x,
+                    y = y,
+                    z = z,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+           
+    def scatter3D(self, ax, showUncert = True, **kwargs):
+        
+        if (len(self.xVal) != 2):
+            raise ValueError('You do not have excatly two independent variable. Therefore you cannot plot the data in 3D')
+
+        if all(self.xUncert[0] == 0) and all(self.xUncert[1] == 0) and all(self.yUncert == 0):
+            showUncert = False
+
+
+
+        if isinstance(ax, axes.Axes):
+            # scatter
+            if showUncert:
+                return ax.errorbar(self.xVal[0], self.xVal[1], self.yVal, xerr=self.xUncert[0], yerr=self.xUncert[1], zerr=self.yUncert, linestyle='', **kwargs)
+            else:
+                return ax.scatter(self.xVal[0], self.xVal[1], self.yVal, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            
+            if showUncert:
+                ax.add_trace(
+                    go.Scatter(
+                        x = self.xVal[0],
+                        y = self.xVal[1],
+                        z = self.yVal,
+                        error_x = dict(array = self.xUncert[0]),
+                        error_y = dict(array = self.xUncert[1]),
+                        error_z = dict(array = self.yUncert),
+                        mode = 'markers',
+                        **kwargs),
+                    **addTraceKwargs
+                    )
+            else:
+                ax.add_trace(
+                    go.Scatter(x = self.xVal[0], y = self.xVal[1], z = self.yVal, mode = 'markers', **kwargs),
+                    **addTraceKwargs
+                    )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+        
 
 
 
@@ -1589,4 +1685,5 @@ def crateNewMultiVariableFitClass(func, funcNameFunc, getVariableUnitsFunc, nPar
             return self.getVariableUnitsFunc(self.xUnit, self.yUnit)
 
     return newFit
+
 

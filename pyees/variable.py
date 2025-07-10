@@ -541,6 +541,8 @@ class scalarVariable():
             return self.__abs__()
         elif func == np.linspace:
             return self._linspace(*args, **kwargs)
+        elif func == np.meshgrid:
+            return self._meshgrid(*args, **kwargs)
         raise NotImplementedError()
 
     @staticmethod
@@ -565,6 +567,51 @@ class scalarVariable():
         
         return variable(val, start.unit, unc)
 
+    def _meshgrid(self, *args, **kwargs):
+        
+        x, y = args
+
+        ## create a meshgrid of indexes
+        xIndex = list(range(len(x)))
+        yIndex = list(range(len(y)))
+        xIndex, yIndex = np.meshgrid(xIndex, yIndex)
+
+
+        ## create empty list of lists with the same size of the meshgrid of indexes
+        n,m = xIndex.shape
+        outX = []
+        outY = []
+        for i in range(n):
+            oX = []
+            oY = []
+            for j in range(m):
+                oX.append([])
+                oY.append([])
+            outX.append(oX)
+            outY.append(oY)
+    
+
+        ## place the variables into the correct spots of the empty list of lists
+        for i in range(len(x)):
+            row, col = np.where(xIndex == i)
+            for j in range(len(row)):
+                outX[row[j]][col[j]] = x[i]
+                
+        for i in range(len(y)):
+            row, col = np.where(yIndex == i)
+            for j in range(len(row)):
+                outY[row[j]][col[j]] = y[i]
+
+        ## convert list of list of scalar variables to list of arrayVariables
+        for i in range(n):
+            outX[i] = variable([outX[i][j] for j in range(m)])
+
+        for i in range(n):
+            outY[i] = variable([outY[i][j] for j in range(m)])
+
+
+        return outX, outY
+    
     def max(self):
         return self
 
@@ -952,7 +999,7 @@ class arrayVariable(scalarVariable):
         return out
 
     def __array_ufunc__(self, ufunc, *args, **kwargs):
-        
+
         if ufunc == np.log:
             return self.log()
         elif ufunc == np.log10:
@@ -1076,3 +1123,11 @@ def variable(value, unit='', uncert=None):
         return arrayVariable(value=value, unitStr=unit, uncert=uncert)
     else:
         return scalarVariable(value, unit, uncert)
+
+
+if __name__ == "__main__":
+
+    x = variable([1,2,3,4])
+    y = variable([1,2,3])
+    x, y = np.meshgrid(x,y)
+    print(x,y)

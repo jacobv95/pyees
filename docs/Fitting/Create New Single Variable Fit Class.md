@@ -1,7 +1,7 @@
-# Crate new fit class
+# Crate new single variable fit class
 
 
-Pyees includes a method to create a new fitting class.
+Pyees includes a method to create a new single variable fitting class.
 
 ```
 crateNewFitClass(func: Callable, funcNameFunc: Callable, getVariableUnitsFunc: Callable, nParameters: int) -> fit
@@ -10,7 +10,7 @@ crateNewFitClass(func: Callable, funcNameFunc: Callable, getVariableUnitsFunc: C
 The method takes 4 arguments, 3 of which has to be callable. These 3 callables has to have the following structure
 
 ```
-func(coefficients: List[variables], x: variable) -> double
+func(coefficients: List[variables], x: variable) -> variable
 funcNameFunc(coefficients: List[variables]) -> str
 getVariableUnitsFunc(xUnit: variableUnit, yUnit: variableUnit) -> List[str]
 ```

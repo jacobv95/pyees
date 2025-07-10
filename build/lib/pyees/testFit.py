@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import matplotlib.pyplot as plt
 
-from fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit, crateNewFitClass, multi_variable_lin_fit
+from fit import lin_fit, pow_fit, pol_fit, exp_fit, logistic_fit, variable, _fit, crateNewFitClass, multi_variable_lin_fit, crateNewMultiVariableFitClass
 
 showPlots = False
 
@@ -268,7 +268,77 @@ class test(unittest.TestCase):
             self.assertAlmostEqual(res[i].value, f.coefficients[i].value)
             self.assertEqual(res[i].unit, f.coefficients[i].unit)
             self.assertAlmostEqual(res[i].uncert, f.coefficients[i].uncert)
+
+
+
+
+    def testCreateNewMultiVariableFit(self):
+        from prop import prop
+
+        ## determine the inputs for the regression
+        temperature = variable([-20, -10, 0, 10, 20, 30, 40, 50, 60], 'C')
+        temperature.convert('K')
+        pressures = variable(np.array([0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3]) * 101325, 'Pa')
+        humidity = variable([10, 20, 30, 40, 50, 60, 70, 80, 90], '%')
+        
+
+        ## determine the density for each combination of inputs
+        ## and store the maxtrix of inputs and outputs
+        T, P, RH, D = variable([], 'K'),variable([], 'Pa'),variable([], '%'),variable([], 'kg/m3')
+        for t in temperature:
+            for p in pressures:
+                for h in humidity:
+                    
+                    d = prop('density', 'air', T = t, P = p, rh = h)
+                    
+                    ## store the values in lists
+                    T.append(t)
+                    P.append(p)
+                    RH.append(h)
+                    D.append(d)
+
+        def getVariableUnits(xUnit, Dunit):
+            Tunit, Punit, RHunit = xUnit
             
+            out = [
+                Dunit * Tunit,
+                Dunit / Punit,
+                Dunit / RHunit,
+                Dunit / (Tunit * Punit),
+                Dunit / (Tunit * RHunit),
+                Dunit
+            ]
+            
+            return out
+        
+        def func(B, X):
+            T, P, RH = X
+            a,b,c,d,e,f = B
+
+            return a / T + b * P + c * RH + d * T * P + e * T * RH + f
+
+        def func_name(coefficients):
+            a,b,c,d,e,f = coefficients
+            return f"a / T + b * P + c * RH + d * T * P + e * T * RH + f, a = {a}, b = {b}, c = {c}, d = {d}, e = {e}, f = {f}"
+
+        fit = crateNewMultiVariableFitClass(func, func_name, getVariableUnits, 6)
+        f = fit([T,P,RH], D)
+
+
+        res = [
+            variable(20.20928106, 'kg-DELTAK/m3', 7e-08),
+            variable(0.000023512096813, 'kg/m3-Pa', 2e-15),
+            variable(0.002157800109, 'kg/m3-%', 2e-12),
+            variable(-0.000000039310176563, 'kg/m3-Pa-DELTAK', 7e-18),
+            variable(-0.000008111835383, 'kg/m3-%-DELTAK', 6e-15),
+            variable(-0.0700479212, 'kg/m3', 2e-10),
+        ]
+
+        for i in range(len(res)):
+            self.assertAlmostEqual(res[i].value, f.coefficients[i].value)
+            self.assertEqual(res[i].unit, f.coefficients[i].unit)
+            self.assertAlmostEqual(res[i].uncert, f.coefficients[i].uncert)
+    
 
     def testPowFit(self):    
         x = variable([20, 30, 40, 50, 60, 70, 80, 90, 100])
@@ -490,7 +560,7 @@ class test(unittest.TestCase):
             
         ## define some data and create a fit-object
         x = variable([1,2,3], 'min', [0.3, 1.2, 2.1])
-        y = variable([5,8,11], 'L', [2.5, 5.3, 7.8])
+        y = variable([5,9,11], 'L', [2.5, 5.3, 7.8])
         f = lin_fit(x,y)
         
         ## create a figure using matplotlib
@@ -504,11 +574,13 @@ class test(unittest.TestCase):
         f.scatterNormalizedResiduals(ax)
         f.plotUncertantyOfInputs(ax)
         f.scatterUncertatyAsEllipses(ax)
+        f.plotResiduals(ax, color = 'black', linestyle = 'dashed')
         ax.set_xlabel('Time')
         ax.set_ylabel('Volume')
         f.addUnitToLabels(ax)
         if showPlots:
             plt.show()
+        
         
         ## create a figure using plotly
         import plotly.graph_objects as go
@@ -521,6 +593,7 @@ class test(unittest.TestCase):
         f.scatterNormalizedResiduals(fig)
         f.plotUncertantyOfInputs(fig)
         f.scatterUncertatyAsEllipses(fig)
+        f.plotResiduals(ax, color = 'black', linestyle = 'dashed')
         fig.update_yaxes(title = 'Volume')
         fig.update_xaxes(title = "Time")
         f.addUnitToLabels(fig)

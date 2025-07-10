@@ -1,5 +1,5 @@
+# Single Variable fitting
 
-# Fitting
 The package includes a tool to produce fits. The following fits are known
  - dummy fit            f(x) = 1
  - Linear fit           f(x) = a*x + b
@@ -72,7 +72,7 @@ Parameters:
 Returns:
  - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a matplotlib.collections.PathCollection objected created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
-## plotData
+## Plot data
 The fit class has a function to plot the data used to generate the fit.
 
 ```
@@ -87,7 +87,7 @@ Returns:
  - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a list of a single element. That being the matplotlib.lines.Line2D created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 
-## plotUncertanty
+## Plot uncertanty
 The fit class has a function to plot the uncertanty bands of the regression
 
 ```
@@ -103,7 +103,7 @@ Returns:
  - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a list of a single element. That being the matplotlib.lines.Line2D created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 
-## scatterResiduals
+## Scatter residuals
 The fit class has a function to scatter the residuals. This is usefull when evaluating the fit
 
 ```
@@ -120,7 +120,7 @@ Returns:
  - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a matplotlib.collections.PathCollection objected created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 
-## scatterNormalizedResiduals
+## Scatter normalized residuals
 The fit class has a function to scatter the normalized residuals. The fit uses orthogonal distance regression when creating the regression. Here the weights of the data points are scaled with respect to the uncertanty of the data. If some of the data has a larger uncertanty than other, then the method fit.scatterResiduals may results in a plot, where it seems as if the regression does not capture the data. However, using the methods fit.scatterNormalizedResiduals could shown, that the regression has captured the data, if it has deemed some of the datapoints less important than others.
 
 ```
@@ -137,7 +137,7 @@ Returns:
  - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a matplotlib.collections.PathCollection objected created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
 
-## plotUncertantyOfInputs
+## Plot uncertanty of inputs
 
 The fit class has a function to plot the uncertanty area of the inputs. The uncertanty of each input are represented as an ellipse under the hood. The ellipses are combined using tangents. From this a matplotlib.pathces.Polygon is created and plottet to the axes.
 
@@ -153,7 +153,7 @@ Parameters:
 Returns:
  - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a matplotlib.patches.Polygon objected created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
 
-## scatterUncertatyAsEllipses
+## Scatter uncertaty as ellipses
 The fit class has a function to plot the uncertanty area of the inputs. The uncertanty of each input are represented as an ellipse which is plotted as a matplotlib.lines.Line2D.
 
 ```
