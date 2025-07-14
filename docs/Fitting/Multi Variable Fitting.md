@@ -180,27 +180,52 @@ fit.addUnitToYLabel(ax)
 
 The unit of the data parsed when initializing the fit object will be appended to the axis labels
 
-## Example
-```
-import pyees as pe
-import matplotlib.pyplot as plt
-
-x = pe.variable([3, 4, 5, 6], 'm', [0.15, 0.3, 0.45, 0.6])
-y = pe.variable([10, 20, 30, 40], 'C', [2, 3, 4, 5])
-
-F = pe.lin_fit(x, y)
 
 
-fig, ax = plt.subplots()
-F.scatter(ax)
-F.plot(ax)
-ax.set_xlabel('Distance')
-ax.set_ylabel('Temperature')
-F.addUnitToLabels(ax)
-ax.legend()
-fig.tight_layout()
-plt.show()
+
+## Plot in 3d
+
+A multi variable fit object has a function to plot the regression in 3d
 
 ```
+fit.plot3D(ax: matplotlib.axes.Axes | plotly.graph_objects.Figure, **kwargs) -> matplotlib.lines.Line2D | None
+```
 
-![Fitting example](/docs/examples/fitExample.png)
+Parameters:
+- ax is the axis or figure to plot on
+- **kwargs are key word arguments for matplotlib.pyplot.plot  
+
+Returns:
+ - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a list of a single element. That being the matplotlib.lines.Line2D created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
+
+
+ ## Scatter in 3d
+
+A multi variable fit object has a function to scatter the data in 3d
+
+```
+fit.scatter3D(ax: matplotlib.axes.Axes | plotly.graph_objects.Figure, **kwargs) -> matplotlib.lines.Line2D | None
+```
+
+Parameters:
+- ax is the axis or figure to scatter on
+- **kwargs are key word arguments for matplotlib.pyplot.plot  
+
+Returns:
+ - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a list of a single element. That being the matplotlib.lines.Line2D created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
+
+
+ ## Plot residuals in 3d
+
+A multi variable fit object has a function to plot the residuals in 3D
+
+```
+fit.plotResiduals3D(ax: matplotlib.axes.Axes | plotly.graph_objects.Figure, **kwargs) -> matplotlib.lines.Line2D | None
+```
+
+Parameters:
+- ax is the axis or figure to plot the residuals on
+- **kwargs are key word arguments for matplotlib.pyplot.plot  
+
+Returns:
+ - If the type of the argument 'ax' is matplotlib.axes.Axes then the method returns a list of a single element. That being the matplotlib.lines.Line2D created on the axis. If the type of the argument 'ax' is plotly.graph_objects.Figure then the method returns None.
