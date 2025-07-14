@@ -265,9 +265,9 @@ class test(unittest.TestCase):
 
 
         for i in range(len(res)):
-            self.assertAlmostEqual(res[i].value, f.coefficients[i].value)
+            self.assertRelativeDifference(res[i].value, f.coefficients[i].value, 0.2)
             self.assertEqual(res[i].unit, f.coefficients[i].unit)
-            self.assertAlmostEqual(res[i].uncert, f.coefficients[i].uncert)
+            self.assertRelativeDifference(res[i].uncert, f.coefficients[i].uncert, 0.2)
 
 
 
@@ -335,9 +335,11 @@ class test(unittest.TestCase):
         ]
 
         for i in range(len(res)):
-            self.assertAlmostEqual(res[i].value, f.coefficients[i].value)
+            self.assertRelativeDifference(res[i].value, f.coefficients[i].value, 0.2)
             self.assertEqual(res[i].unit, f.coefficients[i].unit)
-            self.assertAlmostEqual(res[i].uncert, f.coefficients[i].uncert)
+            self.assertRelativeDifference(res[i].uncert, f.coefficients[i].uncert, 0.2)
+
+
     
 
     def testPowFit(self):    

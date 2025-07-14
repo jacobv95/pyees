@@ -1185,16 +1185,18 @@ class _multi_variable_fit(_fit):
         for elem in self.xUncert:
             self._sx.append([e if e != 0 else 1e-10 for e in elem])
         self._sy = [elem if elem != 0 else 1e-10 for elem in self.yUncert]
-        fix = [0 for i in range(len(self.xVal))]
-        
+
+        self.xVal = np.array(self.xVal)
+        self._sx = np.array(self._sx)
+        self._sy = np.array(self._sy)
+        fix = 1 * self.xVal
 
         # create the regression
         np.seterr('ignore')
         data = odr.RealData(self.xVal, self.yVal, sx = self._sx, sy=self._sy, fix=fix)
 
         regression = odr.ODR(data, odr.Model(self._func), beta0=self.p0)
-        regression = regression.run()   
-            
+        regression = regression.run()            
 
         ## create a list of coefficients
         self.coefficients = []
@@ -1617,8 +1619,45 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
         
+    def plotResiduals3D(self, ax, **kwargs):    
+         
+        if (len(self.xVal) != 2):
+            raise ValueError('You do not have excatly two independent variable. Therefore you cannot plot the data in 3D')
+
+        x = []
+        y = []
+        z = []
+        for i in range(len(self.xVal[0])):
+            
+            x += [self.xVal[0][i], self.xVal[0][i] + self.delta[0][i], np.nan]
+            y += [self.xVal[1][i], self.xVal[1][i] + self.delta[1][i], np.nan]
+            z += [self.yVal[i], self.yVal[i] + self.epsilon[i], np.nan]
+        
 
 
+        if isinstance(ax, axes.Axes):
+            if not 'label' in kwargs:
+                kwargs['label'] = self.__str__()
+            return ax.plot(x, y, z, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            
+            if not 'name' in kwargs:
+                kwargs['name'] = self.__str__()
+                                
+            ax.add_trace(
+                go.Scatter(
+                    x = x,
+                    y = y,
+                    z = z,
+                    mode = 'lines',
+                    **kwargs),
+                    **addTraceKwargs
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+    
 
 class multi_variable_lin_fit(_multi_variable_fit):
     
@@ -1685,5 +1724,4 @@ def crateNewMultiVariableFitClass(func, funcNameFunc, getVariableUnitsFunc, nPar
             return self.getVariableUnitsFunc(self.xUnit, self.yUnit)
 
     return newFit
-
 
