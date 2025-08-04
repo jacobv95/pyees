@@ -105,6 +105,11 @@ class _fit():
         else:
             self.r_squared = variable(1)
         
+        if (len(self.xVal) - self._nParameters - 1 > 0):
+            self.r_squared_adjusted = variable(1 - (1 - self.r_squared.value**2) * (len(self.xVal) - 1) / (len(self.xVal) - self._nParameters - 1))
+        else:
+            self.r_squared_adjusted = variable(np.nan)
+        self.chi_squared = regression.res_var
         
         
         dx_star = ( self.xUncert*np.sqrt( ((self.yUncert*self.delta)**2) /
@@ -1232,6 +1237,12 @@ class _multi_variable_fit(_fit):
             self.r_squared = variable(1 - (ss_res / ss_tot))
         else:
             self.r_squared = variable(1)
+        
+        if (len(self.xVal) - self._nParameters - 1 > 0):
+            self.r_squared_adjusted = variable(1 - (1 - self.r_squared.value**2) * (len(self.xVal) - 1) / (len(self.xVal) - self._nParameters - 1))
+        else:
+            self.r_squared_adjusted = variable(np.nan)
+        self.chi_squared = regression.res_var
         
     
         out = []
