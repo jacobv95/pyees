@@ -253,7 +253,6 @@ class test(unittest.TestCase):
 
         f = multi_variable_lin_fit( [1 / T, P, RH, T * P, T * RH], D)
 
-
         res = [
             variable(20.20928106, 'kg-DELTAK/m3', 7e-08),
             variable(0.000023512096813, 'kg/m3-Pa', 2e-15),
@@ -620,5 +619,5 @@ class test(unittest.TestCase):
             fig.show()
 
 if __name__ == '__main__':
-    showPlots = True
+    showPlots = False
     unittest.main()

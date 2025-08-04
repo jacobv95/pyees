@@ -70,6 +70,15 @@ class _fit():
         self._sx = [elem if elem != 0 else 1e-10 for elem in self.xUncert]
         self._sy = [elem if elem != 0 else 1e-10 for elem in self.yUncert]
 
+        isAllSigmaZero = True
+        for elem in self._sx + self._sy:
+            if not elem == 1e-10:
+                isAllSigmaZero = False
+                break
+
+
+
+
         # create the regression
         np.seterr('ignore')
         data = odr.RealData(self.xVal, self.yVal, sx=self._sx, sy=self._sy)
@@ -109,7 +118,15 @@ class _fit():
             self.r_squared_adjusted = variable(1 - (1 - self.r_squared.value**2) * (len(self.xVal) - 1) / (len(self.xVal) - self._nParameters - 1))
         else:
             self.r_squared_adjusted = variable(np.nan)
-        self.chi_squared = regression.res_var
+        
+        if not isAllSigmaZero:
+            self.chi_squared = sum(residuals**2)
+        else:
+            scale = [1 / ((elemX**2 + elemY**2)**(1/2)) for elemX, elemY in zip(self._sx, self._sy)]
+            self.chi_squared = sum([(r * s)**2 for r,s in zip(residuals, scale)])
+
+        v = len(self.xVal) - self._nParameters
+        self.reduced_chi_squared = self.chi_squared / v
         
         
         dx_star = ( self.xUncert*np.sqrt( ((self.yUncert*self.delta)**2) /
@@ -1191,6 +1208,14 @@ class _multi_variable_fit(_fit):
             self._sx.append([e if e != 0 else 1e-10 for e in elem])
         self._sy = [elem if elem != 0 else 1e-10 for elem in self.yUncert]
 
+        isAllSigmaZero = True
+        for elem in self._sx + [self._sy]:
+            for e in elem:
+                if not e == 1e-10:
+                    isAllSigmaZero = False
+                    break
+        
+
         self.xVal = np.array(self.xVal)
         self._sx = np.array(self._sx)
         self._sy = np.array(self._sy)
@@ -1238,12 +1263,25 @@ class _multi_variable_fit(_fit):
         else:
             self.r_squared = variable(1)
         
-        if (len(self.xVal) - self._nParameters - 1 > 0):
-            self.r_squared_adjusted = variable(1 - (1 - self.r_squared.value**2) * (len(self.xVal) - 1) / (len(self.xVal) - self._nParameters - 1))
+
+        n = sum([len(elem) for elem in self.xVal])
+        if (n - self._nParameters - 1) > 0:
+            self.r_squared_adjusted = variable(1 - (1 - self.r_squared.value**2) * (n - 1) / (n - self._nParameters - 1))
         else:
             self.r_squared_adjusted = variable(np.nan)
-        self.chi_squared = regression.res_var
         
+        if not isAllSigmaZero:
+            self.chi_squared = sum(residuals**2)
+        else:
+            scale = [elem**2 for elem in self._sy]
+            for i in range(len(scale)):
+                for j in range(len(self.xVal)):
+                    scale[i] += self._sx[j][i]**2
+            scale = [elem ** (1/2) for elem in scale]
+            self.chi_squared = sum([(r * s)**2 for r,s in zip(residuals, scale)])
+        
+        v = sum([len(elem) for elem in self.xVal]) - self._nParameters
+        self.reduced_chi_squared = self.chi_squared / v
     
         out = []
         for i in range(len(self.yVal)):
