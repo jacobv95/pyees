@@ -13,16 +13,26 @@ except ImportError:
 
 
 
-def fileFromSheets(sheets, fileName):
+def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True):
     if not isinstance(sheets, list):
         sheets = [sheets]
-    _fileFromSheets(sheets, fileName)
+    if (not sheetNames is None):
+        if not(isinstance(sheetNames, list)):
+            sheetNames = [sheetNames]
+    _fileFromSheets(sheets, fileName, sheetNames, showUncert)
 
 class _fileFromSheets():
-    def __init__(self, sheets, fileName) -> None:
+    def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:
         
         self.fileName = fileName
         self.sheets = sheets
+        self.sheetNames = sheetNames
+        self.showUncert = showUncert
+
+
+        if (not sheetNames is None):
+            if (len(sheetNames) != len(sheets)):
+                raise ValueError(f'The length of the sheet names has to be equal to the length of the sheets')
         
         extension = os.path.splitext(fileName)[1]
         supportedExtensions = ['.xls', '.xlsx']
@@ -38,9 +48,14 @@ class _fileFromSheets():
             def write(sheet, row, col, value):
                 sheet.write(row, col, value)
             
-            def getSheet(index):
-                return self.wb.add_sheet(f'Sheet {index + 1}')
-                       
+            def getSheet(index, sheetName):
+
+                name = f'Sheet {index + 1}'
+                if (not sheetName is None):
+                    name = sheetName
+
+                return self.wb.add_sheet(name)
+
             
         elif extension == '.xlsx':
             self.wb = openpyxl.Workbook()
@@ -51,11 +66,13 @@ class _fileFromSheets():
             def write(sheet, row, col, value):
                 sheet.cell(row+1, col+1, value)
             
-            def getSheet(index):
+            def getSheet(index, sheetName):
                 if index > 0:
                     worksheet = self.createSheet()
                 else:
                     worksheet = self.wb.active
+                if (not sheetName is None):
+                    worksheet.title = sheetName
                 return worksheet
             
         self.createSheet = createSheet
@@ -68,8 +85,11 @@ class _fileFromSheets():
         
         for ii, sheet in enumerate(self.sheets):
             
-            worksheet = self.getSheet(ii)
-            
+            sheetName = None
+            if (not self.sheetNames is None):
+                sheetName = self.sheetNames[ii]
+            worksheet = self.getSheet(ii, sheetName)
+
             col = 0
             for objectName in dir(sheet):
                 object = getattr(sheet, objectName)
@@ -85,11 +105,16 @@ class _fileFromSheets():
                     for elem in meas:
                         elem._unitObject = unit('')
                     
-                    for row, val in enumerate(meas):
-                        string = str(val)
-                        string = string.replace(' +/- ', '±\n')
-                        self.write(worksheet, row + 2, col, string)
-                    
+                    if (self.showUncert):
+                        for row, val in enumerate(meas):
+                            string = str(val)
+                            string = string.replace(' +/- ', '±\n')
+                            self.write(worksheet, row + 2, col, string)
+                    else:
+                        for row, val in enumerate(meas.value):
+                            string = str(val)
+                            self.write(worksheet, row + 2, col, string)
+
                     meas._unitObject = u
                     for elem in meas:
                         elem._unitObject = u

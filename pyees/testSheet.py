@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from sheet import sheetsFromFile, sheet
+from sheet import sheetsFromFile, sheet, fileFromSheets
 from variable import variable
 
 
@@ -387,6 +387,16 @@ class test(unittest.TestCase):
             dat = sheetsFromFile('testData/data10.xlsx', 'A-B')
         self.assertTrue("There is no valid data in the data sheet" in str(context.exception))
 
+    def testSaveSheet(self):
+
+
+        dat = sheetsFromFile('testData/data2.xlsx', 'A-B', 'C-D')
+        fileFromSheets(dat, "testData/data2_output.xlsx", "Test Sheet Name")
+        fileFromSheets(dat, "testData/data2_output.xls", "Test Sheet Name")
+        fileFromSheets(dat, "testData/data2_output_NoUncert.xlsx", "Test Sheet Name", showUncert = False)
+        fileFromSheets(dat, "testData/data2_output_NoUncert.xls", "Test Sheet Name", showUncert = False)
+        
+        
         
         
 if __name__ == '__main__':

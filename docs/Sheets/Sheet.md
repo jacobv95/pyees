@@ -70,7 +70,7 @@ Notice that the uncertanty of q2 is larger than the uncertanty of q1. This is be
 
 An excel-file can be created from a sheet using the method "fileFromSheets"
 
-fileFromSheets(sheets: sheet | list[sheet], fileName: str)
+fileFromSheets(sheets: sheet | list[sheet], fileName: str, sheetNames: str | list[str] = None, showUncert: bool = True)
 
 A new excel-file is created with one worksheet for each sheet in the input "sheet". Each worksheet will have one coloumn for each variable within the corresponding sheet-object. The first and second row of the worksheet is the name and the unit. The remaining rows of the worksheet is the value and the uncertanty of the variable presented as "A +/- u_a"
 

@@ -6,3 +6,4 @@ pyfluids
 xlwt
 plotly
 matplotlib
+python_calamine

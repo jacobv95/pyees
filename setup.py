@@ -5,7 +5,7 @@ setup(
     python_requires = '>=3.10',
     name='pyees',
     packages=['pyees'],
-    version='2.3.2',
+    version='2.3.4',
     cmdclass=get_cmdclass(),
     options={
         'build_py':
@@ -30,7 +30,7 @@ setup(
     download_url='https://github.com/jacobv95/pyees/archive/refs/tags/v1.0.tar.gz',
     keywords=['python', 'data processing', 'uncertanty', 'EES'],
     install_requires=[            # I get to this in a second
-        'numpy', 'scipy', 'openpyxl', 'xlrd', 'pyfluids', 'xlwt', 'plotly', 'matplotlib'
+        'numpy', 'scipy', 'openpyxl', 'xlrd', 'pyfluids', 'xlwt', 'plotly', 'matplotlib', 'python_calamine'
     ],
     classifiers=[
         # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
