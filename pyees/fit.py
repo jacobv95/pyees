@@ -15,6 +15,19 @@ except ImportError:
 
 
 
+def splitPlotlyKeywordArguments(fig, kwargs):
+    addTraceKwargs = {}
+    if fig._has_subplots():
+        
+        if (not 'row' in kwargs or not 'col' in kwargs):
+            raise ValueError('The figure is a plotly.graph_object.Figure that has subplots. The keyworkd arguments has to include both "row" and "col" ')
+        
+        addTraceKwargs['row'] = kwargs['row']
+        addTraceKwargs['col'] = kwargs['col']
+        kwargs.pop('row')
+        kwargs.pop('col')
+    return kwargs, addTraceKwargs
+
     
 class _fit():
     def __init__(self, func, x, y, p0 = None, useParameters = None) -> None:
@@ -152,21 +165,6 @@ class _fit():
     def __str__(self):
         return self.func_name() + fr', $R^2 = {self.r_squared.value:.5f}$'
 
-
-    @staticmethod
-    def __splitPlotlyKeywordArguments(fig, kwargs):
-        addTraceKwargs = {}
-        if fig._has_subplots():
-            
-            if (not 'row' in kwargs or not 'col' in kwargs):
-                raise ValueError('The figure is a plotly.graph_object.Figure that has subplots. The keyworkd arguments has to include both "row" and "col" ')
-            
-            addTraceKwargs['row'] = kwargs['row']
-            addTraceKwargs['col'] = kwargs['col']
-            kwargs.pop('row')
-            kwargs.pop('col')
-        return kwargs, addTraceKwargs
-
     def scatter(self, ax, showUncert=True, **kwargs):
 
         if all(self.xUncert == 0) and all(self.yUncert == 0):
@@ -181,7 +179,7 @@ class _fit():
                 return ax.scatter(self.xVal, self.yVal, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             
             if showUncert:
                 ax.add_trace(
@@ -215,7 +213,7 @@ class _fit():
             return ax.errorbar(self.xVal, normRes.value, xerr=self.xUncert, yerr=normRes.uncert, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             if not 'name' in kwargs:
                 kwargs['name'] = 'Normalized residuals'
             ax.add_trace(
@@ -240,7 +238,7 @@ class _fit():
             return ax.errorbar(self.xVal, self._residualY.value, xerr=self.xUncert, yerr=self._residualY.uncert, linestyle='', **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             if not 'name' in kwargs:
                 kwargs['name'] = 'Residuals'
             ax.add_trace(
@@ -264,7 +262,7 @@ class _fit():
             return ax.plot(self.xVal, self.yVal, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             if not 'name' in kwargs:
                 kwargs['name'] = 'Data'
             ax.add_trace(
@@ -300,7 +298,7 @@ class _fit():
             return ax.plot(x, y, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             
             if not 'name' in kwargs:
                 kwargs['name'] = self.__str__()
@@ -332,7 +330,7 @@ class _fit():
             return ax.plot(x, y, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
                                             
             
             ax.add_trace(
@@ -364,7 +362,7 @@ class _fit():
             return ax.plot(x, y, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             
             if not 'name' in kwargs:
                 kwargs['name'] = self.__str__()
@@ -395,7 +393,7 @@ class _fit():
             
             if ax._has_subplots():
                 
-                _, kwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+                _, kwargs = splitPlotlyKeywordArguments(ax, kwargs)
                 
                 subplot = ax.get_subplot(kwargs['row'], kwargs['col'])
                 xLabel = subplot.xaxis.title.text
@@ -427,7 +425,7 @@ class _fit():
         elif isinstance(ax, go.Figure):
             
             if ax._has_subplots():
-                _, kwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+                _, kwargs = splitPlotlyKeywordArguments(ax, kwargs)
                 
                 subplot = ax.get_subplot(kwargs['row'], kwargs['col'])
                 yLabel = subplot.yaxis.title.text
@@ -789,7 +787,7 @@ class _fit():
             return ax.add_patch(patches.Polygon(xy, **kwargs))
         
         if isinstance(ax, go.Figure):
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             ax.add_trace(go.Scatter(
                 x = xCoordinates,
                 y = yCoordinates,
@@ -839,7 +837,7 @@ class _fit():
                 out.append(ax.plot(ellipse_x, ellipse_y, **kwargs))
             return out
         if isinstance(ax, go.Figure):
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             for ellipse in ellipses:
                 theta = np.linspace(0, 2 * np.pi, n)
 
@@ -1137,7 +1135,7 @@ def crateNewFitClass(func, funcNameFunc, getVariableUnitsFunc, nParameters):
 
 class _multi_variable_fit(_fit):
     def __init__(self, x : List[variable], y: variable, p0 : List[float] = None, useParameters : List[bool] | None = None):
-        
+
         self._hasRun = False
         if p0 is None:
             p0 = [0] * self._nParameters
@@ -1313,7 +1311,7 @@ class _multi_variable_fit(_fit):
                 return ax.scatter(self.xVal[index], self.yVal, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             
             if showUncert:
                 ax.add_trace(
@@ -1347,7 +1345,7 @@ class _multi_variable_fit(_fit):
             return ax.errorbar(self.xVal[index], normRes.value, xerr=self.xUncert[index], yerr=normRes.uncert, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             if not 'name' in kwargs:
                 kwargs['name'] = 'Normalized residuals'
             ax.add_trace(
@@ -1371,7 +1369,7 @@ class _multi_variable_fit(_fit):
             return ax.errorbar(self.xVal[index], self._residualY.value, xerr=self.xUncert[index], yerr=self._residualY.uncert, linestyle='', **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             if not 'name' in kwargs:
                 kwargs['name'] = 'Residuals'
             ax.add_trace(
@@ -1394,7 +1392,7 @@ class _multi_variable_fit(_fit):
             return ax.plot(self.xVal[index], self.yVal, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             if not 'name' in kwargs:
                 kwargs['name'] = 'Data'
             ax.add_trace(
@@ -1435,7 +1433,7 @@ class _multi_variable_fit(_fit):
             return ax.plot(x, y, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
                                             
             
             ax.add_trace(
@@ -1466,7 +1464,7 @@ class _multi_variable_fit(_fit):
             return ax.plot(x, y, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             
             if not 'name' in kwargs:
                 kwargs['name'] = self.__str__()
@@ -1511,7 +1509,7 @@ class _multi_variable_fit(_fit):
             return ax.plot(x, y, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
             
             if not 'name' in kwargs:
                 kwargs['name'] = self.__str__()
@@ -1531,6 +1529,112 @@ class _multi_variable_fit(_fit):
         self.addUnitToXLabel(ax, index, **kwargs)
         self.addUnitToYLabel(ax, **kwargs)
 
+    def addUnitToLabels3D(self, ax, **kwargs):
+        self.addUnitToXLabel3D(ax, **kwargs)
+        self.addUnitToYLabel3D(ax, **kwargs)
+        self.addUnitToZLabel3D(ax, **kwargs)
+        
+
+    
+    def addUnitToXLabel3D(self, ax, **kwargs):
+        if isinstance(ax, axes.Axes):
+            xLabel = ax.get_xlabel()
+            if xLabel:
+                xLabel += ' '
+            xLabel += rf'$\left[{self.xUnit[0][0].__str__(pretty=True)}\right]$'
+            ax.set_xlabel(xLabel)
+        elif isinstance(ax, go.Figure):
+            
+            if ax._has_subplots():
+                
+                _, kwargs = splitPlotlyKeywordArguments(ax, kwargs)
+                
+                subplot = ax.get_subplot(kwargs['row'], kwargs['col'])
+                xLabel = subplot.xaxis.title.text
+                if xLabel is None:
+                    xLabel = str(self.xUnit[0])
+                else:
+                    xLabel = f'{xLabel} [{str(self.xUnit[0])}]'
+                subplot.xaxis.title.text = xLabel      
+                
+            else:
+                xLabel = ax.layout.scene.xaxis.title.text
+                if xLabel is None:
+                    xLabel = str(self.xUnit[0])
+                else:
+                    xLabel = f'{xLabel} [{str(self.xUnit[0])}]'
+                ax.layout.scene.xaxis.title.text = xLabel        
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+
+
+    def addUnitToYLabel3D(self, ax, **kwargs):
+        if isinstance(ax, axes.Axes):
+            yLabel = ax.get_ylabel()
+            if yLabel:
+                yLabel += ' '
+            yLabel += rf'$\left[{self.xUnit[0][0].__str__(pretty=True)}\right]$'
+            ax.set_ylabel(yLabel)
+        elif isinstance(ax, go.Figure):
+            
+            if ax._has_subplots():
+                
+                _, kwargs = splitPlotlyKeywordArguments(ax, kwargs)
+                
+                subplot = ax.get_subplot(kwargs['row'], kwargs['col'])
+                yLabel = subplot.yaxis.title.text
+                if yLabel is None:
+                    yLabel = str(self.xUnit[1])
+                else:
+                    yLabel = f'{yLabel} [{str(self.xUnit[1])}]'
+                subplot.yaxis.title = yLabel      
+                
+            else:
+                yLabel = ax.layout.scene.yaxis.title.text
+                if yLabel is None:
+                    yLabel = str(self.xUnit[1])
+                else:
+                    yLabel = f'{yLabel} [{str(self.xUnit[1])}]'
+                ax.layout.scene.yaxis.title = yLabel            
+        
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+
+
+
+    def addUnitToZLabel3D(self, ax, **kwargs):
+        if isinstance(ax, axes.Axes):
+            zLabel = ax.get_zlabel()
+            if zLabel:
+                zLabel += ' '
+            zLabel += rf'$\left[{self.yUnit.__str__(pretty=True)}\right]$'
+            ax.set_zlabel(zLabel)
+        
+        elif isinstance(ax, go.Figure):
+            
+            if ax._has_subplots():
+                _, kwargs = splitPlotlyKeywordArguments(ax, kwargs)
+                
+                subplot = ax.get_subplot(kwargs['row'], kwargs['col'])
+                zLabel = subplot.zaxis.title.text
+                if zLabel is None:
+                    zLabel = str(self.yUnit)
+                else:
+                    zLabel = f'{zLabel} [{str(self.yUnit)}]'
+                subplot.zaxis.title = zLabel
+        
+            else:
+                zLabel = ax.layout.scene.zaxis.title.text
+                if zLabel is None:
+                    zLabel = str(self.yUnit)
+                else:
+                    zLabel = f'{zLabel} [{str(self.yUnit)}]'
+                ax.layout.scene.zaxis.title = zLabel
+        
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+
+
     def addUnitToXLabel(self, ax, index, **kwargs):
 
         if isinstance(ax, axes.Axes):
@@ -1543,7 +1647,7 @@ class _multi_variable_fit(_fit):
             
             if ax._has_subplots():
                 
-                _, kwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
+                _, kwargs = splitPlotlyKeywordArguments(ax, kwargs)
                 
                 subplot = ax.get_subplot(kwargs['row'], kwargs['col'])
                 xLabel = subplot.xaxis.title.text
@@ -1564,6 +1668,7 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
+
     def plotUncertantyOfInputsInPlane(self, ax, index, n = 100, **kwargs):
                 
             xUncert = np.interp(np.linspace(0, len(self.xUncert[index])-1, n), range(len(self.xUncert[index])), self.xUncert[index])
@@ -1583,8 +1688,7 @@ class _multi_variable_fit(_fit):
         if x is None:
             x = []
             for i in range(len(self.xVal)):
-                
-                x.append(variable(np.linspace(np.min(self.xVal[i]), np.max(self.xVal[i]), 100), self.xUnit[i]))
+                x.append(variable(np.linspace(np.min(self.xVal[i]), np.max(self.xVal[i]), 10), self.xUnit[i]))
         else:
             if not isinstance(x, List):
                 raise ValueError('The argument "x" has to be List of variables')
@@ -1601,8 +1705,8 @@ class _multi_variable_fit(_fit):
         
         x = [elem.value for elem in x]
         y = [elem.value for elem in y]
-        
-        z = np.array(z)
+
+        z = np.array(z)        
 
         if isinstance(ax, axes.Axes):
             if not 'label' in kwargs:
@@ -1610,19 +1714,24 @@ class _multi_variable_fit(_fit):
             return ax.plot_surface(x, y, z, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
-            
             if not 'name' in kwargs:
                 kwargs['name'] = self.__str__()
-                                
-            ax.add_trace(
-                go.Surface(
-                    x = x,
-                    y = y,
-                    z = z,
-                    mode = 'lines',
-                    **kwargs),
-                    **addTraceKwargs
+
+            if 'color' in kwargs:
+                if 'colorscale' in kwargs:
+                    raise ValueError("You cannot specify both the color and the color scale")
+                if 'showscale' in kwargs:
+                    raise ValueError("You cannot show the color scale if you have specified a specific color")
+                
+                kwargs['colorscale'] = [kwargs['color'],kwargs['color']]
+                kwargs['showscale'] = False
+                del kwargs['color']
+
+            ax.add_surface(
+                x = x,
+                y = y,
+                z = z,
+                **kwargs    
                 )
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
@@ -1635,8 +1744,6 @@ class _multi_variable_fit(_fit):
         if all(self.xUncert[0] == 0) and all(self.xUncert[1] == 0) and all(self.yUncert == 0):
             showUncert = False
 
-
-
         if isinstance(ax, axes.Axes):
             # scatter
             if showUncert:
@@ -1645,11 +1752,11 @@ class _multi_variable_fit(_fit):
                 return ax.scatter(self.xVal[0], self.xVal[1], self.yVal, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
-            
+            kwargs, addTraceKwargs = splitPlotlyKeywordArguments(ax, kwargs)
+        
             if showUncert:
                 ax.add_trace(
-                    go.Scatter(
+                    go.Scatter3d(
                         x = self.xVal[0],
                         y = self.xVal[1],
                         z = self.yVal,
@@ -1662,7 +1769,7 @@ class _multi_variable_fit(_fit):
                     )
             else:
                 ax.add_trace(
-                    go.Scatter(x = self.xVal[0], y = self.xVal[1], z = self.yVal, mode = 'markers', **kwargs),
+                    go.Scatter3d(x = self.xVal[0], y = self.xVal[1], z = self.yVal, mode = 'markers', **kwargs),
                     **addTraceKwargs
                     )
         else:
@@ -1690,19 +1797,24 @@ class _multi_variable_fit(_fit):
             return ax.plot(x, y, z, **kwargs)
         elif isinstance(ax, go.Figure):
 
-            kwargs, addTraceKwargs = self.__splitPlotlyKeywordArguments(ax, kwargs)
-            
             if not 'name' in kwargs:
                 kwargs['name'] = self.__str__()
-                                
-            ax.add_trace(
-                go.Scatter(
-                    x = x,
-                    y = y,
-                    z = z,
-                    mode = 'lines',
-                    **kwargs),
-                    **addTraceKwargs
+
+            if 'color' in kwargs:
+                if 'colorscale' in kwargs:
+                    raise ValueError("You cannot specify both the color and the color scale")
+                if 'showscale' in kwargs:
+                    raise ValueError("You cannot show the color scale if you have specified a specific color")
+                
+                kwargs['colorscale'] = [kwargs['color'],kwargs['color']]
+                kwargs['showscale'] = False
+                del kwargs['color']
+
+            ax.add_surface(
+                x = x,
+                y = y,
+                z = z,
+                **kwargs    
                 )
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
@@ -1774,3 +1886,19 @@ def crateNewMultiVariableFitClass(func, funcNameFunc, getVariableUnitsFunc, nPar
 
     return newFit
 
+if __name__ == "__main__":
+
+    fig = go.Figure()
+
+
+    x = variable([1,2,3], '1')
+    y = variable([0,1,2], '1')
+
+
+    f = multi_variable_lin_fit([x,y], x+y)
+
+    f.plot3D(fig, name = "hej", color = 'red', opacity = 0.5, showlegend = True)
+    f.scatter3D(fig, name = None, marker = dict(color = 'orange'), showlegend = False)
+
+
+    fig.show()

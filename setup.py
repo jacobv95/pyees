@@ -5,7 +5,7 @@ setup(
     python_requires = '>=3.10',
     name='pyees',
     packages=['pyees'],
-    version='2.3.4',
+    version='2.3.7',
     cmdclass=get_cmdclass(),
     options={
         'build_py':

@@ -173,9 +173,15 @@ Returns:
 A fit object has a function to set the units of the axis. The units are set to the unit of the variables at the instance when the fit object was created. If the units are converted after the fit object was made, then this has no affect on the methods to set the units of the axis.
 
 ```
-fit.addUnitToLabels(ax)
-fit.addUnitToXLabel(ax)
-fit.addUnitToYLabel(ax)
+fit.addUnitToLabels3D(ax, **kwargs)
+fit.addUnitToXLabel3D(ax, **kwargs)
+fit.addUnitToYLabel3D(ax, **kwargs)
+fig.addUnitToLabels3D(ax, **kwargs)
+
+fit.addUnitToXLabel(ax, **kwargs)
+fit.addUnitToYLabel(ax, **kwargs)
+fit.addUnitToLabels(ax, **kwargs)
+
 ```
 
 The unit of the data parsed when initializing the fit object will be appended to the axis labels
