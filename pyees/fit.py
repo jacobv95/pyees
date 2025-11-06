@@ -1680,7 +1680,7 @@ class _multi_variable_fit(_fit):
                 ax.add_patch(Ellipse((xValue[i], yValue[i]), 2*xUncert[i], 2*yUncert[i], **kwargs))
                 if 'label' in kwargs: kwargs['label'] = None
 
-    def plot3D(self, ax, x=None, **kwargs):
+    def plot3D(self, ax, x=None,  n = 100, **kwargs):
         
         if (len(self.xVal) != 2):
             raise ValueError('You do not have excatly two independent variable. Therefore you cannot plot the data in 3D')
@@ -1688,7 +1688,7 @@ class _multi_variable_fit(_fit):
         if x is None:
             x = []
             for i in range(len(self.xVal)):
-                x.append(variable(np.linspace(np.min(self.xVal[i]), np.max(self.xVal[i]), 10), self.xUnit[i]))
+                x.append(variable(np.linspace(np.min(self.xVal[i]), np.max(self.xVal[i]), n), self.xUnit[i]))
         else:
             if not isinstance(x, List):
                 raise ValueError('The argument "x" has to be List of variables')
@@ -1736,6 +1736,77 @@ class _multi_variable_fit(_fit):
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
            
+
+    def plotUncertanty3D(self, ax, x=None, n=100, **kwargs):
+        
+        if (len(self.xVal) != 2):
+            raise ValueError('You do not have excatly two independent variable. Therefore you cannot plot the data in 3D')
+        
+        if x is None:
+            x = []
+            for i in range(len(self.xVal)):
+                x.append(variable(np.linspace(np.min(self.xVal[i]), np.max(self.xVal[i]), n), self.xUnit[i]))
+        else:
+            if not isinstance(x, List):
+                raise ValueError('The argument "x" has to be List of variables')
+
+            for i, elem in enumerate(x):
+                if not isinstance(elem, arrayVariable):
+                    raise ValueError('The argument "x" has to be a list of variables')
+
+
+        x, y = np.meshgrid(x[0], x[1])
+        zUpper = []
+        zLower = []
+        for i in range(len(x)):
+            elem = self.predict([x[i], y[i]])
+
+            zUpper.append(elem.value + elem.uncert)
+            zLower.append(elem.value - elem.uncert)
+        
+        x = [elem.value for elem in x]
+        y = [elem.value for elem in y]
+
+        n = len(x[0])
+
+        x = x + [[np.nan] * n] + x
+        y = y + [[np.nan] * n] + y
+        z = zUpper + [[np.nan] * n] + zLower
+
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+  
+
+        if isinstance(ax, axes.Axes):
+            if not 'label' in kwargs:
+                kwargs['label'] = self.__str__()
+            return ax.plot_surface(x, y, z, **kwargs)
+        elif isinstance(ax, go.Figure):
+
+            if not 'name' in kwargs:
+                kwargs['name'] = self.__str__()
+
+            if 'color' in kwargs:
+                if 'colorscale' in kwargs:
+                    raise ValueError("You cannot specify both the color and the color scale")
+                if 'showscale' in kwargs:
+                    raise ValueError("You cannot show the color scale if you have specified a specific color")
+                
+                kwargs['colorscale'] = [kwargs['color'],kwargs['color']]
+                kwargs['showscale'] = False
+                del kwargs['color']
+
+            ax.add_surface(
+                x = x,
+                y = y,
+                z = z,
+                **kwargs    
+                )
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+           
+
     def scatter3D(self, ax, showUncert = True, **kwargs):
         
         if (len(self.xVal) != 2):
@@ -1885,20 +1956,3 @@ def crateNewMultiVariableFitClass(func, funcNameFunc, getVariableUnitsFunc, nPar
             return self.getVariableUnitsFunc(self.xUnit, self.yUnit)
 
     return newFit
-
-if __name__ == "__main__":
-
-    fig = go.Figure()
-
-
-    x = variable([1,2,3], '1')
-    y = variable([0,1,2], '1')
-
-
-    f = multi_variable_lin_fit([x,y], x+y)
-
-    f.plot3D(fig, name = "hej", color = 'red', opacity = 0.5, showlegend = True)
-    f.scatter3D(fig, name = None, marker = dict(color = 'orange'), showlegend = False)
-
-
-    fig.show()
