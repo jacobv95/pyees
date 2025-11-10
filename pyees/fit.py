@@ -8,6 +8,7 @@ import matplotlib.patches as patches
 from matplotlib.patches import Ellipse
 import plotly.graph_objects as go
 from typing import List
+import scipy.stats
 try:
     from variable import variable, arrayVariable, scalarVariable
 except ImportError:
@@ -98,10 +99,22 @@ class _fit():
         regression = odr.ODR(data, odr.Model(self._func), beta0=self.p0)
         regression = regression.run()       
         
+        ## determine p values
+        self.pValues = []
+        for i in range(len(regression.beta)):
+
+            t = regression.beta[i] / np.sqrt(regression.cov_beta[i,i])
+
+            df = len(self.xVal) - self._nParameters
+            p = scipy.stats.t.sf(np.abs(t), df) * 2
+
+            self.pValues.append(p)
+
+
+        units = self.getVariableUnits()
         ## create a list of coefficients
         self.coefficients = []
     
-        units = self.getVariableUnits()
         for i in range(len(regression.beta)):
             var = variable(regression.beta[i], units[i], np.sqrt(regression.cov_beta[i,i]))
             self.coefficients.append(var)
@@ -1226,6 +1239,19 @@ class _multi_variable_fit(_fit):
         regression = odr.ODR(data, odr.Model(self._func), beta0=self.p0)
         regression = regression.run()            
 
+
+        
+        ## determine p values
+        self.pValues = []
+        for i in range(len(regression.beta)):
+
+            t = regression.beta[i] / np.sqrt(regression.cov_beta[i,i])
+
+            df = len(self.xVal) - self._nParameters
+            p = scipy.stats.t.sf(np.abs(t), df) * 2
+
+            self.pValues.append(p)
+
         ## create a list of coefficients
         self.coefficients = []
     
@@ -1956,3 +1982,7 @@ def crateNewMultiVariableFitClass(func, funcNameFunc, getVariableUnitsFunc, nPar
             return self.getVariableUnitsFunc(self.xUnit, self.yUnit)
 
     return newFit
+
+
+
+
