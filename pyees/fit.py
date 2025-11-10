@@ -1244,12 +1244,9 @@ class _multi_variable_fit(_fit):
         ## determine p values
         self.pValues = []
         for i in range(len(regression.beta)):
-
             t = regression.beta[i] / np.sqrt(regression.cov_beta[i,i])
-
-            df = len(self.xVal) - self._nParameters
+            df = len(self.xVal[0]) - self._nParameters
             p = scipy.stats.t.sf(np.abs(t), df) * 2
-
             self.pValues.append(p)
 
         ## create a list of coefficients
@@ -1985,4 +1982,4 @@ def crateNewMultiVariableFitClass(func, funcNameFunc, getVariableUnitsFunc, nPar
 
 
 
-
+    
