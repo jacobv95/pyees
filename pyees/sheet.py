@@ -99,7 +99,7 @@ class _fileFromSheets():
         names = []
         units = []
         datas = []
-
+        unitObjects = []
         for objectName in dir(self.sheet):
             object = getattr(self.sheet, objectName)
             if isinstance(object, scalarVariable):
@@ -108,16 +108,17 @@ class _fileFromSheets():
                 names.append(objectName)
                 u = '-' if meas.unit == '1' else meas.unit
                 units.append(u)
+                
+                unitObjects.append(meas._unitObject)
 
-        unitObjects = [elem._unitObject for elem in self.sheet]
-        for meas in self.sheet:    
-            meas._unitObject = unit('')
-            for elem in meas:
-                elem._unitObject = unit('')
-        
+                meas._unitObject = unit('')
+                for elem in meas:
+                    elem._unitObject = unit('')
+            
         for i in range(n):
             dat = []
-            for meas in self.sheet:
+            for name in names:
+                meas = getattr(self.sheet, name)
                 
                 if (self.showUncert):
                     string = str(meas[i])
@@ -129,7 +130,8 @@ class _fileFromSheets():
                     dat.append(string)
             datas.append(dat)
         
-        for meas, u in zip(self.sheet, unitObjects):
+        for name, u in zip(names, unitObjects):
+            meas = getattr(self.sheet, name)
             meas._unitObject = u
             for elem in meas:
                 elem._unitObject = u
@@ -557,12 +559,3 @@ class sheet():
         
         self.__dict__[name] = value
 
-
-if __name__ == "__main__":
-
-    s = sheet()
-
-    s.a = variable([1,2,3], 'L/min', [1,2,3])
-    s.b = variable([10,20,30], 'mbar', [0.1, 0.2, 0.3])
-    
-    fileFromSheets(s, "test.txt")
