@@ -2,10 +2,10 @@ from setuptools import setup
 from setuptools_cythonize import get_cmdclass
 
 setup(
-    python_requires = '==3.12',
+    python_requires = '>=3.12',
     name='pyees',
     packages=['pyees'],
-    version='2.4.1',
+    version='2.4.2',
     cmdclass=get_cmdclass(),
     options={
         'build_py':
