@@ -6,6 +6,7 @@ import openpyxl
 import os.path
 import re
 import string
+import csv
 try:
     from variable import variable, scalarVariable, arrayVariable, unit
 except ImportError:
@@ -35,10 +36,14 @@ class _fileFromSheets():
                 raise ValueError(f'The length of the sheet names has to be equal to the length of the sheets')
         
         extension = os.path.splitext(fileName)[1]
-        supportedExtensions = ['.xls', '.xlsx']
+        supportedExtensions = ['.xls', '.xlsx', '.csv', '.txt']
         if extension not in supportedExtensions:
             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')
-            
+
+        if extension == '.csv' or extension == ".txt":
+            self.saveCsv()
+            return
+
         if extension == '.xls':
             self.wb = xlwt.Workbook()                            
             
@@ -81,6 +86,66 @@ class _fileFromSheets():
         
         self.saveSheets()
         
+    def saveCsv(self):
+        if len(self.sheets) != 1:
+            raise ValueError("It is only possible to save a single sheet to a .csv file")
+        if not self.sheetNames is None:
+            raise ValueError("It is not possible to assign sheet names to a .csv file")
+
+
+        self.sheet = self.sheets[0]
+        n = len(self.sheet)
+
+        names = []
+        units = []
+        datas = []
+
+        for objectName in dir(self.sheet):
+            object = getattr(self.sheet, objectName)
+            if isinstance(object, scalarVariable):
+                meas = object
+
+                names.append(objectName)
+                u = '-' if meas.unit == '1' else meas.unit
+                units.append(u)
+
+        unitObjects = [elem._unitObject for elem in self.sheet]
+        for meas in self.sheet:    
+            meas._unitObject = unit('')
+            for elem in meas:
+                elem._unitObject = unit('')
+        
+        for i in range(n):
+            dat = []
+            for meas in self.sheet:
+                
+                if (self.showUncert):
+                    string = str(meas[i])
+                    string = string.replace(' +/- ', '±')
+                    string = string.replace(' ', '')
+                    dat.append(string)
+                else:
+                    string = str(meas[i])
+                    dat.append(string)
+            datas.append(dat)
+        
+        for meas, u in zip(self.sheet, unitObjects):
+            meas._unitObject = u
+            for elem in meas:
+                elem._unitObject = u
+      
+        # Open the file in write mode
+        with open(self.fileName, mode='w', newline='', encoding='utf-8') as file:
+            # Create a csv.writer object
+            writer = csv.writer(file)
+            # Write data to the CSV file
+            writer.writerow(names)
+            writer.writerow(units)
+            writer.writerows(datas)
+            
+
+
+
     def saveSheets(self):
         
         for ii, sheet in enumerate(self.sheets):
@@ -493,3 +558,11 @@ class sheet():
         self.__dict__[name] = value
 
 
+if __name__ == "__main__":
+
+    s = sheet()
+
+    s.a = variable([1,2,3], 'L/min', [1,2,3])
+    s.b = variable([10,20,30], 'mbar', [0.1, 0.2, 0.3])
+    
+    fileFromSheets(s, "test.txt")

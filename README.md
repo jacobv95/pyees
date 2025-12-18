@@ -1,6 +1,7 @@
 # pyees
 EES is a nice program with a lot of uses. However, the syntax is poor and the it can be quite combersome to import and export data and figures. Therefore pyees was created.
 
+pyees is compiled using cython for Python 3.12
 
 # How to install
 Just run ```pip install pyees```

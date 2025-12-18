@@ -2,10 +2,10 @@ from setuptools import setup
 from setuptools_cythonize import get_cmdclass
 
 setup(
-    python_requires = '>=3.10',
+    python_requires = '==3.12',
     name='pyees',
     packages=['pyees'],
-    version='2.4.0',
+    version='2.4.1',
     cmdclass=get_cmdclass(),
     options={
         'build_py':
@@ -30,7 +30,7 @@ setup(
     download_url='https://github.com/jacobv95/pyees/archive/refs/tags/v1.0.tar.gz',
     keywords=['python', 'data processing', 'uncertanty', 'EES'],
     install_requires=[            # I get to this in a second
-        'numpy', 'scipy', 'openpyxl', 'xlrd', 'pyfluids', 'xlwt', 'plotly', 'matplotlib', 'python_calamine'
+        'numpy', 'scipy', 'openpyxl', 'xlrd', 'pyfluids', 'xlwt', 'plotly', 'matplotlib', 'python_calamine', 'csv'
     ],
     classifiers=[
         # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package

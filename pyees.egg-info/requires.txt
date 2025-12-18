@@ -7,3 +7,4 @@ xlwt
 plotly
 matplotlib
 python_calamine
+csv
