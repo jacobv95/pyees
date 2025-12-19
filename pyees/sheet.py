@@ -14,21 +14,22 @@ except ImportError:
 
 
 
-def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True):
+def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False):
     if not isinstance(sheets, list):
         sheets = [sheets]
     if (not sheetNames is None):
         if not(isinstance(sheetNames, list)):
             sheetNames = [sheetNames]
-    _fileFromSheets(sheets, fileName, sheetNames, showUncert)
+    _fileFromSheets(sheets, fileName, sheetNames, showUncert, prettyUnit)
 
 class _fileFromSheets():
-    def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:
+    def __init__(self, sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False) -> None:
         
         self.fileName = fileName
         self.sheets = sheets
         self.sheetNames = sheetNames
         self.showUncert = showUncert
+        self.prettyUnit = prettyUnit
 
 
         if (not sheetNames is None):
@@ -106,7 +107,13 @@ class _fileFromSheets():
                 meas = object
 
                 names.append(objectName)
-                u = '-' if meas.unit == '1' else meas.unit
+                if meas.unit == '1':
+                    u = '-'
+                else:
+                    if self.prettyUnit:
+                        u = f"${meas._unitObject.__str__(True)}$"
+                    else:
+                        u = meas.unit
                 units.append(u)
                 
                 unitObjects.append(meas._unitObject)
@@ -164,7 +171,13 @@ class _fileFromSheets():
                     meas = object
  
                     self.write(worksheet, 0, col, objectName)
-                    u = '-' if meas.unit == '1' else meas.unit
+                    if meas.unit == '1':
+                        u = '-'
+                    else:
+                        if self.prettyUnit:
+                            u = f"${meas._unitObject.__str__(True)}$"
+                        else:
+                            u = meas.unit
                     self.write(worksheet, 1, col, u)
                     
                     u = meas._unitObject
@@ -559,3 +572,11 @@ class sheet():
         
         self.__dict__[name] = value
 
+if __name__ == "__main__":
+
+
+    s = sheet()
+
+    s.b = variable([1,2,3], 'L/min', [1,2,3])
+
+    fileFromSheets(s, "test.txt", prettyUnit=True)

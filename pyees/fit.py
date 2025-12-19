@@ -16,6 +16,23 @@ except ImportError:
 
 
 
+## TODO implement pyees.Chart in all of the plotting methods of the fit
+class Chart():
+
+    def __init__(self, input):
+
+        self.fig = input
+
+        if      type(input).__module__ == "matplotlib.axes._axes":           self._backend = "matplotlib"
+        elif    type(input).__module__ == "mpl_toolkits.mplot3d.axes3d":     self._backend = "matplotlib"
+        elif    type(input).__module__ == "plotly.graph_objs._figure":       self._backend = "plotly"
+        else:   raise ValueError("the input has to be a matplotlib figure or a plotly figure")
+    
+        self.xUnit = None
+        self.yUnit = None
+        
+
+
 def splitPlotlyKeywordArguments(fig, kwargs):
     addTraceKwargs = {}
     if fig._has_subplots():
@@ -1983,3 +2000,30 @@ def crateNewMultiVariableFitClass(func, funcNameFunc, getVariableUnitsFunc, nPar
 
 
     
+
+
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    from plotly import graph_objects as go
+    from plotly.subplots import make_subplots
+  
+    
+    fig = plt.figure()
+    ax = fig.add_axes([0,0,1,1])
+    fig = Chart(ax)
+
+    fig, ax = plt.subplots()        
+    fig = Chart(ax)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    fig = Chart(ax)
+
+    fig = go.Figure()
+    fig = Chart(fig)
+
+    fig = make_subplots(rows = 3, cols=4)
+    fig = Chart(fig)
+
+

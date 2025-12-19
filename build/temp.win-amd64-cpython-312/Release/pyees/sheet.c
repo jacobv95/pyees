@@ -1527,7 +1527,7 @@ struct __pyx_obj_5pyees_5sheet___pyx_scope_struct____init__;
 /* "pyees/sheet.py":26
  * 
  * class _fileFromSheets():
- *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:             # <<<<<<<<<<<<<<
+ *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False) -> None:             # <<<<<<<<<<<<<<
  * 
  *         self.fileName = fileName
 */
@@ -2173,6 +2173,10 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
 #endif
 
+/* JoinPyUnicode.export */
+static PyObject* __Pyx_PyUnicode_Join(PyObject** values, Py_ssize_t value_count, Py_ssize_t result_ulength,
+                                      Py_UCS4 max_char);
+
 /* PyObject_Unicode.proto */
 #define __Pyx_PyObject_Unicode(obj)\
     (likely(PyUnicode_CheckExact(obj)) ? __Pyx_NewRef(obj) : PyObject_Str(obj))
@@ -2317,10 +2321,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyLong_SubtractObjC(PyObject *op1, PyObject
 #define __Pyx_PyLong_SubtractObjC(op1, op2, intval, inplace, zerodivision_check)\
     (inplace ? PyNumber_InPlaceSubtract(op1, op2) : PyNumber_Subtract(op1, op2))
 #endif
-
-/* JoinPyUnicode.export */
-static PyObject* __Pyx_PyUnicode_Join(PyObject** values, Py_ssize_t value_count, Py_ssize_t result_ulength,
-                                      Py_UCS4 max_char);
 
 /* PyObjectVectorCallMethodKwBuilder.proto */
 #if CYTHON_VECTORCALL && PY_VERSION_HEX >= 0x03090000
@@ -2599,6 +2599,9 @@ static PyObject *__Pyx_Py3MetaclassPrepare(PyObject *metaclass, PyObject *bases,
 static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObject *bases, PyObject *dict,
                                       PyObject *mkw, int calculate_metaclass, int allow_py2_metaclass);
 
+/* ListPack.proto */
+static PyObject *__Pyx_PyList_Pack(Py_ssize_t n, ...);
+
 /* CLineInTraceback.proto (used by AddTraceback) */
 #if CYTHON_CLINE_IN_TRACEBACK && CYTHON_CLINE_IN_TRACEBACK_RUNTIME
 static int __Pyx_CLineForTraceback(PyThreadState *tstate, int c_line);
@@ -2766,14 +2769,14 @@ static PyObject *__pyx_builtin_max;
 static PyObject *__pyx_builtin_print;
 /* #### Code section: string_decls ### */
 /* #### Code section: decls ### */
-static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sheets, PyObject *__pyx_v_fileName, PyObject *__pyx_v_sheetNames, PyObject *__pyx_v_showUncert); /* proto */
+static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sheets, PyObject *__pyx_v_fileName, PyObject *__pyx_v_sheetNames, PyObject *__pyx_v_showUncert, PyObject *__pyx_v_prettyUnit); /* proto */
 static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___createSheet(PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___2write(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sheet, PyObject *__pyx_v_row, PyObject *__pyx_v_col, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___4getSheet(PyObject *__pyx_self, PyObject *__pyx_v_index, PyObject *__pyx_v_sheetName); /* proto */
 static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___6createSheet(PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___8write(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sheet, PyObject *__pyx_v_row, PyObject *__pyx_v_col, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(PyObject *__pyx_self, PyObject *__pyx_v_index, PyObject *__pyx_v_sheetName); /* proto */
-static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_sheets, PyObject *__pyx_v_fileName, PyObject *__pyx_v_sheetNames, PyObject *__pyx_v_showUncert); /* proto */
+static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_sheets, PyObject *__pyx_v_fileName, PyObject *__pyx_v_sheetNames, PyObject *__pyx_v_showUncert, PyObject *__pyx_v_prettyUnit); /* proto */
 static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5pyees_5sheet_2sheetsFromFile(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_xlFile, PyObject *__pyx_v_dataRange, PyObject *__pyx_v_uncertRange, PyObject *__pyx_v_sheets); /* proto */
@@ -2817,10 +2820,10 @@ typedef struct {
   __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_values;
   __Pyx_CachedCFunction __pyx_umethod_PyList_Type__index;
   PyObject *__pyx_slice[3];
-  PyObject *__pyx_tuple[5];
+  PyObject *__pyx_tuple[6];
   PyObject *__pyx_codeobj_tab[23];
-  PyObject *__pyx_string_tab[270];
-  PyObject *__pyx_number_tab[5];
+  PyObject *__pyx_string_tab[277];
+  PyObject *__pyx_number_tab[6];
 /* #### Code section: module_state_contents ### */
 /* CommonTypesMetaclass.module_state_decls */
 PyTypeObject *__pyx_CommonTypesMetaclassType;
@@ -2870,277 +2873,285 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_kp_u_1 __pyx_string_tab[1]
 #define __pyx_kp_u_It_is_not_possible_to_assign_she __pyx_string_tab[2]
 #define __pyx_kp_u_It_is_only_possible_to_save_a_si __pyx_string_tab[3]
-#define __pyx_kp_u_Note_that_Cython_is_deliberately __pyx_string_tab[4]
-#define __pyx_kp_u_Sheet __pyx_string_tab[5]
-#define __pyx_kp_u_The_coloumn_has_to_be_a_string __pyx_string_tab[6]
-#define __pyx_kp_u_The_covariances_has_to_be_symmet __pyx_string_tab[7]
-#define __pyx_kp_u_The_data_range_can_only_include __pyx_string_tab[8]
-#define __pyx_kp_u_The_file_extension_is_not_suppor __pyx_string_tab[9]
-#define __pyx_kp_u_The_header __pyx_string_tab[10]
-#define __pyx_kp_u_The_length_of_the_input_dataRang __pyx_string_tab[11]
-#define __pyx_kp_u_The_length_of_the_input_uncertRa __pyx_string_tab[12]
-#define __pyx_kp_u_The_length_of_the_sheet_names_ha __pyx_string_tab[13]
-#define __pyx_kp_u_The_number_of_data_coloumns_does __pyx_string_tab[14]
-#define __pyx_kp_u_The_number_of_rows_in_the_uncert __pyx_string_tab[15]
-#define __pyx_kp_u_The_uncertanty_coloumns_does_not __pyx_string_tab[16]
-#define __pyx_kp_u_There_is_no_valid_data_in_the_da __pyx_string_tab[17]
-#define __pyx_kp_u_There_is_no_valid_uncertanty_in __pyx_string_tab[18]
-#define __pyx_kp_u_You_can_only_append_sheets_with __pyx_string_tab[19]
-#define __pyx_kp_u_You_can_only_append_two_sheets_t __pyx_string_tab[20]
-#define __pyx_kp_u_You_can_only_set_variables_as_at __pyx_string_tab[21]
-#define __pyx_kp_u__10 __pyx_string_tab[22]
-#define __pyx_kp_u__2 __pyx_string_tab[23]
-#define __pyx_kp_u__3 __pyx_string_tab[24]
-#define __pyx_kp_u__4 __pyx_string_tab[25]
-#define __pyx_kp_u__5 __pyx_string_tab[26]
-#define __pyx_kp_u__6 __pyx_string_tab[27]
-#define __pyx_kp_u__9 __pyx_string_tab[28]
-#define __pyx_kp_u_add_note __pyx_string_tab[29]
-#define __pyx_kp_u_could_not_be_added_to_the_sheet __pyx_string_tab[30]
-#define __pyx_kp_u_csv __pyx_string_tab[31]
-#define __pyx_kp_u_disable __pyx_string_tab[32]
-#define __pyx_kp_u_enable __pyx_string_tab[33]
-#define __pyx_kp_u_gc __pyx_string_tab[34]
-#define __pyx_kp_u_int_List_int __pyx_string_tab[35]
-#define __pyx_kp_u_isenabled __pyx_string_tab[36]
-#define __pyx_kp_u_pyees_sheet_py __pyx_string_tab[37]
-#define __pyx_kp_u_str_List_str __pyx_string_tab[38]
-#define __pyx_kp_u_txt __pyx_string_tab[39]
-#define __pyx_kp_u_utf_8 __pyx_string_tab[40]
-#define __pyx_kp_u_w_2 __pyx_string_tab[41]
-#define __pyx_kp_u_xls __pyx_string_tab[42]
-#define __pyx_kp_u_xlsx __pyx_string_tab[43]
-#define __pyx_n_u_Any __pyx_string_tab[44]
-#define __pyx_n_u_CalamineWorkbook __pyx_string_tab[45]
-#define __pyx_n_u_List __pyx_string_tab[46]
-#define __pyx_n_u_None __pyx_string_tab[47]
-#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[48]
-#define __pyx_n_u_Workbook __pyx_string_tab[49]
-#define __pyx_n_u__7 __pyx_string_tab[50]
-#define __pyx_n_u__8 __pyx_string_tab[51]
-#define __pyx_n_u_active __pyx_string_tab[52]
-#define __pyx_n_u_addCovariance __pyx_string_tab[53]
-#define __pyx_n_u_add_sheet __pyx_string_tab[54]
-#define __pyx_n_u_append __pyx_string_tab[55]
-#define __pyx_n_u_array __pyx_string_tab[56]
-#define __pyx_n_u_arrayVariable __pyx_string_tab[57]
-#define __pyx_n_u_ascii_letters __pyx_string_tab[58]
-#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[59]
-#define __pyx_n_u_c __pyx_string_tab[60]
-#define __pyx_n_u_cell __pyx_string_tab[61]
-#define __pyx_n_u_class_getitem __pyx_string_tab[62]
-#define __pyx_n_u_cline_in_traceback __pyx_string_tab[63]
-#define __pyx_n_u_col __pyx_string_tab[64]
-#define __pyx_n_u_colToIndex __pyx_string_tab[65]
-#define __pyx_n_u_containsCovariace __pyx_string_tab[66]
-#define __pyx_n_u_cov __pyx_string_tab[67]
-#define __pyx_n_u_covariances __pyx_string_tab[68]
-#define __pyx_n_u_createSheet __pyx_string_tab[69]
-#define __pyx_n_u_create_sheet __pyx_string_tab[70]
-#define __pyx_n_u_csv_2 __pyx_string_tab[71]
-#define __pyx_n_u_d __pyx_string_tab[72]
-#define __pyx_n_u_dat __pyx_string_tab[73]
-#define __pyx_n_u_data __pyx_string_tab[74]
-#define __pyx_n_u_dataEndCol __pyx_string_tab[75]
-#define __pyx_n_u_dataRange __pyx_string_tab[76]
-#define __pyx_n_u_dataRanges __pyx_string_tab[77]
-#define __pyx_n_u_dataStartCol __pyx_string_tab[78]
-#define __pyx_n_u_datas __pyx_string_tab[79]
-#define __pyx_n_u_dict __pyx_string_tab[80]
-#define __pyx_n_u_doc __pyx_string_tab[81]
-#define __pyx_n_u_done __pyx_string_tab[82]
-#define __pyx_n_u_elem __pyx_string_tab[83]
-#define __pyx_n_u_encoding __pyx_string_tab[84]
-#define __pyx_n_u_enter __pyx_string_tab[85]
-#define __pyx_n_u_enumerate __pyx_string_tab[86]
-#define __pyx_n_u_exit __pyx_string_tab[87]
-#define __pyx_n_u_extension __pyx_string_tab[88]
-#define __pyx_n_u_file __pyx_string_tab[89]
-#define __pyx_n_u_fileFromSheets __pyx_string_tab[90]
-#define __pyx_n_u_fileFromSheets_2 __pyx_string_tab[91]
-#define __pyx_n_u_fileFromSheets___init __pyx_string_tab[92]
-#define __pyx_n_u_fileFromSheets___init___locals __pyx_string_tab[93]
-#define __pyx_n_u_fileFromSheets___init___locals_2 __pyx_string_tab[94]
-#define __pyx_n_u_fileFromSheets___init___locals_3 __pyx_string_tab[95]
-#define __pyx_n_u_fileFromSheets_saveCsv __pyx_string_tab[96]
-#define __pyx_n_u_fileFromSheets_saveSheets __pyx_string_tab[97]
-#define __pyx_n_u_fileName __pyx_string_tab[98]
-#define __pyx_n_u_find __pyx_string_tab[99]
-#define __pyx_n_u_formatHeaders __pyx_string_tab[100]
-#define __pyx_n_u_from_path __pyx_string_tab[101]
-#define __pyx_n_u_func __pyx_string_tab[102]
-#define __pyx_n_u_getSheet __pyx_string_tab[103]
-#define __pyx_n_u_get_sheet_by_name __pyx_string_tab[104]
-#define __pyx_n_u_getitem __pyx_string_tab[105]
-#define __pyx_n_u_h __pyx_string_tab[106]
-#define __pyx_n_u_head __pyx_string_tab[107]
-#define __pyx_n_u_header __pyx_string_tab[108]
-#define __pyx_n_u_headers __pyx_string_tab[109]
-#define __pyx_n_u_i __pyx_string_tab[110]
-#define __pyx_n_u_ii __pyx_string_tab[111]
-#define __pyx_n_u_imax __pyx_string_tab[112]
-#define __pyx_n_u_index __pyx_string_tab[113]
-#define __pyx_n_u_indexNan __pyx_string_tab[114]
-#define __pyx_n_u_init __pyx_string_tab[115]
-#define __pyx_n_u_is_coroutine __pyx_string_tab[116]
-#define __pyx_n_u_isnumeric __pyx_string_tab[117]
-#define __pyx_n_u_item __pyx_string_tab[118]
-#define __pyx_n_u_items __pyx_string_tab[119]
-#define __pyx_n_u_iter __pyx_string_tab[120]
-#define __pyx_n_u_j __pyx_string_tab[121]
-#define __pyx_n_u_key __pyx_string_tab[122]
-#define __pyx_n_u_lastWasNan __pyx_string_tab[123]
-#define __pyx_n_u_len __pyx_string_tab[124]
-#define __pyx_n_u_m __pyx_string_tab[125]
-#define __pyx_n_u_main __pyx_string_tab[126]
-#define __pyx_n_u_max __pyx_string_tab[127]
-#define __pyx_n_u_meas __pyx_string_tab[128]
-#define __pyx_n_u_measurement __pyx_string_tab[129]
-#define __pyx_n_u_measurementName __pyx_string_tab[130]
-#define __pyx_n_u_metaclass __pyx_string_tab[131]
-#define __pyx_n_u_mode __pyx_string_tab[132]
-#define __pyx_n_u_module __pyx_string_tab[133]
-#define __pyx_n_u_n __pyx_string_tab[134]
-#define __pyx_n_u_nData __pyx_string_tab[135]
-#define __pyx_n_u_nDataColoumns __pyx_string_tab[136]
-#define __pyx_n_u_nUncert __pyx_string_tab[137]
-#define __pyx_n_u_nUncertColoumns __pyx_string_tab[138]
-#define __pyx_n_u_name __pyx_string_tab[139]
-#define __pyx_n_u_name_2 __pyx_string_tab[140]
-#define __pyx_n_u_names __pyx_string_tab[141]
-#define __pyx_n_u_nan __pyx_string_tab[142]
-#define __pyx_n_u_newline __pyx_string_tab[143]
-#define __pyx_n_u_np __pyx_string_tab[144]
-#define __pyx_n_u_num __pyx_string_tab[145]
-#define __pyx_n_u_numpy __pyx_string_tab[146]
-#define __pyx_n_u_object __pyx_string_tab[147]
-#define __pyx_n_u_objectName __pyx_string_tab[148]
-#define __pyx_n_u_open __pyx_string_tab[149]
-#define __pyx_n_u_openpyxl __pyx_string_tab[150]
-#define __pyx_n_u_os __pyx_string_tab[151]
-#define __pyx_n_u_os_path __pyx_string_tab[152]
-#define __pyx_n_u_other __pyx_string_tab[153]
-#define __pyx_n_u_otherMeasurementNames __pyx_string_tab[154]
-#define __pyx_n_u_otherMeasurements __pyx_string_tab[155]
-#define __pyx_n_u_out __pyx_string_tab[156]
-#define __pyx_n_u_path __pyx_string_tab[157]
-#define __pyx_n_u_pop __pyx_string_tab[158]
-#define __pyx_n_u_prepare __pyx_string_tab[159]
-#define __pyx_n_u_print __pyx_string_tab[160]
-#define __pyx_n_u_printContents __pyx_string_tab[161]
-#define __pyx_n_u_pyees_sheet __pyx_string_tab[162]
-#define __pyx_n_u_pyees_variable __pyx_string_tab[163]
-#define __pyx_n_u_python_calamine __pyx_string_tab[164]
-#define __pyx_n_u_qualname __pyx_string_tab[165]
-#define __pyx_n_u_re __pyx_string_tab[166]
-#define __pyx_n_u_readData __pyx_string_tab[167]
-#define __pyx_n_u_replace __pyx_string_tab[168]
-#define __pyx_n_u_return __pyx_string_tab[169]
-#define __pyx_n_u_row __pyx_string_tab[170]
-#define __pyx_n_u_save __pyx_string_tab[171]
-#define __pyx_n_u_saveCsv __pyx_string_tab[172]
-#define __pyx_n_u_saveSheets __pyx_string_tab[173]
-#define __pyx_n_u_scalarVariable __pyx_string_tab[174]
-#define __pyx_n_u_scalarVariables __pyx_string_tab[175]
-#define __pyx_n_u_self __pyx_string_tab[176]
-#define __pyx_n_u_selfMeasurementNames __pyx_string_tab[177]
-#define __pyx_n_u_selfMeasurements __pyx_string_tab[178]
-#define __pyx_n_u_set_name __pyx_string_tab[179]
-#define __pyx_n_u_setattr __pyx_string_tab[180]
-#define __pyx_n_u_setdefault __pyx_string_tab[181]
-#define __pyx_n_u_sh __pyx_string_tab[182]
-#define __pyx_n_u_sheet __pyx_string_tab[183]
-#define __pyx_n_u_sheetData __pyx_string_tab[184]
-#define __pyx_n_u_sheetName __pyx_string_tab[185]
-#define __pyx_n_u_sheetNames __pyx_string_tab[186]
-#define __pyx_n_u_sheet___getitem __pyx_string_tab[187]
-#define __pyx_n_u_sheet___init __pyx_string_tab[188]
-#define __pyx_n_u_sheet___iter __pyx_string_tab[189]
-#define __pyx_n_u_sheet___len __pyx_string_tab[190]
-#define __pyx_n_u_sheet___setattr __pyx_string_tab[191]
-#define __pyx_n_u_sheet_append __pyx_string_tab[192]
-#define __pyx_n_u_sheet_names __pyx_string_tab[193]
-#define __pyx_n_u_sheet_pop __pyx_string_tab[194]
-#define __pyx_n_u_sheet_printContents __pyx_string_tab[195]
-#define __pyx_n_u_sheets __pyx_string_tab[196]
-#define __pyx_n_u_sheetsFromFile __pyx_string_tab[197]
-#define __pyx_n_u_sheetsFromFile_2 __pyx_string_tab[198]
-#define __pyx_n_u_sheetsFromFile___init __pyx_string_tab[199]
-#define __pyx_n_u_sheetsFromFile_colToIndex __pyx_string_tab[200]
-#define __pyx_n_u_sheetsFromFile_formatHeaders __pyx_string_tab[201]
-#define __pyx_n_u_sheetsFromFile_readData __pyx_string_tab[202]
-#define __pyx_n_u_showUncert __pyx_string_tab[203]
-#define __pyx_n_u_skip_empty_area __pyx_string_tab[204]
-#define __pyx_n_u_splitext __pyx_string_tab[205]
-#define __pyx_n_u_sqrt __pyx_string_tab[206]
-#define __pyx_n_u_str __pyx_string_tab[207]
-#define __pyx_n_u_string __pyx_string_tab[208]
-#define __pyx_n_u_sub __pyx_string_tab[209]
-#define __pyx_n_u_supportedExtensions __pyx_string_tab[210]
-#define __pyx_n_u_test __pyx_string_tab[211]
-#define __pyx_n_u_title __pyx_string_tab[212]
-#define __pyx_n_u_to_python __pyx_string_tab[213]
-#define __pyx_n_u_transpose __pyx_string_tab[214]
-#define __pyx_n_u_typing __pyx_string_tab[215]
-#define __pyx_n_u_u __pyx_string_tab[216]
-#define __pyx_n_u_unc __pyx_string_tab[217]
-#define __pyx_n_u_uncert __pyx_string_tab[218]
-#define __pyx_n_u_uncertEndCol __pyx_string_tab[219]
-#define __pyx_n_u_uncertIsZero __pyx_string_tab[220]
-#define __pyx_n_u_uncertRange __pyx_string_tab[221]
-#define __pyx_n_u_uncertRanges __pyx_string_tab[222]
-#define __pyx_n_u_uncertStartCol __pyx_string_tab[223]
-#define __pyx_n_u_unit __pyx_string_tab[224]
-#define __pyx_n_u_unitObject __pyx_string_tab[225]
-#define __pyx_n_u_unitObjects __pyx_string_tab[226]
-#define __pyx_n_u_units __pyx_string_tab[227]
-#define __pyx_n_u_upper __pyx_string_tab[228]
-#define __pyx_n_u_val __pyx_string_tab[229]
-#define __pyx_n_u_validData __pyx_string_tab[230]
-#define __pyx_n_u_validUncert __pyx_string_tab[231]
-#define __pyx_n_u_value __pyx_string_tab[232]
-#define __pyx_n_u_values __pyx_string_tab[233]
-#define __pyx_n_u_variable __pyx_string_tab[234]
-#define __pyx_n_u_variables __pyx_string_tab[235]
-#define __pyx_n_u_w __pyx_string_tab[236]
-#define __pyx_n_u_wb __pyx_string_tab[237]
-#define __pyx_n_u_workbook __pyx_string_tab[238]
-#define __pyx_n_u_worksheet __pyx_string_tab[239]
-#define __pyx_n_u_write __pyx_string_tab[240]
-#define __pyx_n_u_writer __pyx_string_tab[241]
-#define __pyx_n_u_writerow __pyx_string_tab[242]
-#define __pyx_n_u_writerows __pyx_string_tab[243]
-#define __pyx_n_u_xlFile __pyx_string_tab[244]
-#define __pyx_n_u_xlwt __pyx_string_tab[245]
-#define __pyx_n_u_zip __pyx_string_tab[246]
-#define __pyx_kp_b_iso88591_7_D_dde_s_3fCq_s_aq_3a __pyx_string_tab[247]
-#define __pyx_kp_b_iso88591_8_t_Qha_Ks_4z_a_1HJl __pyx_string_tab[248]
-#define __pyx_kp_b_iso88591_A __pyx_string_tab[249]
-#define __pyx_kp_b_iso88591_A_3at9Cq_AQ_t_s_AQ_IT_Cq_A_a_N_Q __pyx_string_tab[250]
-#define __pyx_kp_b_iso88591_A_4s_1_4z_q_AQ_a_E_r_F_d_Cs_QavT __pyx_string_tab[251]
-#define __pyx_kp_b_iso88591_A_4z_AQ_1_q_A_D_IV1_z_q_G1A_q_D __pyx_string_tab[252]
-#define __pyx_kp_b_iso88591_A_6_1_L_Cq_Q_Ya_q __pyx_string_tab[253]
-#define __pyx_kp_b_iso88591_A_A_Cxt9F_z_t1A __pyx_string_tab[254]
-#define __pyx_kp_b_iso88591_A_Cxt9F_z_s_1_a __pyx_string_tab[255]
-#define __pyx_kp_b_iso88591_A_D_4q_D_Cq_D_1A_IQd_c_Qha_1_a_U __pyx_string_tab[256]
-#define __pyx_kp_b_iso88591_A_E_YfA_z_Qa __pyx_string_tab[257]
-#define __pyx_kp_b_iso88591_A_G1_D_iq_A_Q_r_1_4A_Kq_m1A_Cq_s __pyx_string_tab[258]
-#define __pyx_kp_b_iso88591_A_U_3as_Qc __pyx_string_tab[259]
-#define __pyx_kp_b_iso88591_A_U_E_YfA_z_q_E_Qa_q __pyx_string_tab[260]
-#define __pyx_kp_b_iso88591_A_V1E_a __pyx_string_tab[261]
-#define __pyx_kp_b_iso88591_A_a_HA_uCq_7_1_2T_E_1_a_t81F_uCq __pyx_string_tab[262]
-#define __pyx_kp_b_iso88591_A_t3j __pyx_string_tab[263]
-#define __pyx_kp_b_iso88591_A_t3m1 __pyx_string_tab[264]
-#define __pyx_kp_b_iso88591_A_xq_b_Q_1_t3j __pyx_string_tab[265]
-#define __pyx_kp_b_iso88591_HA_4z_AQ_4wawa_M_2_1_IQha __pyx_string_tab[266]
-#define __pyx_kp_b_iso88591_N_E_YfA_z_D __pyx_string_tab[267]
-#define __pyx_kp_b_iso88591_Na_Be9AWAQ_axq_WA_A_aab_F_AQ_Ja __pyx_string_tab[268]
-#define __pyx_kp_b_iso88591_RRS_L_Ja_N_N_3a_1L_3aq_j_Be9AYa __pyx_string_tab[269]
+#define __pyx_kp_u_L_min __pyx_string_tab[4]
+#define __pyx_kp_u_Note_that_Cython_is_deliberately __pyx_string_tab[5]
+#define __pyx_kp_u_Sheet __pyx_string_tab[6]
+#define __pyx_kp_u_The_coloumn_has_to_be_a_string __pyx_string_tab[7]
+#define __pyx_kp_u_The_covariances_has_to_be_symmet __pyx_string_tab[8]
+#define __pyx_kp_u_The_data_range_can_only_include __pyx_string_tab[9]
+#define __pyx_kp_u_The_file_extension_is_not_suppor __pyx_string_tab[10]
+#define __pyx_kp_u_The_header __pyx_string_tab[11]
+#define __pyx_kp_u_The_length_of_the_input_dataRang __pyx_string_tab[12]
+#define __pyx_kp_u_The_length_of_the_input_uncertRa __pyx_string_tab[13]
+#define __pyx_kp_u_The_length_of_the_sheet_names_ha __pyx_string_tab[14]
+#define __pyx_kp_u_The_number_of_data_coloumns_does __pyx_string_tab[15]
+#define __pyx_kp_u_The_number_of_rows_in_the_uncert __pyx_string_tab[16]
+#define __pyx_kp_u_The_uncertanty_coloumns_does_not __pyx_string_tab[17]
+#define __pyx_kp_u_There_is_no_valid_data_in_the_da __pyx_string_tab[18]
+#define __pyx_kp_u_There_is_no_valid_uncertanty_in __pyx_string_tab[19]
+#define __pyx_kp_u_You_can_only_append_sheets_with __pyx_string_tab[20]
+#define __pyx_kp_u_You_can_only_append_two_sheets_t __pyx_string_tab[21]
+#define __pyx_kp_u_You_can_only_set_variables_as_at __pyx_string_tab[22]
+#define __pyx_kp_u__10 __pyx_string_tab[23]
+#define __pyx_kp_u__11 __pyx_string_tab[24]
+#define __pyx_kp_u__2 __pyx_string_tab[25]
+#define __pyx_kp_u__3 __pyx_string_tab[26]
+#define __pyx_kp_u__4 __pyx_string_tab[27]
+#define __pyx_kp_u__5 __pyx_string_tab[28]
+#define __pyx_kp_u__6 __pyx_string_tab[29]
+#define __pyx_kp_u__7 __pyx_string_tab[30]
+#define __pyx_kp_u_add_note __pyx_string_tab[31]
+#define __pyx_kp_u_could_not_be_added_to_the_sheet __pyx_string_tab[32]
+#define __pyx_kp_u_csv __pyx_string_tab[33]
+#define __pyx_kp_u_disable __pyx_string_tab[34]
+#define __pyx_kp_u_enable __pyx_string_tab[35]
+#define __pyx_kp_u_gc __pyx_string_tab[36]
+#define __pyx_kp_u_int_List_int __pyx_string_tab[37]
+#define __pyx_kp_u_isenabled __pyx_string_tab[38]
+#define __pyx_kp_u_pyees_sheet_py __pyx_string_tab[39]
+#define __pyx_kp_u_str_List_str __pyx_string_tab[40]
+#define __pyx_kp_u_test_txt __pyx_string_tab[41]
+#define __pyx_kp_u_txt __pyx_string_tab[42]
+#define __pyx_kp_u_utf_8 __pyx_string_tab[43]
+#define __pyx_kp_u_w_2 __pyx_string_tab[44]
+#define __pyx_kp_u_xls __pyx_string_tab[45]
+#define __pyx_kp_u_xlsx __pyx_string_tab[46]
+#define __pyx_n_u_Any __pyx_string_tab[47]
+#define __pyx_n_u_CalamineWorkbook __pyx_string_tab[48]
+#define __pyx_n_u_List __pyx_string_tab[49]
+#define __pyx_n_u_None __pyx_string_tab[50]
+#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[51]
+#define __pyx_n_u_Workbook __pyx_string_tab[52]
+#define __pyx_n_u__8 __pyx_string_tab[53]
+#define __pyx_n_u__9 __pyx_string_tab[54]
+#define __pyx_n_u_active __pyx_string_tab[55]
+#define __pyx_n_u_addCovariance __pyx_string_tab[56]
+#define __pyx_n_u_add_sheet __pyx_string_tab[57]
+#define __pyx_n_u_append __pyx_string_tab[58]
+#define __pyx_n_u_array __pyx_string_tab[59]
+#define __pyx_n_u_arrayVariable __pyx_string_tab[60]
+#define __pyx_n_u_ascii_letters __pyx_string_tab[61]
+#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[62]
+#define __pyx_n_u_b __pyx_string_tab[63]
+#define __pyx_n_u_c __pyx_string_tab[64]
+#define __pyx_n_u_cell __pyx_string_tab[65]
+#define __pyx_n_u_class_getitem __pyx_string_tab[66]
+#define __pyx_n_u_cline_in_traceback __pyx_string_tab[67]
+#define __pyx_n_u_col __pyx_string_tab[68]
+#define __pyx_n_u_colToIndex __pyx_string_tab[69]
+#define __pyx_n_u_containsCovariace __pyx_string_tab[70]
+#define __pyx_n_u_cov __pyx_string_tab[71]
+#define __pyx_n_u_covariances __pyx_string_tab[72]
+#define __pyx_n_u_createSheet __pyx_string_tab[73]
+#define __pyx_n_u_create_sheet __pyx_string_tab[74]
+#define __pyx_n_u_csv_2 __pyx_string_tab[75]
+#define __pyx_n_u_d __pyx_string_tab[76]
+#define __pyx_n_u_dat __pyx_string_tab[77]
+#define __pyx_n_u_data __pyx_string_tab[78]
+#define __pyx_n_u_dataEndCol __pyx_string_tab[79]
+#define __pyx_n_u_dataRange __pyx_string_tab[80]
+#define __pyx_n_u_dataRanges __pyx_string_tab[81]
+#define __pyx_n_u_dataStartCol __pyx_string_tab[82]
+#define __pyx_n_u_datas __pyx_string_tab[83]
+#define __pyx_n_u_dict __pyx_string_tab[84]
+#define __pyx_n_u_doc __pyx_string_tab[85]
+#define __pyx_n_u_done __pyx_string_tab[86]
+#define __pyx_n_u_elem __pyx_string_tab[87]
+#define __pyx_n_u_encoding __pyx_string_tab[88]
+#define __pyx_n_u_enter __pyx_string_tab[89]
+#define __pyx_n_u_enumerate __pyx_string_tab[90]
+#define __pyx_n_u_exit __pyx_string_tab[91]
+#define __pyx_n_u_extension __pyx_string_tab[92]
+#define __pyx_n_u_file __pyx_string_tab[93]
+#define __pyx_n_u_fileFromSheets __pyx_string_tab[94]
+#define __pyx_n_u_fileFromSheets_2 __pyx_string_tab[95]
+#define __pyx_n_u_fileFromSheets___init __pyx_string_tab[96]
+#define __pyx_n_u_fileFromSheets___init___locals __pyx_string_tab[97]
+#define __pyx_n_u_fileFromSheets___init___locals_2 __pyx_string_tab[98]
+#define __pyx_n_u_fileFromSheets___init___locals_3 __pyx_string_tab[99]
+#define __pyx_n_u_fileFromSheets_saveCsv __pyx_string_tab[100]
+#define __pyx_n_u_fileFromSheets_saveSheets __pyx_string_tab[101]
+#define __pyx_n_u_fileName __pyx_string_tab[102]
+#define __pyx_n_u_find __pyx_string_tab[103]
+#define __pyx_n_u_formatHeaders __pyx_string_tab[104]
+#define __pyx_n_u_from_path __pyx_string_tab[105]
+#define __pyx_n_u_func __pyx_string_tab[106]
+#define __pyx_n_u_getSheet __pyx_string_tab[107]
+#define __pyx_n_u_get_sheet_by_name __pyx_string_tab[108]
+#define __pyx_n_u_getitem __pyx_string_tab[109]
+#define __pyx_n_u_h __pyx_string_tab[110]
+#define __pyx_n_u_head __pyx_string_tab[111]
+#define __pyx_n_u_header __pyx_string_tab[112]
+#define __pyx_n_u_headers __pyx_string_tab[113]
+#define __pyx_n_u_i __pyx_string_tab[114]
+#define __pyx_n_u_ii __pyx_string_tab[115]
+#define __pyx_n_u_imax __pyx_string_tab[116]
+#define __pyx_n_u_index __pyx_string_tab[117]
+#define __pyx_n_u_indexNan __pyx_string_tab[118]
+#define __pyx_n_u_init __pyx_string_tab[119]
+#define __pyx_n_u_is_coroutine __pyx_string_tab[120]
+#define __pyx_n_u_isnumeric __pyx_string_tab[121]
+#define __pyx_n_u_item __pyx_string_tab[122]
+#define __pyx_n_u_items __pyx_string_tab[123]
+#define __pyx_n_u_iter __pyx_string_tab[124]
+#define __pyx_n_u_j __pyx_string_tab[125]
+#define __pyx_n_u_key __pyx_string_tab[126]
+#define __pyx_n_u_lastWasNan __pyx_string_tab[127]
+#define __pyx_n_u_len __pyx_string_tab[128]
+#define __pyx_n_u_m __pyx_string_tab[129]
+#define __pyx_n_u_main __pyx_string_tab[130]
+#define __pyx_n_u_max __pyx_string_tab[131]
+#define __pyx_n_u_meas __pyx_string_tab[132]
+#define __pyx_n_u_measurement __pyx_string_tab[133]
+#define __pyx_n_u_measurementName __pyx_string_tab[134]
+#define __pyx_n_u_metaclass __pyx_string_tab[135]
+#define __pyx_n_u_mode __pyx_string_tab[136]
+#define __pyx_n_u_module __pyx_string_tab[137]
+#define __pyx_n_u_n __pyx_string_tab[138]
+#define __pyx_n_u_nData __pyx_string_tab[139]
+#define __pyx_n_u_nDataColoumns __pyx_string_tab[140]
+#define __pyx_n_u_nUncert __pyx_string_tab[141]
+#define __pyx_n_u_nUncertColoumns __pyx_string_tab[142]
+#define __pyx_n_u_name __pyx_string_tab[143]
+#define __pyx_n_u_name_2 __pyx_string_tab[144]
+#define __pyx_n_u_names __pyx_string_tab[145]
+#define __pyx_n_u_nan __pyx_string_tab[146]
+#define __pyx_n_u_newline __pyx_string_tab[147]
+#define __pyx_n_u_np __pyx_string_tab[148]
+#define __pyx_n_u_num __pyx_string_tab[149]
+#define __pyx_n_u_numpy __pyx_string_tab[150]
+#define __pyx_n_u_object __pyx_string_tab[151]
+#define __pyx_n_u_objectName __pyx_string_tab[152]
+#define __pyx_n_u_open __pyx_string_tab[153]
+#define __pyx_n_u_openpyxl __pyx_string_tab[154]
+#define __pyx_n_u_os __pyx_string_tab[155]
+#define __pyx_n_u_os_path __pyx_string_tab[156]
+#define __pyx_n_u_other __pyx_string_tab[157]
+#define __pyx_n_u_otherMeasurementNames __pyx_string_tab[158]
+#define __pyx_n_u_otherMeasurements __pyx_string_tab[159]
+#define __pyx_n_u_out __pyx_string_tab[160]
+#define __pyx_n_u_path __pyx_string_tab[161]
+#define __pyx_n_u_pop __pyx_string_tab[162]
+#define __pyx_n_u_prepare __pyx_string_tab[163]
+#define __pyx_n_u_prettyUnit __pyx_string_tab[164]
+#define __pyx_n_u_print __pyx_string_tab[165]
+#define __pyx_n_u_printContents __pyx_string_tab[166]
+#define __pyx_n_u_pyees_sheet __pyx_string_tab[167]
+#define __pyx_n_u_pyees_variable __pyx_string_tab[168]
+#define __pyx_n_u_python_calamine __pyx_string_tab[169]
+#define __pyx_n_u_qualname __pyx_string_tab[170]
+#define __pyx_n_u_re __pyx_string_tab[171]
+#define __pyx_n_u_readData __pyx_string_tab[172]
+#define __pyx_n_u_replace __pyx_string_tab[173]
+#define __pyx_n_u_return __pyx_string_tab[174]
+#define __pyx_n_u_row __pyx_string_tab[175]
+#define __pyx_n_u_s __pyx_string_tab[176]
+#define __pyx_n_u_save __pyx_string_tab[177]
+#define __pyx_n_u_saveCsv __pyx_string_tab[178]
+#define __pyx_n_u_saveSheets __pyx_string_tab[179]
+#define __pyx_n_u_scalarVariable __pyx_string_tab[180]
+#define __pyx_n_u_scalarVariables __pyx_string_tab[181]
+#define __pyx_n_u_self __pyx_string_tab[182]
+#define __pyx_n_u_selfMeasurementNames __pyx_string_tab[183]
+#define __pyx_n_u_selfMeasurements __pyx_string_tab[184]
+#define __pyx_n_u_set_name __pyx_string_tab[185]
+#define __pyx_n_u_setattr __pyx_string_tab[186]
+#define __pyx_n_u_setdefault __pyx_string_tab[187]
+#define __pyx_n_u_sh __pyx_string_tab[188]
+#define __pyx_n_u_sheet __pyx_string_tab[189]
+#define __pyx_n_u_sheetData __pyx_string_tab[190]
+#define __pyx_n_u_sheetName __pyx_string_tab[191]
+#define __pyx_n_u_sheetNames __pyx_string_tab[192]
+#define __pyx_n_u_sheet___getitem __pyx_string_tab[193]
+#define __pyx_n_u_sheet___init __pyx_string_tab[194]
+#define __pyx_n_u_sheet___iter __pyx_string_tab[195]
+#define __pyx_n_u_sheet___len __pyx_string_tab[196]
+#define __pyx_n_u_sheet___setattr __pyx_string_tab[197]
+#define __pyx_n_u_sheet_append __pyx_string_tab[198]
+#define __pyx_n_u_sheet_names __pyx_string_tab[199]
+#define __pyx_n_u_sheet_pop __pyx_string_tab[200]
+#define __pyx_n_u_sheet_printContents __pyx_string_tab[201]
+#define __pyx_n_u_sheets __pyx_string_tab[202]
+#define __pyx_n_u_sheetsFromFile __pyx_string_tab[203]
+#define __pyx_n_u_sheetsFromFile_2 __pyx_string_tab[204]
+#define __pyx_n_u_sheetsFromFile___init __pyx_string_tab[205]
+#define __pyx_n_u_sheetsFromFile_colToIndex __pyx_string_tab[206]
+#define __pyx_n_u_sheetsFromFile_formatHeaders __pyx_string_tab[207]
+#define __pyx_n_u_sheetsFromFile_readData __pyx_string_tab[208]
+#define __pyx_n_u_showUncert __pyx_string_tab[209]
+#define __pyx_n_u_skip_empty_area __pyx_string_tab[210]
+#define __pyx_n_u_splitext __pyx_string_tab[211]
+#define __pyx_n_u_sqrt __pyx_string_tab[212]
+#define __pyx_n_u_str __pyx_string_tab[213]
+#define __pyx_n_u_str_2 __pyx_string_tab[214]
+#define __pyx_n_u_string __pyx_string_tab[215]
+#define __pyx_n_u_sub __pyx_string_tab[216]
+#define __pyx_n_u_supportedExtensions __pyx_string_tab[217]
+#define __pyx_n_u_test __pyx_string_tab[218]
+#define __pyx_n_u_title __pyx_string_tab[219]
+#define __pyx_n_u_to_python __pyx_string_tab[220]
+#define __pyx_n_u_transpose __pyx_string_tab[221]
+#define __pyx_n_u_typing __pyx_string_tab[222]
+#define __pyx_n_u_u __pyx_string_tab[223]
+#define __pyx_n_u_unc __pyx_string_tab[224]
+#define __pyx_n_u_uncert __pyx_string_tab[225]
+#define __pyx_n_u_uncertEndCol __pyx_string_tab[226]
+#define __pyx_n_u_uncertIsZero __pyx_string_tab[227]
+#define __pyx_n_u_uncertRange __pyx_string_tab[228]
+#define __pyx_n_u_uncertRanges __pyx_string_tab[229]
+#define __pyx_n_u_uncertStartCol __pyx_string_tab[230]
+#define __pyx_n_u_unit __pyx_string_tab[231]
+#define __pyx_n_u_unitObject __pyx_string_tab[232]
+#define __pyx_n_u_unitObjects __pyx_string_tab[233]
+#define __pyx_n_u_units __pyx_string_tab[234]
+#define __pyx_n_u_upper __pyx_string_tab[235]
+#define __pyx_n_u_val __pyx_string_tab[236]
+#define __pyx_n_u_validData __pyx_string_tab[237]
+#define __pyx_n_u_validUncert __pyx_string_tab[238]
+#define __pyx_n_u_value __pyx_string_tab[239]
+#define __pyx_n_u_values __pyx_string_tab[240]
+#define __pyx_n_u_variable __pyx_string_tab[241]
+#define __pyx_n_u_variables __pyx_string_tab[242]
+#define __pyx_n_u_w __pyx_string_tab[243]
+#define __pyx_n_u_wb __pyx_string_tab[244]
+#define __pyx_n_u_workbook __pyx_string_tab[245]
+#define __pyx_n_u_worksheet __pyx_string_tab[246]
+#define __pyx_n_u_write __pyx_string_tab[247]
+#define __pyx_n_u_writer __pyx_string_tab[248]
+#define __pyx_n_u_writerow __pyx_string_tab[249]
+#define __pyx_n_u_writerows __pyx_string_tab[250]
+#define __pyx_n_u_xlFile __pyx_string_tab[251]
+#define __pyx_n_u_xlwt __pyx_string_tab[252]
+#define __pyx_n_u_zip __pyx_string_tab[253]
+#define __pyx_kp_b_iso88591_7_D_dde_s_3fCq_s_aq_3a __pyx_string_tab[254]
+#define __pyx_kp_b_iso88591_88K1_t_Qha_Ks_4z_a_1HJl_a __pyx_string_tab[255]
+#define __pyx_kp_b_iso88591_A __pyx_string_tab[256]
+#define __pyx_kp_b_iso88591_A_3at9Cq_AQ_t_s_AQ_IT_Cq_A_a_N_Q __pyx_string_tab[257]
+#define __pyx_kp_b_iso88591_A_4s_1_4z_q_AQ_a_E_r_F_d_Cs_QavT __pyx_string_tab[258]
+#define __pyx_kp_b_iso88591_A_4z_AQ_1_q_A_D_IV1_z_q_G1A_q_D __pyx_string_tab[259]
+#define __pyx_kp_b_iso88591_A_6_1_L_Cq_Q_Ya_q __pyx_string_tab[260]
+#define __pyx_kp_b_iso88591_A_A_Cxt9F_z_t1A __pyx_string_tab[261]
+#define __pyx_kp_b_iso88591_A_Cxt9F_z_s_1_a __pyx_string_tab[262]
+#define __pyx_kp_b_iso88591_A_D_4q_D_Cq_D_1A_IQd_c_Qha_1_a_U __pyx_string_tab[263]
+#define __pyx_kp_b_iso88591_A_E_YfA_z_Qa __pyx_string_tab[264]
+#define __pyx_kp_b_iso88591_A_G1_D_iq_A_Q_r_1_4A_Kq_m1A_Cq_s __pyx_string_tab[265]
+#define __pyx_kp_b_iso88591_A_U_3as_Qc __pyx_string_tab[266]
+#define __pyx_kp_b_iso88591_A_U_E_YfA_z_q_E_Qa_q __pyx_string_tab[267]
+#define __pyx_kp_b_iso88591_A_V1E_a __pyx_string_tab[268]
+#define __pyx_kp_b_iso88591_A_a_HA_uCq_7_1_2T_E_1_a_t81F_uCq __pyx_string_tab[269]
+#define __pyx_kp_b_iso88591_A_t3j __pyx_string_tab[270]
+#define __pyx_kp_b_iso88591_A_t3m1 __pyx_string_tab[271]
+#define __pyx_kp_b_iso88591_A_xq_b_Q_1_t3j __pyx_string_tab[272]
+#define __pyx_kp_b_iso88591_HA_4z_AQ_4wawa_M_2_1_IQha __pyx_string_tab[273]
+#define __pyx_kp_b_iso88591_N_E_YfA_z_D __pyx_string_tab[274]
+#define __pyx_kp_b_iso88591_Na_Be9AWAQ_axq_WA_A_aab_F_AQ_Ja __pyx_string_tab[275]
+#define __pyx_kp_b_iso88591_OOffg_L_Ja_N_N_N_3a_1L_3aq_j_Be __pyx_string_tab[276]
 #define __pyx_int_0 __pyx_number_tab[0]
 #define __pyx_int_neg_1 __pyx_number_tab[1]
 #define __pyx_int_1 __pyx_number_tab[2]
 #define __pyx_int_2 __pyx_number_tab[3]
-#define __pyx_int_26 __pyx_number_tab[4]
+#define __pyx_int_3 __pyx_number_tab[4]
+#define __pyx_int_26 __pyx_number_tab[5]
 /* #### Code section: module_state_clear ### */
 #if CYTHON_USE_MODULE_STATE
 static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
@@ -3158,10 +3169,10 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_ptype_5pyees_5sheet___pyx_scope_struct____init__);
   Py_CLEAR(clear_module_state->__pyx_type_5pyees_5sheet___pyx_scope_struct____init__);
   for (int i=0; i<3; ++i) { Py_CLEAR(clear_module_state->__pyx_slice[i]); }
-  for (int i=0; i<5; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
+  for (int i=0; i<6; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
   for (int i=0; i<23; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<270; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
-  for (int i=0; i<5; ++i) { Py_CLEAR(clear_module_state->__pyx_number_tab[i]); }
+  for (int i=0; i<277; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<6; ++i) { Py_CLEAR(clear_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_clear_contents ### */
 /* CommonTypesMetaclass.module_state_clear */
 Py_CLEAR(clear_module_state->__pyx_CommonTypesMetaclassType);
@@ -3187,10 +3198,10 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_ptype_5pyees_5sheet___pyx_scope_struct____init__);
   Py_VISIT(traverse_module_state->__pyx_type_5pyees_5sheet___pyx_scope_struct____init__);
   for (int i=0; i<3; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_slice[i]); }
-  for (int i=0; i<5; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
+  for (int i=0; i<6; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
   for (int i=0; i<23; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<270; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
-  for (int i=0; i<5; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_number_tab[i]); }
+  for (int i=0; i<277; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<6; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_traverse_contents ### */
 /* CommonTypesMetaclass.module_state_traverse */
 Py_VISIT(traverse_module_state->__pyx_CommonTypesMetaclassType);
@@ -3207,7 +3218,7 @@ return 0;
 /* "pyees/sheet.py":17
  * 
  * 
- * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True):             # <<<<<<<<<<<<<<
+ * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False):             # <<<<<<<<<<<<<<
  *     if not isinstance(sheets, list):
  *         sheets = [sheets]
 */
@@ -3232,11 +3243,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   PyObject *__pyx_v_fileName = 0;
   PyObject *__pyx_v_sheetNames = 0;
   PyObject *__pyx_v_showUncert = 0;
+  PyObject *__pyx_v_prettyUnit = 0;
   #if !CYTHON_METH_FASTCALL
   CYTHON_UNUSED Py_ssize_t __pyx_nargs;
   #endif
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
-  PyObject* values[4] = {0,0,0,0};
+  PyObject* values[5] = {0,0,0,0,0};
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3252,11 +3264,15 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   #endif
   __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
   {
-    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_sheets,&__pyx_mstate_global->__pyx_n_u_fileName,&__pyx_mstate_global->__pyx_n_u_sheetNames,&__pyx_mstate_global->__pyx_n_u_showUncert,0};
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_sheets,&__pyx_mstate_global->__pyx_n_u_fileName,&__pyx_mstate_global->__pyx_n_u_sheetNames,&__pyx_mstate_global->__pyx_n_u_showUncert,&__pyx_mstate_global->__pyx_n_u_prettyUnit,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
     if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 17, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
+        case  5:
+        values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 17, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
         if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 17, __pyx_L3_error)
@@ -3280,11 +3296,16 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "fileFromSheets", 0) < (0)) __PYX_ERR(0, 17, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject *)((PyObject*)Py_True)));
+      if (!values[4]) values[4] = __Pyx_NewRef(((PyObject *)((PyObject*)Py_False)));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("fileFromSheets", 0, 2, 4, i); __PYX_ERR(0, 17, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("fileFromSheets", 0, 2, 5, i); __PYX_ERR(0, 17, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
+        case  5:
+        values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 17, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
         if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 17, __pyx_L3_error)
@@ -3303,15 +3324,17 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       }
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject *)((PyObject*)Py_True)));
+      if (!values[4]) values[4] = __Pyx_NewRef(((PyObject *)((PyObject*)Py_False)));
     }
     __pyx_v_sheets = values[0];
     __pyx_v_fileName = values[1];
     __pyx_v_sheetNames = values[2];
     __pyx_v_showUncert = values[3];
+    __pyx_v_prettyUnit = values[4];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fileFromSheets", 0, 2, 4, __pyx_nargs); __PYX_ERR(0, 17, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("fileFromSheets", 0, 2, 5, __pyx_nargs); __PYX_ERR(0, 17, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3322,7 +3345,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5pyees_5sheet_fileFromSheets(__pyx_self, __pyx_v_sheets, __pyx_v_fileName, __pyx_v_sheetNames, __pyx_v_showUncert);
+  __pyx_r = __pyx_pf_5pyees_5sheet_fileFromSheets(__pyx_self, __pyx_v_sheets, __pyx_v_fileName, __pyx_v_sheetNames, __pyx_v_showUncert, __pyx_v_prettyUnit);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -3332,7 +3355,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sheets, PyObject *__pyx_v_fileName, PyObject *__pyx_v_sheetNames, PyObject *__pyx_v_showUncert) {
+static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sheets, PyObject *__pyx_v_fileName, PyObject *__pyx_v_sheetNames, PyObject *__pyx_v_showUncert, PyObject *__pyx_v_prettyUnit) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -3350,7 +3373,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
 
   /* "pyees/sheet.py":18
  * 
- * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True):
+ * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False):
  *     if not isinstance(sheets, list):             # <<<<<<<<<<<<<<
  *         sheets = [sheets]
  *     if (not sheetNames is None):
@@ -3360,7 +3383,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
   if (__pyx_t_2) {
 
     /* "pyees/sheet.py":19
- * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True):
+ * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False):
  *     if not isinstance(sheets, list):
  *         sheets = [sheets]             # <<<<<<<<<<<<<<
  *     if (not sheetNames is None):
@@ -3376,7 +3399,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
 
     /* "pyees/sheet.py":18
  * 
- * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True):
+ * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False):
  *     if not isinstance(sheets, list):             # <<<<<<<<<<<<<<
  *         sheets = [sheets]
  *     if (not sheetNames is None):
@@ -3398,7 +3421,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
  *     if (not sheetNames is None):
  *         if not(isinstance(sheetNames, list)):             # <<<<<<<<<<<<<<
  *             sheetNames = [sheetNames]
- *     _fileFromSheets(sheets, fileName, sheetNames, showUncert)
+ *     _fileFromSheets(sheets, fileName, sheetNames, showUncert, prettyUnit)
 */
     __pyx_t_2 = PyList_Check(__pyx_v_sheetNames); 
     __pyx_t_1 = (!__pyx_t_2);
@@ -3408,7 +3431,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
  *     if (not sheetNames is None):
  *         if not(isinstance(sheetNames, list)):
  *             sheetNames = [sheetNames]             # <<<<<<<<<<<<<<
- *     _fileFromSheets(sheets, fileName, sheetNames, showUncert)
+ *     _fileFromSheets(sheets, fileName, sheetNames, showUncert, prettyUnit)
  * 
 */
       __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 22, __pyx_L1_error)
@@ -3424,7 +3447,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
  *     if (not sheetNames is None):
  *         if not(isinstance(sheetNames, list)):             # <<<<<<<<<<<<<<
  *             sheetNames = [sheetNames]
- *     _fileFromSheets(sheets, fileName, sheetNames, showUncert)
+ *     _fileFromSheets(sheets, fileName, sheetNames, showUncert, prettyUnit)
 */
     }
 
@@ -3440,7 +3463,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
   /* "pyees/sheet.py":23
  *         if not(isinstance(sheetNames, list)):
  *             sheetNames = [sheetNames]
- *     _fileFromSheets(sheets, fileName, sheetNames, showUncert)             # <<<<<<<<<<<<<<
+ *     _fileFromSheets(sheets, fileName, sheetNames, showUncert, prettyUnit)             # <<<<<<<<<<<<<<
  * 
  * class _fileFromSheets():
 */
@@ -3460,8 +3483,8 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
   }
   #endif
   {
-    PyObject *__pyx_callargs[5] = {__pyx_t_4, __pyx_v_sheets, __pyx_v_fileName, __pyx_v_sheetNames, __pyx_v_showUncert};
-    __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_6, (5-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    PyObject *__pyx_callargs[6] = {__pyx_t_4, __pyx_v_sheets, __pyx_v_fileName, __pyx_v_sheetNames, __pyx_v_showUncert, __pyx_v_prettyUnit};
+    __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_6, (6-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)
@@ -3472,7 +3495,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
   /* "pyees/sheet.py":17
  * 
  * 
- * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True):             # <<<<<<<<<<<<<<
+ * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False):             # <<<<<<<<<<<<<<
  *     if not isinstance(sheets, list):
  *         sheets = [sheets]
 */
@@ -3497,7 +3520,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_fileFromSheets(CYTHON_UNUSED PyObject *_
 /* "pyees/sheet.py":26
  * 
  * class _fileFromSheets():
- *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:             # <<<<<<<<<<<<<<
+ *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False) -> None:             # <<<<<<<<<<<<<<
  * 
  *         self.fileName = fileName
 */
@@ -3523,11 +3546,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   PyObject *__pyx_v_fileName = 0;
   PyObject *__pyx_v_sheetNames = 0;
   PyObject *__pyx_v_showUncert = 0;
+  PyObject *__pyx_v_prettyUnit = 0;
   #if !CYTHON_METH_FASTCALL
   CYTHON_UNUSED Py_ssize_t __pyx_nargs;
   #endif
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
-  PyObject* values[5] = {0,0,0,0,0};
+  PyObject* values[6] = {0,0,0,0,0,0};
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3543,11 +3567,15 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   #endif
   __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
   {
-    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_sheets,&__pyx_mstate_global->__pyx_n_u_fileName,&__pyx_mstate_global->__pyx_n_u_sheetNames,&__pyx_mstate_global->__pyx_n_u_showUncert,0};
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_sheets,&__pyx_mstate_global->__pyx_n_u_fileName,&__pyx_mstate_global->__pyx_n_u_sheetNames,&__pyx_mstate_global->__pyx_n_u_showUncert,&__pyx_mstate_global->__pyx_n_u_prettyUnit,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
     if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 26, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
+        case  6:
+        values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 26, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
         if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 26, __pyx_L3_error)
@@ -3575,11 +3603,16 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 26, __pyx_L3_error)
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[4]) values[4] = __Pyx_NewRef(((PyObject *)((PyObject*)Py_True)));
+      if (!values[5]) values[5] = __Pyx_NewRef(((PyObject *)((PyObject*)Py_False)));
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, i); __PYX_ERR(0, 26, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, i); __PYX_ERR(0, 26, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
+        case  6:
+        values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 26, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
         if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 26, __pyx_L3_error)
@@ -3600,16 +3633,18 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       }
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[4]) values[4] = __Pyx_NewRef(((PyObject *)((PyObject*)Py_True)));
+      if (!values[5]) values[5] = __Pyx_NewRef(((PyObject *)((PyObject*)Py_False)));
     }
     __pyx_v_self = values[0];
     __pyx_v_sheets = values[1];
     __pyx_v_fileName = values[2];
     __pyx_v_sheetNames = values[3];
     __pyx_v_showUncert = values[4];
+    __pyx_v_prettyUnit = values[5];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, __pyx_nargs); __PYX_ERR(0, 26, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, __pyx_nargs); __PYX_ERR(0, 26, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3620,7 +3655,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(__pyx_self, __pyx_v_self, __pyx_v_sheets, __pyx_v_fileName, __pyx_v_sheetNames, __pyx_v_showUncert);
+  __pyx_r = __pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(__pyx_self, __pyx_v_self, __pyx_v_sheets, __pyx_v_fileName, __pyx_v_sheetNames, __pyx_v_showUncert, __pyx_v_prettyUnit);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -3630,7 +3665,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":50
+/* "pyees/sheet.py":51
  *             self.wb = xlwt.Workbook()
  * 
  *             def createSheet():             # <<<<<<<<<<<<<<
@@ -3670,7 +3705,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___createSheet(
   __pyx_outer_scope = (struct __pyx_obj_5pyees_5sheet___pyx_scope_struct____init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "pyees/sheet.py":51
+  /* "pyees/sheet.py":52
  * 
  *             def createSheet():
  *                 return self.wb.add_sheet()             # <<<<<<<<<<<<<<
@@ -3678,8 +3713,8 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___createSheet(
  *             def write(sheet, row, col, value):
 */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 51, __pyx_L1_error) }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 52, __pyx_L1_error) }
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = __pyx_t_3;
   __Pyx_INCREF(__pyx_t_2);
@@ -3689,14 +3724,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___createSheet(
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add_sheet, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pyees/sheet.py":50
+  /* "pyees/sheet.py":51
  *             self.wb = xlwt.Workbook()
  * 
  *             def createSheet():             # <<<<<<<<<<<<<<
@@ -3717,7 +3752,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___createSheet(
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":53
+/* "pyees/sheet.py":54
  *                 return self.wb.add_sheet()
  * 
  *             def write(sheet, row, col, value):             # <<<<<<<<<<<<<<
@@ -3767,44 +3802,44 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_sheet,&__pyx_mstate_global->__pyx_n_u_row,&__pyx_mstate_global->__pyx_n_u_col,&__pyx_mstate_global->__pyx_n_u_value,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 53, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 54, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 53, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 54, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 53, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 54, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 53, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 54, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 53, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 54, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "write", 0) < (0)) __PYX_ERR(0, 53, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "write", 0) < (0)) __PYX_ERR(0, 54, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 4; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("write", 1, 4, 4, i); __PYX_ERR(0, 53, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("write", 1, 4, 4, i); __PYX_ERR(0, 54, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 4)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 53, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 54, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 53, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 54, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 53, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 54, __pyx_L3_error)
       values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 53, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 54, __pyx_L3_error)
     }
     __pyx_v_sheet = values[0];
     __pyx_v_row = values[1];
@@ -3813,7 +3848,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("write", 1, 4, 4, __pyx_nargs); __PYX_ERR(0, 53, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("write", 1, 4, 4, __pyx_nargs); __PYX_ERR(0, 54, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3845,7 +3880,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___2write(CYTHO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("write", 0);
 
-  /* "pyees/sheet.py":54
+  /* "pyees/sheet.py":55
  * 
  *             def write(sheet, row, col, value):
  *                 sheet.write(row, col, value)             # <<<<<<<<<<<<<<
@@ -3859,12 +3894,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___2write(CYTHO
     PyObject *__pyx_callargs[4] = {__pyx_t_2, __pyx_v_row, __pyx_v_col, __pyx_v_value};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_write, __pyx_callargs+__pyx_t_3, (4-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":53
+  /* "pyees/sheet.py":54
  *                 return self.wb.add_sheet()
  * 
  *             def write(sheet, row, col, value):             # <<<<<<<<<<<<<<
@@ -3886,7 +3921,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___2write(CYTHO
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":56
+/* "pyees/sheet.py":57
  *                 sheet.write(row, col, value)
  * 
  *             def getSheet(index, sheetName):             # <<<<<<<<<<<<<<
@@ -3934,39 +3969,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_index,&__pyx_mstate_global->__pyx_n_u_sheetName,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 56, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 57, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 56, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 57, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 56, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 57, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "getSheet", 0) < (0)) __PYX_ERR(0, 56, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "getSheet", 0) < (0)) __PYX_ERR(0, 57, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("getSheet", 1, 2, 2, i); __PYX_ERR(0, 56, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("getSheet", 1, 2, 2, i); __PYX_ERR(0, 57, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 56, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 57, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 56, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 57, __pyx_L3_error)
     }
     __pyx_v_index = values[0];
     __pyx_v_sheetName = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getSheet", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 56, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getSheet", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 57, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4005,25 +4040,25 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___4getSheet(Py
   __pyx_outer_scope = (struct __pyx_obj_5pyees_5sheet___pyx_scope_struct____init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "pyees/sheet.py":58
+  /* "pyees/sheet.py":59
  *             def getSheet(index, sheetName):
  * 
  *                 name = f'Sheet {index + 1}'             # <<<<<<<<<<<<<<
  *                 if (not sheetName is None):
  *                     name = sheetName
 */
-  __pyx_t_1 = __Pyx_PyLong_AddObjC(__pyx_v_index, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_AddObjC(__pyx_v_index, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_t_1, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_t_1, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_mstate_global->__pyx_kp_u_Sheet, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_mstate_global->__pyx_kp_u_Sheet, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_name = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":59
+  /* "pyees/sheet.py":60
  * 
  *                 name = f'Sheet {index + 1}'
  *                 if (not sheetName is None):             # <<<<<<<<<<<<<<
@@ -4033,7 +4068,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___4getSheet(Py
   __pyx_t_3 = (__pyx_v_sheetName != Py_None);
   if (__pyx_t_3) {
 
-    /* "pyees/sheet.py":60
+    /* "pyees/sheet.py":61
  *                 name = f'Sheet {index + 1}'
  *                 if (not sheetName is None):
  *                     name = sheetName             # <<<<<<<<<<<<<<
@@ -4043,7 +4078,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___4getSheet(Py
     __Pyx_INCREF(__pyx_v_sheetName);
     __Pyx_DECREF_SET(__pyx_v_name, __pyx_v_sheetName);
 
-    /* "pyees/sheet.py":59
+    /* "pyees/sheet.py":60
  * 
  *                 name = f'Sheet {index + 1}'
  *                 if (not sheetName is None):             # <<<<<<<<<<<<<<
@@ -4052,7 +4087,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___4getSheet(Py
 */
   }
 
-  /* "pyees/sheet.py":62
+  /* "pyees/sheet.py":63
  *                     name = sheetName
  * 
  *                 return self.wb.add_sheet(name)             # <<<<<<<<<<<<<<
@@ -4060,8 +4095,8 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___4getSheet(Py
  * 
 */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 62, __pyx_L1_error) }
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 63, __pyx_L1_error) }
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_2 = __pyx_t_4;
   __Pyx_INCREF(__pyx_t_2);
@@ -4071,14 +4106,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___4getSheet(Py
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add_sheet, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pyees/sheet.py":56
+  /* "pyees/sheet.py":57
  *                 sheet.write(row, col, value)
  * 
  *             def getSheet(index, sheetName):             # <<<<<<<<<<<<<<
@@ -4100,7 +4135,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___4getSheet(Py
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":68
+/* "pyees/sheet.py":69
  *             self.wb = openpyxl.Workbook()
  * 
  *             def createSheet():             # <<<<<<<<<<<<<<
@@ -4140,7 +4175,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___6createSheet
   __pyx_outer_scope = (struct __pyx_obj_5pyees_5sheet___pyx_scope_struct____init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "pyees/sheet.py":69
+  /* "pyees/sheet.py":70
  * 
  *             def createSheet():
  *                 return self.wb.create_sheet()             # <<<<<<<<<<<<<<
@@ -4148,8 +4183,8 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___6createSheet
  *             def write(sheet, row, col, value):
 */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 69, __pyx_L1_error) }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 70, __pyx_L1_error) }
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = __pyx_t_3;
   __Pyx_INCREF(__pyx_t_2);
@@ -4159,14 +4194,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___6createSheet
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_create_sheet, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pyees/sheet.py":68
+  /* "pyees/sheet.py":69
  *             self.wb = openpyxl.Workbook()
  * 
  *             def createSheet():             # <<<<<<<<<<<<<<
@@ -4187,7 +4222,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___6createSheet
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":71
+/* "pyees/sheet.py":72
  *                 return self.wb.create_sheet()
  * 
  *             def write(sheet, row, col, value):             # <<<<<<<<<<<<<<
@@ -4237,44 +4272,44 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_sheet,&__pyx_mstate_global->__pyx_n_u_row,&__pyx_mstate_global->__pyx_n_u_col,&__pyx_mstate_global->__pyx_n_u_value,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 71, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 72, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 71, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 72, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 71, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 72, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 71, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 72, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 71, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 72, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "write", 0) < (0)) __PYX_ERR(0, 71, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "write", 0) < (0)) __PYX_ERR(0, 72, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 4; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("write", 1, 4, 4, i); __PYX_ERR(0, 71, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("write", 1, 4, 4, i); __PYX_ERR(0, 72, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 4)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 71, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 72, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 71, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 72, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 71, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 72, __pyx_L3_error)
       values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 71, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 72, __pyx_L3_error)
     }
     __pyx_v_sheet = values[0];
     __pyx_v_row = values[1];
@@ -4283,7 +4318,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("write", 1, 4, 4, __pyx_nargs); __PYX_ERR(0, 71, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("write", 1, 4, 4, __pyx_nargs); __PYX_ERR(0, 72, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4317,7 +4352,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___8write(CYTHO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("write", 0);
 
-  /* "pyees/sheet.py":72
+  /* "pyees/sheet.py":73
  * 
  *             def write(sheet, row, col, value):
  *                 sheet.cell(row+1, col+1, value)             # <<<<<<<<<<<<<<
@@ -4326,9 +4361,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___8write(CYTHO
 */
   __pyx_t_2 = __pyx_v_sheet;
   __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyLong_AddObjC(__pyx_v_row, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyLong_AddObjC(__pyx_v_row, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyLong_AddObjC(__pyx_v_col, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyLong_AddObjC(__pyx_v_col, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = 0;
   {
@@ -4337,12 +4372,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___8write(CYTHO
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":71
+  /* "pyees/sheet.py":72
  *                 return self.wb.create_sheet()
  * 
  *             def write(sheet, row, col, value):             # <<<<<<<<<<<<<<
@@ -4366,7 +4401,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___8write(CYTHO
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":74
+/* "pyees/sheet.py":75
  *                 sheet.cell(row+1, col+1, value)
  * 
  *             def getSheet(index, sheetName):             # <<<<<<<<<<<<<<
@@ -4414,39 +4449,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_index,&__pyx_mstate_global->__pyx_n_u_sheetName,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 74, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 75, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 74, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 75, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 74, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 75, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "getSheet", 0) < (0)) __PYX_ERR(0, 74, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "getSheet", 0) < (0)) __PYX_ERR(0, 75, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("getSheet", 1, 2, 2, i); __PYX_ERR(0, 74, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("getSheet", 1, 2, 2, i); __PYX_ERR(0, 75, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 74, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 75, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 74, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 75, __pyx_L3_error)
     }
     __pyx_v_index = values[0];
     __pyx_v_sheetName = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getSheet", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 74, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getSheet", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 75, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4484,26 +4519,26 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(P
   __pyx_outer_scope = (struct __pyx_obj_5pyees_5sheet___pyx_scope_struct____init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "pyees/sheet.py":75
+  /* "pyees/sheet.py":76
  * 
  *             def getSheet(index, sheetName):
  *                 if index > 0:             # <<<<<<<<<<<<<<
  *                     worksheet = self.createSheet()
  *                 else:
 */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_index, __pyx_mstate_global->__pyx_int_0, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_index, __pyx_mstate_global->__pyx_int_0, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "pyees/sheet.py":76
+    /* "pyees/sheet.py":77
  *             def getSheet(index, sheetName):
  *                 if index > 0:
  *                     worksheet = self.createSheet()             # <<<<<<<<<<<<<<
  *                 else:
  *                     worksheet = self.wb.active
 */
-    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 76, __pyx_L1_error) }
+    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 77, __pyx_L1_error) }
     __pyx_t_3 = __pyx_cur_scope->__pyx_v_self;
     __Pyx_INCREF(__pyx_t_3);
     __pyx_t_4 = 0;
@@ -4511,13 +4546,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(P
       PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
       __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_createSheet, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __pyx_v_worksheet = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "pyees/sheet.py":75
+    /* "pyees/sheet.py":76
  * 
  *             def getSheet(index, sheetName):
  *                 if index > 0:             # <<<<<<<<<<<<<<
@@ -4527,7 +4562,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(P
     goto __pyx_L3;
   }
 
-  /* "pyees/sheet.py":78
+  /* "pyees/sheet.py":79
  *                     worksheet = self.createSheet()
  *                 else:
  *                     worksheet = self.wb.active             # <<<<<<<<<<<<<<
@@ -4535,10 +4570,10 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(P
  *                     worksheet.title = sheetName
 */
   /*else*/ {
-    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 78, __pyx_L1_error) }
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 79, __pyx_L1_error) }
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_worksheet = __pyx_t_3;
@@ -4546,7 +4581,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(P
   }
   __pyx_L3:;
 
-  /* "pyees/sheet.py":79
+  /* "pyees/sheet.py":80
  *                 else:
  *                     worksheet = self.wb.active
  *                 if (not sheetName is None):             # <<<<<<<<<<<<<<
@@ -4556,16 +4591,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(P
   __pyx_t_2 = (__pyx_v_sheetName != Py_None);
   if (__pyx_t_2) {
 
-    /* "pyees/sheet.py":80
+    /* "pyees/sheet.py":81
  *                     worksheet = self.wb.active
  *                 if (not sheetName is None):
  *                     worksheet.title = sheetName             # <<<<<<<<<<<<<<
  *                 return worksheet
  * 
 */
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_worksheet, __pyx_mstate_global->__pyx_n_u_title, __pyx_v_sheetName) < (0)) __PYX_ERR(0, 80, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_worksheet, __pyx_mstate_global->__pyx_n_u_title, __pyx_v_sheetName) < (0)) __PYX_ERR(0, 81, __pyx_L1_error)
 
-    /* "pyees/sheet.py":79
+    /* "pyees/sheet.py":80
  *                 else:
  *                     worksheet = self.wb.active
  *                 if (not sheetName is None):             # <<<<<<<<<<<<<<
@@ -4574,7 +4609,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(P
 */
   }
 
-  /* "pyees/sheet.py":81
+  /* "pyees/sheet.py":82
  *                 if (not sheetName is None):
  *                     worksheet.title = sheetName
  *                 return worksheet             # <<<<<<<<<<<<<<
@@ -4586,7 +4621,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(P
   __pyx_r = __pyx_v_worksheet;
   goto __pyx_L0;
 
-  /* "pyees/sheet.py":74
+  /* "pyees/sheet.py":75
  *                 sheet.cell(row+1, col+1, value)
  * 
  *             def getSheet(index, sheetName):             # <<<<<<<<<<<<<<
@@ -4610,12 +4645,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_8__init___10getSheet(P
 /* "pyees/sheet.py":26
  * 
  * class _fileFromSheets():
- *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:             # <<<<<<<<<<<<<<
+ *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False) -> None:             # <<<<<<<<<<<<<<
  * 
  *         self.fileName = fileName
 */
 
-static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_sheets, PyObject *__pyx_v_fileName, PyObject *__pyx_v_sheetNames, PyObject *__pyx_v_showUncert) {
+static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_sheets, PyObject *__pyx_v_fileName, PyObject *__pyx_v_sheetNames, PyObject *__pyx_v_showUncert, PyObject *__pyx_v_prettyUnit) {
   struct __pyx_obj_5pyees_5sheet___pyx_scope_struct____init__ *__pyx_cur_scope;
   PyObject *__pyx_v_extension = NULL;
   PyObject *__pyx_v_supportedExtensions = NULL;
@@ -4650,7 +4685,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_self);
 
   /* "pyees/sheet.py":28
- *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:
+ *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False) -> None:
  * 
  *         self.fileName = fileName             # <<<<<<<<<<<<<<
  *         self.sheets = sheets
@@ -4672,7 +4707,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
  *         self.sheets = sheets
  *         self.sheetNames = sheetNames             # <<<<<<<<<<<<<<
  *         self.showUncert = showUncert
- * 
+ *         self.prettyUnit = prettyUnit
 */
   if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheetNames, __pyx_v_sheetNames) < (0)) __PYX_ERR(0, 30, __pyx_L1_error)
 
@@ -4680,12 +4715,21 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
  *         self.sheets = sheets
  *         self.sheetNames = sheetNames
  *         self.showUncert = showUncert             # <<<<<<<<<<<<<<
- * 
+ *         self.prettyUnit = prettyUnit
  * 
 */
   if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_showUncert, __pyx_v_showUncert) < (0)) __PYX_ERR(0, 31, __pyx_L1_error)
 
-  /* "pyees/sheet.py":34
+  /* "pyees/sheet.py":32
+ *         self.sheetNames = sheetNames
+ *         self.showUncert = showUncert
+ *         self.prettyUnit = prettyUnit             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_prettyUnit, __pyx_v_prettyUnit) < (0)) __PYX_ERR(0, 32, __pyx_L1_error)
+
+  /* "pyees/sheet.py":35
  * 
  * 
  *         if (not sheetNames is None):             # <<<<<<<<<<<<<<
@@ -4695,19 +4739,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
   __pyx_t_1 = (__pyx_v_sheetNames != Py_None);
   if (__pyx_t_1) {
 
-    /* "pyees/sheet.py":35
+    /* "pyees/sheet.py":36
  * 
  *         if (not sheetNames is None):
  *             if (len(sheetNames) != len(sheets)):             # <<<<<<<<<<<<<<
  *                 raise ValueError(f'The length of the sheet names has to be equal to the length of the sheets')
  * 
 */
-    __pyx_t_2 = PyObject_Length(__pyx_v_sheetNames); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 35, __pyx_L1_error)
-    __pyx_t_3 = PyObject_Length(__pyx_v_sheets); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 35, __pyx_L1_error)
+    __pyx_t_2 = PyObject_Length(__pyx_v_sheetNames); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_3 = PyObject_Length(__pyx_v_sheets); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 36, __pyx_L1_error)
     __pyx_t_1 = (__pyx_t_2 != __pyx_t_3);
     if (unlikely(__pyx_t_1)) {
 
-      /* "pyees/sheet.py":36
+      /* "pyees/sheet.py":37
  *         if (not sheetNames is None):
  *             if (len(sheetNames) != len(sheets)):
  *                 raise ValueError(f'The length of the sheet names has to be equal to the length of the sheets')             # <<<<<<<<<<<<<<
@@ -4720,14 +4764,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
         PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u_The_length_of_the_sheet_names_ha};
         __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
       }
       __Pyx_Raise(__pyx_t_4, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __PYX_ERR(0, 36, __pyx_L1_error)
+      __PYX_ERR(0, 37, __pyx_L1_error)
 
-      /* "pyees/sheet.py":35
+      /* "pyees/sheet.py":36
  * 
  *         if (not sheetNames is None):
  *             if (len(sheetNames) != len(sheets)):             # <<<<<<<<<<<<<<
@@ -4736,7 +4780,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
 */
     }
 
-    /* "pyees/sheet.py":34
+    /* "pyees/sheet.py":35
  * 
  * 
  *         if (not sheetNames is None):             # <<<<<<<<<<<<<<
@@ -4745,16 +4789,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
 */
   }
 
-  /* "pyees/sheet.py":38
+  /* "pyees/sheet.py":39
  *                 raise ValueError(f'The length of the sheet names has to be equal to the length of the sheets')
  * 
  *         extension = os.path.splitext(fileName)[1]             # <<<<<<<<<<<<<<
  *         supportedExtensions = ['.xls', '.xlsx', '.csv', '.txt']
  *         if extension not in supportedExtensions:
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_os); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_os); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_path); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_path); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_5 = __pyx_t_8;
@@ -4765,50 +4809,50 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
     __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_splitext, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
-  __pyx_t_8 = __Pyx_GetItemInt(__pyx_t_4, 1, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_GetItemInt(__pyx_t_4, 1, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_extension = __pyx_t_8;
   __pyx_t_8 = 0;
 
-  /* "pyees/sheet.py":39
+  /* "pyees/sheet.py":40
  * 
  *         extension = os.path.splitext(fileName)[1]
  *         supportedExtensions = ['.xls', '.xlsx', '.csv', '.txt']             # <<<<<<<<<<<<<<
  *         if extension not in supportedExtensions:
  *             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')
 */
-  __pyx_t_8 = PyList_New(4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_xls);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_kp_u_xls);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_kp_u_xls) != (0)) __PYX_ERR(0, 39, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_kp_u_xls) != (0)) __PYX_ERR(0, 40, __pyx_L1_error);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_xlsx);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_kp_u_xlsx);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 1, __pyx_mstate_global->__pyx_kp_u_xlsx) != (0)) __PYX_ERR(0, 39, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 1, __pyx_mstate_global->__pyx_kp_u_xlsx) != (0)) __PYX_ERR(0, 40, __pyx_L1_error);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_csv);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_kp_u_csv);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 2, __pyx_mstate_global->__pyx_kp_u_csv) != (0)) __PYX_ERR(0, 39, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 2, __pyx_mstate_global->__pyx_kp_u_csv) != (0)) __PYX_ERR(0, 40, __pyx_L1_error);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_txt);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_kp_u_txt);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 3, __pyx_mstate_global->__pyx_kp_u_txt) != (0)) __PYX_ERR(0, 39, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 3, __pyx_mstate_global->__pyx_kp_u_txt) != (0)) __PYX_ERR(0, 40, __pyx_L1_error);
   __pyx_v_supportedExtensions = ((PyObject*)__pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "pyees/sheet.py":40
+  /* "pyees/sheet.py":41
  *         extension = os.path.splitext(fileName)[1]
  *         supportedExtensions = ['.xls', '.xlsx', '.csv', '.txt']
  *         if extension not in supportedExtensions:             # <<<<<<<<<<<<<<
  *             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')
  * 
 */
-  __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_extension, __pyx_v_supportedExtensions, Py_NE)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_extension, __pyx_v_supportedExtensions, Py_NE)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 41, __pyx_L1_error)
   if (unlikely(__pyx_t_1)) {
 
-    /* "pyees/sheet.py":41
+    /* "pyees/sheet.py":42
  *         supportedExtensions = ['.xls', '.xlsx', '.csv', '.txt']
  *         if extension not in supportedExtensions:
  *             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')             # <<<<<<<<<<<<<<
@@ -4816,9 +4860,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
  *         if extension == '.csv' or extension == ".txt":
 */
     __pyx_t_4 = NULL;
-    __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_v_supportedExtensions, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 41, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_v_supportedExtensions, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 42, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_7 = __Pyx_PyUnicode_Concat(__pyx_mstate_global->__pyx_kp_u_The_file_extension_is_not_suppor, __pyx_t_5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 41, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyUnicode_Concat(__pyx_mstate_global->__pyx_kp_u_The_file_extension_is_not_suppor, __pyx_t_5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 42, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_6 = 1;
@@ -4827,14 +4871,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
       __pyx_t_8 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 41, __pyx_L1_error)
+      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 42, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
     }
     __Pyx_Raise(__pyx_t_8, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __PYX_ERR(0, 41, __pyx_L1_error)
+    __PYX_ERR(0, 42, __pyx_L1_error)
 
-    /* "pyees/sheet.py":40
+    /* "pyees/sheet.py":41
  *         extension = os.path.splitext(fileName)[1]
  *         supportedExtensions = ['.xls', '.xlsx', '.csv', '.txt']
  *         if extension not in supportedExtensions:             # <<<<<<<<<<<<<<
@@ -4843,25 +4887,25 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
 */
   }
 
-  /* "pyees/sheet.py":43
+  /* "pyees/sheet.py":44
  *             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')
  * 
  *         if extension == '.csv' or extension == ".txt":             # <<<<<<<<<<<<<<
  *             self.saveCsv()
  *             return
 */
-  __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_extension, __pyx_mstate_global->__pyx_kp_u_csv, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_extension, __pyx_mstate_global->__pyx_kp_u_csv, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 44, __pyx_L1_error)
   if (!__pyx_t_9) {
   } else {
     __pyx_t_1 = __pyx_t_9;
     goto __pyx_L7_bool_binop_done;
   }
-  __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_extension, __pyx_mstate_global->__pyx_kp_u_txt, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_extension, __pyx_mstate_global->__pyx_kp_u_txt, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 44, __pyx_L1_error)
   __pyx_t_1 = __pyx_t_9;
   __pyx_L7_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "pyees/sheet.py":44
+    /* "pyees/sheet.py":45
  * 
  *         if extension == '.csv' or extension == ".txt":
  *             self.saveCsv()             # <<<<<<<<<<<<<<
@@ -4875,12 +4919,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
       PyObject *__pyx_callargs[2] = {__pyx_t_7, NULL};
       __pyx_t_8 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_saveCsv, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 44, __pyx_L1_error)
+      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 45, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
     }
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "pyees/sheet.py":45
+    /* "pyees/sheet.py":46
  *         if extension == '.csv' or extension == ".txt":
  *             self.saveCsv()
  *             return             # <<<<<<<<<<<<<<
@@ -4891,7 +4935,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "pyees/sheet.py":43
+    /* "pyees/sheet.py":44
  *             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')
  * 
  *         if extension == '.csv' or extension == ".txt":             # <<<<<<<<<<<<<<
@@ -4900,17 +4944,17 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
 */
   }
 
-  /* "pyees/sheet.py":47
+  /* "pyees/sheet.py":48
  *             return
  * 
  *         if extension == '.xls':             # <<<<<<<<<<<<<<
  *             self.wb = xlwt.Workbook()
  * 
 */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_extension, __pyx_mstate_global->__pyx_kp_u_xls, Py_EQ)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_extension, __pyx_mstate_global->__pyx_kp_u_xls, Py_EQ)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 48, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "pyees/sheet.py":48
+    /* "pyees/sheet.py":49
  * 
  *         if extension == '.xls':
  *             self.wb = xlwt.Workbook()             # <<<<<<<<<<<<<<
@@ -4918,9 +4962,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
  *             def createSheet():
 */
     __pyx_t_7 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_xlwt); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_xlwt); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_Workbook); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_Workbook); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_6 = 1;
@@ -4940,49 +4984,49 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
       __pyx_t_8 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 48, __pyx_L1_error)
+      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 49, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
     }
-    if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb, __pyx_t_8) < (0)) __PYX_ERR(0, 48, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb, __pyx_t_8) < (0)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "pyees/sheet.py":50
+    /* "pyees/sheet.py":51
  *             self.wb = xlwt.Workbook()
  * 
  *             def createSheet():             # <<<<<<<<<<<<<<
  *                 return self.wb.add_sheet()
  * 
 */
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___1createSheet, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals, ((PyObject*)__pyx_cur_scope), __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___1createSheet, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals, ((PyObject*)__pyx_cur_scope), __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 51, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_v_createSheet = __pyx_t_8;
     __pyx_t_8 = 0;
 
-    /* "pyees/sheet.py":53
+    /* "pyees/sheet.py":54
  *                 return self.wb.add_sheet()
  * 
  *             def write(sheet, row, col, value):             # <<<<<<<<<<<<<<
  *                 sheet.write(row, col, value)
  * 
 */
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___3write, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals_2, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___3write, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals_2, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_v_write = __pyx_t_8;
     __pyx_t_8 = 0;
 
-    /* "pyees/sheet.py":56
+    /* "pyees/sheet.py":57
  *                 sheet.write(row, col, value)
  * 
  *             def getSheet(index, sheetName):             # <<<<<<<<<<<<<<
  * 
  *                 name = f'Sheet {index + 1}'
 */
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___5getSheet, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals_3, ((PyObject*)__pyx_cur_scope), __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___5getSheet, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals_3, ((PyObject*)__pyx_cur_scope), __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 57, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_v_getSheet = __pyx_t_8;
     __pyx_t_8 = 0;
 
-    /* "pyees/sheet.py":47
+    /* "pyees/sheet.py":48
  *             return
  * 
  *         if extension == '.xls':             # <<<<<<<<<<<<<<
@@ -4992,17 +5036,17 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
     goto __pyx_L9;
   }
 
-  /* "pyees/sheet.py":65
+  /* "pyees/sheet.py":66
  * 
  * 
  *         elif extension == '.xlsx':             # <<<<<<<<<<<<<<
  *             self.wb = openpyxl.Workbook()
  * 
 */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_extension, __pyx_mstate_global->__pyx_kp_u_xlsx, Py_EQ)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_extension, __pyx_mstate_global->__pyx_kp_u_xlsx, Py_EQ)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 66, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "pyees/sheet.py":66
+    /* "pyees/sheet.py":67
  * 
  *         elif extension == '.xlsx':
  *             self.wb = openpyxl.Workbook()             # <<<<<<<<<<<<<<
@@ -5010,9 +5054,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
  *             def createSheet():
 */
     __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_openpyxl); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_openpyxl); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_Workbook); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_Workbook); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_6 = 1;
@@ -5032,49 +5076,49 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
       __pyx_t_8 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 66, __pyx_L1_error)
+      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 67, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
     }
-    if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb, __pyx_t_8) < (0)) __PYX_ERR(0, 66, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb, __pyx_t_8) < (0)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "pyees/sheet.py":68
+    /* "pyees/sheet.py":69
  *             self.wb = openpyxl.Workbook()
  * 
  *             def createSheet():             # <<<<<<<<<<<<<<
  *                 return self.wb.create_sheet()
  * 
 */
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___7createSheet, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals, ((PyObject*)__pyx_cur_scope), __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 68, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___7createSheet, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals, ((PyObject*)__pyx_cur_scope), __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_v_createSheet = __pyx_t_8;
     __pyx_t_8 = 0;
 
-    /* "pyees/sheet.py":71
+    /* "pyees/sheet.py":72
  *                 return self.wb.create_sheet()
  * 
  *             def write(sheet, row, col, value):             # <<<<<<<<<<<<<<
  *                 sheet.cell(row+1, col+1, value)
  * 
 */
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___9write, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals_2, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___9write, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals_2, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 72, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_v_write = __pyx_t_8;
     __pyx_t_8 = 0;
 
-    /* "pyees/sheet.py":74
+    /* "pyees/sheet.py":75
  *                 sheet.cell(row+1, col+1, value)
  * 
  *             def getSheet(index, sheetName):             # <<<<<<<<<<<<<<
  *                 if index > 0:
  *                     worksheet = self.createSheet()
 */
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___11getSheet, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals_3, ((PyObject*)__pyx_cur_scope), __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[5])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 74, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_8__init___11getSheet, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets___init___locals_3, ((PyObject*)__pyx_cur_scope), __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[5])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 75, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_v_getSheet = __pyx_t_8;
     __pyx_t_8 = 0;
 
-    /* "pyees/sheet.py":65
+    /* "pyees/sheet.py":66
  * 
  * 
  *         elif extension == '.xlsx':             # <<<<<<<<<<<<<<
@@ -5084,37 +5128,37 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
   }
   __pyx_L9:;
 
-  /* "pyees/sheet.py":83
+  /* "pyees/sheet.py":84
  *                 return worksheet
  * 
  *         self.createSheet = createSheet             # <<<<<<<<<<<<<<
  *         self.write = write
  *         self.getSheet = getSheet
 */
-  if (unlikely(!__pyx_v_createSheet)) { __Pyx_RaiseUnboundLocalError("createSheet"); __PYX_ERR(0, 83, __pyx_L1_error) }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_createSheet, __pyx_v_createSheet) < (0)) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (unlikely(!__pyx_v_createSheet)) { __Pyx_RaiseUnboundLocalError("createSheet"); __PYX_ERR(0, 84, __pyx_L1_error) }
+  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_createSheet, __pyx_v_createSheet) < (0)) __PYX_ERR(0, 84, __pyx_L1_error)
 
-  /* "pyees/sheet.py":84
+  /* "pyees/sheet.py":85
  * 
  *         self.createSheet = createSheet
  *         self.write = write             # <<<<<<<<<<<<<<
  *         self.getSheet = getSheet
  * 
 */
-  if (unlikely(!__pyx_v_write)) { __Pyx_RaiseUnboundLocalError("write"); __PYX_ERR(0, 84, __pyx_L1_error) }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_write, __pyx_v_write) < (0)) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (unlikely(!__pyx_v_write)) { __Pyx_RaiseUnboundLocalError("write"); __PYX_ERR(0, 85, __pyx_L1_error) }
+  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_write, __pyx_v_write) < (0)) __PYX_ERR(0, 85, __pyx_L1_error)
 
-  /* "pyees/sheet.py":85
+  /* "pyees/sheet.py":86
  *         self.createSheet = createSheet
  *         self.write = write
  *         self.getSheet = getSheet             # <<<<<<<<<<<<<<
  * 
  *         self.saveSheets()
 */
-  if (unlikely(!__pyx_v_getSheet)) { __Pyx_RaiseUnboundLocalError("getSheet"); __PYX_ERR(0, 85, __pyx_L1_error) }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_getSheet, __pyx_v_getSheet) < (0)) __PYX_ERR(0, 85, __pyx_L1_error)
+  if (unlikely(!__pyx_v_getSheet)) { __Pyx_RaiseUnboundLocalError("getSheet"); __PYX_ERR(0, 86, __pyx_L1_error) }
+  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_getSheet, __pyx_v_getSheet) < (0)) __PYX_ERR(0, 86, __pyx_L1_error)
 
-  /* "pyees/sheet.py":87
+  /* "pyees/sheet.py":88
  *         self.getSheet = getSheet
  * 
  *         self.saveSheets()             # <<<<<<<<<<<<<<
@@ -5128,7 +5172,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
     PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
     __pyx_t_8 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_saveSheets, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 87, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
   }
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -5136,7 +5180,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
   /* "pyees/sheet.py":26
  * 
  * class _fileFromSheets():
- *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:             # <<<<<<<<<<<<<<
+ *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False) -> None:             # <<<<<<<<<<<<<<
  * 
  *         self.fileName = fileName
 */
@@ -5163,7 +5207,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets___init__(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":89
+/* "pyees/sheet.py":90
  *         self.saveSheets()
  * 
  *     def saveCsv(self):             # <<<<<<<<<<<<<<
@@ -5210,32 +5254,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 89, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 90, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 89, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 90, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "saveCsv", 0) < (0)) __PYX_ERR(0, 89, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "saveCsv", 0) < (0)) __PYX_ERR(0, 90, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("saveCsv", 1, 1, 1, i); __PYX_ERR(0, 89, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("saveCsv", 1, 1, 1, i); __PYX_ERR(0, 90, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 89, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 90, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("saveCsv", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 89, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("saveCsv", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 90, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5283,39 +5327,40 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
   PyObject *(*__pyx_t_6)(PyObject *);
   PyObject *__pyx_t_7 = NULL;
   int __pyx_t_8;
-  PyObject *__pyx_t_9 = NULL;
-  Py_ssize_t __pyx_t_10;
-  PyObject *(*__pyx_t_11)(PyObject *);
-  PyObject *__pyx_t_12 = NULL;
-  Py_ssize_t __pyx_t_13;
+  PyObject *__pyx_t_9[3];
+  PyObject *__pyx_t_10 = NULL;
+  Py_ssize_t __pyx_t_11;
+  PyObject *(*__pyx_t_12)(PyObject *);
+  PyObject *__pyx_t_13 = NULL;
   Py_ssize_t __pyx_t_14;
-  PyObject *(*__pyx_t_15)(PyObject *);
-  PyObject *__pyx_t_16 = NULL;
+  Py_ssize_t __pyx_t_15;
+  PyObject *(*__pyx_t_16)(PyObject *);
   PyObject *__pyx_t_17 = NULL;
   PyObject *__pyx_t_18 = NULL;
   PyObject *__pyx_t_19 = NULL;
   PyObject *__pyx_t_20 = NULL;
-  int __pyx_t_21;
+  PyObject *__pyx_t_21 = NULL;
+  int __pyx_t_22;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("saveCsv", 0);
 
-  /* "pyees/sheet.py":90
+  /* "pyees/sheet.py":91
  * 
  *     def saveCsv(self):
  *         if len(self.sheets) != 1:             # <<<<<<<<<<<<<<
  *             raise ValueError("It is only possible to save a single sheet to a .csv file")
  *         if not self.sheetNames is None:
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 90, __pyx_L1_error)
+  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (__pyx_t_2 != 1);
   if (unlikely(__pyx_t_3)) {
 
-    /* "pyees/sheet.py":91
+    /* "pyees/sheet.py":92
  *     def saveCsv(self):
  *         if len(self.sheets) != 1:
  *             raise ValueError("It is only possible to save a single sheet to a .csv file")             # <<<<<<<<<<<<<<
@@ -5328,14 +5373,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_It_is_only_possible_to_save_a_si};
       __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 91, __pyx_L1_error)
+    __PYX_ERR(0, 92, __pyx_L1_error)
 
-    /* "pyees/sheet.py":90
+    /* "pyees/sheet.py":91
  * 
  *     def saveCsv(self):
  *         if len(self.sheets) != 1:             # <<<<<<<<<<<<<<
@@ -5344,20 +5389,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
 */
   }
 
-  /* "pyees/sheet.py":92
+  /* "pyees/sheet.py":93
  *         if len(self.sheets) != 1:
  *             raise ValueError("It is only possible to save a single sheet to a .csv file")
  *         if not self.sheetNames is None:             # <<<<<<<<<<<<<<
  *             raise ValueError("It is not possible to assign sheet names to a .csv file")
  * 
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheetNames); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheetNames); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = (__pyx_t_1 != Py_None);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (unlikely(__pyx_t_3)) {
 
-    /* "pyees/sheet.py":93
+    /* "pyees/sheet.py":94
  *             raise ValueError("It is only possible to save a single sheet to a .csv file")
  *         if not self.sheetNames is None:
  *             raise ValueError("It is not possible to assign sheet names to a .csv file")             # <<<<<<<<<<<<<<
@@ -5370,14 +5415,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_It_is_not_possible_to_assign_she};
       __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 93, __pyx_L1_error)
+    __PYX_ERR(0, 94, __pyx_L1_error)
 
-    /* "pyees/sheet.py":92
+    /* "pyees/sheet.py":93
  *         if len(self.sheets) != 1:
  *             raise ValueError("It is only possible to save a single sheet to a .csv file")
  *         if not self.sheetNames is None:             # <<<<<<<<<<<<<<
@@ -5386,92 +5431,92 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
 */
   }
 
-  /* "pyees/sheet.py":96
+  /* "pyees/sheet.py":97
  * 
  * 
  *         self.sheet = self.sheets[0]             # <<<<<<<<<<<<<<
  *         n = len(self.sheet)
  * 
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet, __pyx_t_4) < (0)) __PYX_ERR(0, 96, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet, __pyx_t_4) < (0)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":97
+  /* "pyees/sheet.py":98
  * 
  *         self.sheet = self.sheets[0]
  *         n = len(self.sheet)             # <<<<<<<<<<<<<<
  * 
  *         names = []
 */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_2 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_n = __pyx_t_2;
 
-  /* "pyees/sheet.py":99
+  /* "pyees/sheet.py":100
  *         n = len(self.sheet)
  * 
  *         names = []             # <<<<<<<<<<<<<<
  *         units = []
  *         datas = []
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_names = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":100
+  /* "pyees/sheet.py":101
  * 
  *         names = []
  *         units = []             # <<<<<<<<<<<<<<
  *         datas = []
  *         unitObjects = []
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_units = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":101
+  /* "pyees/sheet.py":102
  *         names = []
  *         units = []
  *         datas = []             # <<<<<<<<<<<<<<
  *         unitObjects = []
  *         for objectName in dir(self.sheet):
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_datas = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":102
+  /* "pyees/sheet.py":103
  *         units = []
  *         datas = []
  *         unitObjects = []             # <<<<<<<<<<<<<<
  *         for objectName in dir(self.sheet):
  *             object = getattr(self.sheet, objectName)
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_unitObjects = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":103
+  /* "pyees/sheet.py":104
  *         datas = []
  *         unitObjects = []
  *         for objectName in dir(self.sheet):             # <<<<<<<<<<<<<<
  *             object = getattr(self.sheet, objectName)
  *             if isinstance(object, scalarVariable):
 */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 104, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = PyObject_Dir(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Dir(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
@@ -5479,9 +5524,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
     __pyx_t_2 = 0;
     __pyx_t_6 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 104, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_6 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 104, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -5490,7 +5535,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_4);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 103, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 104, __pyx_L1_error)
           #endif
           if (__pyx_t_2 >= __pyx_temp) break;
         }
@@ -5500,7 +5545,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_4);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 103, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 104, __pyx_L1_error)
           #endif
           if (__pyx_t_2 >= __pyx_temp) break;
         }
@@ -5511,13 +5556,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
         #endif
         ++__pyx_t_2;
       }
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
     } else {
       __pyx_t_1 = __pyx_t_6(__pyx_t_4);
       if (unlikely(!__pyx_t_1)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
-          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 103, __pyx_L1_error)
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 104, __pyx_L1_error)
           PyErr_Clear();
         }
         break;
@@ -5527,35 +5572,35 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
     __Pyx_XDECREF_SET(__pyx_v_objectName, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "pyees/sheet.py":104
+    /* "pyees/sheet.py":105
  *         unitObjects = []
  *         for objectName in dir(self.sheet):
  *             object = getattr(self.sheet, objectName)             # <<<<<<<<<<<<<<
  *             if isinstance(object, scalarVariable):
  *                 meas = object
 */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = __Pyx_GetAttr(__pyx_t_1, __pyx_v_objectName); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 104, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_GetAttr(__pyx_t_1, __pyx_v_objectName); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF_SET(__pyx_v_object, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":105
+    /* "pyees/sheet.py":106
  *         for objectName in dir(self.sheet):
  *             object = getattr(self.sheet, objectName)
  *             if isinstance(object, scalarVariable):             # <<<<<<<<<<<<<<
  *                 meas = object
  * 
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 105, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_3 = PyObject_IsInstance(__pyx_v_object, __pyx_t_7); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 105, __pyx_L1_error)
+    __pyx_t_3 = PyObject_IsInstance(__pyx_v_object, __pyx_t_7); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     if (__pyx_t_3) {
 
-      /* "pyees/sheet.py":106
+      /* "pyees/sheet.py":107
  *             object = getattr(self.sheet, objectName)
  *             if isinstance(object, scalarVariable):
  *                 meas = object             # <<<<<<<<<<<<<<
@@ -5565,60 +5610,139 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
       __Pyx_INCREF(__pyx_v_object);
       __Pyx_XDECREF_SET(__pyx_v_meas, __pyx_v_object);
 
-      /* "pyees/sheet.py":108
+      /* "pyees/sheet.py":109
  *                 meas = object
  * 
  *                 names.append(objectName)             # <<<<<<<<<<<<<<
- *                 u = '-' if meas.unit == '1' else meas.unit
- *                 units.append(u)
+ *                 if meas.unit == '1':
+ *                     u = '-'
 */
-      __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_names, __pyx_v_objectName); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 108, __pyx_L1_error)
-
-      /* "pyees/sheet.py":109
- * 
- *                 names.append(objectName)
- *                 u = '-' if meas.unit == '1' else meas.unit             # <<<<<<<<<<<<<<
- *                 units.append(u)
- * 
-*/
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_mstate_global->__pyx_kp_u_1, Py_EQ)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 109, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      if (__pyx_t_3) {
-        __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_);
-        __pyx_t_7 = __pyx_mstate_global->__pyx_kp_u_;
-      } else {
-        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_7 = __pyx_t_1;
-        __pyx_t_1 = 0;
-      }
-      __Pyx_XDECREF_SET(__pyx_v_u, __pyx_t_7);
-      __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_names, __pyx_v_objectName); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 109, __pyx_L1_error)
 
       /* "pyees/sheet.py":110
+ * 
  *                 names.append(objectName)
- *                 u = '-' if meas.unit == '1' else meas.unit
+ *                 if meas.unit == '1':             # <<<<<<<<<<<<<<
+ *                     u = '-'
+ *                 else:
+*/
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 110, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_7, __pyx_mstate_global->__pyx_kp_u_1, Py_EQ)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 110, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      if (__pyx_t_3) {
+
+        /* "pyees/sheet.py":111
+ *                 names.append(objectName)
+ *                 if meas.unit == '1':
+ *                     u = '-'             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     if self.prettyUnit:
+*/
+        __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_);
+        __Pyx_XDECREF_SET(__pyx_v_u, __pyx_mstate_global->__pyx_kp_u_);
+
+        /* "pyees/sheet.py":110
+ * 
+ *                 names.append(objectName)
+ *                 if meas.unit == '1':             # <<<<<<<<<<<<<<
+ *                     u = '-'
+ *                 else:
+*/
+        goto __pyx_L8;
+      }
+
+      /* "pyees/sheet.py":113
+ *                     u = '-'
+ *                 else:
+ *                     if self.prettyUnit:             # <<<<<<<<<<<<<<
+ *                         u = f"${meas._unitObject.__str__(True)}$"
+ *                     else:
+*/
+      /*else*/ {
+        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_prettyUnit); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 113, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 113, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        if (__pyx_t_3) {
+
+          /* "pyees/sheet.py":114
+ *                 else:
+ *                     if self.prettyUnit:
+ *                         u = f"${meas._unitObject.__str__(True)}$"             # <<<<<<<<<<<<<<
+ *                     else:
+ *                         u = meas.unit
+*/
+          __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 114, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_7);
+          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_str); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_1);
+          __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+          __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_mstate_global->__pyx_tuple[0], NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 114, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_7);
+          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+          __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_t_7, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_1);
+          __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+          __pyx_t_9[0] = __pyx_mstate_global->__pyx_kp_u__2;
+          __pyx_t_9[1] = __pyx_t_1;
+          __pyx_t_9[2] = __pyx_mstate_global->__pyx_kp_u__2;
+          __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_9, 3, 1 * 2 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1), 127 | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1));
+          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 114, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_7);
+          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+          __Pyx_XDECREF_SET(__pyx_v_u, __pyx_t_7);
+          __pyx_t_7 = 0;
+
+          /* "pyees/sheet.py":113
+ *                     u = '-'
+ *                 else:
+ *                     if self.prettyUnit:             # <<<<<<<<<<<<<<
+ *                         u = f"${meas._unitObject.__str__(True)}$"
+ *                     else:
+*/
+          goto __pyx_L9;
+        }
+
+        /* "pyees/sheet.py":116
+ *                         u = f"${meas._unitObject.__str__(True)}$"
+ *                     else:
+ *                         u = meas.unit             # <<<<<<<<<<<<<<
+ *                 units.append(u)
+ * 
+*/
+        /*else*/ {
+          __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 116, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_7);
+          __Pyx_XDECREF_SET(__pyx_v_u, __pyx_t_7);
+          __pyx_t_7 = 0;
+        }
+        __pyx_L9:;
+      }
+      __pyx_L8:;
+
+      /* "pyees/sheet.py":117
+ *                     else:
+ *                         u = meas.unit
  *                 units.append(u)             # <<<<<<<<<<<<<<
  * 
  *                 unitObjects.append(meas._unitObject)
 */
-      __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_units, __pyx_v_u); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 110, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_units, __pyx_v_u); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 117, __pyx_L1_error)
 
-      /* "pyees/sheet.py":112
+      /* "pyees/sheet.py":119
  *                 units.append(u)
  * 
  *                 unitObjects.append(meas._unitObject)             # <<<<<<<<<<<<<<
  * 
  *                 meas._unitObject = unit('')
 */
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 112, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 119, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_unitObjects, __pyx_t_7); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 112, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_unitObjects, __pyx_t_7); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 119, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":114
+      /* "pyees/sheet.py":121
  *                 unitObjects.append(meas._unitObject)
  * 
  *                 meas._unitObject = unit('')             # <<<<<<<<<<<<<<
@@ -5626,32 +5750,32 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  *                     elem._unitObject = unit('')
 */
       __pyx_t_1 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 114, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
+      __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 121, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
       __pyx_t_5 = 1;
       #if CYTHON_UNPACK_METHODS
-      if (unlikely(PyMethod_Check(__pyx_t_9))) {
-        __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_9);
+      if (unlikely(PyMethod_Check(__pyx_t_10))) {
+        __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_10);
         assert(__pyx_t_1);
-        PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_9);
+        PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_10);
         __Pyx_INCREF(__pyx_t_1);
         __Pyx_INCREF(__pyx__function);
-        __Pyx_DECREF_SET(__pyx_t_9, __pyx__function);
+        __Pyx_DECREF_SET(__pyx_t_10, __pyx__function);
         __pyx_t_5 = 0;
       }
       #endif
       {
-        PyObject *__pyx_callargs[2] = {__pyx_t_1, __pyx_mstate_global->__pyx_kp_u__2};
-        __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_9, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+        PyObject *__pyx_callargs[2] = {__pyx_t_1, __pyx_mstate_global->__pyx_kp_u__3};
+        __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_10, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 114, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 121, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
       }
-      if (__Pyx_PyObject_SetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_t_7) < (0)) __PYX_ERR(0, 114, __pyx_L1_error)
+      if (__Pyx_PyObject_SetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_t_7) < (0)) __PYX_ERR(0, 121, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":115
+      /* "pyees/sheet.py":122
  * 
  *                 meas._unitObject = unit('')
  *                 for elem in meas:             # <<<<<<<<<<<<<<
@@ -5660,57 +5784,57 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
 */
       if (likely(PyList_CheckExact(__pyx_v_meas)) || PyTuple_CheckExact(__pyx_v_meas)) {
         __pyx_t_7 = __pyx_v_meas; __Pyx_INCREF(__pyx_t_7);
-        __pyx_t_10 = 0;
-        __pyx_t_11 = NULL;
+        __pyx_t_11 = 0;
+        __pyx_t_12 = NULL;
       } else {
-        __pyx_t_10 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 115, __pyx_L1_error)
+        __pyx_t_11 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 122, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 115, __pyx_L1_error)
+        __pyx_t_12 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 122, __pyx_L1_error)
       }
       for (;;) {
-        if (likely(!__pyx_t_11)) {
+        if (likely(!__pyx_t_12)) {
           if (likely(PyList_CheckExact(__pyx_t_7))) {
             {
               Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_7);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 115, __pyx_L1_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 122, __pyx_L1_error)
               #endif
-              if (__pyx_t_10 >= __pyx_temp) break;
+              if (__pyx_t_11 >= __pyx_temp) break;
             }
-            __pyx_t_9 = __Pyx_PyList_GetItemRefFast(__pyx_t_7, __pyx_t_10, __Pyx_ReferenceSharing_OwnStrongReference);
-            ++__pyx_t_10;
+            __pyx_t_10 = __Pyx_PyList_GetItemRefFast(__pyx_t_7, __pyx_t_11, __Pyx_ReferenceSharing_OwnStrongReference);
+            ++__pyx_t_11;
           } else {
             {
               Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_7);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 115, __pyx_L1_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 122, __pyx_L1_error)
               #endif
-              if (__pyx_t_10 >= __pyx_temp) break;
+              if (__pyx_t_11 >= __pyx_temp) break;
             }
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_9 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_10));
+            __pyx_t_10 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_11));
             #else
-            __pyx_t_9 = __Pyx_PySequence_ITEM(__pyx_t_7, __pyx_t_10);
+            __pyx_t_10 = __Pyx_PySequence_ITEM(__pyx_t_7, __pyx_t_11);
             #endif
-            ++__pyx_t_10;
+            ++__pyx_t_11;
           }
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 115, __pyx_L1_error)
+          if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 122, __pyx_L1_error)
         } else {
-          __pyx_t_9 = __pyx_t_11(__pyx_t_7);
-          if (unlikely(!__pyx_t_9)) {
+          __pyx_t_10 = __pyx_t_12(__pyx_t_7);
+          if (unlikely(!__pyx_t_10)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 115, __pyx_L1_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 122, __pyx_L1_error)
               PyErr_Clear();
             }
             break;
           }
         }
-        __Pyx_GOTREF(__pyx_t_9);
-        __Pyx_XDECREF_SET(__pyx_v_elem, __pyx_t_9);
-        __pyx_t_9 = 0;
+        __Pyx_GOTREF(__pyx_t_10);
+        __Pyx_XDECREF_SET(__pyx_v_elem, __pyx_t_10);
+        __pyx_t_10 = 0;
 
-        /* "pyees/sheet.py":116
+        /* "pyees/sheet.py":123
  *                 meas._unitObject = unit('')
  *                 for elem in meas:
  *                     elem._unitObject = unit('')             # <<<<<<<<<<<<<<
@@ -5718,32 +5842,32 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  *         for i in range(n):
 */
         __pyx_t_1 = NULL;
-        __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 116, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_12);
+        __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 123, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_13);
         __pyx_t_5 = 1;
         #if CYTHON_UNPACK_METHODS
-        if (unlikely(PyMethod_Check(__pyx_t_12))) {
-          __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_12);
+        if (unlikely(PyMethod_Check(__pyx_t_13))) {
+          __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_13);
           assert(__pyx_t_1);
-          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_12);
+          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_13);
           __Pyx_INCREF(__pyx_t_1);
           __Pyx_INCREF(__pyx__function);
-          __Pyx_DECREF_SET(__pyx_t_12, __pyx__function);
+          __Pyx_DECREF_SET(__pyx_t_13, __pyx__function);
           __pyx_t_5 = 0;
         }
         #endif
         {
-          PyObject *__pyx_callargs[2] = {__pyx_t_1, __pyx_mstate_global->__pyx_kp_u__2};
-          __pyx_t_9 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_12, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+          PyObject *__pyx_callargs[2] = {__pyx_t_1, __pyx_mstate_global->__pyx_kp_u__3};
+          __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_13, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 116, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_9);
+          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+          if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 123, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_10);
         }
-        if (__Pyx_PyObject_SetAttrStr(__pyx_v_elem, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_t_9) < (0)) __PYX_ERR(0, 116, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        if (__Pyx_PyObject_SetAttrStr(__pyx_v_elem, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_t_10) < (0)) __PYX_ERR(0, 123, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-        /* "pyees/sheet.py":115
+        /* "pyees/sheet.py":122
  * 
  *                 meas._unitObject = unit('')
  *                 for elem in meas:             # <<<<<<<<<<<<<<
@@ -5753,7 +5877,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
       }
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":105
+      /* "pyees/sheet.py":106
  *         for objectName in dir(self.sheet):
  *             object = getattr(self.sheet, objectName)
  *             if isinstance(object, scalarVariable):             # <<<<<<<<<<<<<<
@@ -5762,7 +5886,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
 */
     }
 
-    /* "pyees/sheet.py":103
+    /* "pyees/sheet.py":104
  *         datas = []
  *         unitObjects = []
  *         for objectName in dir(self.sheet):             # <<<<<<<<<<<<<<
@@ -5772,7 +5896,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":118
+  /* "pyees/sheet.py":125
  *                     elem._unitObject = unit('')
  * 
  *         for i in range(n):             # <<<<<<<<<<<<<<
@@ -5780,23 +5904,23 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  *             for name in names:
 */
   __pyx_t_2 = __pyx_v_n;
-  __pyx_t_10 = __pyx_t_2;
-  for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_10; __pyx_t_13+=1) {
-    __pyx_v_i = __pyx_t_13;
+  __pyx_t_11 = __pyx_t_2;
+  for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_11; __pyx_t_14+=1) {
+    __pyx_v_i = __pyx_t_14;
 
-    /* "pyees/sheet.py":119
+    /* "pyees/sheet.py":126
  * 
  *         for i in range(n):
  *             dat = []             # <<<<<<<<<<<<<<
  *             for name in names:
  *                 meas = getattr(self.sheet, name)
 */
-    __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 119, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_XDECREF_SET(__pyx_v_dat, ((PyObject*)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":120
+    /* "pyees/sheet.py":127
  *         for i in range(n):
  *             dat = []
  *             for name in names:             # <<<<<<<<<<<<<<
@@ -5804,109 +5928,109 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  * 
 */
     __pyx_t_4 = __pyx_v_names; __Pyx_INCREF(__pyx_t_4);
-    __pyx_t_14 = 0;
+    __pyx_t_15 = 0;
     for (;;) {
       {
         Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_4);
         #if !CYTHON_ASSUME_SAFE_SIZE
-        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 120, __pyx_L1_error)
+        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 127, __pyx_L1_error)
         #endif
-        if (__pyx_t_14 >= __pyx_temp) break;
+        if (__pyx_t_15 >= __pyx_temp) break;
       }
-      __pyx_t_7 = __Pyx_PyList_GetItemRefFast(__pyx_t_4, __pyx_t_14, __Pyx_ReferenceSharing_OwnStrongReference);
-      ++__pyx_t_14;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 120, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyList_GetItemRefFast(__pyx_t_4, __pyx_t_15, __Pyx_ReferenceSharing_OwnStrongReference);
+      ++__pyx_t_15;
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 127, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_XDECREF_SET(__pyx_v_name, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":121
+      /* "pyees/sheet.py":128
  *             dat = []
  *             for name in names:
  *                 meas = getattr(self.sheet, name)             # <<<<<<<<<<<<<<
  * 
  *                 if (self.showUncert):
 */
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 121, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 128, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_9 = __Pyx_GetAttr(__pyx_t_7, __pyx_v_name); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 121, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
+      __pyx_t_10 = __Pyx_GetAttr(__pyx_t_7, __pyx_v_name); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 128, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_XDECREF_SET(__pyx_v_meas, __pyx_t_9);
-      __pyx_t_9 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_meas, __pyx_t_10);
+      __pyx_t_10 = 0;
 
-      /* "pyees/sheet.py":123
+      /* "pyees/sheet.py":130
  *                 meas = getattr(self.sheet, name)
  * 
  *                 if (self.showUncert):             # <<<<<<<<<<<<<<
  *                     string = str(meas[i])
  *                     string = string.replace(' +/- ', '')
 */
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_showUncert); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 123, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 123, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_showUncert); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 130, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 130, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       if (__pyx_t_3) {
 
-        /* "pyees/sheet.py":124
+        /* "pyees/sheet.py":131
  * 
  *                 if (self.showUncert):
  *                     string = str(meas[i])             # <<<<<<<<<<<<<<
  *                     string = string.replace(' +/- ', '')
  *                     string = string.replace(' ', '')
 */
-        __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_meas, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 124, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_7 = __Pyx_PyObject_Unicode(__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_meas, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 131, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __pyx_t_7 = __Pyx_PyObject_Unicode(__pyx_t_10); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 131, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         __Pyx_XDECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_7));
         __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":125
+        /* "pyees/sheet.py":132
  *                 if (self.showUncert):
  *                     string = str(meas[i])
  *                     string = string.replace(' +/- ', '')             # <<<<<<<<<<<<<<
  *                     string = string.replace(' ', '')
  *                     dat.append(string)
 */
-        __pyx_t_7 = PyUnicode_Replace(__pyx_v_string, __pyx_mstate_global->__pyx_kp_u__3, __pyx_mstate_global->__pyx_kp_u__4, -1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 125, __pyx_L1_error)
+        __pyx_t_7 = PyUnicode_Replace(__pyx_v_string, __pyx_mstate_global->__pyx_kp_u__4, __pyx_mstate_global->__pyx_kp_u__5, -1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 132, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_7));
         __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":126
+        /* "pyees/sheet.py":133
  *                     string = str(meas[i])
  *                     string = string.replace(' +/- ', '')
  *                     string = string.replace(' ', '')             # <<<<<<<<<<<<<<
  *                     dat.append(string)
  *                 else:
 */
-        __pyx_t_7 = PyUnicode_Replace(__pyx_v_string, __pyx_mstate_global->__pyx_kp_u__5, __pyx_mstate_global->__pyx_kp_u__2, -1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 126, __pyx_L1_error)
+        __pyx_t_7 = PyUnicode_Replace(__pyx_v_string, __pyx_mstate_global->__pyx_kp_u__6, __pyx_mstate_global->__pyx_kp_u__3, -1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 133, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_7));
         __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":127
+        /* "pyees/sheet.py":134
  *                     string = string.replace(' +/- ', '')
  *                     string = string.replace(' ', '')
  *                     dat.append(string)             # <<<<<<<<<<<<<<
  *                 else:
  *                     string = str(meas[i])
 */
-        __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_dat, __pyx_v_string); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 127, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_dat, __pyx_v_string); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 134, __pyx_L1_error)
 
-        /* "pyees/sheet.py":123
+        /* "pyees/sheet.py":130
  *                 meas = getattr(self.sheet, name)
  * 
  *                 if (self.showUncert):             # <<<<<<<<<<<<<<
  *                     string = str(meas[i])
  *                     string = string.replace(' +/- ', '')
 */
-        goto __pyx_L16;
+        goto __pyx_L18;
       }
 
-      /* "pyees/sheet.py":129
+      /* "pyees/sheet.py":136
  *                     dat.append(string)
  *                 else:
  *                     string = str(meas[i])             # <<<<<<<<<<<<<<
@@ -5914,26 +6038,26 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  *             datas.append(dat)
 */
       /*else*/ {
-        __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_meas, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 129, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_meas, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 136, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_9 = __Pyx_PyObject_Unicode(__pyx_t_7); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 129, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_9);
+        __pyx_t_10 = __Pyx_PyObject_Unicode(__pyx_t_7); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 136, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_XDECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_9));
-        __pyx_t_9 = 0;
+        __Pyx_XDECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_10));
+        __pyx_t_10 = 0;
 
-        /* "pyees/sheet.py":130
+        /* "pyees/sheet.py":137
  *                 else:
  *                     string = str(meas[i])
  *                     dat.append(string)             # <<<<<<<<<<<<<<
  *             datas.append(dat)
  * 
 */
-        __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_dat, __pyx_v_string); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 130, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_dat, __pyx_v_string); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 137, __pyx_L1_error)
       }
-      __pyx_L16:;
+      __pyx_L18:;
 
-      /* "pyees/sheet.py":120
+      /* "pyees/sheet.py":127
  *         for i in range(n):
  *             dat = []
  *             for name in names:             # <<<<<<<<<<<<<<
@@ -5943,76 +6067,76 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":131
+    /* "pyees/sheet.py":138
  *                     string = str(meas[i])
  *                     dat.append(string)
  *             datas.append(dat)             # <<<<<<<<<<<<<<
  * 
  *         for name, u in zip(names, unitObjects):
 */
-    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_datas, __pyx_v_dat); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 131, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_datas, __pyx_v_dat); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 138, __pyx_L1_error)
   }
 
-  /* "pyees/sheet.py":133
+  /* "pyees/sheet.py":140
  *             datas.append(dat)
  * 
  *         for name, u in zip(names, unitObjects):             # <<<<<<<<<<<<<<
  *             meas = getattr(self.sheet, name)
  *             meas._unitObject = u
 */
-  __pyx_t_9 = NULL;
+  __pyx_t_10 = NULL;
   __pyx_t_5 = 1;
   {
-    PyObject *__pyx_callargs[3] = {__pyx_t_9, __pyx_v_names, __pyx_v_unitObjects};
+    PyObject *__pyx_callargs[3] = {__pyx_t_10, __pyx_v_names, __pyx_v_unitObjects};
     __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_builtin_zip, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
   if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
-    __pyx_t_9 = __pyx_t_4; __Pyx_INCREF(__pyx_t_9);
+    __pyx_t_10 = __pyx_t_4; __Pyx_INCREF(__pyx_t_10);
     __pyx_t_2 = 0;
     __pyx_t_6 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_9 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 133, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_6 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_9); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 133, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_10 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 140, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_6 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_10); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 140, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   for (;;) {
     if (likely(!__pyx_t_6)) {
-      if (likely(PyList_CheckExact(__pyx_t_9))) {
+      if (likely(PyList_CheckExact(__pyx_t_10))) {
         {
-          Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_9);
+          Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_10);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 133, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 140, __pyx_L1_error)
           #endif
           if (__pyx_t_2 >= __pyx_temp) break;
         }
-        __pyx_t_4 = __Pyx_PyList_GetItemRefFast(__pyx_t_9, __pyx_t_2, __Pyx_ReferenceSharing_OwnStrongReference);
+        __pyx_t_4 = __Pyx_PyList_GetItemRefFast(__pyx_t_10, __pyx_t_2, __Pyx_ReferenceSharing_OwnStrongReference);
         ++__pyx_t_2;
       } else {
         {
-          Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_9);
+          Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_10);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 133, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 140, __pyx_L1_error)
           #endif
           if (__pyx_t_2 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_9, __pyx_t_2));
+        __pyx_t_4 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_10, __pyx_t_2));
         #else
-        __pyx_t_4 = __Pyx_PySequence_ITEM(__pyx_t_9, __pyx_t_2);
+        __pyx_t_4 = __Pyx_PySequence_ITEM(__pyx_t_10, __pyx_t_2);
         #endif
         ++__pyx_t_2;
       }
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
     } else {
-      __pyx_t_4 = __pyx_t_6(__pyx_t_9);
+      __pyx_t_4 = __pyx_t_6(__pyx_t_10);
       if (unlikely(!__pyx_t_4)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
-          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 133, __pyx_L1_error)
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 140, __pyx_L1_error)
           PyErr_Clear();
         }
         break;
@@ -6025,80 +6149,80 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 133, __pyx_L1_error)
+        __PYX_ERR(0, 140, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
         __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0);
         __Pyx_INCREF(__pyx_t_7);
-        __pyx_t_12 = PyTuple_GET_ITEM(sequence, 1);
-        __Pyx_INCREF(__pyx_t_12);
+        __pyx_t_13 = PyTuple_GET_ITEM(sequence, 1);
+        __Pyx_INCREF(__pyx_t_13);
       } else {
         __pyx_t_7 = __Pyx_PyList_GetItemRefFast(sequence, 0, __Pyx_ReferenceSharing_SharedReference);
-        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 133, __pyx_L1_error)
+        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
         __Pyx_XGOTREF(__pyx_t_7);
-        __pyx_t_12 = __Pyx_PyList_GetItemRefFast(sequence, 1, __Pyx_ReferenceSharing_SharedReference);
-        if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 133, __pyx_L1_error)
-        __Pyx_XGOTREF(__pyx_t_12);
+        __pyx_t_13 = __Pyx_PyList_GetItemRefFast(sequence, 1, __Pyx_ReferenceSharing_SharedReference);
+        if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 140, __pyx_L1_error)
+        __Pyx_XGOTREF(__pyx_t_13);
       }
       #else
-      __pyx_t_7 = __Pyx_PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_12 = __Pyx_PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 133, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_12);
+      __pyx_t_13 = __Pyx_PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 140, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_13);
       #endif
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_1 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __pyx_t_1 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1);
-      index = 0; __pyx_t_7 = __pyx_t_15(__pyx_t_1); if (unlikely(!__pyx_t_7)) goto __pyx_L20_unpacking_failed;
+      __pyx_t_16 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1);
+      index = 0; __pyx_t_7 = __pyx_t_16(__pyx_t_1); if (unlikely(!__pyx_t_7)) goto __pyx_L22_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_7);
-      index = 1; __pyx_t_12 = __pyx_t_15(__pyx_t_1); if (unlikely(!__pyx_t_12)) goto __pyx_L20_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_12);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_1), 2) < (0)) __PYX_ERR(0, 133, __pyx_L1_error)
-      __pyx_t_15 = NULL;
+      index = 1; __pyx_t_13 = __pyx_t_16(__pyx_t_1); if (unlikely(!__pyx_t_13)) goto __pyx_L22_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_13);
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_16(__pyx_t_1), 2) < (0)) __PYX_ERR(0, 140, __pyx_L1_error)
+      __pyx_t_16 = NULL;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      goto __pyx_L21_unpacking_done;
-      __pyx_L20_unpacking_failed:;
+      goto __pyx_L23_unpacking_done;
+      __pyx_L22_unpacking_failed:;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_15 = NULL;
+      __pyx_t_16 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 133, __pyx_L1_error)
-      __pyx_L21_unpacking_done:;
+      __PYX_ERR(0, 140, __pyx_L1_error)
+      __pyx_L23_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_name, __pyx_t_7);
     __pyx_t_7 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_u, __pyx_t_12);
-    __pyx_t_12 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_u, __pyx_t_13);
+    __pyx_t_13 = 0;
 
-    /* "pyees/sheet.py":134
+    /* "pyees/sheet.py":141
  * 
  *         for name, u in zip(names, unitObjects):
  *             meas = getattr(self.sheet, name)             # <<<<<<<<<<<<<<
  *             meas._unitObject = u
  *             for elem in meas:
 */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_12 = __Pyx_GetAttr(__pyx_t_4, __pyx_v_name); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 134, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
+    __pyx_t_13 = __Pyx_GetAttr(__pyx_t_4, __pyx_v_name); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 141, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_meas, __pyx_t_12);
-    __pyx_t_12 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_meas, __pyx_t_13);
+    __pyx_t_13 = 0;
 
-    /* "pyees/sheet.py":135
+    /* "pyees/sheet.py":142
  *         for name, u in zip(names, unitObjects):
  *             meas = getattr(self.sheet, name)
  *             meas._unitObject = u             # <<<<<<<<<<<<<<
  *             for elem in meas:
  *                 elem._unitObject = u
 */
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_v_u) < (0)) __PYX_ERR(0, 135, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_v_u) < (0)) __PYX_ERR(0, 142, __pyx_L1_error)
 
-    /* "pyees/sheet.py":136
+    /* "pyees/sheet.py":143
  *             meas = getattr(self.sheet, name)
  *             meas._unitObject = u
  *             for elem in meas:             # <<<<<<<<<<<<<<
@@ -6106,48 +6230,48 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  * 
 */
     if (likely(PyList_CheckExact(__pyx_v_meas)) || PyTuple_CheckExact(__pyx_v_meas)) {
-      __pyx_t_12 = __pyx_v_meas; __Pyx_INCREF(__pyx_t_12);
-      __pyx_t_10 = 0;
-      __pyx_t_11 = NULL;
+      __pyx_t_13 = __pyx_v_meas; __Pyx_INCREF(__pyx_t_13);
+      __pyx_t_11 = 0;
+      __pyx_t_12 = NULL;
     } else {
-      __pyx_t_10 = -1; __pyx_t_12 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 136, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_12);
-      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_12); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 136, __pyx_L1_error)
+      __pyx_t_11 = -1; __pyx_t_13 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 143, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_13);
+      __pyx_t_12 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_13); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 143, __pyx_L1_error)
     }
     for (;;) {
-      if (likely(!__pyx_t_11)) {
-        if (likely(PyList_CheckExact(__pyx_t_12))) {
+      if (likely(!__pyx_t_12)) {
+        if (likely(PyList_CheckExact(__pyx_t_13))) {
           {
-            Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_12);
+            Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_13);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 136, __pyx_L1_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 143, __pyx_L1_error)
             #endif
-            if (__pyx_t_10 >= __pyx_temp) break;
+            if (__pyx_t_11 >= __pyx_temp) break;
           }
-          __pyx_t_4 = __Pyx_PyList_GetItemRefFast(__pyx_t_12, __pyx_t_10, __Pyx_ReferenceSharing_OwnStrongReference);
-          ++__pyx_t_10;
+          __pyx_t_4 = __Pyx_PyList_GetItemRefFast(__pyx_t_13, __pyx_t_11, __Pyx_ReferenceSharing_OwnStrongReference);
+          ++__pyx_t_11;
         } else {
           {
-            Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_12);
+            Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_13);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 136, __pyx_L1_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 143, __pyx_L1_error)
             #endif
-            if (__pyx_t_10 >= __pyx_temp) break;
+            if (__pyx_t_11 >= __pyx_temp) break;
           }
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_12, __pyx_t_10));
+          __pyx_t_4 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_13, __pyx_t_11));
           #else
-          __pyx_t_4 = __Pyx_PySequence_ITEM(__pyx_t_12, __pyx_t_10);
+          __pyx_t_4 = __Pyx_PySequence_ITEM(__pyx_t_13, __pyx_t_11);
           #endif
-          ++__pyx_t_10;
+          ++__pyx_t_11;
         }
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 136, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 143, __pyx_L1_error)
       } else {
-        __pyx_t_4 = __pyx_t_11(__pyx_t_12);
+        __pyx_t_4 = __pyx_t_12(__pyx_t_13);
         if (unlikely(!__pyx_t_4)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 136, __pyx_L1_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 143, __pyx_L1_error)
             PyErr_Clear();
           }
           break;
@@ -6157,16 +6281,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
       __Pyx_XDECREF_SET(__pyx_v_elem, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "pyees/sheet.py":137
+      /* "pyees/sheet.py":144
  *             meas._unitObject = u
  *             for elem in meas:
  *                 elem._unitObject = u             # <<<<<<<<<<<<<<
  * 
  *         # Open the file in write mode
 */
-      if (__Pyx_PyObject_SetAttrStr(__pyx_v_elem, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_v_u) < (0)) __PYX_ERR(0, 137, __pyx_L1_error)
+      if (__Pyx_PyObject_SetAttrStr(__pyx_v_elem, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_v_u) < (0)) __PYX_ERR(0, 144, __pyx_L1_error)
 
-      /* "pyees/sheet.py":136
+      /* "pyees/sheet.py":143
  *             meas = getattr(self.sheet, name)
  *             meas._unitObject = u
  *             for elem in meas:             # <<<<<<<<<<<<<<
@@ -6174,9 +6298,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  * 
 */
     }
-    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
-    /* "pyees/sheet.py":133
+    /* "pyees/sheet.py":140
  *             datas.append(dat)
  * 
  *         for name, u in zip(names, unitObjects):             # <<<<<<<<<<<<<<
@@ -6184,9 +6308,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  *             meas._unitObject = u
 */
   }
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-  /* "pyees/sheet.py":140
+  /* "pyees/sheet.py":147
  * 
  *         # Open the file in write mode
  *         with open(self.fileName, mode='w', newline='', encoding='utf-8') as file:             # <<<<<<<<<<<<<<
@@ -6194,101 +6318,101 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  *             writer = csv.writer(file)
 */
   /*with:*/ {
-    __pyx_t_12 = NULL;
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_fileName); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
+    __pyx_t_13 = NULL;
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_fileName); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = 1;
     {
-      PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_12, __pyx_t_4};
-      __pyx_t_7 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
+      PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_13, __pyx_t_4};
+      __pyx_t_7 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 147, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_mode, __pyx_mstate_global->__pyx_n_u_w, __pyx_t_7, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 140, __pyx_L1_error)
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_newline, __pyx_mstate_global->__pyx_kp_u__2, __pyx_t_7, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 140, __pyx_L1_error)
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_encoding, __pyx_mstate_global->__pyx_kp_u_utf_8, __pyx_t_7, __pyx_callargs+2, 2) < (0)) __PYX_ERR(0, 140, __pyx_L1_error)
-      __pyx_t_9 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_builtin_open, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_7);
-      __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_mode, __pyx_mstate_global->__pyx_n_u_w, __pyx_t_7, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 147, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_newline, __pyx_mstate_global->__pyx_kp_u__3, __pyx_t_7, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 147, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_encoding, __pyx_mstate_global->__pyx_kp_u_utf_8, __pyx_t_7, __pyx_callargs+2, 2) < (0)) __PYX_ERR(0, 147, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_builtin_open, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_7);
+      __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 140, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 147, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
     }
-    __pyx_t_16 = __Pyx_PyObject_LookupSpecial(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_16);
+    __pyx_t_17 = __Pyx_PyObject_LookupSpecial(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 147, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_17);
     __pyx_t_4 = NULL;
-    __pyx_t_12 = __Pyx_PyObject_LookupSpecial(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 140, __pyx_L26_error)
-    __Pyx_GOTREF(__pyx_t_12);
+    __pyx_t_13 = __Pyx_PyObject_LookupSpecial(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 147, __pyx_L28_error)
+    __Pyx_GOTREF(__pyx_t_13);
     __pyx_t_5 = 1;
     #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_12))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_12);
+    if (likely(PyMethod_Check(__pyx_t_13))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_13);
       assert(__pyx_t_4);
-      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_12);
+      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_13);
       __Pyx_INCREF(__pyx_t_4);
       __Pyx_INCREF(__pyx__function);
-      __Pyx_DECREF_SET(__pyx_t_12, __pyx__function);
+      __Pyx_DECREF_SET(__pyx_t_13, __pyx__function);
       __pyx_t_5 = 0;
     }
     #endif
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
-      __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_12, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_13, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L26_error)
+      __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 147, __pyx_L28_error)
       __Pyx_GOTREF(__pyx_t_7);
     }
-    __pyx_t_12 = __pyx_t_7;
+    __pyx_t_13 = __pyx_t_7;
     __pyx_t_7 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     /*try:*/ {
       {
         __Pyx_PyThreadState_declare
         __Pyx_PyThreadState_assign
-        __Pyx_ExceptionSave(&__pyx_t_17, &__pyx_t_18, &__pyx_t_19);
-        __Pyx_XGOTREF(__pyx_t_17);
+        __Pyx_ExceptionSave(&__pyx_t_18, &__pyx_t_19, &__pyx_t_20);
         __Pyx_XGOTREF(__pyx_t_18);
         __Pyx_XGOTREF(__pyx_t_19);
+        __Pyx_XGOTREF(__pyx_t_20);
         /*try:*/ {
-          __pyx_v_file = __pyx_t_12;
-          __pyx_t_12 = 0;
+          __pyx_v_file = __pyx_t_13;
+          __pyx_t_13 = 0;
 
-          /* "pyees/sheet.py":142
+          /* "pyees/sheet.py":149
  *         with open(self.fileName, mode='w', newline='', encoding='utf-8') as file:
  *             # Create a csv.writer object
  *             writer = csv.writer(file)             # <<<<<<<<<<<<<<
  *             # Write data to the CSV file
  *             writer.writerow(names)
 */
-          __pyx_t_9 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_csv_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 142, __pyx_L30_error)
+          __pyx_t_10 = NULL;
+          __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_csv_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 149, __pyx_L32_error)
           __Pyx_GOTREF(__pyx_t_7);
-          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_writer); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 142, __pyx_L30_error)
+          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_writer); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 149, __pyx_L32_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           __pyx_t_5 = 1;
           #if CYTHON_UNPACK_METHODS
           if (unlikely(PyMethod_Check(__pyx_t_4))) {
-            __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_4);
-            assert(__pyx_t_9);
+            __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_4);
+            assert(__pyx_t_10);
             PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
-            __Pyx_INCREF(__pyx_t_9);
+            __Pyx_INCREF(__pyx_t_10);
             __Pyx_INCREF(__pyx__function);
             __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
             __pyx_t_5 = 0;
           }
           #endif
           {
-            PyObject *__pyx_callargs[2] = {__pyx_t_9, __pyx_v_file};
-            __pyx_t_12 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-            __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+            PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_v_file};
+            __pyx_t_13 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 142, __pyx_L30_error)
-            __Pyx_GOTREF(__pyx_t_12);
+            if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 149, __pyx_L32_error)
+            __Pyx_GOTREF(__pyx_t_13);
           }
-          __pyx_v_writer = __pyx_t_12;
-          __pyx_t_12 = 0;
+          __pyx_v_writer = __pyx_t_13;
+          __pyx_t_13 = 0;
 
-          /* "pyees/sheet.py":144
+          /* "pyees/sheet.py":151
  *             writer = csv.writer(file)
  *             # Write data to the CSV file
  *             writer.writerow(names)             # <<<<<<<<<<<<<<
@@ -6300,14 +6424,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
           __pyx_t_5 = 0;
           {
             PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_names};
-            __pyx_t_12 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_writerow, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __pyx_t_13 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_writerow, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 144, __pyx_L30_error)
-            __Pyx_GOTREF(__pyx_t_12);
+            if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 151, __pyx_L32_error)
+            __Pyx_GOTREF(__pyx_t_13);
           }
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
-          /* "pyees/sheet.py":145
+          /* "pyees/sheet.py":152
  *             # Write data to the CSV file
  *             writer.writerow(names)
  *             writer.writerow(units)             # <<<<<<<<<<<<<<
@@ -6319,14 +6443,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
           __pyx_t_5 = 0;
           {
             PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_units};
-            __pyx_t_12 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_writerow, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __pyx_t_13 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_writerow, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 145, __pyx_L30_error)
-            __Pyx_GOTREF(__pyx_t_12);
+            if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 152, __pyx_L32_error)
+            __Pyx_GOTREF(__pyx_t_13);
           }
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
-          /* "pyees/sheet.py":146
+          /* "pyees/sheet.py":153
  *             writer.writerow(names)
  *             writer.writerow(units)
  *             writer.writerows(datas)             # <<<<<<<<<<<<<<
@@ -6338,14 +6462,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
           __pyx_t_5 = 0;
           {
             PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_datas};
-            __pyx_t_12 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_writerows, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __pyx_t_13 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_writerows, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 146, __pyx_L30_error)
-            __Pyx_GOTREF(__pyx_t_12);
+            if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 153, __pyx_L32_error)
+            __Pyx_GOTREF(__pyx_t_13);
           }
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
-          /* "pyees/sheet.py":140
+          /* "pyees/sheet.py":147
  * 
  *         # Open the file in write mode
  *         with open(self.fileName, mode='w', newline='', encoding='utf-8') as file:             # <<<<<<<<<<<<<<
@@ -6353,81 +6477,81 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
  *             writer = csv.writer(file)
 */
         }
-        __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
         __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
         __Pyx_XDECREF(__pyx_t_19); __pyx_t_19 = 0;
-        goto __pyx_L35_try_end;
-        __pyx_L30_error:;
+        __Pyx_XDECREF(__pyx_t_20); __pyx_t_20 = 0;
+        goto __pyx_L37_try_end;
+        __pyx_L32_error:;
         __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+        __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+        __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("pyees.sheet._fileFromSheets.saveCsv", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_12, &__pyx_t_4, &__pyx_t_9) < 0) __PYX_ERR(0, 140, __pyx_L32_except_error)
-          __Pyx_XGOTREF(__pyx_t_12);
+          if (__Pyx_GetException(&__pyx_t_13, &__pyx_t_4, &__pyx_t_10) < 0) __PYX_ERR(0, 147, __pyx_L34_except_error)
+          __Pyx_XGOTREF(__pyx_t_13);
           __Pyx_XGOTREF(__pyx_t_4);
-          __Pyx_XGOTREF(__pyx_t_9);
-          __pyx_t_7 = PyTuple_Pack(3, __pyx_t_12, __pyx_t_4, __pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L32_except_error)
+          __Pyx_XGOTREF(__pyx_t_10);
+          __pyx_t_7 = PyTuple_Pack(3, __pyx_t_13, __pyx_t_4, __pyx_t_10); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 147, __pyx_L34_except_error)
           __Pyx_GOTREF(__pyx_t_7);
-          __pyx_t_20 = __Pyx_PyObject_Call(__pyx_t_16, __pyx_t_7, NULL);
-          __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
+          __pyx_t_21 = __Pyx_PyObject_Call(__pyx_t_17, __pyx_t_7, NULL);
+          __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-          if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 140, __pyx_L32_except_error)
-          __Pyx_GOTREF(__pyx_t_20);
-          __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_20);
-          __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
-          if (__pyx_t_3 < (0)) __PYX_ERR(0, 140, __pyx_L32_except_error)
-          __pyx_t_21 = (!__pyx_t_3);
-          if (unlikely(__pyx_t_21)) {
-            __Pyx_GIVEREF(__pyx_t_12);
+          if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 147, __pyx_L34_except_error)
+          __Pyx_GOTREF(__pyx_t_21);
+          __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_21);
+          __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
+          if (__pyx_t_3 < (0)) __PYX_ERR(0, 147, __pyx_L34_except_error)
+          __pyx_t_22 = (!__pyx_t_3);
+          if (unlikely(__pyx_t_22)) {
+            __Pyx_GIVEREF(__pyx_t_13);
             __Pyx_GIVEREF(__pyx_t_4);
-            __Pyx_XGIVEREF(__pyx_t_9);
-            __Pyx_ErrRestoreWithState(__pyx_t_12, __pyx_t_4, __pyx_t_9);
-            __pyx_t_12 = 0;  __pyx_t_4 = 0;  __pyx_t_9 = 0; 
-            __PYX_ERR(0, 140, __pyx_L32_except_error)
+            __Pyx_XGIVEREF(__pyx_t_10);
+            __Pyx_ErrRestoreWithState(__pyx_t_13, __pyx_t_4, __pyx_t_10);
+            __pyx_t_13 = 0;  __pyx_t_4 = 0;  __pyx_t_10 = 0; 
+            __PYX_ERR(0, 147, __pyx_L34_except_error)
           }
-          __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+          __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-          goto __pyx_L31_exception_handled;
+          __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+          goto __pyx_L33_exception_handled;
         }
-        __pyx_L32_except_error:;
-        __Pyx_XGIVEREF(__pyx_t_17);
+        __pyx_L34_except_error:;
         __Pyx_XGIVEREF(__pyx_t_18);
         __Pyx_XGIVEREF(__pyx_t_19);
-        __Pyx_ExceptionReset(__pyx_t_17, __pyx_t_18, __pyx_t_19);
+        __Pyx_XGIVEREF(__pyx_t_20);
+        __Pyx_ExceptionReset(__pyx_t_18, __pyx_t_19, __pyx_t_20);
         goto __pyx_L1_error;
-        __pyx_L31_exception_handled:;
-        __Pyx_XGIVEREF(__pyx_t_17);
+        __pyx_L33_exception_handled:;
         __Pyx_XGIVEREF(__pyx_t_18);
         __Pyx_XGIVEREF(__pyx_t_19);
-        __Pyx_ExceptionReset(__pyx_t_17, __pyx_t_18, __pyx_t_19);
-        __pyx_L35_try_end:;
+        __Pyx_XGIVEREF(__pyx_t_20);
+        __Pyx_ExceptionReset(__pyx_t_18, __pyx_t_19, __pyx_t_20);
+        __pyx_L37_try_end:;
       }
     }
     /*finally:*/ {
       /*normal exit:*/{
-        if (__pyx_t_16) {
-          __pyx_t_19 = __Pyx_PyObject_Call(__pyx_t_16, __pyx_mstate_global->__pyx_tuple[0], NULL);
-          __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-          if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 140, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_19);
-          __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+        if (__pyx_t_17) {
+          __pyx_t_20 = __Pyx_PyObject_Call(__pyx_t_17, __pyx_mstate_global->__pyx_tuple[1], NULL);
+          __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+          if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 147, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_20);
+          __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
         }
-        goto __pyx_L29;
+        goto __pyx_L31;
       }
-      __pyx_L29:;
+      __pyx_L31:;
     }
-    goto __pyx_L39;
-    __pyx_L26_error:;
-    __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
+    goto __pyx_L41;
+    __pyx_L28_error:;
+    __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
     goto __pyx_L1_error;
-    __pyx_L39:;
+    __pyx_L41:;
   }
 
-  /* "pyees/sheet.py":89
+  /* "pyees/sheet.py":90
  *         self.saveSheets()
  * 
  *     def saveCsv(self):             # <<<<<<<<<<<<<<
@@ -6442,8 +6566,8 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_13);
   __Pyx_AddTraceback("pyees.sheet._fileFromSheets.saveCsv", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -6466,7 +6590,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_2saveCsv(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":151
+/* "pyees/sheet.py":158
  * 
  * 
  *     def saveSheets(self):             # <<<<<<<<<<<<<<
@@ -6513,32 +6637,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 151, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 158, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 151, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 158, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "saveSheets", 0) < (0)) __PYX_ERR(0, 151, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "saveSheets", 0) < (0)) __PYX_ERR(0, 158, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("saveSheets", 1, 1, 1, i); __PYX_ERR(0, 151, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("saveSheets", 1, 1, 1, i); __PYX_ERR(0, 158, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 151, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 158, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("saveSheets", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 151, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("saveSheets", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 158, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6586,17 +6710,18 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
   Py_ssize_t __pyx_t_9;
   PyObject *(*__pyx_t_10)(PyObject *);
   PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
-  Py_ssize_t __pyx_t_13;
-  PyObject *(*__pyx_t_14)(PyObject *);
-  PyObject *__pyx_t_15 = NULL;
+  PyObject *__pyx_t_12[3];
+  PyObject *__pyx_t_13 = NULL;
+  Py_ssize_t __pyx_t_14;
+  PyObject *(*__pyx_t_15)(PyObject *);
   PyObject *__pyx_t_16 = NULL;
+  PyObject *__pyx_t_17 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("saveSheets", 0);
 
-  /* "pyees/sheet.py":153
+  /* "pyees/sheet.py":160
  *     def saveSheets(self):
  * 
  *         for ii, sheet in enumerate(self.sheets):             # <<<<<<<<<<<<<<
@@ -6605,16 +6730,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
 */
   __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
   __pyx_t_1 = __pyx_mstate_global->__pyx_int_0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
     __pyx_t_3 = __pyx_t_2; __Pyx_INCREF(__pyx_t_3);
     __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 153, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 153, __pyx_L1_error)
+    __pyx_t_5 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   for (;;) {
@@ -6623,7 +6748,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_3);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 153, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 160, __pyx_L1_error)
           #endif
           if (__pyx_t_4 >= __pyx_temp) break;
         }
@@ -6633,7 +6758,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_3);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 153, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 160, __pyx_L1_error)
           #endif
           if (__pyx_t_4 >= __pyx_temp) break;
         }
@@ -6644,13 +6769,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
         #endif
         ++__pyx_t_4;
       }
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
     } else {
       __pyx_t_2 = __pyx_t_5(__pyx_t_3);
       if (unlikely(!__pyx_t_2)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
-          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 153, __pyx_L1_error)
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 160, __pyx_L1_error)
           PyErr_Clear();
         }
         break;
@@ -6661,13 +6786,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
     __pyx_t_2 = 0;
     __Pyx_INCREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_ii, __pyx_t_1);
-    __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_t_1, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_t_1, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1);
     __pyx_t_1 = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "pyees/sheet.py":155
+    /* "pyees/sheet.py":162
  *         for ii, sheet in enumerate(self.sheets):
  * 
  *             sheetName = None             # <<<<<<<<<<<<<<
@@ -6677,35 +6802,35 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
     __Pyx_INCREF(Py_None);
     __Pyx_XDECREF_SET(__pyx_v_sheetName, Py_None);
 
-    /* "pyees/sheet.py":156
+    /* "pyees/sheet.py":163
  * 
  *             sheetName = None
  *             if (not self.sheetNames is None):             # <<<<<<<<<<<<<<
  *                 sheetName = self.sheetNames[ii]
  *             worksheet = self.getSheet(ii, sheetName)
 */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheetNames); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheetNames); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_6 = (__pyx_t_2 != Py_None);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_6) {
 
-      /* "pyees/sheet.py":157
+      /* "pyees/sheet.py":164
  *             sheetName = None
  *             if (not self.sheetNames is None):
  *                 sheetName = self.sheetNames[ii]             # <<<<<<<<<<<<<<
  *             worksheet = self.getSheet(ii, sheetName)
  * 
 */
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheetNames); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 157, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheetNames); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 164, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_v_ii); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 157, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_v_ii); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 164, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF_SET(__pyx_v_sheetName, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":156
+      /* "pyees/sheet.py":163
  * 
  *             sheetName = None
  *             if (not self.sheetNames is None):             # <<<<<<<<<<<<<<
@@ -6714,7 +6839,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
 */
     }
 
-    /* "pyees/sheet.py":158
+    /* "pyees/sheet.py":165
  *             if (not self.sheetNames is None):
  *                 sheetName = self.sheetNames[ii]
  *             worksheet = self.getSheet(ii, sheetName)             # <<<<<<<<<<<<<<
@@ -6728,13 +6853,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
       PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_v_ii, __pyx_v_sheetName};
       __pyx_t_7 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_getSheet, __pyx_callargs+__pyx_t_8, (3-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 158, __pyx_L1_error)
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 165, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
     }
     __Pyx_XDECREF_SET(__pyx_v_worksheet, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":160
+    /* "pyees/sheet.py":167
  *             worksheet = self.getSheet(ii, sheetName)
  * 
  *             col = 0             # <<<<<<<<<<<<<<
@@ -6744,23 +6869,23 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
     __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
     __Pyx_XDECREF_SET(__pyx_v_col, __pyx_mstate_global->__pyx_int_0);
 
-    /* "pyees/sheet.py":161
+    /* "pyees/sheet.py":168
  * 
  *             col = 0
  *             for objectName in dir(sheet):             # <<<<<<<<<<<<<<
  *                 object = getattr(sheet, objectName)
  *                 if isinstance(object, scalarVariable):
 */
-    __pyx_t_7 = PyObject_Dir(__pyx_v_sheet); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_7 = PyObject_Dir(__pyx_v_sheet); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 168, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (likely(PyList_CheckExact(__pyx_t_7)) || PyTuple_CheckExact(__pyx_t_7)) {
       __pyx_t_2 = __pyx_t_7; __Pyx_INCREF(__pyx_t_2);
       __pyx_t_9 = 0;
       __pyx_t_10 = NULL;
     } else {
-      __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
+      __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 168, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_10 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 161, __pyx_L1_error)
+      __pyx_t_10 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 168, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     for (;;) {
@@ -6769,7 +6894,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 161, __pyx_L1_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 168, __pyx_L1_error)
             #endif
             if (__pyx_t_9 >= __pyx_temp) break;
           }
@@ -6779,7 +6904,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 161, __pyx_L1_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 168, __pyx_L1_error)
             #endif
             if (__pyx_t_9 >= __pyx_temp) break;
           }
@@ -6790,13 +6915,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
           #endif
           ++__pyx_t_9;
         }
-        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 168, __pyx_L1_error)
       } else {
         __pyx_t_7 = __pyx_t_10(__pyx_t_2);
         if (unlikely(!__pyx_t_7)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 161, __pyx_L1_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 168, __pyx_L1_error)
             PyErr_Clear();
           }
           break;
@@ -6806,32 +6931,32 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
       __Pyx_XDECREF_SET(__pyx_v_objectName, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":162
+      /* "pyees/sheet.py":169
  *             col = 0
  *             for objectName in dir(sheet):
  *                 object = getattr(sheet, objectName)             # <<<<<<<<<<<<<<
  *                 if isinstance(object, scalarVariable):
  *                     meas = object
 */
-      __pyx_t_7 = __Pyx_GetAttr(__pyx_v_sheet, __pyx_v_objectName); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 162, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_GetAttr(__pyx_v_sheet, __pyx_v_objectName); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 169, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_XDECREF_SET(__pyx_v_object, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":163
+      /* "pyees/sheet.py":170
  *             for objectName in dir(sheet):
  *                 object = getattr(sheet, objectName)
  *                 if isinstance(object, scalarVariable):             # <<<<<<<<<<<<<<
  *                     meas = object
  * 
 */
-      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 163, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 170, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_6 = PyObject_IsInstance(__pyx_v_object, __pyx_t_7); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 163, __pyx_L1_error)
+      __pyx_t_6 = PyObject_IsInstance(__pyx_v_object, __pyx_t_7); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 170, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       if (__pyx_t_6) {
 
-        /* "pyees/sheet.py":164
+        /* "pyees/sheet.py":171
  *                 object = getattr(sheet, objectName)
  *                 if isinstance(object, scalarVariable):
  *                     meas = object             # <<<<<<<<<<<<<<
@@ -6841,12 +6966,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
         __Pyx_INCREF(__pyx_v_object);
         __Pyx_XDECREF_SET(__pyx_v_meas, __pyx_v_object);
 
-        /* "pyees/sheet.py":166
+        /* "pyees/sheet.py":173
  *                     meas = object
  * 
  *                     self.write(worksheet, 0, col, objectName)             # <<<<<<<<<<<<<<
- *                     u = '-' if meas.unit == '1' else meas.unit
- *                     self.write(worksheet, 1, col, u)
+ *                     if meas.unit == '1':
+ *                         u = '-'
 */
         __pyx_t_11 = __pyx_v_self;
         __Pyx_INCREF(__pyx_t_11);
@@ -6855,37 +6980,116 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
           PyObject *__pyx_callargs[5] = {__pyx_t_11, __pyx_v_worksheet, __pyx_mstate_global->__pyx_int_0, __pyx_v_col, __pyx_v_objectName};
           __pyx_t_7 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_write, __pyx_callargs+__pyx_t_8, (5-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 166, __pyx_L1_error)
+          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 173, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
         }
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":167
+        /* "pyees/sheet.py":174
  * 
  *                     self.write(worksheet, 0, col, objectName)
- *                     u = '-' if meas.unit == '1' else meas.unit             # <<<<<<<<<<<<<<
+ *                     if meas.unit == '1':             # <<<<<<<<<<<<<<
+ *                         u = '-'
+ *                     else:
+*/
+        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 174, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_6 = (__Pyx_PyUnicode_Equals(__pyx_t_7, __pyx_mstate_global->__pyx_kp_u_1, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 174, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        if (__pyx_t_6) {
+
+          /* "pyees/sheet.py":175
+ *                     self.write(worksheet, 0, col, objectName)
+ *                     if meas.unit == '1':
+ *                         u = '-'             # <<<<<<<<<<<<<<
+ *                     else:
+ *                         if self.prettyUnit:
+*/
+          __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_);
+          __Pyx_XDECREF_SET(__pyx_v_u, __pyx_mstate_global->__pyx_kp_u_);
+
+          /* "pyees/sheet.py":174
+ * 
+ *                     self.write(worksheet, 0, col, objectName)
+ *                     if meas.unit == '1':             # <<<<<<<<<<<<<<
+ *                         u = '-'
+ *                     else:
+*/
+          goto __pyx_L9;
+        }
+
+        /* "pyees/sheet.py":177
+ *                         u = '-'
+ *                     else:
+ *                         if self.prettyUnit:             # <<<<<<<<<<<<<<
+ *                             u = f"${meas._unitObject.__str__(True)}$"
+ *                         else:
+*/
+        /*else*/ {
+          __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_prettyUnit); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 177, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_7);
+          __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 177, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+          if (__pyx_t_6) {
+
+            /* "pyees/sheet.py":178
+ *                     else:
+ *                         if self.prettyUnit:
+ *                             u = f"${meas._unitObject.__str__(True)}$"             # <<<<<<<<<<<<<<
+ *                         else:
+ *                             u = meas.unit
+*/
+            __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 178, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_7);
+            __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_str); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 178, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_11);
+            __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+            __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_mstate_global->__pyx_tuple[0], NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 178, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_7);
+            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+            __pyx_t_11 = __Pyx_PyObject_FormatSimple(__pyx_t_7, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 178, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_11);
+            __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+            __pyx_t_12[0] = __pyx_mstate_global->__pyx_kp_u__2;
+            __pyx_t_12[1] = __pyx_t_11;
+            __pyx_t_12[2] = __pyx_mstate_global->__pyx_kp_u__2;
+            __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_12, 3, 1 * 2 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_11), 127 | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_11));
+            if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 178, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_7);
+            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+            __Pyx_XDECREF_SET(__pyx_v_u, __pyx_t_7);
+            __pyx_t_7 = 0;
+
+            /* "pyees/sheet.py":177
+ *                         u = '-'
+ *                     else:
+ *                         if self.prettyUnit:             # <<<<<<<<<<<<<<
+ *                             u = f"${meas._unitObject.__str__(True)}$"
+ *                         else:
+*/
+            goto __pyx_L10;
+          }
+
+          /* "pyees/sheet.py":180
+ *                             u = f"${meas._unitObject.__str__(True)}$"
+ *                         else:
+ *                             u = meas.unit             # <<<<<<<<<<<<<<
  *                     self.write(worksheet, 1, col, u)
  * 
 */
-        __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 167, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_6 = (__Pyx_PyUnicode_Equals(__pyx_t_11, __pyx_mstate_global->__pyx_kp_u_1, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 167, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        if (__pyx_t_6) {
-          __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_);
-          __pyx_t_7 = __pyx_mstate_global->__pyx_kp_u_;
-        } else {
-          __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 167, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_11);
-          __pyx_t_7 = __pyx_t_11;
-          __pyx_t_11 = 0;
+          /*else*/ {
+            __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 180, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_7);
+            __Pyx_XDECREF_SET(__pyx_v_u, __pyx_t_7);
+            __pyx_t_7 = 0;
+          }
+          __pyx_L10:;
         }
-        __Pyx_XDECREF_SET(__pyx_v_u, __pyx_t_7);
-        __pyx_t_7 = 0;
+        __pyx_L9:;
 
-        /* "pyees/sheet.py":168
- *                     self.write(worksheet, 0, col, objectName)
- *                     u = '-' if meas.unit == '1' else meas.unit
+        /* "pyees/sheet.py":181
+ *                         else:
+ *                             u = meas.unit
  *                     self.write(worksheet, 1, col, u)             # <<<<<<<<<<<<<<
  * 
  *                     u = meas._unitObject
@@ -6897,24 +7101,24 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
           PyObject *__pyx_callargs[5] = {__pyx_t_11, __pyx_v_worksheet, __pyx_mstate_global->__pyx_int_1, __pyx_v_col, __pyx_v_u};
           __pyx_t_7 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_write, __pyx_callargs+__pyx_t_8, (5-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 168, __pyx_L1_error)
+          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 181, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
         }
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":170
+        /* "pyees/sheet.py":183
  *                     self.write(worksheet, 1, col, u)
  * 
  *                     u = meas._unitObject             # <<<<<<<<<<<<<<
  *                     meas._unitObject = unit('')
  *                     for elem in meas:
 */
-        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 170, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 183, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF_SET(__pyx_v_u, __pyx_t_7);
         __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":171
+        /* "pyees/sheet.py":184
  * 
  *                     u = meas._unitObject
  *                     meas._unitObject = unit('')             # <<<<<<<<<<<<<<
@@ -6922,32 +7126,32 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
  *                         elem._unitObject = unit('')
 */
         __pyx_t_11 = NULL;
-        __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 171, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_12);
+        __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 184, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_13);
         __pyx_t_8 = 1;
         #if CYTHON_UNPACK_METHODS
-        if (unlikely(PyMethod_Check(__pyx_t_12))) {
-          __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_12);
+        if (unlikely(PyMethod_Check(__pyx_t_13))) {
+          __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_13);
           assert(__pyx_t_11);
-          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_12);
+          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_13);
           __Pyx_INCREF(__pyx_t_11);
           __Pyx_INCREF(__pyx__function);
-          __Pyx_DECREF_SET(__pyx_t_12, __pyx__function);
+          __Pyx_DECREF_SET(__pyx_t_13, __pyx__function);
           __pyx_t_8 = 0;
         }
         #endif
         {
-          PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_mstate_global->__pyx_kp_u__2};
-          __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_12, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+          PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_mstate_global->__pyx_kp_u__3};
+          __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_13, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 171, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 184, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
         }
-        if (__Pyx_PyObject_SetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_t_7) < (0)) __PYX_ERR(0, 171, __pyx_L1_error)
+        if (__Pyx_PyObject_SetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_t_7) < (0)) __PYX_ERR(0, 184, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":172
+        /* "pyees/sheet.py":185
  *                     u = meas._unitObject
  *                     meas._unitObject = unit('')
  *                     for elem in meas:             # <<<<<<<<<<<<<<
@@ -6956,57 +7160,57 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
 */
         if (likely(PyList_CheckExact(__pyx_v_meas)) || PyTuple_CheckExact(__pyx_v_meas)) {
           __pyx_t_7 = __pyx_v_meas; __Pyx_INCREF(__pyx_t_7);
-          __pyx_t_13 = 0;
-          __pyx_t_14 = NULL;
+          __pyx_t_14 = 0;
+          __pyx_t_15 = NULL;
         } else {
-          __pyx_t_13 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 172, __pyx_L1_error)
+          __pyx_t_14 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 185, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
-          __pyx_t_14 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 172, __pyx_L1_error)
+          __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 185, __pyx_L1_error)
         }
         for (;;) {
-          if (likely(!__pyx_t_14)) {
+          if (likely(!__pyx_t_15)) {
             if (likely(PyList_CheckExact(__pyx_t_7))) {
               {
                 Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_7);
                 #if !CYTHON_ASSUME_SAFE_SIZE
-                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 172, __pyx_L1_error)
+                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 185, __pyx_L1_error)
                 #endif
-                if (__pyx_t_13 >= __pyx_temp) break;
+                if (__pyx_t_14 >= __pyx_temp) break;
               }
-              __pyx_t_12 = __Pyx_PyList_GetItemRefFast(__pyx_t_7, __pyx_t_13, __Pyx_ReferenceSharing_OwnStrongReference);
-              ++__pyx_t_13;
+              __pyx_t_13 = __Pyx_PyList_GetItemRefFast(__pyx_t_7, __pyx_t_14, __Pyx_ReferenceSharing_OwnStrongReference);
+              ++__pyx_t_14;
             } else {
               {
                 Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_7);
                 #if !CYTHON_ASSUME_SAFE_SIZE
-                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 172, __pyx_L1_error)
+                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 185, __pyx_L1_error)
                 #endif
-                if (__pyx_t_13 >= __pyx_temp) break;
+                if (__pyx_t_14 >= __pyx_temp) break;
               }
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_12 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_13));
+              __pyx_t_13 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_14));
               #else
-              __pyx_t_12 = __Pyx_PySequence_ITEM(__pyx_t_7, __pyx_t_13);
+              __pyx_t_13 = __Pyx_PySequence_ITEM(__pyx_t_7, __pyx_t_14);
               #endif
-              ++__pyx_t_13;
+              ++__pyx_t_14;
             }
-            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 172, __pyx_L1_error)
+            if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 185, __pyx_L1_error)
           } else {
-            __pyx_t_12 = __pyx_t_14(__pyx_t_7);
-            if (unlikely(!__pyx_t_12)) {
+            __pyx_t_13 = __pyx_t_15(__pyx_t_7);
+            if (unlikely(!__pyx_t_13)) {
               PyObject* exc_type = PyErr_Occurred();
               if (exc_type) {
-                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 172, __pyx_L1_error)
+                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 185, __pyx_L1_error)
                 PyErr_Clear();
               }
               break;
             }
           }
-          __Pyx_GOTREF(__pyx_t_12);
-          __Pyx_XDECREF_SET(__pyx_v_elem, __pyx_t_12);
-          __pyx_t_12 = 0;
+          __Pyx_GOTREF(__pyx_t_13);
+          __Pyx_XDECREF_SET(__pyx_v_elem, __pyx_t_13);
+          __pyx_t_13 = 0;
 
-          /* "pyees/sheet.py":173
+          /* "pyees/sheet.py":186
  *                     meas._unitObject = unit('')
  *                     for elem in meas:
  *                         elem._unitObject = unit('')             # <<<<<<<<<<<<<<
@@ -7014,32 +7218,32 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
  *                     if (self.showUncert):
 */
           __pyx_t_11 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_15, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 173, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_15);
+          __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_unit); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 186, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_16);
           __pyx_t_8 = 1;
           #if CYTHON_UNPACK_METHODS
-          if (unlikely(PyMethod_Check(__pyx_t_15))) {
-            __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_15);
+          if (unlikely(PyMethod_Check(__pyx_t_16))) {
+            __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_16);
             assert(__pyx_t_11);
-            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_15);
+            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_16);
             __Pyx_INCREF(__pyx_t_11);
             __Pyx_INCREF(__pyx__function);
-            __Pyx_DECREF_SET(__pyx_t_15, __pyx__function);
+            __Pyx_DECREF_SET(__pyx_t_16, __pyx__function);
             __pyx_t_8 = 0;
           }
           #endif
           {
-            PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_mstate_global->__pyx_kp_u__2};
-            __pyx_t_12 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_15, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_mstate_global->__pyx_kp_u__3};
+            __pyx_t_13 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_16, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-            __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 173, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_12);
+            __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
+            if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 186, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_13);
           }
-          if (__Pyx_PyObject_SetAttrStr(__pyx_v_elem, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_t_12) < (0)) __PYX_ERR(0, 173, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+          if (__Pyx_PyObject_SetAttrStr(__pyx_v_elem, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_t_13) < (0)) __PYX_ERR(0, 186, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
-          /* "pyees/sheet.py":172
+          /* "pyees/sheet.py":185
  *                     u = meas._unitObject
  *                     meas._unitObject = unit('')
  *                     for elem in meas:             # <<<<<<<<<<<<<<
@@ -7049,20 +7253,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
         }
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":175
+        /* "pyees/sheet.py":188
  *                         elem._unitObject = unit('')
  * 
  *                     if (self.showUncert):             # <<<<<<<<<<<<<<
  *                         for row, val in enumerate(meas):
  *                             string = str(val)
 */
-        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_showUncert); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 175, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_showUncert); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 188, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 175, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 188, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         if (__pyx_t_6) {
 
-          /* "pyees/sheet.py":176
+          /* "pyees/sheet.py":189
  * 
  *                     if (self.showUncert):
  *                         for row, val in enumerate(meas):             # <<<<<<<<<<<<<<
@@ -7072,89 +7276,89 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
           __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
           __pyx_t_7 = __pyx_mstate_global->__pyx_int_0;
           if (likely(PyList_CheckExact(__pyx_v_meas)) || PyTuple_CheckExact(__pyx_v_meas)) {
-            __pyx_t_12 = __pyx_v_meas; __Pyx_INCREF(__pyx_t_12);
-            __pyx_t_13 = 0;
-            __pyx_t_14 = NULL;
+            __pyx_t_13 = __pyx_v_meas; __Pyx_INCREF(__pyx_t_13);
+            __pyx_t_14 = 0;
+            __pyx_t_15 = NULL;
           } else {
-            __pyx_t_13 = -1; __pyx_t_12 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 176, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_12);
-            __pyx_t_14 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 176, __pyx_L1_error)
+            __pyx_t_14 = -1; __pyx_t_13 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 189, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_13);
+            __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_13); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 189, __pyx_L1_error)
           }
           for (;;) {
-            if (likely(!__pyx_t_14)) {
-              if (likely(PyList_CheckExact(__pyx_t_12))) {
+            if (likely(!__pyx_t_15)) {
+              if (likely(PyList_CheckExact(__pyx_t_13))) {
                 {
-                  Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_12);
+                  Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_13);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 176, __pyx_L1_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 189, __pyx_L1_error)
                   #endif
-                  if (__pyx_t_13 >= __pyx_temp) break;
+                  if (__pyx_t_14 >= __pyx_temp) break;
                 }
-                __pyx_t_15 = __Pyx_PyList_GetItemRefFast(__pyx_t_12, __pyx_t_13, __Pyx_ReferenceSharing_OwnStrongReference);
-                ++__pyx_t_13;
+                __pyx_t_16 = __Pyx_PyList_GetItemRefFast(__pyx_t_13, __pyx_t_14, __Pyx_ReferenceSharing_OwnStrongReference);
+                ++__pyx_t_14;
               } else {
                 {
-                  Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_12);
+                  Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_13);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 176, __pyx_L1_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 189, __pyx_L1_error)
                   #endif
-                  if (__pyx_t_13 >= __pyx_temp) break;
+                  if (__pyx_t_14 >= __pyx_temp) break;
                 }
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_15 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_12, __pyx_t_13));
+                __pyx_t_16 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_13, __pyx_t_14));
                 #else
-                __pyx_t_15 = __Pyx_PySequence_ITEM(__pyx_t_12, __pyx_t_13);
+                __pyx_t_16 = __Pyx_PySequence_ITEM(__pyx_t_13, __pyx_t_14);
                 #endif
-                ++__pyx_t_13;
+                ++__pyx_t_14;
               }
-              if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 176, __pyx_L1_error)
+              if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 189, __pyx_L1_error)
             } else {
-              __pyx_t_15 = __pyx_t_14(__pyx_t_12);
-              if (unlikely(!__pyx_t_15)) {
+              __pyx_t_16 = __pyx_t_15(__pyx_t_13);
+              if (unlikely(!__pyx_t_16)) {
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
-                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 176, __pyx_L1_error)
+                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 189, __pyx_L1_error)
                   PyErr_Clear();
                 }
                 break;
               }
             }
-            __Pyx_GOTREF(__pyx_t_15);
-            __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_15);
-            __pyx_t_15 = 0;
+            __Pyx_GOTREF(__pyx_t_16);
+            __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_16);
+            __pyx_t_16 = 0;
             __Pyx_INCREF(__pyx_t_7);
             __Pyx_XDECREF_SET(__pyx_v_row, __pyx_t_7);
-            __pyx_t_15 = __Pyx_PyLong_AddObjC(__pyx_t_7, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 176, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_15);
+            __pyx_t_16 = __Pyx_PyLong_AddObjC(__pyx_t_7, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 189, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_16);
             __Pyx_DECREF(__pyx_t_7);
-            __pyx_t_7 = __pyx_t_15;
-            __pyx_t_15 = 0;
+            __pyx_t_7 = __pyx_t_16;
+            __pyx_t_16 = 0;
 
-            /* "pyees/sheet.py":177
+            /* "pyees/sheet.py":190
  *                     if (self.showUncert):
  *                         for row, val in enumerate(meas):
  *                             string = str(val)             # <<<<<<<<<<<<<<
  *                             string = string.replace(' +/- ', '\n')
  *                             self.write(worksheet, row + 2, col, string)
 */
-            __pyx_t_15 = __Pyx_PyObject_Unicode(__pyx_v_val); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 177, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_15);
-            __Pyx_XDECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_15));
-            __pyx_t_15 = 0;
+            __pyx_t_16 = __Pyx_PyObject_Unicode(__pyx_v_val); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 190, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_16);
+            __Pyx_XDECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_16));
+            __pyx_t_16 = 0;
 
-            /* "pyees/sheet.py":178
+            /* "pyees/sheet.py":191
  *                         for row, val in enumerate(meas):
  *                             string = str(val)
  *                             string = string.replace(' +/- ', '\n')             # <<<<<<<<<<<<<<
  *                             self.write(worksheet, row + 2, col, string)
  *                     else:
 */
-            __pyx_t_15 = PyUnicode_Replace(__pyx_v_string, __pyx_mstate_global->__pyx_kp_u__3, __pyx_mstate_global->__pyx_kp_u__6, -1); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 178, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_15);
-            __Pyx_DECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_15));
-            __pyx_t_15 = 0;
+            __pyx_t_16 = PyUnicode_Replace(__pyx_v_string, __pyx_mstate_global->__pyx_kp_u__4, __pyx_mstate_global->__pyx_kp_u__7, -1); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 191, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_16);
+            __Pyx_DECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_16));
+            __pyx_t_16 = 0;
 
-            /* "pyees/sheet.py":179
+            /* "pyees/sheet.py":192
  *                             string = str(val)
  *                             string = string.replace(' +/- ', '\n')
  *                             self.write(worksheet, row + 2, col, string)             # <<<<<<<<<<<<<<
@@ -7163,20 +7367,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
 */
             __pyx_t_11 = __pyx_v_self;
             __Pyx_INCREF(__pyx_t_11);
-            __pyx_t_16 = __Pyx_PyLong_AddObjC(__pyx_v_row, __pyx_mstate_global->__pyx_int_2, 2, 0, 0); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 179, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_16);
+            __pyx_t_17 = __Pyx_PyLong_AddObjC(__pyx_v_row, __pyx_mstate_global->__pyx_int_2, 2, 0, 0); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 192, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_17);
             __pyx_t_8 = 0;
             {
-              PyObject *__pyx_callargs[5] = {__pyx_t_11, __pyx_v_worksheet, __pyx_t_16, __pyx_v_col, __pyx_v_string};
-              __pyx_t_15 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_write, __pyx_callargs+__pyx_t_8, (5-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              PyObject *__pyx_callargs[5] = {__pyx_t_11, __pyx_v_worksheet, __pyx_t_17, __pyx_v_col, __pyx_v_string};
+              __pyx_t_16 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_write, __pyx_callargs+__pyx_t_8, (5-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
               __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-              __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-              if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 179, __pyx_L1_error)
-              __Pyx_GOTREF(__pyx_t_15);
+              __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+              if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 192, __pyx_L1_error)
+              __Pyx_GOTREF(__pyx_t_16);
             }
-            __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+            __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
 
-            /* "pyees/sheet.py":176
+            /* "pyees/sheet.py":189
  * 
  *                     if (self.showUncert):
  *                         for row, val in enumerate(meas):             # <<<<<<<<<<<<<<
@@ -7184,20 +7388,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
  *                             string = string.replace(' +/- ', '\n')
 */
           }
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-          /* "pyees/sheet.py":175
+          /* "pyees/sheet.py":188
  *                         elem._unitObject = unit('')
  * 
  *                     if (self.showUncert):             # <<<<<<<<<<<<<<
  *                         for row, val in enumerate(meas):
  *                             string = str(val)
 */
-          goto __pyx_L12;
+          goto __pyx_L14;
         }
 
-        /* "pyees/sheet.py":181
+        /* "pyees/sheet.py":194
  *                             self.write(worksheet, row + 2, col, string)
  *                     else:
  *                         for row, val in enumerate(meas.value):             # <<<<<<<<<<<<<<
@@ -7207,103 +7411,103 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
         /*else*/ {
           __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
           __pyx_t_7 = __pyx_mstate_global->__pyx_int_0;
-          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_value); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 181, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_12);
-          if (likely(PyList_CheckExact(__pyx_t_12)) || PyTuple_CheckExact(__pyx_t_12)) {
-            __pyx_t_15 = __pyx_t_12; __Pyx_INCREF(__pyx_t_15);
-            __pyx_t_13 = 0;
-            __pyx_t_14 = NULL;
+          __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_value); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 194, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_13);
+          if (likely(PyList_CheckExact(__pyx_t_13)) || PyTuple_CheckExact(__pyx_t_13)) {
+            __pyx_t_16 = __pyx_t_13; __Pyx_INCREF(__pyx_t_16);
+            __pyx_t_14 = 0;
+            __pyx_t_15 = NULL;
           } else {
-            __pyx_t_13 = -1; __pyx_t_15 = PyObject_GetIter(__pyx_t_12); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 181, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_15);
-            __pyx_t_14 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_15); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 181, __pyx_L1_error)
+            __pyx_t_14 = -1; __pyx_t_16 = PyObject_GetIter(__pyx_t_13); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 194, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_16);
+            __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_16); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 194, __pyx_L1_error)
           }
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
           for (;;) {
-            if (likely(!__pyx_t_14)) {
-              if (likely(PyList_CheckExact(__pyx_t_15))) {
+            if (likely(!__pyx_t_15)) {
+              if (likely(PyList_CheckExact(__pyx_t_16))) {
                 {
-                  Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_15);
+                  Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_16);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 181, __pyx_L1_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 194, __pyx_L1_error)
                   #endif
-                  if (__pyx_t_13 >= __pyx_temp) break;
+                  if (__pyx_t_14 >= __pyx_temp) break;
                 }
-                __pyx_t_12 = __Pyx_PyList_GetItemRefFast(__pyx_t_15, __pyx_t_13, __Pyx_ReferenceSharing_OwnStrongReference);
-                ++__pyx_t_13;
+                __pyx_t_13 = __Pyx_PyList_GetItemRefFast(__pyx_t_16, __pyx_t_14, __Pyx_ReferenceSharing_OwnStrongReference);
+                ++__pyx_t_14;
               } else {
                 {
-                  Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_15);
+                  Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_16);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 181, __pyx_L1_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 194, __pyx_L1_error)
                   #endif
-                  if (__pyx_t_13 >= __pyx_temp) break;
+                  if (__pyx_t_14 >= __pyx_temp) break;
                 }
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_12 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_15, __pyx_t_13));
+                __pyx_t_13 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_16, __pyx_t_14));
                 #else
-                __pyx_t_12 = __Pyx_PySequence_ITEM(__pyx_t_15, __pyx_t_13);
+                __pyx_t_13 = __Pyx_PySequence_ITEM(__pyx_t_16, __pyx_t_14);
                 #endif
-                ++__pyx_t_13;
+                ++__pyx_t_14;
               }
-              if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 181, __pyx_L1_error)
+              if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 194, __pyx_L1_error)
             } else {
-              __pyx_t_12 = __pyx_t_14(__pyx_t_15);
-              if (unlikely(!__pyx_t_12)) {
+              __pyx_t_13 = __pyx_t_15(__pyx_t_16);
+              if (unlikely(!__pyx_t_13)) {
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
-                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 181, __pyx_L1_error)
+                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 194, __pyx_L1_error)
                   PyErr_Clear();
                 }
                 break;
               }
             }
-            __Pyx_GOTREF(__pyx_t_12);
-            __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_12);
-            __pyx_t_12 = 0;
+            __Pyx_GOTREF(__pyx_t_13);
+            __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_13);
+            __pyx_t_13 = 0;
             __Pyx_INCREF(__pyx_t_7);
             __Pyx_XDECREF_SET(__pyx_v_row, __pyx_t_7);
-            __pyx_t_12 = __Pyx_PyLong_AddObjC(__pyx_t_7, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 181, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_12);
+            __pyx_t_13 = __Pyx_PyLong_AddObjC(__pyx_t_7, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 194, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_13);
             __Pyx_DECREF(__pyx_t_7);
-            __pyx_t_7 = __pyx_t_12;
-            __pyx_t_12 = 0;
+            __pyx_t_7 = __pyx_t_13;
+            __pyx_t_13 = 0;
 
-            /* "pyees/sheet.py":182
+            /* "pyees/sheet.py":195
  *                     else:
  *                         for row, val in enumerate(meas.value):
  *                             string = str(val)             # <<<<<<<<<<<<<<
  *                             self.write(worksheet, row + 2, col, string)
  * 
 */
-            __pyx_t_12 = __Pyx_PyObject_Unicode(__pyx_v_val); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 182, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_12);
-            __Pyx_XDECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_12));
-            __pyx_t_12 = 0;
+            __pyx_t_13 = __Pyx_PyObject_Unicode(__pyx_v_val); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 195, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_13);
+            __Pyx_XDECREF_SET(__pyx_v_string, ((PyObject*)__pyx_t_13));
+            __pyx_t_13 = 0;
 
-            /* "pyees/sheet.py":183
+            /* "pyees/sheet.py":196
  *                         for row, val in enumerate(meas.value):
  *                             string = str(val)
  *                             self.write(worksheet, row + 2, col, string)             # <<<<<<<<<<<<<<
  * 
  *                     meas._unitObject = u
 */
-            __pyx_t_16 = __pyx_v_self;
-            __Pyx_INCREF(__pyx_t_16);
-            __pyx_t_11 = __Pyx_PyLong_AddObjC(__pyx_v_row, __pyx_mstate_global->__pyx_int_2, 2, 0, 0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 183, __pyx_L1_error)
+            __pyx_t_17 = __pyx_v_self;
+            __Pyx_INCREF(__pyx_t_17);
+            __pyx_t_11 = __Pyx_PyLong_AddObjC(__pyx_v_row, __pyx_mstate_global->__pyx_int_2, 2, 0, 0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 196, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_11);
             __pyx_t_8 = 0;
             {
-              PyObject *__pyx_callargs[5] = {__pyx_t_16, __pyx_v_worksheet, __pyx_t_11, __pyx_v_col, __pyx_v_string};
-              __pyx_t_12 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_write, __pyx_callargs+__pyx_t_8, (5-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-              __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
+              PyObject *__pyx_callargs[5] = {__pyx_t_17, __pyx_v_worksheet, __pyx_t_11, __pyx_v_col, __pyx_v_string};
+              __pyx_t_13 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_write, __pyx_callargs+__pyx_t_8, (5-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
               __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-              if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 183, __pyx_L1_error)
-              __Pyx_GOTREF(__pyx_t_12);
+              if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 196, __pyx_L1_error)
+              __Pyx_GOTREF(__pyx_t_13);
             }
-            __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+            __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
-            /* "pyees/sheet.py":181
+            /* "pyees/sheet.py":194
  *                             self.write(worksheet, row + 2, col, string)
  *                     else:
  *                         for row, val in enumerate(meas.value):             # <<<<<<<<<<<<<<
@@ -7311,21 +7515,21 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
  *                             self.write(worksheet, row + 2, col, string)
 */
           }
-          __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+          __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         }
-        __pyx_L12:;
+        __pyx_L14:;
 
-        /* "pyees/sheet.py":185
+        /* "pyees/sheet.py":198
  *                             self.write(worksheet, row + 2, col, string)
  * 
  *                     meas._unitObject = u             # <<<<<<<<<<<<<<
  *                     for elem in meas:
  *                         elem._unitObject = u
 */
-        if (__Pyx_PyObject_SetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_v_u) < (0)) __PYX_ERR(0, 185, __pyx_L1_error)
+        if (__Pyx_PyObject_SetAttrStr(__pyx_v_meas, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_v_u) < (0)) __PYX_ERR(0, 198, __pyx_L1_error)
 
-        /* "pyees/sheet.py":186
+        /* "pyees/sheet.py":199
  * 
  *                     meas._unitObject = u
  *                     for elem in meas:             # <<<<<<<<<<<<<<
@@ -7334,66 +7538,66 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
 */
         if (likely(PyList_CheckExact(__pyx_v_meas)) || PyTuple_CheckExact(__pyx_v_meas)) {
           __pyx_t_7 = __pyx_v_meas; __Pyx_INCREF(__pyx_t_7);
-          __pyx_t_13 = 0;
-          __pyx_t_14 = NULL;
+          __pyx_t_14 = 0;
+          __pyx_t_15 = NULL;
         } else {
-          __pyx_t_13 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 186, __pyx_L1_error)
+          __pyx_t_14 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_meas); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 199, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
-          __pyx_t_14 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 186, __pyx_L1_error)
+          __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 199, __pyx_L1_error)
         }
         for (;;) {
-          if (likely(!__pyx_t_14)) {
+          if (likely(!__pyx_t_15)) {
             if (likely(PyList_CheckExact(__pyx_t_7))) {
               {
                 Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_7);
                 #if !CYTHON_ASSUME_SAFE_SIZE
-                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 186, __pyx_L1_error)
+                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 199, __pyx_L1_error)
                 #endif
-                if (__pyx_t_13 >= __pyx_temp) break;
+                if (__pyx_t_14 >= __pyx_temp) break;
               }
-              __pyx_t_15 = __Pyx_PyList_GetItemRefFast(__pyx_t_7, __pyx_t_13, __Pyx_ReferenceSharing_OwnStrongReference);
-              ++__pyx_t_13;
+              __pyx_t_16 = __Pyx_PyList_GetItemRefFast(__pyx_t_7, __pyx_t_14, __Pyx_ReferenceSharing_OwnStrongReference);
+              ++__pyx_t_14;
             } else {
               {
                 Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_7);
                 #if !CYTHON_ASSUME_SAFE_SIZE
-                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 186, __pyx_L1_error)
+                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 199, __pyx_L1_error)
                 #endif
-                if (__pyx_t_13 >= __pyx_temp) break;
+                if (__pyx_t_14 >= __pyx_temp) break;
               }
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_15 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_13));
+              __pyx_t_16 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_14));
               #else
-              __pyx_t_15 = __Pyx_PySequence_ITEM(__pyx_t_7, __pyx_t_13);
+              __pyx_t_16 = __Pyx_PySequence_ITEM(__pyx_t_7, __pyx_t_14);
               #endif
-              ++__pyx_t_13;
+              ++__pyx_t_14;
             }
-            if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 186, __pyx_L1_error)
+            if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 199, __pyx_L1_error)
           } else {
-            __pyx_t_15 = __pyx_t_14(__pyx_t_7);
-            if (unlikely(!__pyx_t_15)) {
+            __pyx_t_16 = __pyx_t_15(__pyx_t_7);
+            if (unlikely(!__pyx_t_16)) {
               PyObject* exc_type = PyErr_Occurred();
               if (exc_type) {
-                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 186, __pyx_L1_error)
+                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 199, __pyx_L1_error)
                 PyErr_Clear();
               }
               break;
             }
           }
-          __Pyx_GOTREF(__pyx_t_15);
-          __Pyx_XDECREF_SET(__pyx_v_elem, __pyx_t_15);
-          __pyx_t_15 = 0;
+          __Pyx_GOTREF(__pyx_t_16);
+          __Pyx_XDECREF_SET(__pyx_v_elem, __pyx_t_16);
+          __pyx_t_16 = 0;
 
-          /* "pyees/sheet.py":187
+          /* "pyees/sheet.py":200
  *                     meas._unitObject = u
  *                     for elem in meas:
  *                         elem._unitObject = u             # <<<<<<<<<<<<<<
  * 
  *                     col += 1
 */
-          if (__Pyx_PyObject_SetAttrStr(__pyx_v_elem, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_v_u) < (0)) __PYX_ERR(0, 187, __pyx_L1_error)
+          if (__Pyx_PyObject_SetAttrStr(__pyx_v_elem, __pyx_mstate_global->__pyx_n_u_unitObject, __pyx_v_u) < (0)) __PYX_ERR(0, 200, __pyx_L1_error)
 
-          /* "pyees/sheet.py":186
+          /* "pyees/sheet.py":199
  * 
  *                     meas._unitObject = u
  *                     for elem in meas:             # <<<<<<<<<<<<<<
@@ -7403,19 +7607,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
         }
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":189
+        /* "pyees/sheet.py":202
  *                         elem._unitObject = u
  * 
  *                     col += 1             # <<<<<<<<<<<<<<
  * 
  *         self.wb.save(self.fileName)
 */
-        __pyx_t_7 = __Pyx_PyLong_AddObjC(__pyx_v_col, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 189, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyLong_AddObjC(__pyx_v_col, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 202, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF_SET(__pyx_v_col, __pyx_t_7);
         __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":163
+        /* "pyees/sheet.py":170
  *             for objectName in dir(sheet):
  *                 object = getattr(sheet, objectName)
  *                 if isinstance(object, scalarVariable):             # <<<<<<<<<<<<<<
@@ -7424,7 +7628,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
 */
       }
 
-      /* "pyees/sheet.py":161
+      /* "pyees/sheet.py":168
  * 
  *             col = 0
  *             for objectName in dir(sheet):             # <<<<<<<<<<<<<<
@@ -7434,7 +7638,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "pyees/sheet.py":153
+    /* "pyees/sheet.py":160
  *     def saveSheets(self):
  * 
  *         for ii, sheet in enumerate(self.sheets):             # <<<<<<<<<<<<<<
@@ -7445,18 +7649,18 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":191
+  /* "pyees/sheet.py":204
  *                     col += 1
  * 
  *         self.wb.save(self.fileName)             # <<<<<<<<<<<<<<
  * 
  * 
 */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __pyx_t_2;
   __Pyx_INCREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_fileName); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_fileName); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_8 = 0;
   {
@@ -7465,12 +7669,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":151
+  /* "pyees/sheet.py":158
  * 
  * 
  *     def saveSheets(self):             # <<<<<<<<<<<<<<
@@ -7487,9 +7691,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_XDECREF(__pyx_t_15);
+  __Pyx_XDECREF(__pyx_t_13);
   __Pyx_XDECREF(__pyx_t_16);
+  __Pyx_XDECREF(__pyx_t_17);
   __Pyx_AddTraceback("pyees.sheet._fileFromSheets.saveSheets", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -7511,7 +7715,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_fileFromSheets_4saveSheets(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":199
+/* "pyees/sheet.py":212
  * 
  * 
  * def sheetsFromFile(xlFile, dataRange: str | List[str], uncertRange: str | List[str] = None, sheets: int | List[int] = None):             # <<<<<<<<<<<<<<
@@ -7561,50 +7765,50 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_xlFile,&__pyx_mstate_global->__pyx_n_u_dataRange,&__pyx_mstate_global->__pyx_n_u_uncertRange,&__pyx_mstate_global->__pyx_n_u_sheets,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 199, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 212, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 212, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 212, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 212, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 212, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sheetsFromFile", 0) < (0)) __PYX_ERR(0, 199, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sheetsFromFile", 0) < (0)) __PYX_ERR(0, 212, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject *)Py_None));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sheetsFromFile", 0, 2, 4, i); __PYX_ERR(0, 199, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sheetsFromFile", 0, 2, 4, i); __PYX_ERR(0, 212, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 212, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 212, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 212, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 212, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -7618,7 +7822,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("sheetsFromFile", 0, 2, 4, __pyx_nargs); __PYX_ERR(0, 199, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("sheetsFromFile", 0, 2, 4, __pyx_nargs); __PYX_ERR(0, 212, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7654,7 +7858,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_2sheetsFromFile(CYTHON_UNUSED PyObject *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("sheetsFromFile", 0);
 
-  /* "pyees/sheet.py":200
+  /* "pyees/sheet.py":213
  * 
  * def sheetsFromFile(xlFile, dataRange: str | List[str], uncertRange: str | List[str] = None, sheets: int | List[int] = None):
  *     dat = _sheetsFromFile(xlFile, dataRange, uncertRange, sheets)             # <<<<<<<<<<<<<<
@@ -7662,7 +7866,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_2sheetsFromFile(CYTHON_UNUSED PyObject *
  *         return dat.dat[0]
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_sheetsFromFile); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_sheetsFromFile); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -7681,27 +7885,27 @@ static PyObject *__pyx_pf_5pyees_5sheet_2sheetsFromFile(CYTHON_UNUSED PyObject *
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (5-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_dat = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":201
+  /* "pyees/sheet.py":214
  * def sheetsFromFile(xlFile, dataRange: str | List[str], uncertRange: str | List[str] = None, sheets: int | List[int] = None):
  *     dat = _sheetsFromFile(xlFile, dataRange, uncertRange, sheets)
  *     if len(dat.dat) == 1:             # <<<<<<<<<<<<<<
  *         return dat.dat[0]
  *     return dat.dat
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dat, __pyx_mstate_global->__pyx_n_u_dat); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dat, __pyx_mstate_global->__pyx_n_u_dat); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_5 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_6 = (__pyx_t_5 == 1);
   if (__pyx_t_6) {
 
-    /* "pyees/sheet.py":202
+    /* "pyees/sheet.py":215
  *     dat = _sheetsFromFile(xlFile, dataRange, uncertRange, sheets)
  *     if len(dat.dat) == 1:
  *         return dat.dat[0]             # <<<<<<<<<<<<<<
@@ -7709,16 +7913,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_2sheetsFromFile(CYTHON_UNUSED PyObject *
  * 
 */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dat, __pyx_mstate_global->__pyx_n_u_dat); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dat, __pyx_mstate_global->__pyx_n_u_dat); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "pyees/sheet.py":201
+    /* "pyees/sheet.py":214
  * def sheetsFromFile(xlFile, dataRange: str | List[str], uncertRange: str | List[str] = None, sheets: int | List[int] = None):
  *     dat = _sheetsFromFile(xlFile, dataRange, uncertRange, sheets)
  *     if len(dat.dat) == 1:             # <<<<<<<<<<<<<<
@@ -7727,7 +7931,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_2sheetsFromFile(CYTHON_UNUSED PyObject *
 */
   }
 
-  /* "pyees/sheet.py":203
+  /* "pyees/sheet.py":216
  *     if len(dat.dat) == 1:
  *         return dat.dat[0]
  *     return dat.dat             # <<<<<<<<<<<<<<
@@ -7735,13 +7939,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_2sheetsFromFile(CYTHON_UNUSED PyObject *
  * 
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_dat, __pyx_mstate_global->__pyx_n_u_dat); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_dat, __pyx_mstate_global->__pyx_n_u_dat); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 216, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "pyees/sheet.py":199
+  /* "pyees/sheet.py":212
  * 
  * 
  * def sheetsFromFile(xlFile, dataRange: str | List[str], uncertRange: str | List[str] = None, sheets: int | List[int] = None):             # <<<<<<<<<<<<<<
@@ -7763,7 +7967,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_2sheetsFromFile(CYTHON_UNUSED PyObject *
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":208
+/* "pyees/sheet.py":221
  * class _sheetsFromFile():
  * 
  *     def __init__(self, xlFile, dataRange, uncertRange=None, sheets = None) -> None:             # <<<<<<<<<<<<<<
@@ -7814,56 +8018,56 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_xlFile,&__pyx_mstate_global->__pyx_n_u_dataRange,&__pyx_mstate_global->__pyx_n_u_uncertRange,&__pyx_mstate_global->__pyx_n_u_sheets,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 208, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 221, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 221, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 221, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 221, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 221, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 221, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 208, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 221, __pyx_L3_error)
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[4]) values[4] = __Pyx_NewRef(((PyObject *)Py_None));
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, i); __PYX_ERR(0, 208, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, i); __PYX_ERR(0, 221, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 221, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 221, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 221, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 221, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 221, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -7878,7 +8082,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, __pyx_nargs); __PYX_ERR(0, 208, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, __pyx_nargs); __PYX_ERR(0, 221, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7934,16 +8138,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
   __Pyx_INCREF(__pyx_v_uncertRange);
   __Pyx_INCREF(__pyx_v_sheets);
 
-  /* "pyees/sheet.py":212
+  /* "pyees/sheet.py":225
  * 
  *         # check the extension
  *         extension = os.path.splitext(xlFile)[1]             # <<<<<<<<<<<<<<
  *         supportedExtensions = ['.xls', '.xlsx']
  *         if extension not in supportedExtensions:
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_os); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_os); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_path); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_path); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_2 = __pyx_t_4;
@@ -7954,44 +8158,44 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_splitext, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 212, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_1, 1, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_1, 1, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_extension = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":213
+  /* "pyees/sheet.py":226
  *         # check the extension
  *         extension = os.path.splitext(xlFile)[1]
  *         supportedExtensions = ['.xls', '.xlsx']             # <<<<<<<<<<<<<<
  *         if extension not in supportedExtensions:
  *             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')
 */
-  __pyx_t_4 = PyList_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 213, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_xls);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_kp_u_xls);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 0, __pyx_mstate_global->__pyx_kp_u_xls) != (0)) __PYX_ERR(0, 213, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 0, __pyx_mstate_global->__pyx_kp_u_xls) != (0)) __PYX_ERR(0, 226, __pyx_L1_error);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_xlsx);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_kp_u_xlsx);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 1, __pyx_mstate_global->__pyx_kp_u_xlsx) != (0)) __PYX_ERR(0, 213, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 1, __pyx_mstate_global->__pyx_kp_u_xlsx) != (0)) __PYX_ERR(0, 226, __pyx_L1_error);
   __pyx_v_supportedExtensions = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":214
+  /* "pyees/sheet.py":227
  *         extension = os.path.splitext(xlFile)[1]
  *         supportedExtensions = ['.xls', '.xlsx']
  *         if extension not in supportedExtensions:             # <<<<<<<<<<<<<<
  *             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')
  * 
 */
-  __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_v_extension, __pyx_v_supportedExtensions, Py_NE)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_v_extension, __pyx_v_supportedExtensions, Py_NE)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 227, __pyx_L1_error)
   if (unlikely(__pyx_t_6)) {
 
-    /* "pyees/sheet.py":215
+    /* "pyees/sheet.py":228
  *         supportedExtensions = ['.xls', '.xlsx']
  *         if extension not in supportedExtensions:
  *             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')             # <<<<<<<<<<<<<<
@@ -7999,9 +8203,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
  *         self.wb = CalamineWorkbook.from_path(xlFile)
 */
     __pyx_t_1 = NULL;
-    __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_v_supportedExtensions, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 215, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_v_supportedExtensions, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 228, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_mstate_global->__pyx_kp_u_The_file_extension_is_not_suppor, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_mstate_global->__pyx_kp_u_The_file_extension_is_not_suppor, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_5 = 1;
@@ -8010,14 +8214,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 215, __pyx_L1_error)
+    __PYX_ERR(0, 228, __pyx_L1_error)
 
-    /* "pyees/sheet.py":214
+    /* "pyees/sheet.py":227
  *         extension = os.path.splitext(xlFile)[1]
  *         supportedExtensions = ['.xls', '.xlsx']
  *         if extension not in supportedExtensions:             # <<<<<<<<<<<<<<
@@ -8026,7 +8230,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
 */
   }
 
-  /* "pyees/sheet.py":217
+  /* "pyees/sheet.py":230
  *             raise ValueError(f'The file extension is not supported. The supported extension are {supportedExtensions}')
  * 
  *         self.wb = CalamineWorkbook.from_path(xlFile)             # <<<<<<<<<<<<<<
@@ -8034,9 +8238,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
  *         if not sheets is None:
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_CalamineWorkbook); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_CalamineWorkbook); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_from_path); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 217, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_from_path); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_5 = 1;
@@ -8056,13 +8260,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
     __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 217, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb, __pyx_t_4) < (0)) __PYX_ERR(0, 217, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb, __pyx_t_4) < (0)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":218
+  /* "pyees/sheet.py":231
  * 
  *         self.wb = CalamineWorkbook.from_path(xlFile)
  *         self.sheets = [self.wb.get_sheet_by_name(elem) for elem in self.wb.sheet_names]             # <<<<<<<<<<<<<<
@@ -8070,11 +8274,11 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
  *             if not isinstance(sheets, list):
 */
   { /* enter inner scope */
-    __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L6_error)
+    __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 231, __pyx_L6_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 218, __pyx_L6_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 231, __pyx_L6_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_sheet_names); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L6_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_sheet_names); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 231, __pyx_L6_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
@@ -8082,9 +8286,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 218, __pyx_L6_error)
+      __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 231, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_8 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 218, __pyx_L6_error)
+      __pyx_t_8 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 231, __pyx_L6_error)
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     for (;;) {
@@ -8093,7 +8297,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 218, __pyx_L6_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 231, __pyx_L6_error)
             #endif
             if (__pyx_t_7 >= __pyx_temp) break;
           }
@@ -8103,7 +8307,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 218, __pyx_L6_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 231, __pyx_L6_error)
             #endif
             if (__pyx_t_7 >= __pyx_temp) break;
           }
@@ -8114,13 +8318,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
           #endif
           ++__pyx_t_7;
         }
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L6_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 231, __pyx_L6_error)
       } else {
         __pyx_t_3 = __pyx_t_8(__pyx_t_2);
         if (unlikely(!__pyx_t_3)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 218, __pyx_L6_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 231, __pyx_L6_error)
             PyErr_Clear();
           }
           break;
@@ -8129,7 +8333,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_elem, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 218, __pyx_L6_error)
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_wb); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 231, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = __pyx_t_9;
       __Pyx_INCREF(__pyx_t_1);
@@ -8139,10 +8343,10 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
         __pyx_t_3 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_get_sheet_by_name, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L6_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 231, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_3);
       }
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 218, __pyx_L6_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 231, __pyx_L6_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -8153,10 +8357,10 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
     goto __pyx_L1_error;
     __pyx_L10_exit_scope:;
   } /* exit inner scope */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets, __pyx_t_4) < (0)) __PYX_ERR(0, 218, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets, __pyx_t_4) < (0)) __PYX_ERR(0, 231, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":219
+  /* "pyees/sheet.py":232
  *         self.wb = CalamineWorkbook.from_path(xlFile)
  *         self.sheets = [self.wb.get_sheet_by_name(elem) for elem in self.wb.sheet_names]
  *         if not sheets is None:             # <<<<<<<<<<<<<<
@@ -8166,7 +8370,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
   __pyx_t_6 = (__pyx_v_sheets != Py_None);
   if (__pyx_t_6) {
 
-    /* "pyees/sheet.py":220
+    /* "pyees/sheet.py":233
  *         self.sheets = [self.wb.get_sheet_by_name(elem) for elem in self.wb.sheet_names]
  *         if not sheets is None:
  *             if not isinstance(sheets, list):             # <<<<<<<<<<<<<<
@@ -8177,22 +8381,22 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
     __pyx_t_10 = (!__pyx_t_6);
     if (__pyx_t_10) {
 
-      /* "pyees/sheet.py":221
+      /* "pyees/sheet.py":234
  *         if not sheets is None:
  *             if not isinstance(sheets, list):
  *                 sheets = [sheets]             # <<<<<<<<<<<<<<
  *             self.sheets = [elem for i,elem in enumerate(self.sheets) if i in sheets]
  * 
 */
-      __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L1_error)
+      __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_INCREF(__pyx_v_sheets);
       __Pyx_GIVEREF(__pyx_v_sheets);
-      if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 0, __pyx_v_sheets) != (0)) __PYX_ERR(0, 221, __pyx_L1_error);
+      if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 0, __pyx_v_sheets) != (0)) __PYX_ERR(0, 234, __pyx_L1_error);
       __Pyx_DECREF_SET(__pyx_v_sheets, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "pyees/sheet.py":220
+      /* "pyees/sheet.py":233
  *         self.sheets = [self.wb.get_sheet_by_name(elem) for elem in self.wb.sheet_names]
  *         if not sheets is None:
  *             if not isinstance(sheets, list):             # <<<<<<<<<<<<<<
@@ -8201,7 +8405,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
 */
     }
 
-    /* "pyees/sheet.py":222
+    /* "pyees/sheet.py":235
  *             if not isinstance(sheets, list):
  *                 sheets = [sheets]
  *             self.sheets = [elem for i,elem in enumerate(self.sheets) if i in sheets]             # <<<<<<<<<<<<<<
@@ -8209,20 +8413,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
  *         if not isinstance(dataRange, list):
 */
     { /* enter inner scope */
-      __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 222, __pyx_L15_error)
+      __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 235, __pyx_L15_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
       __pyx_t_2 = __pyx_mstate_global->__pyx_int_0;
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 222, __pyx_L15_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 235, __pyx_L15_error)
       __Pyx_GOTREF(__pyx_t_3);
       if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
         __pyx_t_9 = __pyx_t_3; __Pyx_INCREF(__pyx_t_9);
         __pyx_t_7 = 0;
         __pyx_t_8 = NULL;
       } else {
-        __pyx_t_7 = -1; __pyx_t_9 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 222, __pyx_L15_error)
+        __pyx_t_7 = -1; __pyx_t_9 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 235, __pyx_L15_error)
         __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_8 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 222, __pyx_L15_error)
+        __pyx_t_8 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 235, __pyx_L15_error)
       }
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       for (;;) {
@@ -8231,7 +8435,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
             {
               Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_9);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 222, __pyx_L15_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 235, __pyx_L15_error)
               #endif
               if (__pyx_t_7 >= __pyx_temp) break;
             }
@@ -8241,7 +8445,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
             {
               Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_9);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 222, __pyx_L15_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 235, __pyx_L15_error)
               #endif
               if (__pyx_t_7 >= __pyx_temp) break;
             }
@@ -8252,13 +8456,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
             #endif
             ++__pyx_t_7;
           }
-          if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 222, __pyx_L15_error)
+          if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 235, __pyx_L15_error)
         } else {
           __pyx_t_3 = __pyx_t_8(__pyx_t_9);
           if (unlikely(!__pyx_t_3)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 222, __pyx_L15_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 235, __pyx_L15_error)
               PyErr_Clear();
             }
             break;
@@ -8269,14 +8473,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
         __pyx_t_3 = 0;
         __Pyx_INCREF(__pyx_t_2);
         __Pyx_XDECREF_SET(__pyx_8genexpr1__pyx_v_i, __pyx_t_2);
-        __pyx_t_3 = __Pyx_PyLong_AddObjC(__pyx_t_2, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 222, __pyx_L15_error)
+        __pyx_t_3 = __Pyx_PyLong_AddObjC(__pyx_t_2, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 235, __pyx_L15_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_2);
         __pyx_t_2 = __pyx_t_3;
         __pyx_t_3 = 0;
-        __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_8genexpr1__pyx_v_i, __pyx_v_sheets, Py_EQ)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 222, __pyx_L15_error)
+        __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_8genexpr1__pyx_v_i, __pyx_v_sheets, Py_EQ)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 235, __pyx_L15_error)
         if (__pyx_t_10) {
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_8genexpr1__pyx_v_elem))) __PYX_ERR(0, 222, __pyx_L15_error)
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_8genexpr1__pyx_v_elem))) __PYX_ERR(0, 235, __pyx_L15_error)
         }
       }
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -8290,10 +8494,10 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       goto __pyx_L1_error;
       __pyx_L20_exit_scope:;
     } /* exit inner scope */
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets, __pyx_t_4) < (0)) __PYX_ERR(0, 222, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets, __pyx_t_4) < (0)) __PYX_ERR(0, 235, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":219
+    /* "pyees/sheet.py":232
  *         self.wb = CalamineWorkbook.from_path(xlFile)
  *         self.sheets = [self.wb.get_sheet_by_name(elem) for elem in self.wb.sheet_names]
  *         if not sheets is None:             # <<<<<<<<<<<<<<
@@ -8302,7 +8506,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
 */
   }
 
-  /* "pyees/sheet.py":224
+  /* "pyees/sheet.py":237
  *             self.sheets = [elem for i,elem in enumerate(self.sheets) if i in sheets]
  * 
  *         if not isinstance(dataRange, list):             # <<<<<<<<<<<<<<
@@ -8313,30 +8517,30 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
   __pyx_t_6 = (!__pyx_t_10);
   if (__pyx_t_6) {
 
-    /* "pyees/sheet.py":225
+    /* "pyees/sheet.py":238
  * 
  *         if not isinstance(dataRange, list):
  *             dataRange = [dataRange] * len(self.sheets)             # <<<<<<<<<<<<<<
  *         if len(dataRange) != len(self.sheets):
  *             raise ValueError('The length of the input "dataRange" has to be equal to the length of the intput "sheets"')
 */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 225, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 238, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 225, __pyx_L1_error)
+    __pyx_t_7 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 238, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyList_New(1 * ((__pyx_t_7<0) ? 0:__pyx_t_7)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 225, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(1 * ((__pyx_t_7<0) ? 0:__pyx_t_7)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 238, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     { Py_ssize_t __pyx_temp;
       for (__pyx_temp=0; __pyx_temp < __pyx_t_7; __pyx_temp++) {
         __Pyx_INCREF(__pyx_v_dataRange);
         __Pyx_GIVEREF(__pyx_v_dataRange);
-        if (__Pyx_PyList_SET_ITEM(__pyx_t_4, __pyx_temp, __pyx_v_dataRange) != (0)) __PYX_ERR(0, 225, __pyx_L1_error);
+        if (__Pyx_PyList_SET_ITEM(__pyx_t_4, __pyx_temp, __pyx_v_dataRange) != (0)) __PYX_ERR(0, 238, __pyx_L1_error);
       }
     }
     __Pyx_DECREF_SET(__pyx_v_dataRange, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":224
+    /* "pyees/sheet.py":237
  *             self.sheets = [elem for i,elem in enumerate(self.sheets) if i in sheets]
  * 
  *         if not isinstance(dataRange, list):             # <<<<<<<<<<<<<<
@@ -8345,22 +8549,22 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
 */
   }
 
-  /* "pyees/sheet.py":226
+  /* "pyees/sheet.py":239
  *         if not isinstance(dataRange, list):
  *             dataRange = [dataRange] * len(self.sheets)
  *         if len(dataRange) != len(self.sheets):             # <<<<<<<<<<<<<<
  *             raise ValueError('The length of the input "dataRange" has to be equal to the length of the intput "sheets"')
  * 
 */
-  __pyx_t_7 = PyObject_Length(__pyx_v_dataRange); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 226, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_t_7 = PyObject_Length(__pyx_v_dataRange); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_11 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_t_11 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_6 = (__pyx_t_7 != __pyx_t_11);
   if (unlikely(__pyx_t_6)) {
 
-    /* "pyees/sheet.py":227
+    /* "pyees/sheet.py":240
  *             dataRange = [dataRange] * len(self.sheets)
  *         if len(dataRange) != len(self.sheets):
  *             raise ValueError('The length of the input "dataRange" has to be equal to the length of the intput "sheets"')             # <<<<<<<<<<<<<<
@@ -8373,14 +8577,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_The_length_of_the_input_dataRang};
       __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 227, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 240, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 227, __pyx_L1_error)
+    __PYX_ERR(0, 240, __pyx_L1_error)
 
-    /* "pyees/sheet.py":226
+    /* "pyees/sheet.py":239
  *         if not isinstance(dataRange, list):
  *             dataRange = [dataRange] * len(self.sheets)
  *         if len(dataRange) != len(self.sheets):             # <<<<<<<<<<<<<<
@@ -8389,7 +8593,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
 */
   }
 
-  /* "pyees/sheet.py":229
+  /* "pyees/sheet.py":242
  *             raise ValueError('The length of the input "dataRange" has to be equal to the length of the intput "sheets"')
  * 
  *         if not uncertRange is None:             # <<<<<<<<<<<<<<
@@ -8399,7 +8603,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
   __pyx_t_6 = (__pyx_v_uncertRange != Py_None);
   if (__pyx_t_6) {
 
-    /* "pyees/sheet.py":230
+    /* "pyees/sheet.py":243
  * 
  *         if not uncertRange is None:
  *             if not isinstance(uncertRange, list):             # <<<<<<<<<<<<<<
@@ -8410,30 +8614,30 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
     __pyx_t_10 = (!__pyx_t_6);
     if (__pyx_t_10) {
 
-      /* "pyees/sheet.py":231
+      /* "pyees/sheet.py":244
  *         if not uncertRange is None:
  *             if not isinstance(uncertRange, list):
  *                 uncertRange = [uncertRange] * len(self.sheets)             # <<<<<<<<<<<<<<
  *             if len(uncertRange) != len(self.sheets):
  *                 raise ValueError('The length of the input "uncertRange" has to be equal to the length of the intput "sheets"')
 */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 231, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_11 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 231, __pyx_L1_error)
+      __pyx_t_11 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 244, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = PyList_New(1 * ((__pyx_t_11<0) ? 0:__pyx_t_11)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 231, __pyx_L1_error)
+      __pyx_t_4 = PyList_New(1 * ((__pyx_t_11<0) ? 0:__pyx_t_11)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       { Py_ssize_t __pyx_temp;
         for (__pyx_temp=0; __pyx_temp < __pyx_t_11; __pyx_temp++) {
           __Pyx_INCREF(__pyx_v_uncertRange);
           __Pyx_GIVEREF(__pyx_v_uncertRange);
-          if (__Pyx_PyList_SET_ITEM(__pyx_t_4, __pyx_temp, __pyx_v_uncertRange) != (0)) __PYX_ERR(0, 231, __pyx_L1_error);
+          if (__Pyx_PyList_SET_ITEM(__pyx_t_4, __pyx_temp, __pyx_v_uncertRange) != (0)) __PYX_ERR(0, 244, __pyx_L1_error);
         }
       }
       __Pyx_DECREF_SET(__pyx_v_uncertRange, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "pyees/sheet.py":230
+      /* "pyees/sheet.py":243
  * 
  *         if not uncertRange is None:
  *             if not isinstance(uncertRange, list):             # <<<<<<<<<<<<<<
@@ -8442,22 +8646,22 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
 */
     }
 
-    /* "pyees/sheet.py":232
+    /* "pyees/sheet.py":245
  *             if not isinstance(uncertRange, list):
  *                 uncertRange = [uncertRange] * len(self.sheets)
  *             if len(uncertRange) != len(self.sheets):             # <<<<<<<<<<<<<<
  *                 raise ValueError('The length of the input "uncertRange" has to be equal to the length of the intput "sheets"')
  *         else:
 */
-    __pyx_t_11 = PyObject_Length(__pyx_v_uncertRange); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 232, __pyx_L1_error)
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
+    __pyx_t_11 = PyObject_Length(__pyx_v_uncertRange); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 245, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 232, __pyx_L1_error)
+    __pyx_t_7 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 245, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_10 = (__pyx_t_11 != __pyx_t_7);
     if (unlikely(__pyx_t_10)) {
 
-      /* "pyees/sheet.py":233
+      /* "pyees/sheet.py":246
  *                 uncertRange = [uncertRange] * len(self.sheets)
  *             if len(uncertRange) != len(self.sheets):
  *                 raise ValueError('The length of the input "uncertRange" has to be equal to the length of the intput "sheets"')             # <<<<<<<<<<<<<<
@@ -8470,14 +8674,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
         PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_The_length_of_the_input_uncertRa};
         __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 246, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
       }
       __Pyx_Raise(__pyx_t_4, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __PYX_ERR(0, 233, __pyx_L1_error)
+      __PYX_ERR(0, 246, __pyx_L1_error)
 
-      /* "pyees/sheet.py":232
+      /* "pyees/sheet.py":245
  *             if not isinstance(uncertRange, list):
  *                 uncertRange = [uncertRange] * len(self.sheets)
  *             if len(uncertRange) != len(self.sheets):             # <<<<<<<<<<<<<<
@@ -8486,7 +8690,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
 */
     }
 
-    /* "pyees/sheet.py":229
+    /* "pyees/sheet.py":242
  *             raise ValueError('The length of the input "dataRange" has to be equal to the length of the intput "sheets"')
  * 
  *         if not uncertRange is None:             # <<<<<<<<<<<<<<
@@ -8496,7 +8700,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
     goto __pyx_L23;
   }
 
-  /* "pyees/sheet.py":235
+  /* "pyees/sheet.py":248
  *                 raise ValueError('The length of the input "uncertRange" has to be equal to the length of the intput "sheets"')
  *         else:
  *             uncertRange = [None] * len(self.sheets)             # <<<<<<<<<<<<<<
@@ -8504,17 +8708,17 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
  * 
 */
   /*else*/ {
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_7 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 248, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyList_New(1 * ((__pyx_t_7<0) ? 0:__pyx_t_7)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(1 * ((__pyx_t_7<0) ? 0:__pyx_t_7)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     { Py_ssize_t __pyx_temp;
       for (__pyx_temp=0; __pyx_temp < __pyx_t_7; __pyx_temp++) {
         __Pyx_INCREF(Py_None);
         __Pyx_GIVEREF(Py_None);
-        if (__Pyx_PyList_SET_ITEM(__pyx_t_4, __pyx_temp, Py_None) != (0)) __PYX_ERR(0, 235, __pyx_L1_error);
+        if (__Pyx_PyList_SET_ITEM(__pyx_t_4, __pyx_temp, Py_None) != (0)) __PYX_ERR(0, 248, __pyx_L1_error);
       }
     }
     __Pyx_DECREF_SET(__pyx_v_uncertRange, __pyx_t_4);
@@ -8522,114 +8726,114 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
   }
   __pyx_L23:;
 
-  /* "pyees/sheet.py":238
+  /* "pyees/sheet.py":251
  * 
  * 
  *         self.dataRanges = []             # <<<<<<<<<<<<<<
  *         self.uncertRanges = []
  * 
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataRanges, __pyx_t_4) < (0)) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataRanges, __pyx_t_4) < (0)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":239
+  /* "pyees/sheet.py":252
  * 
  *         self.dataRanges = []
  *         self.uncertRanges = []             # <<<<<<<<<<<<<<
  * 
  *         self.dataStartCol = []
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertRanges, __pyx_t_4) < (0)) __PYX_ERR(0, 239, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertRanges, __pyx_t_4) < (0)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":241
+  /* "pyees/sheet.py":254
  *         self.uncertRanges = []
  * 
  *         self.dataStartCol = []             # <<<<<<<<<<<<<<
  *         self.dataEndCol = []
  *         self.uncertStartCol = []
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataStartCol, __pyx_t_4) < (0)) __PYX_ERR(0, 241, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataStartCol, __pyx_t_4) < (0)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":242
+  /* "pyees/sheet.py":255
  * 
  *         self.dataStartCol = []
  *         self.dataEndCol = []             # <<<<<<<<<<<<<<
  *         self.uncertStartCol = []
  *         self.uncertEndCol = []
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 242, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataEndCol, __pyx_t_4) < (0)) __PYX_ERR(0, 242, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataEndCol, __pyx_t_4) < (0)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":243
+  /* "pyees/sheet.py":256
  *         self.dataStartCol = []
  *         self.dataEndCol = []
  *         self.uncertStartCol = []             # <<<<<<<<<<<<<<
  *         self.uncertEndCol = []
  *         for i in range(len(self.sheets)):
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertStartCol, __pyx_t_4) < (0)) __PYX_ERR(0, 243, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertStartCol, __pyx_t_4) < (0)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":244
+  /* "pyees/sheet.py":257
  *         self.dataEndCol = []
  *         self.uncertStartCol = []
  *         self.uncertEndCol = []             # <<<<<<<<<<<<<<
  *         for i in range(len(self.sheets)):
  *             if '-' in dataRange[i]:
 */
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertEndCol, __pyx_t_4) < (0)) __PYX_ERR(0, 244, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertEndCol, __pyx_t_4) < (0)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":245
+  /* "pyees/sheet.py":258
  *         self.uncertStartCol = []
  *         self.uncertEndCol = []
  *         for i in range(len(self.sheets)):             # <<<<<<<<<<<<<<
  *             if '-' in dataRange[i]:
  *                 index = dataRange[i].find('-')
 */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 245, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 245, __pyx_L1_error)
+  __pyx_t_7 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_11 = __pyx_t_7;
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_i = __pyx_t_12;
 
-    /* "pyees/sheet.py":246
+    /* "pyees/sheet.py":259
  *         self.uncertEndCol = []
  *         for i in range(len(self.sheets)):
  *             if '-' in dataRange[i]:             # <<<<<<<<<<<<<<
  *                 index = dataRange[i].find('-')
  *                 dataStartCol = dataRange[i][0:index]
 */
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 246, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 259, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_t_4, Py_EQ)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 246, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_t_4, Py_EQ)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 259, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_10) {
 
-      /* "pyees/sheet.py":247
+      /* "pyees/sheet.py":260
  *         for i in range(len(self.sheets)):
  *             if '-' in dataRange[i]:
  *                 index = dataRange[i].find('-')             # <<<<<<<<<<<<<<
  *                 dataStartCol = dataRange[i][0:index]
  *                 dataEndCol = dataRange[i][index + 1:]
 */
-      __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 247, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 260, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_2 = __pyx_t_9;
       __Pyx_INCREF(__pyx_t_2);
@@ -8639,46 +8843,46 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
         __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_find, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 247, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
       }
       __Pyx_XDECREF_SET(__pyx_v_index, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "pyees/sheet.py":248
+      /* "pyees/sheet.py":261
  *             if '-' in dataRange[i]:
  *                 index = dataRange[i].find('-')
  *                 dataStartCol = dataRange[i][0:index]             # <<<<<<<<<<<<<<
  *                 dataEndCol = dataRange[i][index + 1:]
  *             else:
 */
-      __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 261, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_9 = __Pyx_PyObject_GetSlice(__pyx_t_4, 0, 0, NULL, &__pyx_v_index, NULL, 1, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 248, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyObject_GetSlice(__pyx_t_4, 0, 0, NULL, &__pyx_v_index, NULL, 1, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 261, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_XDECREF_SET(__pyx_v_dataStartCol, __pyx_t_9);
       __pyx_t_9 = 0;
 
-      /* "pyees/sheet.py":249
+      /* "pyees/sheet.py":262
  *                 index = dataRange[i].find('-')
  *                 dataStartCol = dataRange[i][0:index]
  *                 dataEndCol = dataRange[i][index + 1:]             # <<<<<<<<<<<<<<
  *             else:
  *                 dataStartCol = dataRange[i]
 */
-      __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 249, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 262, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_4 = __Pyx_PyLong_AddObjC(__pyx_v_index, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyLong_AddObjC(__pyx_v_index, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 262, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_t_9, 0, 0, &__pyx_t_4, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 249, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_t_9, 0, 0, &__pyx_t_4, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 262, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_XDECREF_SET(__pyx_v_dataEndCol, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":246
+      /* "pyees/sheet.py":259
  *         self.uncertEndCol = []
  *         for i in range(len(self.sheets)):
  *             if '-' in dataRange[i]:             # <<<<<<<<<<<<<<
@@ -8688,7 +8892,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       goto __pyx_L28;
     }
 
-    /* "pyees/sheet.py":251
+    /* "pyees/sheet.py":264
  *                 dataEndCol = dataRange[i][index + 1:]
  *             else:
  *                 dataStartCol = dataRange[i]             # <<<<<<<<<<<<<<
@@ -8696,12 +8900,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
  * 
 */
     /*else*/ {
-      __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 251, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_dataRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 264, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_v_dataStartCol, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":252
+      /* "pyees/sheet.py":265
  *             else:
  *                 dataStartCol = dataRange[i]
  *                 dataEndCol = dataStartCol             # <<<<<<<<<<<<<<
@@ -8713,25 +8917,25 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
     }
     __pyx_L28:;
 
-    /* "pyees/sheet.py":254
+    /* "pyees/sheet.py":267
  *                 dataEndCol = dataStartCol
  * 
  *             if '-' in dataStartCol or '-' in dataEndCol:             # <<<<<<<<<<<<<<
  *                 raise ValueError('The data range can only include a singly hyphen (-)')
  * 
 */
-    __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_v_dataStartCol, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 254, __pyx_L1_error)
+    __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_v_dataStartCol, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 267, __pyx_L1_error)
     if (!__pyx_t_6) {
     } else {
       __pyx_t_10 = __pyx_t_6;
       goto __pyx_L30_bool_binop_done;
     }
-    __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_v_dataEndCol, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 254, __pyx_L1_error)
+    __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_v_dataEndCol, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 267, __pyx_L1_error)
     __pyx_t_10 = __pyx_t_6;
     __pyx_L30_bool_binop_done:;
     if (unlikely(__pyx_t_10)) {
 
-      /* "pyees/sheet.py":255
+      /* "pyees/sheet.py":268
  * 
  *             if '-' in dataStartCol or '-' in dataEndCol:
  *                 raise ValueError('The data range can only include a singly hyphen (-)')             # <<<<<<<<<<<<<<
@@ -8744,14 +8948,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
         PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_The_data_range_can_only_include};
         __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 255, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 268, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
       }
       __Pyx_Raise(__pyx_t_2, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __PYX_ERR(0, 255, __pyx_L1_error)
+      __PYX_ERR(0, 268, __pyx_L1_error)
 
-      /* "pyees/sheet.py":254
+      /* "pyees/sheet.py":267
  *                 dataEndCol = dataStartCol
  * 
  *             if '-' in dataStartCol or '-' in dataEndCol:             # <<<<<<<<<<<<<<
@@ -8760,40 +8964,40 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
 */
     }
 
-    /* "pyees/sheet.py":257
+    /* "pyees/sheet.py":270
  *                 raise ValueError('The data range can only include a singly hyphen (-)')
  * 
  *             if not uncertRange[i] is None:             # <<<<<<<<<<<<<<
  *                 if '-' in uncertRange[i]:
  *                     index = uncertRange[i].find('-')
 */
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 270, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_10 = (__pyx_t_2 != Py_None);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_10) {
 
-      /* "pyees/sheet.py":258
+      /* "pyees/sheet.py":271
  * 
  *             if not uncertRange[i] is None:
  *                 if '-' in uncertRange[i]:             # <<<<<<<<<<<<<<
  *                     index = uncertRange[i].find('-')
  *                     uncertStartCol = uncertRange[i][0:index]
 */
-      __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 258, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 271, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_t_2, Py_EQ)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 258, __pyx_L1_error)
+      __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_t_2, Py_EQ)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 271, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__pyx_t_10) {
 
-        /* "pyees/sheet.py":259
+        /* "pyees/sheet.py":272
  *             if not uncertRange[i] is None:
  *                 if '-' in uncertRange[i]:
  *                     index = uncertRange[i].find('-')             # <<<<<<<<<<<<<<
  *                     uncertStartCol = uncertRange[i][0:index]
  *                     uncertEndCol = uncertRange[i][index + 1:]
 */
-        __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 259, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 272, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
         __pyx_t_4 = __pyx_t_9;
         __Pyx_INCREF(__pyx_t_4);
@@ -8803,46 +9007,46 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
           __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_find, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 259, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 272, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
         __Pyx_XDECREF_SET(__pyx_v_index, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "pyees/sheet.py":260
+        /* "pyees/sheet.py":273
  *                 if '-' in uncertRange[i]:
  *                     index = uncertRange[i].find('-')
  *                     uncertStartCol = uncertRange[i][0:index]             # <<<<<<<<<<<<<<
  *                     uncertEndCol = uncertRange[i][index + 1:]
  *                 else:
 */
-        __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 260, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 273, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_9 = __Pyx_PyObject_GetSlice(__pyx_t_2, 0, 0, NULL, &__pyx_v_index, NULL, 1, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 260, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyObject_GetSlice(__pyx_t_2, 0, 0, NULL, &__pyx_v_index, NULL, 1, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 273, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __Pyx_XDECREF_SET(__pyx_v_uncertStartCol, __pyx_t_9);
         __pyx_t_9 = 0;
 
-        /* "pyees/sheet.py":261
+        /* "pyees/sheet.py":274
  *                     index = uncertRange[i].find('-')
  *                     uncertStartCol = uncertRange[i][0:index]
  *                     uncertEndCol = uncertRange[i][index + 1:]             # <<<<<<<<<<<<<<
  *                 else:
  *                     uncertStartCol = uncertRange[i]
 */
-        __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 261, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 274, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_v_index, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 261, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_v_index, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 274, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_t_9, 0, 0, &__pyx_t_2, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 261, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_t_9, 0, 0, &__pyx_t_2, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 274, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __Pyx_XDECREF_SET(__pyx_v_uncertEndCol, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "pyees/sheet.py":258
+        /* "pyees/sheet.py":271
  * 
  *             if not uncertRange[i] is None:
  *                 if '-' in uncertRange[i]:             # <<<<<<<<<<<<<<
@@ -8852,7 +9056,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
         goto __pyx_L33;
       }
 
-      /* "pyees/sheet.py":263
+      /* "pyees/sheet.py":276
  *                     uncertEndCol = uncertRange[i][index + 1:]
  *                 else:
  *                     uncertStartCol = uncertRange[i]             # <<<<<<<<<<<<<<
@@ -8860,12 +9064,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
  * 
 */
       /*else*/ {
-        __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_uncertRange, __pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_FunctionArgument); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 276, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_XDECREF_SET(__pyx_v_uncertStartCol, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "pyees/sheet.py":264
+        /* "pyees/sheet.py":277
  *                 else:
  *                     uncertStartCol = uncertRange[i]
  *                     uncertEndCol = uncertStartCol             # <<<<<<<<<<<<<<
@@ -8877,25 +9081,25 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       }
       __pyx_L33:;
 
-      /* "pyees/sheet.py":266
+      /* "pyees/sheet.py":279
  *                     uncertEndCol = uncertStartCol
  * 
  *                 if '-' in uncertStartCol or '-' in uncertEndCol:             # <<<<<<<<<<<<<<
  *                     raise ValueError('The data range can only include a singly hyphen (-)')
  *             else:
 */
-      __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_v_uncertStartCol, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 266, __pyx_L1_error)
+      __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_v_uncertStartCol, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 279, __pyx_L1_error)
       if (!__pyx_t_6) {
       } else {
         __pyx_t_10 = __pyx_t_6;
         goto __pyx_L35_bool_binop_done;
       }
-      __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_v_uncertEndCol, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 266, __pyx_L1_error)
+      __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_, __pyx_v_uncertEndCol, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 279, __pyx_L1_error)
       __pyx_t_10 = __pyx_t_6;
       __pyx_L35_bool_binop_done:;
       if (unlikely(__pyx_t_10)) {
 
-        /* "pyees/sheet.py":267
+        /* "pyees/sheet.py":280
  * 
  *                 if '-' in uncertStartCol or '-' in uncertEndCol:
  *                     raise ValueError('The data range can only include a singly hyphen (-)')             # <<<<<<<<<<<<<<
@@ -8908,14 +9112,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
           PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_The_data_range_can_only_include};
           __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 267, __pyx_L1_error)
+          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 280, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
         }
         __Pyx_Raise(__pyx_t_4, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __PYX_ERR(0, 267, __pyx_L1_error)
+        __PYX_ERR(0, 280, __pyx_L1_error)
 
-        /* "pyees/sheet.py":266
+        /* "pyees/sheet.py":279
  *                     uncertEndCol = uncertStartCol
  * 
  *                 if '-' in uncertStartCol or '-' in uncertEndCol:             # <<<<<<<<<<<<<<
@@ -8924,7 +9128,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
 */
       }
 
-      /* "pyees/sheet.py":257
+      /* "pyees/sheet.py":270
  *                 raise ValueError('The data range can only include a singly hyphen (-)')
  * 
  *             if not uncertRange[i] is None:             # <<<<<<<<<<<<<<
@@ -8934,7 +9138,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       goto __pyx_L32;
     }
 
-    /* "pyees/sheet.py":269
+    /* "pyees/sheet.py":282
  *                     raise ValueError('The data range can only include a singly hyphen (-)')
  *             else:
  *                 uncertStartCol = None             # <<<<<<<<<<<<<<
@@ -8945,7 +9149,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       __Pyx_INCREF(Py_None);
       __Pyx_XDECREF_SET(__pyx_v_uncertStartCol, Py_None);
 
-      /* "pyees/sheet.py":270
+      /* "pyees/sheet.py":283
  *             else:
  *                 uncertStartCol = None
  *                 uncertEndCol = None             # <<<<<<<<<<<<<<
@@ -8957,7 +9161,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
     }
     __pyx_L32:;
 
-    /* "pyees/sheet.py":272
+    /* "pyees/sheet.py":285
  *                 uncertEndCol = None
  * 
  *             dataStartCol = self.colToIndex(dataStartCol)             # <<<<<<<<<<<<<<
@@ -8971,13 +9175,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_dataStartCol};
       __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_colToIndex, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 272, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 285, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __Pyx_DECREF_SET(__pyx_v_dataStartCol, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":273
+    /* "pyees/sheet.py":286
  * 
  *             dataStartCol = self.colToIndex(dataStartCol)
  *             dataEndCol = self.colToIndex(dataEndCol)             # <<<<<<<<<<<<<<
@@ -8991,13 +9195,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_dataEndCol};
       __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_colToIndex, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 273, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 286, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __Pyx_DECREF_SET(__pyx_v_dataEndCol, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":274
+    /* "pyees/sheet.py":287
  *             dataStartCol = self.colToIndex(dataStartCol)
  *             dataEndCol = self.colToIndex(dataEndCol)
  *             uncertStartCol = self.colToIndex(uncertStartCol)             # <<<<<<<<<<<<<<
@@ -9011,13 +9215,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_uncertStartCol};
       __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_colToIndex, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 274, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 287, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __Pyx_DECREF_SET(__pyx_v_uncertStartCol, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":275
+    /* "pyees/sheet.py":288
  *             dataEndCol = self.colToIndex(dataEndCol)
  *             uncertStartCol = self.colToIndex(uncertStartCol)
  *             uncertEndCol = self.colToIndex(uncertEndCol)             # <<<<<<<<<<<<<<
@@ -9031,25 +9235,25 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_uncertEndCol};
       __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_colToIndex, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 288, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __Pyx_DECREF_SET(__pyx_v_uncertEndCol, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":277
+    /* "pyees/sheet.py":290
  *             uncertEndCol = self.colToIndex(uncertEndCol)
  * 
  *             self.dataRanges.append(range(dataStartCol, dataEndCol+1) if not dataStartCol is None else None)             # <<<<<<<<<<<<<<
  *             self.uncertRanges.append(range(uncertStartCol, uncertEndCol+1) if not uncertStartCol is None else None)
  * 
 */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataRanges); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 277, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataRanges); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_10 = (__pyx_v_dataStartCol != Py_None);
     if (__pyx_t_10) {
       __pyx_t_3 = NULL;
-      __pyx_t_1 = __Pyx_PyLong_AddObjC(__pyx_v_dataEndCol, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 277, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyLong_AddObjC(__pyx_v_dataEndCol, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_5 = 1;
       {
@@ -9057,7 +9261,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
         __pyx_t_9 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 277, __pyx_L1_error)
+        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 290, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
       }
       __pyx_t_2 = __pyx_t_9;
@@ -9066,23 +9270,23 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       __Pyx_INCREF(Py_None);
       __pyx_t_2 = Py_None;
     }
-    __pyx_t_13 = __Pyx_PyObject_Append(__pyx_t_4, __pyx_t_2); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 277, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_Append(__pyx_t_4, __pyx_t_2); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 290, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "pyees/sheet.py":278
+    /* "pyees/sheet.py":291
  * 
  *             self.dataRanges.append(range(dataStartCol, dataEndCol+1) if not dataStartCol is None else None)
  *             self.uncertRanges.append(range(uncertStartCol, uncertEndCol+1) if not uncertStartCol is None else None)             # <<<<<<<<<<<<<<
  * 
  *         # read the data
 */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertRanges); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertRanges); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 291, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_10 = (__pyx_v_uncertStartCol != Py_None);
     if (__pyx_t_10) {
       __pyx_t_1 = NULL;
-      __pyx_t_3 = __Pyx_PyLong_AddObjC(__pyx_v_uncertEndCol, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 278, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyLong_AddObjC(__pyx_v_uncertEndCol, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 291, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_5 = 1;
       {
@@ -9090,7 +9294,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
         __pyx_t_9 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 278, __pyx_L1_error)
+        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 291, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
       }
       __pyx_t_4 = __pyx_t_9;
@@ -9099,12 +9303,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
       __Pyx_INCREF(Py_None);
       __pyx_t_4 = Py_None;
     }
-    __pyx_t_13 = __Pyx_PyObject_Append(__pyx_t_2, __pyx_t_4); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 278, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_Append(__pyx_t_2, __pyx_t_4); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 291, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
 
-  /* "pyees/sheet.py":281
+  /* "pyees/sheet.py":294
  * 
  *         # read the data
  *         self.readData()             # <<<<<<<<<<<<<<
@@ -9118,12 +9322,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
     PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
     __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_readData, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 294, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":208
+  /* "pyees/sheet.py":221
  * class _sheetsFromFile():
  * 
  *     def __init__(self, xlFile, dataRange, uncertRange=None, sheets = None) -> None:             # <<<<<<<<<<<<<<
@@ -9161,7 +9365,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile___init__(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":283
+/* "pyees/sheet.py":296
  *         self.readData()
  * 
  *     def colToIndex(self, col):             # <<<<<<<<<<<<<<
@@ -9209,39 +9413,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_col,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 283, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 296, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 283, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 296, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 283, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 296, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "colToIndex", 0) < (0)) __PYX_ERR(0, 283, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "colToIndex", 0) < (0)) __PYX_ERR(0, 296, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("colToIndex", 1, 2, 2, i); __PYX_ERR(0, 283, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("colToIndex", 1, 2, 2, i); __PYX_ERR(0, 296, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 283, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 296, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 283, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 296, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
     __pyx_v_col = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("colToIndex", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 283, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("colToIndex", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 296, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9282,7 +9486,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("colToIndex", 0);
 
-  /* "pyees/sheet.py":284
+  /* "pyees/sheet.py":297
  * 
  *     def colToIndex(self, col):
  *         if col is None:             # <<<<<<<<<<<<<<
@@ -9292,7 +9496,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
   __pyx_t_1 = (__pyx_v_col == Py_None);
   if (__pyx_t_1) {
 
-    /* "pyees/sheet.py":285
+    /* "pyees/sheet.py":298
  *     def colToIndex(self, col):
  *         if col is None:
  *             return None             # <<<<<<<<<<<<<<
@@ -9303,7 +9507,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "pyees/sheet.py":284
+    /* "pyees/sheet.py":297
  * 
  *     def colToIndex(self, col):
  *         if col is None:             # <<<<<<<<<<<<<<
@@ -9312,7 +9516,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
 */
   }
 
-  /* "pyees/sheet.py":286
+  /* "pyees/sheet.py":299
  *         if col is None:
  *             return None
  *         if not isinstance(col, str):             # <<<<<<<<<<<<<<
@@ -9323,7 +9527,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
   __pyx_t_2 = (!__pyx_t_1);
   if (unlikely(__pyx_t_2)) {
 
-    /* "pyees/sheet.py":287
+    /* "pyees/sheet.py":300
  *             return None
  *         if not isinstance(col, str):
  *             raise ValueError('The coloumn has to be a string')             # <<<<<<<<<<<<<<
@@ -9336,14 +9540,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_The_coloumn_has_to_be_a_string};
       __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 287, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 300, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 287, __pyx_L1_error)
+    __PYX_ERR(0, 300, __pyx_L1_error)
 
-    /* "pyees/sheet.py":286
+    /* "pyees/sheet.py":299
  *         if col is None:
  *             return None
  *         if not isinstance(col, str):             # <<<<<<<<<<<<<<
@@ -9352,7 +9556,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
 */
   }
 
-  /* "pyees/sheet.py":288
+  /* "pyees/sheet.py":301
  *         if not isinstance(col, str):
  *             raise ValueError('The coloumn has to be a string')
  *         num = 0             # <<<<<<<<<<<<<<
@@ -9362,7 +9566,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
   __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
   __pyx_v_num = __pyx_mstate_global->__pyx_int_0;
 
-  /* "pyees/sheet.py":289
+  /* "pyees/sheet.py":302
  *             raise ValueError('The coloumn has to be a string')
  *         num = 0
  *         for c in col:             # <<<<<<<<<<<<<<
@@ -9374,9 +9578,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
     __pyx_t_6 = 0;
     __pyx_t_7 = NULL;
   } else {
-    __pyx_t_6 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_col); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 289, __pyx_L1_error)
+    __pyx_t_6 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_col); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_7 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 289, __pyx_L1_error)
+    __pyx_t_7 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 302, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_7)) {
@@ -9384,7 +9588,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_3);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 289, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 302, __pyx_L1_error)
           #endif
           if (__pyx_t_6 >= __pyx_temp) break;
         }
@@ -9394,7 +9598,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_3);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 289, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 302, __pyx_L1_error)
           #endif
           if (__pyx_t_6 >= __pyx_temp) break;
         }
@@ -9405,13 +9609,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
         #endif
         ++__pyx_t_6;
       }
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 289, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 302, __pyx_L1_error)
     } else {
       __pyx_t_4 = __pyx_t_7(__pyx_t_3);
       if (unlikely(!__pyx_t_4)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
-          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 289, __pyx_L1_error)
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 302, __pyx_L1_error)
           PyErr_Clear();
         }
         break;
@@ -9421,30 +9625,30 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
     __Pyx_XDECREF_SET(__pyx_v_c, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":290
+    /* "pyees/sheet.py":303
  *         num = 0
  *         for c in col:
  *             if c in string.ascii_letters:             # <<<<<<<<<<<<<<
  *                 num = num * 26 + (ord(c.upper()) - ord('A')) + 1
  *         return num - 1
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_string); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_string); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_ascii_letters); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_ascii_letters); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 303, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_v_c, __pyx_t_8, Py_EQ)); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_v_c, __pyx_t_8, Py_EQ)); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 303, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (__pyx_t_2) {
 
-      /* "pyees/sheet.py":291
+      /* "pyees/sheet.py":304
  *         for c in col:
  *             if c in string.ascii_letters:
  *                 num = num * 26 + (ord(c.upper()) - ord('A')) + 1             # <<<<<<<<<<<<<<
  *         return num - 1
  * 
 */
-      __pyx_t_8 = __Pyx_PyLong_MultiplyObjC(__pyx_v_num, __pyx_mstate_global->__pyx_int_26, 26, 0, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 291, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyLong_MultiplyObjC(__pyx_v_num, __pyx_mstate_global->__pyx_int_26, 26, 0, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 304, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __pyx_t_9 = __pyx_v_c;
       __Pyx_INCREF(__pyx_t_9);
@@ -9453,24 +9657,24 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
         PyObject *__pyx_callargs[2] = {__pyx_t_9, NULL};
         __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_upper, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 291, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 304, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
       }
-      __pyx_t_10 = __Pyx_PyObject_Ord(__pyx_t_4); if (unlikely(__pyx_t_10 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 291, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_Ord(__pyx_t_4); if (unlikely(__pyx_t_10 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 304, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = __Pyx_PyLong_From_long((__pyx_t_10 - 65)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 291, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyLong_From_long((__pyx_t_10 - 65)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 304, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_t_4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 291, __pyx_L1_error)
+      __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_t_4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 304, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = __Pyx_PyLong_AddObjC(__pyx_t_9, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 291, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyLong_AddObjC(__pyx_t_9, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 304, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_DECREF_SET(__pyx_v_num, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "pyees/sheet.py":290
+      /* "pyees/sheet.py":303
  *         num = 0
  *         for c in col:
  *             if c in string.ascii_letters:             # <<<<<<<<<<<<<<
@@ -9479,7 +9683,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
 */
     }
 
-    /* "pyees/sheet.py":289
+    /* "pyees/sheet.py":302
  *             raise ValueError('The coloumn has to be a string')
  *         num = 0
  *         for c in col:             # <<<<<<<<<<<<<<
@@ -9489,7 +9693,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "pyees/sheet.py":292
+  /* "pyees/sheet.py":305
  *             if c in string.ascii_letters:
  *                 num = num * 26 + (ord(c.upper()) - ord('A')) + 1
  *         return num - 1             # <<<<<<<<<<<<<<
@@ -9497,13 +9701,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
  *     def formatHeaders(self, header):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyLong_SubtractObjC(__pyx_v_num, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 292, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyLong_SubtractObjC(__pyx_v_num, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 305, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "pyees/sheet.py":283
+  /* "pyees/sheet.py":296
  *         self.readData()
  * 
  *     def colToIndex(self, col):             # <<<<<<<<<<<<<<
@@ -9527,7 +9731,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_2colToIndex(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":294
+/* "pyees/sheet.py":307
  *         return num - 1
  * 
  *     def formatHeaders(self, header):             # <<<<<<<<<<<<<<
@@ -9575,39 +9779,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_header,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 294, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 307, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 294, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 307, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 294, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 307, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "formatHeaders", 0) < (0)) __PYX_ERR(0, 294, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "formatHeaders", 0) < (0)) __PYX_ERR(0, 307, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("formatHeaders", 1, 2, 2, i); __PYX_ERR(0, 294, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("formatHeaders", 1, 2, 2, i); __PYX_ERR(0, 307, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 294, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 307, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 294, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 307, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
     __pyx_v_header = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("formatHeaders", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 294, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("formatHeaders", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 307, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9656,19 +9860,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("formatHeaders", 0);
 
-  /* "pyees/sheet.py":296
+  /* "pyees/sheet.py":309
  *     def formatHeaders(self, header):
  * 
  *         out = []             # <<<<<<<<<<<<<<
  *         for head in header:
  *             if head is None:
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_out = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":297
+  /* "pyees/sheet.py":310
  * 
  *         out = []
  *         for head in header:             # <<<<<<<<<<<<<<
@@ -9680,9 +9884,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
     __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_header); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 297, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_header); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 310, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 297, __pyx_L1_error)
+    __pyx_t_3 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 310, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
@@ -9690,7 +9894,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 297, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 310, __pyx_L1_error)
           #endif
           if (__pyx_t_2 >= __pyx_temp) break;
         }
@@ -9700,7 +9904,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_1);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 297, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 310, __pyx_L1_error)
           #endif
           if (__pyx_t_2 >= __pyx_temp) break;
         }
@@ -9711,13 +9915,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
         #endif
         ++__pyx_t_2;
       }
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 297, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 310, __pyx_L1_error)
     } else {
       __pyx_t_4 = __pyx_t_3(__pyx_t_1);
       if (unlikely(!__pyx_t_4)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
-          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 297, __pyx_L1_error)
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 310, __pyx_L1_error)
           PyErr_Clear();
         }
         break;
@@ -9727,7 +9931,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
     __Pyx_XDECREF_SET(__pyx_v_head, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":298
+    /* "pyees/sheet.py":311
  *         out = []
  *         for head in header:
  *             if head is None:             # <<<<<<<<<<<<<<
@@ -9737,16 +9941,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
     __pyx_t_5 = (__pyx_v_head == Py_None);
     if (__pyx_t_5) {
 
-      /* "pyees/sheet.py":299
+      /* "pyees/sheet.py":312
  *         for head in header:
  *             if head is None:
  *                 out.append('')             # <<<<<<<<<<<<<<
  *                 continue
  *             # remove symbols and replace with _
 */
-      __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_out, __pyx_mstate_global->__pyx_kp_u__2); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 299, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_out, __pyx_mstate_global->__pyx_kp_u__3); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 312, __pyx_L1_error)
 
-      /* "pyees/sheet.py":300
+      /* "pyees/sheet.py":313
  *             if head is None:
  *                 out.append('')
  *                 continue             # <<<<<<<<<<<<<<
@@ -9755,7 +9959,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
 */
       goto __pyx_L3_continue;
 
-      /* "pyees/sheet.py":298
+      /* "pyees/sheet.py":311
  *         out = []
  *         for head in header:
  *             if head is None:             # <<<<<<<<<<<<<<
@@ -9764,7 +9968,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
 */
     }
 
-    /* "pyees/sheet.py":302
+    /* "pyees/sheet.py":315
  *                 continue
  *             # remove symbols and replace with _
  *             head = re.sub(r'[^\w]', '_', head)             # <<<<<<<<<<<<<<
@@ -9772,9 +9976,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
  *             # remove multiple consequtive _
 */
     __pyx_t_7 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_re); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 302, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_re); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 315, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_sub); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 302, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_sub); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 315, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_10 = 1;
@@ -9790,17 +9994,17 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
     }
     #endif
     {
-      PyObject *__pyx_callargs[4] = {__pyx_t_7, __pyx_mstate_global->__pyx_kp_u_w_2, __pyx_mstate_global->__pyx_n_u__7, __pyx_v_head};
+      PyObject *__pyx_callargs[4] = {__pyx_t_7, __pyx_mstate_global->__pyx_kp_u_w_2, __pyx_mstate_global->__pyx_n_u__8, __pyx_v_head};
       __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_9, __pyx_callargs+__pyx_t_10, (4-__pyx_t_10) | (__pyx_t_10*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 302, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __Pyx_DECREF_SET(__pyx_v_head, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":305
+    /* "pyees/sheet.py":318
  * 
  *             # remove multiple consequtive _
  *             done = False             # <<<<<<<<<<<<<<
@@ -9809,7 +10013,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
 */
     __pyx_v_done = 0;
 
-    /* "pyees/sheet.py":306
+    /* "pyees/sheet.py":319
  *             # remove multiple consequtive _
  *             done = False
  *             while not done:             # <<<<<<<<<<<<<<
@@ -9820,32 +10024,32 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
       __pyx_t_5 = (!__pyx_v_done);
       if (!__pyx_t_5) break;
 
-      /* "pyees/sheet.py":307
+      /* "pyees/sheet.py":320
  *             done = False
  *             while not done:
  *                 head = head.replace('__', '_')             # <<<<<<<<<<<<<<
  *                 if not '__' in head:
  *                     done = True
 */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_head, __pyx_mstate_global->__pyx_n_u_replace); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 307, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_head, __pyx_mstate_global->__pyx_n_u_replace); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[1], NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 307, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[2], NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF_SET(__pyx_v_head, __pyx_t_9);
       __pyx_t_9 = 0;
 
-      /* "pyees/sheet.py":308
+      /* "pyees/sheet.py":321
  *             while not done:
  *                 head = head.replace('__', '_')
  *                 if not '__' in head:             # <<<<<<<<<<<<<<
  *                     done = True
  * 
 */
-      __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_n_u__8, __pyx_v_head, Py_NE)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 308, __pyx_L1_error)
+      __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_n_u__9, __pyx_v_head, Py_NE)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 321, __pyx_L1_error)
       if (__pyx_t_5) {
 
-        /* "pyees/sheet.py":309
+        /* "pyees/sheet.py":322
  *                 head = head.replace('__', '_')
  *                 if not '__' in head:
  *                     done = True             # <<<<<<<<<<<<<<
@@ -9854,7 +10058,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
 */
         __pyx_v_done = 1;
 
-        /* "pyees/sheet.py":308
+        /* "pyees/sheet.py":321
  *             while not done:
  *                 head = head.replace('__', '_')
  *                 if not '__' in head:             # <<<<<<<<<<<<<<
@@ -9864,14 +10068,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
       }
     }
 
-    /* "pyees/sheet.py":312
+    /* "pyees/sheet.py":325
  * 
  *             # add "_" to the begining of the name if the first letter is a digit
  *             if head[0].isnumeric():             # <<<<<<<<<<<<<<
  *                 head = '_' + head
  * 
 */
-    __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_head, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 312, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_head, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 325, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_4 = __pyx_t_7;
     __Pyx_INCREF(__pyx_t_4);
@@ -9881,26 +10085,26 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
       __pyx_t_9 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_isnumeric, __pyx_callargs+__pyx_t_10, (1-__pyx_t_10) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 312, __pyx_L1_error)
+      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 325, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
     }
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 312, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 325, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     if (__pyx_t_5) {
 
-      /* "pyees/sheet.py":313
+      /* "pyees/sheet.py":326
  *             # add "_" to the begining of the name if the first letter is a digit
  *             if head[0].isnumeric():
  *                 head = '_' + head             # <<<<<<<<<<<<<<
  * 
  *             # remove "_" if the last letter is "_"
 */
-      __pyx_t_9 = PyNumber_Add(__pyx_mstate_global->__pyx_n_u__7, __pyx_v_head); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 313, __pyx_L1_error)
+      __pyx_t_9 = PyNumber_Add(__pyx_mstate_global->__pyx_n_u__8, __pyx_v_head); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 326, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF_SET(__pyx_v_head, __pyx_t_9);
       __pyx_t_9 = 0;
 
-      /* "pyees/sheet.py":312
+      /* "pyees/sheet.py":325
  * 
  *             # add "_" to the begining of the name if the first letter is a digit
  *             if head[0].isnumeric():             # <<<<<<<<<<<<<<
@@ -9909,41 +10113,41 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
 */
     }
 
-    /* "pyees/sheet.py":316
+    /* "pyees/sheet.py":329
  * 
  *             # remove "_" if the last letter is "_"
  *             if head[-1] == "_" and len(head) != 1:             # <<<<<<<<<<<<<<
  *                 head = head[0:-1]
  * 
 */
-    __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_head, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 316, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_head, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 329, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_11 = (__Pyx_PyUnicode_Equals(__pyx_t_9, __pyx_mstate_global->__pyx_n_u__7, Py_EQ)); if (unlikely((__pyx_t_11 < 0))) __PYX_ERR(0, 316, __pyx_L1_error)
+    __pyx_t_11 = (__Pyx_PyUnicode_Equals(__pyx_t_9, __pyx_mstate_global->__pyx_n_u__8, Py_EQ)); if (unlikely((__pyx_t_11 < 0))) __PYX_ERR(0, 329, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     if (__pyx_t_11) {
     } else {
       __pyx_t_5 = __pyx_t_11;
       goto __pyx_L11_bool_binop_done;
     }
-    __pyx_t_12 = PyObject_Length(__pyx_v_head); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 316, __pyx_L1_error)
+    __pyx_t_12 = PyObject_Length(__pyx_v_head); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 329, __pyx_L1_error)
     __pyx_t_11 = (__pyx_t_12 != 1);
     __pyx_t_5 = __pyx_t_11;
     __pyx_L11_bool_binop_done:;
     if (__pyx_t_5) {
 
-      /* "pyees/sheet.py":317
+      /* "pyees/sheet.py":330
  *             # remove "_" if the last letter is "_"
  *             if head[-1] == "_" and len(head) != 1:
  *                 head = head[0:-1]             # <<<<<<<<<<<<<<
  * 
  *             # add a number to the end of the unit if the unit exists
 */
-      __pyx_t_9 = __Pyx_PyObject_GetSlice(__pyx_v_head, 0, -1L, NULL, NULL, &__pyx_mstate_global->__pyx_slice[0], 1, 1, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyObject_GetSlice(__pyx_v_head, 0, -1L, NULL, NULL, &__pyx_mstate_global->__pyx_slice[0], 1, 1, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 330, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF_SET(__pyx_v_head, __pyx_t_9);
       __pyx_t_9 = 0;
 
-      /* "pyees/sheet.py":316
+      /* "pyees/sheet.py":329
  * 
  *             # remove "_" if the last letter is "_"
  *             if head[-1] == "_" and len(head) != 1:             # <<<<<<<<<<<<<<
@@ -9952,26 +10156,26 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
 */
     }
 
-    /* "pyees/sheet.py":320
+    /* "pyees/sheet.py":333
  * 
  *             # add a number to the end of the unit if the unit exists
  *             if head not in out:             # <<<<<<<<<<<<<<
  *                 out.append(head)
  *             else:
 */
-    __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_v_head, __pyx_v_out, Py_NE)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 320, __pyx_L1_error)
+    __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_v_head, __pyx_v_out, Py_NE)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 333, __pyx_L1_error)
     if (__pyx_t_5) {
 
-      /* "pyees/sheet.py":321
+      /* "pyees/sheet.py":334
  *             # add a number to the end of the unit if the unit exists
  *             if head not in out:
  *                 out.append(head)             # <<<<<<<<<<<<<<
  *             else:
  *                 i, imax, done = 1, 100, False
 */
-      __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_out, __pyx_v_head); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 321, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_out, __pyx_v_head); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 334, __pyx_L1_error)
 
-      /* "pyees/sheet.py":320
+      /* "pyees/sheet.py":333
  * 
  *             # add a number to the end of the unit if the unit exists
  *             if head not in out:             # <<<<<<<<<<<<<<
@@ -9981,7 +10185,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
       goto __pyx_L13;
     }
 
-    /* "pyees/sheet.py":323
+    /* "pyees/sheet.py":336
  *                 out.append(head)
  *             else:
  *                 i, imax, done = 1, 100, False             # <<<<<<<<<<<<<<
@@ -9998,7 +10202,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
       __pyx_v_imax = __pyx_t_13;
       __pyx_v_done = __pyx_t_5;
 
-      /* "pyees/sheet.py":324
+      /* "pyees/sheet.py":337
  *             else:
  *                 i, imax, done = 1, 100, False
  *                 while not done and i <= imax:             # <<<<<<<<<<<<<<
@@ -10012,57 +10216,57 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
           __pyx_t_5 = __pyx_t_11;
           goto __pyx_L16_bool_binop_done;
         }
-        __pyx_t_9 = __Pyx_PyLong_From_long(__pyx_v_imax); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 324, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyLong_From_long(__pyx_v_imax); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 337, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_7 = PyObject_RichCompare(__pyx_v_i, __pyx_t_9, Py_LE); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 324, __pyx_L1_error)
+        __pyx_t_7 = PyObject_RichCompare(__pyx_v_i, __pyx_t_9, Py_LE); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 337, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_11 < 0))) __PYX_ERR(0, 324, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_11 < 0))) __PYX_ERR(0, 337, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __pyx_t_5 = __pyx_t_11;
         __pyx_L16_bool_binop_done:;
         if (!__pyx_t_5) break;
 
-        /* "pyees/sheet.py":325
+        /* "pyees/sheet.py":338
  *                 i, imax, done = 1, 100, False
  *                 while not done and i <= imax:
  *                     h = head + f'_{i+1}'             # <<<<<<<<<<<<<<
  *                     if h not in out:
  *                         out.append(h)
 */
-        __pyx_t_7 = __Pyx_PyLong_AddObjC(__pyx_v_i, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 325, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyLong_AddObjC(__pyx_v_i, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 338, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_9 = __Pyx_PyObject_FormatSimple(__pyx_t_7, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 325, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyObject_FormatSimple(__pyx_t_7, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 338, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __pyx_t_7 = __Pyx_PyUnicode_Concat(__pyx_mstate_global->__pyx_n_u__7, __pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 325, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyUnicode_Concat(__pyx_mstate_global->__pyx_n_u__8, __pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 338, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        __pyx_t_9 = PyNumber_Add(__pyx_v_head, __pyx_t_7); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 325, __pyx_L1_error)
+        __pyx_t_9 = PyNumber_Add(__pyx_v_head, __pyx_t_7); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 338, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_XDECREF_SET(__pyx_v_h, __pyx_t_9);
         __pyx_t_9 = 0;
 
-        /* "pyees/sheet.py":326
+        /* "pyees/sheet.py":339
  *                 while not done and i <= imax:
  *                     h = head + f'_{i+1}'
  *                     if h not in out:             # <<<<<<<<<<<<<<
  *                         out.append(h)
  *                         done = True
 */
-        __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_v_h, __pyx_v_out, Py_NE)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 326, __pyx_L1_error)
+        __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_v_h, __pyx_v_out, Py_NE)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 339, __pyx_L1_error)
         if (__pyx_t_5) {
 
-          /* "pyees/sheet.py":327
+          /* "pyees/sheet.py":340
  *                     h = head + f'_{i+1}'
  *                     if h not in out:
  *                         out.append(h)             # <<<<<<<<<<<<<<
  *                         done = True
  *                     i += 1
 */
-          __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_out, __pyx_v_h); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 327, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_out, __pyx_v_h); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 340, __pyx_L1_error)
 
-          /* "pyees/sheet.py":328
+          /* "pyees/sheet.py":341
  *                     if h not in out:
  *                         out.append(h)
  *                         done = True             # <<<<<<<<<<<<<<
@@ -10071,7 +10275,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
 */
           __pyx_v_done = 1;
 
-          /* "pyees/sheet.py":326
+          /* "pyees/sheet.py":339
  *                 while not done and i <= imax:
  *                     h = head + f'_{i+1}'
  *                     if h not in out:             # <<<<<<<<<<<<<<
@@ -10080,20 +10284,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
 */
         }
 
-        /* "pyees/sheet.py":329
+        /* "pyees/sheet.py":342
  *                         out.append(h)
  *                         done = True
  *                     i += 1             # <<<<<<<<<<<<<<
  *                 if not done:
  *                     raise ValueError(f'The header {head} could not be added to the sheet')
 */
-        __pyx_t_9 = __Pyx_PyLong_AddObjC(__pyx_v_i, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 329, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyLong_AddObjC(__pyx_v_i, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 342, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF_SET(__pyx_v_i, __pyx_t_9);
         __pyx_t_9 = 0;
       }
 
-      /* "pyees/sheet.py":330
+      /* "pyees/sheet.py":343
  *                         done = True
  *                     i += 1
  *                 if not done:             # <<<<<<<<<<<<<<
@@ -10103,7 +10307,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
       __pyx_t_5 = (!__pyx_v_done);
       if (unlikely(__pyx_t_5)) {
 
-        /* "pyees/sheet.py":331
+        /* "pyees/sheet.py":344
  *                     i += 1
  *                 if not done:
  *                     raise ValueError(f'The header {head} could not be added to the sheet')             # <<<<<<<<<<<<<<
@@ -10111,13 +10315,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
  * 
 */
         __pyx_t_7 = NULL;
-        __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_v_head, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 331, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_v_head, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 344, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_14[0] = __pyx_mstate_global->__pyx_kp_u_The_header;
         __pyx_t_14[1] = __pyx_t_4;
         __pyx_t_14[2] = __pyx_mstate_global->__pyx_kp_u_could_not_be_added_to_the_sheet;
         __pyx_t_8 = __Pyx_PyUnicode_Join(__pyx_t_14, 3, 11 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4) + 32, 127 | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4));
-        if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 331, __pyx_L1_error)
+        if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 344, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __pyx_t_10 = 1;
@@ -10126,14 +10330,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
           __pyx_t_9 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_10, (2-__pyx_t_10) | (__pyx_t_10*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 331, __pyx_L1_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 344, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
         }
         __Pyx_Raise(__pyx_t_9, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        __PYX_ERR(0, 331, __pyx_L1_error)
+        __PYX_ERR(0, 344, __pyx_L1_error)
 
-        /* "pyees/sheet.py":330
+        /* "pyees/sheet.py":343
  *                         done = True
  *                     i += 1
  *                 if not done:             # <<<<<<<<<<<<<<
@@ -10144,7 +10348,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
     }
     __pyx_L13:;
 
-    /* "pyees/sheet.py":297
+    /* "pyees/sheet.py":310
  * 
  *         out = []
  *         for head in header:             # <<<<<<<<<<<<<<
@@ -10155,7 +10359,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":332
+  /* "pyees/sheet.py":345
  *                 if not done:
  *                     raise ValueError(f'The header {head} could not be added to the sheet')
  *         return out             # <<<<<<<<<<<<<<
@@ -10167,7 +10371,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
   __pyx_r = __pyx_v_out;
   goto __pyx_L0;
 
-  /* "pyees/sheet.py":294
+  /* "pyees/sheet.py":307
  *         return num - 1
  * 
  *     def formatHeaders(self, header):             # <<<<<<<<<<<<<<
@@ -10194,7 +10398,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_4formatHeaders(CYTHON_
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":334
+/* "pyees/sheet.py":347
  *         return out
  * 
  *     def readData(self):             # <<<<<<<<<<<<<<
@@ -10241,32 +10445,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 334, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 347, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 334, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 347, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "readData", 0) < (0)) __PYX_ERR(0, 334, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "readData", 0) < (0)) __PYX_ERR(0, 347, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("readData", 1, 1, 1, i); __PYX_ERR(0, 334, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("readData", 1, 1, 1, i); __PYX_ERR(0, 347, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 334, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 347, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readData", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 334, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readData", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 347, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -10361,19 +10565,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("readData", 0);
 
-  /* "pyees/sheet.py":335
+  /* "pyees/sheet.py":348
  * 
  *     def readData(self):
  *         self.dat = []             # <<<<<<<<<<<<<<
  * 
  *         # Looping over the sheets in the data file
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 335, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dat, __pyx_t_1) < (0)) __PYX_ERR(0, 335, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dat, __pyx_t_1) < (0)) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":338
+  /* "pyees/sheet.py":351
  * 
  *         # Looping over the sheets in the data file
  *         for ii, sh in enumerate(self.sheets):             # <<<<<<<<<<<<<<
@@ -10382,16 +10586,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
   __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
   __pyx_t_1 = __pyx_mstate_global->__pyx_int_0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 338, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_sheets); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 351, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
     __pyx_t_3 = __pyx_t_2; __Pyx_INCREF(__pyx_t_3);
     __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 338, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 338, __pyx_L1_error)
+    __pyx_t_5 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 351, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   for (;;) {
@@ -10400,7 +10604,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_3);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 338, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 351, __pyx_L1_error)
           #endif
           if (__pyx_t_4 >= __pyx_temp) break;
         }
@@ -10410,7 +10614,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_3);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 338, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 351, __pyx_L1_error)
           #endif
           if (__pyx_t_4 >= __pyx_temp) break;
         }
@@ -10421,13 +10625,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         #endif
         ++__pyx_t_4;
       }
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 338, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 351, __pyx_L1_error)
     } else {
       __pyx_t_2 = __pyx_t_5(__pyx_t_3);
       if (unlikely(!__pyx_t_2)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
-          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 338, __pyx_L1_error)
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 351, __pyx_L1_error)
           PyErr_Clear();
         }
         break;
@@ -10438,13 +10642,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __pyx_t_2 = 0;
     __Pyx_INCREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_ii, __pyx_t_1);
-    __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_t_1, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 338, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_t_1, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 351, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1);
     __pyx_t_1 = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "pyees/sheet.py":340
+    /* "pyees/sheet.py":353
  *         for ii, sh in enumerate(self.sheets):
  * 
  *             sheetData = sheet()             # <<<<<<<<<<<<<<
@@ -10452,7 +10656,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *             workbook = sh.to_python(skip_empty_area=False)
 */
     __pyx_t_6 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 353, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_8 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -10471,13 +10675,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_7, __pyx_callargs+__pyx_t_8, (1-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 340, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 353, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_XDECREF_SET(__pyx_v_sheetData, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "pyees/sheet.py":342
+    /* "pyees/sheet.py":355
  *             sheetData = sheet()
  * 
  *             workbook = sh.to_python(skip_empty_area=False)             # <<<<<<<<<<<<<<
@@ -10489,62 +10693,62 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __pyx_t_8 = 0;
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_7, NULL};
-      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 342, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 355, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_skip_empty_area, Py_False, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 342, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_skip_empty_area, Py_False, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 355, __pyx_L1_error)
       __pyx_t_2 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_to_python, __pyx_callargs+__pyx_t_8, (1-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_6);
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 342, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 355, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_XDECREF_SET(__pyx_v_workbook, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "pyees/sheet.py":344
+    /* "pyees/sheet.py":357
  *             workbook = sh.to_python(skip_empty_area=False)
  * 
  *             dataRange = self.dataRanges[ii]             # <<<<<<<<<<<<<<
  *             uncertRange = self.uncertRanges[ii]
  *             nDataColoumns = len(dataRange)
 */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataRanges); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 344, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dataRanges); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 357, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_v_ii); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 344, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_v_ii); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 357, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF_SET(__pyx_v_dataRange, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "pyees/sheet.py":345
+    /* "pyees/sheet.py":358
  * 
  *             dataRange = self.dataRanges[ii]
  *             uncertRange = self.uncertRanges[ii]             # <<<<<<<<<<<<<<
  *             nDataColoumns = len(dataRange)
  * 
 */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertRanges); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 345, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_uncertRanges); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 358, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_t_6, __pyx_v_ii); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 345, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_t_6, __pyx_v_ii); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 358, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF_SET(__pyx_v_uncertRange, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "pyees/sheet.py":346
+    /* "pyees/sheet.py":359
  *             dataRange = self.dataRanges[ii]
  *             uncertRange = self.uncertRanges[ii]
  *             nDataColoumns = len(dataRange)             # <<<<<<<<<<<<<<
  * 
  * 
 */
-    __pyx_t_9 = PyObject_Length(__pyx_v_dataRange); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 346, __pyx_L1_error)
-    __pyx_t_2 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 346, __pyx_L1_error)
+    __pyx_t_9 = PyObject_Length(__pyx_v_dataRange); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 359, __pyx_L1_error)
+    __pyx_t_2 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 359, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_XDECREF_SET(__pyx_v_nDataColoumns, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "pyees/sheet.py":349
+    /* "pyees/sheet.py":362
  * 
  * 
  *             if not uncertRange is None:             # <<<<<<<<<<<<<<
@@ -10554,32 +10758,32 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __pyx_t_10 = (__pyx_v_uncertRange != Py_None);
     if (__pyx_t_10) {
 
-      /* "pyees/sheet.py":350
+      /* "pyees/sheet.py":363
  * 
  *             if not uncertRange is None:
  *                 nUncertColoumns = len(uncertRange)             # <<<<<<<<<<<<<<
  *                 if nDataColoumns != nUncertColoumns:
  *                     raise ValueError('The number of data coloumns does not match the number of uncertanty coloumn')
 */
-      __pyx_t_9 = PyObject_Length(__pyx_v_uncertRange); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 350, __pyx_L1_error)
+      __pyx_t_9 = PyObject_Length(__pyx_v_uncertRange); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 363, __pyx_L1_error)
       __pyx_v_nUncertColoumns = __pyx_t_9;
 
-      /* "pyees/sheet.py":351
+      /* "pyees/sheet.py":364
  *             if not uncertRange is None:
  *                 nUncertColoumns = len(uncertRange)
  *                 if nDataColoumns != nUncertColoumns:             # <<<<<<<<<<<<<<
  *                     raise ValueError('The number of data coloumns does not match the number of uncertanty coloumn')
  * 
 */
-      __pyx_t_2 = PyLong_FromSsize_t(__pyx_v_nUncertColoumns); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 351, __pyx_L1_error)
+      __pyx_t_2 = PyLong_FromSsize_t(__pyx_v_nUncertColoumns); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 364, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_6 = PyObject_RichCompare(__pyx_v_nDataColoumns, __pyx_t_2, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 351, __pyx_L1_error)
+      __pyx_t_6 = PyObject_RichCompare(__pyx_v_nDataColoumns, __pyx_t_2, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 364, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 351, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 364, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (unlikely(__pyx_t_10)) {
 
-        /* "pyees/sheet.py":352
+        /* "pyees/sheet.py":365
  *                 nUncertColoumns = len(uncertRange)
  *                 if nDataColoumns != nUncertColoumns:
  *                     raise ValueError('The number of data coloumns does not match the number of uncertanty coloumn')             # <<<<<<<<<<<<<<
@@ -10592,14 +10796,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_The_number_of_data_coloumns_does};
           __pyx_t_6 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 352, __pyx_L1_error)
+          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 365, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
         }
         __Pyx_Raise(__pyx_t_6, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __PYX_ERR(0, 352, __pyx_L1_error)
+        __PYX_ERR(0, 365, __pyx_L1_error)
 
-        /* "pyees/sheet.py":351
+        /* "pyees/sheet.py":364
  *             if not uncertRange is None:
  *                 nUncertColoumns = len(uncertRange)
  *                 if nDataColoumns != nUncertColoumns:             # <<<<<<<<<<<<<<
@@ -10608,7 +10812,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
       }
 
-      /* "pyees/sheet.py":349
+      /* "pyees/sheet.py":362
  * 
  * 
  *             if not uncertRange is None:             # <<<<<<<<<<<<<<
@@ -10617,18 +10821,18 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
     }
 
-    /* "pyees/sheet.py":355
+    /* "pyees/sheet.py":368
  * 
  *             ## get the headers and the units
  *             headers, units, workbook = workbook[0], workbook[1], workbook[2:]             # <<<<<<<<<<<<<<
  * 
  *             headers = [headers[i] for i in dataRange]
 */
-    __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_workbook, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 355, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_workbook, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_workbook, 1, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 355, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_workbook, 1, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_workbook, 2, 0, NULL, NULL, &__pyx_mstate_global->__pyx_slice[1], 1, 0, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 355, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_workbook, 2, 0, NULL, NULL, &__pyx_mstate_global->__pyx_slice[1], 1, 0, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_XDECREF_SET(__pyx_v_headers, __pyx_t_6);
     __pyx_t_6 = 0;
@@ -10637,7 +10841,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __Pyx_DECREF_SET(__pyx_v_workbook, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":357
+    /* "pyees/sheet.py":370
  *             headers, units, workbook = workbook[0], workbook[1], workbook[2:]
  * 
  *             headers = [headers[i] for i in dataRange]             # <<<<<<<<<<<<<<
@@ -10645,16 +10849,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  * 
 */
     { /* enter inner scope */
-      __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 357, __pyx_L9_error)
+      __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 370, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_7);
       if (likely(PyList_CheckExact(__pyx_v_dataRange)) || PyTuple_CheckExact(__pyx_v_dataRange)) {
         __pyx_t_2 = __pyx_v_dataRange; __Pyx_INCREF(__pyx_t_2);
         __pyx_t_9 = 0;
         __pyx_t_11 = NULL;
       } else {
-        __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_dataRange); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 357, __pyx_L9_error)
+        __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_dataRange); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 370, __pyx_L9_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 357, __pyx_L9_error)
+        __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 370, __pyx_L9_error)
       }
       for (;;) {
         if (likely(!__pyx_t_11)) {
@@ -10662,7 +10866,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             {
               Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 357, __pyx_L9_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 370, __pyx_L9_error)
               #endif
               if (__pyx_t_9 >= __pyx_temp) break;
             }
@@ -10672,7 +10876,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             {
               Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 357, __pyx_L9_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 370, __pyx_L9_error)
               #endif
               if (__pyx_t_9 >= __pyx_temp) break;
             }
@@ -10683,13 +10887,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             #endif
             ++__pyx_t_9;
           }
-          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 357, __pyx_L9_error)
+          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 370, __pyx_L9_error)
         } else {
           __pyx_t_6 = __pyx_t_11(__pyx_t_2);
           if (unlikely(!__pyx_t_6)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 357, __pyx_L9_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 370, __pyx_L9_error)
               PyErr_Clear();
             }
             break;
@@ -10698,9 +10902,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_XDECREF_SET(__pyx_8genexpr2__pyx_v_i, __pyx_t_6);
         __pyx_t_6 = 0;
-        __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_headers, __pyx_8genexpr2__pyx_v_i); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 357, __pyx_L9_error)
+        __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_headers, __pyx_8genexpr2__pyx_v_i); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 370, __pyx_L9_error)
         __Pyx_GOTREF(__pyx_t_6);
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 357, __pyx_L9_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 370, __pyx_L9_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       }
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -10714,7 +10918,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __Pyx_DECREF_SET(__pyx_v_headers, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":358
+    /* "pyees/sheet.py":371
  * 
  *             headers = [headers[i] for i in dataRange]
  *             units = [units[i] for i in dataRange]             # <<<<<<<<<<<<<<
@@ -10722,16 +10926,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  * 
 */
     { /* enter inner scope */
-      __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 358, __pyx_L16_error)
+      __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 371, __pyx_L16_error)
       __Pyx_GOTREF(__pyx_t_7);
       if (likely(PyList_CheckExact(__pyx_v_dataRange)) || PyTuple_CheckExact(__pyx_v_dataRange)) {
         __pyx_t_2 = __pyx_v_dataRange; __Pyx_INCREF(__pyx_t_2);
         __pyx_t_9 = 0;
         __pyx_t_11 = NULL;
       } else {
-        __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_dataRange); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 358, __pyx_L16_error)
+        __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_dataRange); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 371, __pyx_L16_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 358, __pyx_L16_error)
+        __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 371, __pyx_L16_error)
       }
       for (;;) {
         if (likely(!__pyx_t_11)) {
@@ -10739,7 +10943,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             {
               Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 358, __pyx_L16_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 371, __pyx_L16_error)
               #endif
               if (__pyx_t_9 >= __pyx_temp) break;
             }
@@ -10749,7 +10953,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             {
               Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 358, __pyx_L16_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 371, __pyx_L16_error)
               #endif
               if (__pyx_t_9 >= __pyx_temp) break;
             }
@@ -10760,13 +10964,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             #endif
             ++__pyx_t_9;
           }
-          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 358, __pyx_L16_error)
+          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 371, __pyx_L16_error)
         } else {
           __pyx_t_6 = __pyx_t_11(__pyx_t_2);
           if (unlikely(!__pyx_t_6)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 358, __pyx_L16_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 371, __pyx_L16_error)
               PyErr_Clear();
             }
             break;
@@ -10775,9 +10979,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_XDECREF_SET(__pyx_8genexpr3__pyx_v_i, __pyx_t_6);
         __pyx_t_6 = 0;
-        __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_units, __pyx_8genexpr3__pyx_v_i); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 358, __pyx_L16_error)
+        __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_units, __pyx_8genexpr3__pyx_v_i); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 371, __pyx_L16_error)
         __Pyx_GOTREF(__pyx_t_6);
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 358, __pyx_L16_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 371, __pyx_L16_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       }
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -10791,19 +10995,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __Pyx_DECREF_SET(__pyx_v_units, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":362
+    /* "pyees/sheet.py":375
  * 
  *             ## read the data
  *             data = []             # <<<<<<<<<<<<<<
  *             for i in dataRange:
  *                 dat = [elem[i] for elem in workbook]
 */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 362, __pyx_L1_error)
+    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 375, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_XDECREF_SET(__pyx_v_data, ((PyObject*)__pyx_t_7));
     __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":363
+    /* "pyees/sheet.py":376
  *             ## read the data
  *             data = []
  *             for i in dataRange:             # <<<<<<<<<<<<<<
@@ -10815,9 +11019,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       __pyx_t_9 = 0;
       __pyx_t_11 = NULL;
     } else {
-      __pyx_t_9 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_dataRange); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 363, __pyx_L1_error)
+      __pyx_t_9 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_dataRange); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 376, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 363, __pyx_L1_error)
+      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 376, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_11)) {
@@ -10825,7 +11029,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_7);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 363, __pyx_L1_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 376, __pyx_L1_error)
             #endif
             if (__pyx_t_9 >= __pyx_temp) break;
           }
@@ -10835,7 +11039,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_7);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 363, __pyx_L1_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 376, __pyx_L1_error)
             #endif
             if (__pyx_t_9 >= __pyx_temp) break;
           }
@@ -10846,13 +11050,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           #endif
           ++__pyx_t_9;
         }
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 363, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 376, __pyx_L1_error)
       } else {
         __pyx_t_2 = __pyx_t_11(__pyx_t_7);
         if (unlikely(!__pyx_t_2)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 363, __pyx_L1_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 376, __pyx_L1_error)
             PyErr_Clear();
           }
           break;
@@ -10862,7 +11066,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":364
+      /* "pyees/sheet.py":377
  *             data = []
  *             for i in dataRange:
  *                 dat = [elem[i] for elem in workbook]             # <<<<<<<<<<<<<<
@@ -10870,16 +11074,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                 indexNan = -1
 */
       { /* enter inner scope */
-        __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 364, __pyx_L25_error)
+        __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 377, __pyx_L25_error)
         __Pyx_GOTREF(__pyx_t_2);
         if (likely(PyList_CheckExact(__pyx_v_workbook)) || PyTuple_CheckExact(__pyx_v_workbook)) {
           __pyx_t_6 = __pyx_v_workbook; __Pyx_INCREF(__pyx_t_6);
           __pyx_t_12 = 0;
           __pyx_t_13 = NULL;
         } else {
-          __pyx_t_12 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_v_workbook); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 364, __pyx_L25_error)
+          __pyx_t_12 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_v_workbook); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 377, __pyx_L25_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 364, __pyx_L25_error)
+          __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 377, __pyx_L25_error)
         }
         for (;;) {
           if (likely(!__pyx_t_13)) {
@@ -10887,7 +11091,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               {
                 Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_6);
                 #if !CYTHON_ASSUME_SAFE_SIZE
-                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 364, __pyx_L25_error)
+                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 377, __pyx_L25_error)
                 #endif
                 if (__pyx_t_12 >= __pyx_temp) break;
               }
@@ -10897,7 +11101,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               {
                 Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_6);
                 #if !CYTHON_ASSUME_SAFE_SIZE
-                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 364, __pyx_L25_error)
+                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 377, __pyx_L25_error)
                 #endif
                 if (__pyx_t_12 >= __pyx_temp) break;
               }
@@ -10908,13 +11112,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               #endif
               ++__pyx_t_12;
             }
-            if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 364, __pyx_L25_error)
+            if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 377, __pyx_L25_error)
           } else {
             __pyx_t_14 = __pyx_t_13(__pyx_t_6);
             if (unlikely(!__pyx_t_14)) {
               PyObject* exc_type = PyErr_Occurred();
               if (exc_type) {
-                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 364, __pyx_L25_error)
+                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 377, __pyx_L25_error)
                 PyErr_Clear();
               }
               break;
@@ -10923,9 +11127,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           __Pyx_GOTREF(__pyx_t_14);
           __Pyx_XDECREF_SET(__pyx_8genexpr4__pyx_v_elem, __pyx_t_14);
           __pyx_t_14 = 0;
-          __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_8genexpr4__pyx_v_elem, __pyx_v_i); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 364, __pyx_L25_error)
+          __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_8genexpr4__pyx_v_elem, __pyx_v_i); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 377, __pyx_L25_error)
           __Pyx_GOTREF(__pyx_t_14);
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_14))) __PYX_ERR(0, 364, __pyx_L25_error)
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_14))) __PYX_ERR(0, 377, __pyx_L25_error)
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -10939,7 +11143,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       __Pyx_XDECREF_SET(__pyx_v_dat, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":366
+      /* "pyees/sheet.py":379
  *                 dat = [elem[i] for elem in workbook]
  * 
  *                 indexNan = -1             # <<<<<<<<<<<<<<
@@ -10949,7 +11153,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       __Pyx_INCREF(__pyx_mstate_global->__pyx_int_neg_1);
       __Pyx_XDECREF_SET(__pyx_v_indexNan, __pyx_mstate_global->__pyx_int_neg_1);
 
-      /* "pyees/sheet.py":367
+      /* "pyees/sheet.py":380
  * 
  *                 indexNan = -1
  *                 lastWasNan = False             # <<<<<<<<<<<<<<
@@ -10958,7 +11162,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
       __pyx_v_lastWasNan = 0;
 
-      /* "pyees/sheet.py":368
+      /* "pyees/sheet.py":381
  *                 indexNan = -1
  *                 lastWasNan = False
  *                 for ii in range(len(dat)):             # <<<<<<<<<<<<<<
@@ -10966,8 +11170,8 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                         if dat[ii] != '':
 */
       __pyx_t_6 = NULL;
-      __pyx_t_12 = PyObject_Length(__pyx_v_dat); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 368, __pyx_L1_error)
-      __pyx_t_14 = PyLong_FromSsize_t(__pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 368, __pyx_L1_error)
+      __pyx_t_12 = PyObject_Length(__pyx_v_dat); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 381, __pyx_L1_error)
+      __pyx_t_14 = PyLong_FromSsize_t(__pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 381, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_14);
       __pyx_t_8 = 1;
       {
@@ -10975,12 +11179,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 368, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 381, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
       }
-      __pyx_t_14 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 368, __pyx_L1_error)
+      __pyx_t_14 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 381, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_14);
-      __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 368, __pyx_L1_error)
+      __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 381, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       for (;;) {
         {
@@ -10988,7 +11192,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           if (unlikely(!__pyx_t_2)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 368, __pyx_L1_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 381, __pyx_L1_error)
               PyErr_Clear();
             }
             break;
@@ -10998,7 +11202,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_DECREF_SET(__pyx_v_ii, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "pyees/sheet.py":369
+        /* "pyees/sheet.py":382
  *                 lastWasNan = False
  *                 for ii in range(len(dat)):
  *                     if lastWasNan:             # <<<<<<<<<<<<<<
@@ -11007,20 +11211,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
         if (__pyx_v_lastWasNan) {
 
-          /* "pyees/sheet.py":370
+          /* "pyees/sheet.py":383
  *                 for ii in range(len(dat)):
  *                     if lastWasNan:
  *                         if dat[ii] != '':             # <<<<<<<<<<<<<<
  *                             lastWasNan = False
  *                             indexNan = -1
 */
-          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_dat, __pyx_v_ii); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 370, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_dat, __pyx_v_ii); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 383, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_mstate_global->__pyx_kp_u__2, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 370, __pyx_L1_error)
+          __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_mstate_global->__pyx_kp_u__3, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 383, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           if (__pyx_t_10) {
 
-            /* "pyees/sheet.py":371
+            /* "pyees/sheet.py":384
  *                     if lastWasNan:
  *                         if dat[ii] != '':
  *                             lastWasNan = False             # <<<<<<<<<<<<<<
@@ -11029,7 +11233,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
             __pyx_v_lastWasNan = 0;
 
-            /* "pyees/sheet.py":372
+            /* "pyees/sheet.py":385
  *                         if dat[ii] != '':
  *                             lastWasNan = False
  *                             indexNan = -1             # <<<<<<<<<<<<<<
@@ -11039,7 +11243,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             __Pyx_INCREF(__pyx_mstate_global->__pyx_int_neg_1);
             __Pyx_DECREF_SET(__pyx_v_indexNan, __pyx_mstate_global->__pyx_int_neg_1);
 
-            /* "pyees/sheet.py":370
+            /* "pyees/sheet.py":383
  *                 for ii in range(len(dat)):
  *                     if lastWasNan:
  *                         if dat[ii] != '':             # <<<<<<<<<<<<<<
@@ -11048,7 +11252,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
           }
 
-          /* "pyees/sheet.py":369
+          /* "pyees/sheet.py":382
  *                 lastWasNan = False
  *                 for ii in range(len(dat)):
  *                     if lastWasNan:             # <<<<<<<<<<<<<<
@@ -11058,7 +11262,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           goto __pyx_L32;
         }
 
-        /* "pyees/sheet.py":374
+        /* "pyees/sheet.py":387
  *                             indexNan = -1
  *                     else:
  *                         if dat[ii] != '':             # <<<<<<<<<<<<<<
@@ -11066,13 +11270,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                 data.append(dat[0:indexNan+1])
 */
         /*else*/ {
-          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_dat, __pyx_v_ii); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 374, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_dat, __pyx_v_ii); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 387, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_mstate_global->__pyx_kp_u__2, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 374, __pyx_L1_error)
+          __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_mstate_global->__pyx_kp_u__3, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 387, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           if (__pyx_t_10) {
 
-            /* "pyees/sheet.py":375
+            /* "pyees/sheet.py":388
  *                     else:
  *                         if dat[ii] != '':
  *                             indexNan = ii             # <<<<<<<<<<<<<<
@@ -11082,7 +11286,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             __Pyx_INCREF(__pyx_v_ii);
             __Pyx_DECREF_SET(__pyx_v_indexNan, __pyx_v_ii);
 
-            /* "pyees/sheet.py":374
+            /* "pyees/sheet.py":387
  *                             indexNan = -1
  *                     else:
  *                         if dat[ii] != '':             # <<<<<<<<<<<<<<
@@ -11093,7 +11297,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         }
         __pyx_L32:;
 
-        /* "pyees/sheet.py":368
+        /* "pyees/sheet.py":381
  *                 indexNan = -1
  *                 lastWasNan = False
  *                 for ii in range(len(dat)):             # <<<<<<<<<<<<<<
@@ -11103,22 +11307,22 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       }
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
 
-      /* "pyees/sheet.py":376
+      /* "pyees/sheet.py":389
  *                         if dat[ii] != '':
  *                             indexNan = ii
  *                 data.append(dat[0:indexNan+1])             # <<<<<<<<<<<<<<
  * 
  *             validData = False
 */
-      __pyx_t_14 = __Pyx_PyLong_AddObjC(__pyx_v_indexNan, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 376, __pyx_L1_error)
+      __pyx_t_14 = __Pyx_PyLong_AddObjC(__pyx_v_indexNan, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 389, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_14);
-      __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_v_dat, 0, 0, NULL, &__pyx_t_14, NULL, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 376, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_v_dat, 0, 0, NULL, &__pyx_t_14, NULL, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 389, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-      __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_data, __pyx_t_2); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 376, __pyx_L1_error)
+      __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_data, __pyx_t_2); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 389, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":363
+      /* "pyees/sheet.py":376
  *             ## read the data
  *             data = []
  *             for i in dataRange:             # <<<<<<<<<<<<<<
@@ -11128,7 +11332,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     }
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":378
+    /* "pyees/sheet.py":391
  *                 data.append(dat[0:indexNan+1])
  * 
  *             validData = False             # <<<<<<<<<<<<<<
@@ -11137,7 +11341,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
     __pyx_v_validData = 0;
 
-    /* "pyees/sheet.py":379
+    /* "pyees/sheet.py":392
  * 
  *             validData = False
  *             for dat in data:             # <<<<<<<<<<<<<<
@@ -11150,28 +11354,28 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       {
         Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_7);
         #if !CYTHON_ASSUME_SAFE_SIZE
-        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 379, __pyx_L1_error)
+        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 392, __pyx_L1_error)
         #endif
         if (__pyx_t_9 >= __pyx_temp) break;
       }
       __pyx_t_2 = __Pyx_PyList_GetItemRefFast(__pyx_t_7, __pyx_t_9, __Pyx_ReferenceSharing_OwnStrongReference);
       ++__pyx_t_9;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 379, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 392, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_v_dat, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":380
+      /* "pyees/sheet.py":393
  *             validData = False
  *             for dat in data:
  *                 if dat:             # <<<<<<<<<<<<<<
  *                     validData = True
  *                     break
 */
-      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_dat); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 380, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_dat); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 393, __pyx_L1_error)
       if (__pyx_t_10) {
 
-        /* "pyees/sheet.py":381
+        /* "pyees/sheet.py":394
  *             for dat in data:
  *                 if dat:
  *                     validData = True             # <<<<<<<<<<<<<<
@@ -11180,7 +11384,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
         __pyx_v_validData = 1;
 
-        /* "pyees/sheet.py":382
+        /* "pyees/sheet.py":395
  *                 if dat:
  *                     validData = True
  *                     break             # <<<<<<<<<<<<<<
@@ -11189,7 +11393,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
         goto __pyx_L38_break;
 
-        /* "pyees/sheet.py":380
+        /* "pyees/sheet.py":393
  *             validData = False
  *             for dat in data:
  *                 if dat:             # <<<<<<<<<<<<<<
@@ -11198,7 +11402,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
       }
 
-      /* "pyees/sheet.py":379
+      /* "pyees/sheet.py":392
  * 
  *             validData = False
  *             for dat in data:             # <<<<<<<<<<<<<<
@@ -11213,7 +11417,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     goto __pyx_L40_for_end;
     __pyx_L40_for_end:;
 
-    /* "pyees/sheet.py":383
+    /* "pyees/sheet.py":396
  *                     validData = True
  *                     break
  *             if not validData:             # <<<<<<<<<<<<<<
@@ -11223,7 +11427,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __pyx_t_10 = (!__pyx_v_validData);
     if (unlikely(__pyx_t_10)) {
 
-      /* "pyees/sheet.py":384
+      /* "pyees/sheet.py":397
  *                     break
  *             if not validData:
  *                 raise ValueError("There is no valid data in the data sheet")             # <<<<<<<<<<<<<<
@@ -11236,14 +11440,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_There_is_no_valid_data_in_the_da};
         __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 384, __pyx_L1_error)
+        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 397, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
       }
       __Pyx_Raise(__pyx_t_7, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __PYX_ERR(0, 384, __pyx_L1_error)
+      __PYX_ERR(0, 397, __pyx_L1_error)
 
-      /* "pyees/sheet.py":383
+      /* "pyees/sheet.py":396
  *                     validData = True
  *                     break
  *             if not validData:             # <<<<<<<<<<<<<<
@@ -11252,7 +11456,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
     }
 
-    /* "pyees/sheet.py":387
+    /* "pyees/sheet.py":400
  * 
  * 
  *             nData = max([len(d) for d in data])             # <<<<<<<<<<<<<<
@@ -11261,7 +11465,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
     __pyx_t_2 = NULL;
     { /* enter inner scope */
-      __pyx_t_14 = PyList_New(0); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 387, __pyx_L44_error)
+      __pyx_t_14 = PyList_New(0); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 400, __pyx_L44_error)
       __Pyx_GOTREF(__pyx_t_14);
       __pyx_t_6 = __pyx_v_data; __Pyx_INCREF(__pyx_t_6);
       __pyx_t_9 = 0;
@@ -11269,20 +11473,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_6);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 387, __pyx_L44_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 400, __pyx_L44_error)
           #endif
           if (__pyx_t_9 >= __pyx_temp) break;
         }
         __pyx_t_16 = __Pyx_PyList_GetItemRefFast(__pyx_t_6, __pyx_t_9, __Pyx_ReferenceSharing_OwnStrongReference);
         ++__pyx_t_9;
-        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 387, __pyx_L44_error)
+        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 400, __pyx_L44_error)
         __Pyx_GOTREF(__pyx_t_16);
         __Pyx_XDECREF_SET(__pyx_8genexpr5__pyx_v_d, __pyx_t_16);
         __pyx_t_16 = 0;
-        __pyx_t_12 = PyObject_Length(__pyx_8genexpr5__pyx_v_d); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 387, __pyx_L44_error)
-        __pyx_t_16 = PyLong_FromSsize_t(__pyx_t_12); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 387, __pyx_L44_error)
+        __pyx_t_12 = PyObject_Length(__pyx_8genexpr5__pyx_v_d); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 400, __pyx_L44_error)
+        __pyx_t_16 = PyLong_FromSsize_t(__pyx_t_12); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 400, __pyx_L44_error)
         __Pyx_GOTREF(__pyx_t_16);
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_14, (PyObject*)__pyx_t_16))) __PYX_ERR(0, 387, __pyx_L44_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_14, (PyObject*)__pyx_t_16))) __PYX_ERR(0, 400, __pyx_L44_error)
         __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -11299,13 +11503,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)__pyx_builtin_max, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 387, __pyx_L1_error)
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 400, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
     }
     __Pyx_XDECREF_SET(__pyx_v_nData, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":388
+    /* "pyees/sheet.py":401
  * 
  *             nData = max([len(d) for d in data])
  *             for i, d in enumerate(data):             # <<<<<<<<<<<<<<
@@ -11320,66 +11524,66 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       {
         Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_14);
         #if !CYTHON_ASSUME_SAFE_SIZE
-        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 388, __pyx_L1_error)
+        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 401, __pyx_L1_error)
         #endif
         if (__pyx_t_9 >= __pyx_temp) break;
       }
       __pyx_t_2 = __Pyx_PyList_GetItemRefFast(__pyx_t_14, __pyx_t_9, __Pyx_ReferenceSharing_OwnStrongReference);
       ++__pyx_t_9;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 388, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 401, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_v_d, __pyx_t_2);
       __pyx_t_2 = 0;
       __Pyx_INCREF(__pyx_t_7);
       __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_7);
-      __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_t_7, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 388, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_t_7, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 401, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_7);
       __pyx_t_7 = __pyx_t_2;
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":389
+      /* "pyees/sheet.py":402
  *             nData = max([len(d) for d in data])
  *             for i, d in enumerate(data):
  *                 if len(d) != nData:             # <<<<<<<<<<<<<<
  *                     data[i] = [np.nan] * nData
  * 
 */
-      __pyx_t_12 = PyObject_Length(__pyx_v_d); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 389, __pyx_L1_error)
-      __pyx_t_2 = PyLong_FromSsize_t(__pyx_t_12); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 389, __pyx_L1_error)
+      __pyx_t_12 = PyObject_Length(__pyx_v_d); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 402, __pyx_L1_error)
+      __pyx_t_2 = PyLong_FromSsize_t(__pyx_t_12); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_6 = PyObject_RichCompare(__pyx_t_2, __pyx_v_nData, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 389, __pyx_L1_error)
+      __pyx_t_6 = PyObject_RichCompare(__pyx_t_2, __pyx_v_nData, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 402, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 389, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 402, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (__pyx_t_10) {
 
-        /* "pyees/sheet.py":390
+        /* "pyees/sheet.py":403
  *             for i, d in enumerate(data):
  *                 if len(d) != nData:
  *                     data[i] = [np.nan] * nData             # <<<<<<<<<<<<<<
  * 
  *             uncertIsZero = uncertRange is None
 */
-        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 390, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 403, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_nan); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 390, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_nan); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 403, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_6 = PyList_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 390, __pyx_L1_error)
+        __pyx_t_6 = PyList_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 403, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_GIVEREF(__pyx_t_2);
-        if (__Pyx_PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_2) != (0)) __PYX_ERR(0, 390, __pyx_L1_error);
-        { PyObject* __pyx_temp = PyNumber_InPlaceMultiply(__pyx_t_6, __pyx_v_nData); if (unlikely(!__pyx_temp)) __PYX_ERR(0, 390, __pyx_L1_error)
+        if (__Pyx_PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_2) != (0)) __PYX_ERR(0, 403, __pyx_L1_error);
+        { PyObject* __pyx_temp = PyNumber_InPlaceMultiply(__pyx_t_6, __pyx_v_nData); if (unlikely(!__pyx_temp)) __PYX_ERR(0, 403, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_temp);
           __Pyx_DECREF(__pyx_t_6);
           __pyx_t_6 = __pyx_temp;
         }
         __pyx_t_2 = 0;
-        if (unlikely((PyObject_SetItem(__pyx_v_data, __pyx_v_i, __pyx_t_6) < 0))) __PYX_ERR(0, 390, __pyx_L1_error)
+        if (unlikely((PyObject_SetItem(__pyx_v_data, __pyx_v_i, __pyx_t_6) < 0))) __PYX_ERR(0, 403, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "pyees/sheet.py":389
+        /* "pyees/sheet.py":402
  *             nData = max([len(d) for d in data])
  *             for i, d in enumerate(data):
  *                 if len(d) != nData:             # <<<<<<<<<<<<<<
@@ -11388,7 +11592,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
       }
 
-      /* "pyees/sheet.py":388
+      /* "pyees/sheet.py":401
  * 
  *             nData = max([len(d) for d in data])
  *             for i, d in enumerate(data):             # <<<<<<<<<<<<<<
@@ -11399,7 +11603,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":392
+    /* "pyees/sheet.py":405
  *                     data[i] = [np.nan] * nData
  * 
  *             uncertIsZero = uncertRange is None             # <<<<<<<<<<<<<<
@@ -11407,12 +11611,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                 uncert = []
 */
     __pyx_t_10 = (__pyx_v_uncertRange == Py_None);
-    __pyx_t_7 = __Pyx_PyBool_FromLong(__pyx_t_10); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 392, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyBool_FromLong(__pyx_t_10); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 405, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_XDECREF_SET(__pyx_v_uncertIsZero, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "pyees/sheet.py":393
+    /* "pyees/sheet.py":406
  * 
  *             uncertIsZero = uncertRange is None
  *             if not uncertRange is None:             # <<<<<<<<<<<<<<
@@ -11422,19 +11626,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __pyx_t_10 = (__pyx_v_uncertRange != Py_None);
     if (__pyx_t_10) {
 
-      /* "pyees/sheet.py":394
+      /* "pyees/sheet.py":407
  *             uncertIsZero = uncertRange is None
  *             if not uncertRange is None:
  *                 uncert = []             # <<<<<<<<<<<<<<
  *                 for i in uncertRange:
  *                     unc = [elem[i] for elem in workbook]
 */
-      __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 394, __pyx_L1_error)
+      __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 407, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_XDECREF_SET(__pyx_v_uncert, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":395
+      /* "pyees/sheet.py":408
  *             if not uncertRange is None:
  *                 uncert = []
  *                 for i in uncertRange:             # <<<<<<<<<<<<<<
@@ -11446,9 +11650,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __pyx_t_9 = 0;
         __pyx_t_11 = NULL;
       } else {
-        __pyx_t_9 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_uncertRange); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 395, __pyx_L1_error)
+        __pyx_t_9 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_uncertRange); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 408, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 395, __pyx_L1_error)
+        __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 408, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_11)) {
@@ -11456,7 +11660,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             {
               Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_7);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 395, __pyx_L1_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 408, __pyx_L1_error)
               #endif
               if (__pyx_t_9 >= __pyx_temp) break;
             }
@@ -11466,7 +11670,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             {
               Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_7);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 395, __pyx_L1_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 408, __pyx_L1_error)
               #endif
               if (__pyx_t_9 >= __pyx_temp) break;
             }
@@ -11477,13 +11681,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             #endif
             ++__pyx_t_9;
           }
-          if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 395, __pyx_L1_error)
+          if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 408, __pyx_L1_error)
         } else {
           __pyx_t_14 = __pyx_t_11(__pyx_t_7);
           if (unlikely(!__pyx_t_14)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 395, __pyx_L1_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 408, __pyx_L1_error)
               PyErr_Clear();
             }
             break;
@@ -11493,7 +11697,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_14);
         __pyx_t_14 = 0;
 
-        /* "pyees/sheet.py":396
+        /* "pyees/sheet.py":409
  *                 uncert = []
  *                 for i in uncertRange:
  *                     unc = [elem[i] for elem in workbook]             # <<<<<<<<<<<<<<
@@ -11501,16 +11705,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                     indexNan = -1
 */
         { /* enter inner scope */
-          __pyx_t_14 = PyList_New(0); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 396, __pyx_L58_error)
+          __pyx_t_14 = PyList_New(0); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 409, __pyx_L58_error)
           __Pyx_GOTREF(__pyx_t_14);
           if (likely(PyList_CheckExact(__pyx_v_workbook)) || PyTuple_CheckExact(__pyx_v_workbook)) {
             __pyx_t_6 = __pyx_v_workbook; __Pyx_INCREF(__pyx_t_6);
             __pyx_t_12 = 0;
             __pyx_t_13 = NULL;
           } else {
-            __pyx_t_12 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_v_workbook); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 396, __pyx_L58_error)
+            __pyx_t_12 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_v_workbook); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 409, __pyx_L58_error)
             __Pyx_GOTREF(__pyx_t_6);
-            __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 396, __pyx_L58_error)
+            __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 409, __pyx_L58_error)
           }
           for (;;) {
             if (likely(!__pyx_t_13)) {
@@ -11518,7 +11722,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_6);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 396, __pyx_L58_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 409, __pyx_L58_error)
                   #endif
                   if (__pyx_t_12 >= __pyx_temp) break;
                 }
@@ -11528,7 +11732,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_6);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 396, __pyx_L58_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 409, __pyx_L58_error)
                   #endif
                   if (__pyx_t_12 >= __pyx_temp) break;
                 }
@@ -11539,13 +11743,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 #endif
                 ++__pyx_t_12;
               }
-              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 396, __pyx_L58_error)
+              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 409, __pyx_L58_error)
             } else {
               __pyx_t_2 = __pyx_t_13(__pyx_t_6);
               if (unlikely(!__pyx_t_2)) {
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
-                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 396, __pyx_L58_error)
+                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 409, __pyx_L58_error)
                   PyErr_Clear();
                 }
                 break;
@@ -11554,9 +11758,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_XDECREF_SET(__pyx_8genexpr6__pyx_v_elem, __pyx_t_2);
             __pyx_t_2 = 0;
-            __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_8genexpr6__pyx_v_elem, __pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 396, __pyx_L58_error)
+            __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_8genexpr6__pyx_v_elem, __pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 409, __pyx_L58_error)
             __Pyx_GOTREF(__pyx_t_2);
-            if (unlikely(__Pyx_ListComp_Append(__pyx_t_14, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 396, __pyx_L58_error)
+            if (unlikely(__Pyx_ListComp_Append(__pyx_t_14, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 409, __pyx_L58_error)
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           }
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -11570,7 +11774,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_XDECREF_SET(__pyx_v_unc, __pyx_t_14);
         __pyx_t_14 = 0;
 
-        /* "pyees/sheet.py":398
+        /* "pyees/sheet.py":411
  *                     unc = [elem[i] for elem in workbook]
  * 
  *                     indexNan = -1             # <<<<<<<<<<<<<<
@@ -11580,7 +11784,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_INCREF(__pyx_mstate_global->__pyx_int_neg_1);
         __Pyx_XDECREF_SET(__pyx_v_indexNan, __pyx_mstate_global->__pyx_int_neg_1);
 
-        /* "pyees/sheet.py":399
+        /* "pyees/sheet.py":412
  * 
  *                     indexNan = -1
  *                     lastWasNan = False             # <<<<<<<<<<<<<<
@@ -11589,7 +11793,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
         __pyx_v_lastWasNan = 0;
 
-        /* "pyees/sheet.py":400
+        /* "pyees/sheet.py":413
  *                     indexNan = -1
  *                     lastWasNan = False
  *                     for ii in range(len(unc)):             # <<<<<<<<<<<<<<
@@ -11597,8 +11801,8 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                             if unc[ii] != '':
 */
         __pyx_t_6 = NULL;
-        __pyx_t_12 = PyObject_Length(__pyx_v_unc); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 400, __pyx_L1_error)
-        __pyx_t_2 = PyLong_FromSsize_t(__pyx_t_12); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
+        __pyx_t_12 = PyObject_Length(__pyx_v_unc); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 413, __pyx_L1_error)
+        __pyx_t_2 = PyLong_FromSsize_t(__pyx_t_12); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 413, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __pyx_t_8 = 1;
         {
@@ -11606,12 +11810,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           __pyx_t_14 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 400, __pyx_L1_error)
+          if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 413, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_14);
         }
-        __pyx_t_2 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
+        __pyx_t_2 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 413, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 400, __pyx_L1_error)
+        __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 413, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
         for (;;) {
           {
@@ -11619,7 +11823,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             if (unlikely(!__pyx_t_14)) {
               PyObject* exc_type = PyErr_Occurred();
               if (exc_type) {
-                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 400, __pyx_L1_error)
+                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 413, __pyx_L1_error)
                 PyErr_Clear();
               }
               break;
@@ -11629,7 +11833,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           __Pyx_DECREF_SET(__pyx_v_ii, __pyx_t_14);
           __pyx_t_14 = 0;
 
-          /* "pyees/sheet.py":401
+          /* "pyees/sheet.py":414
  *                     lastWasNan = False
  *                     for ii in range(len(unc)):
  *                         if lastWasNan:             # <<<<<<<<<<<<<<
@@ -11638,20 +11842,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
           if (__pyx_v_lastWasNan) {
 
-            /* "pyees/sheet.py":402
+            /* "pyees/sheet.py":415
  *                     for ii in range(len(unc)):
  *                         if lastWasNan:
  *                             if unc[ii] != '':             # <<<<<<<<<<<<<<
  *                                 lastWasNan = False
  *                                 indexNan = -1
 */
-            __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_unc, __pyx_v_ii); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 402, __pyx_L1_error)
+            __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_unc, __pyx_v_ii); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 415, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_14);
-            __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_14, __pyx_mstate_global->__pyx_kp_u__2, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 402, __pyx_L1_error)
+            __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_14, __pyx_mstate_global->__pyx_kp_u__3, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 415, __pyx_L1_error)
             __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
             if (__pyx_t_10) {
 
-              /* "pyees/sheet.py":403
+              /* "pyees/sheet.py":416
  *                         if lastWasNan:
  *                             if unc[ii] != '':
  *                                 lastWasNan = False             # <<<<<<<<<<<<<<
@@ -11660,7 +11864,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
               __pyx_v_lastWasNan = 0;
 
-              /* "pyees/sheet.py":404
+              /* "pyees/sheet.py":417
  *                             if unc[ii] != '':
  *                                 lastWasNan = False
  *                                 indexNan = -1             # <<<<<<<<<<<<<<
@@ -11670,7 +11874,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               __Pyx_INCREF(__pyx_mstate_global->__pyx_int_neg_1);
               __Pyx_DECREF_SET(__pyx_v_indexNan, __pyx_mstate_global->__pyx_int_neg_1);
 
-              /* "pyees/sheet.py":402
+              /* "pyees/sheet.py":415
  *                     for ii in range(len(unc)):
  *                         if lastWasNan:
  *                             if unc[ii] != '':             # <<<<<<<<<<<<<<
@@ -11679,7 +11883,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
             }
 
-            /* "pyees/sheet.py":401
+            /* "pyees/sheet.py":414
  *                     lastWasNan = False
  *                     for ii in range(len(unc)):
  *                         if lastWasNan:             # <<<<<<<<<<<<<<
@@ -11689,7 +11893,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             goto __pyx_L65;
           }
 
-          /* "pyees/sheet.py":406
+          /* "pyees/sheet.py":419
  *                                 indexNan = -1
  *                         else:
  *                             if unc[ii] != '':             # <<<<<<<<<<<<<<
@@ -11697,13 +11901,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                     uncert.append(unc[0:indexNan+1])
 */
           /*else*/ {
-            __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_unc, __pyx_v_ii); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 406, __pyx_L1_error)
+            __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_unc, __pyx_v_ii); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 419, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_14);
-            __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_14, __pyx_mstate_global->__pyx_kp_u__2, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 406, __pyx_L1_error)
+            __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_14, __pyx_mstate_global->__pyx_kp_u__3, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 419, __pyx_L1_error)
             __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
             if (__pyx_t_10) {
 
-              /* "pyees/sheet.py":407
+              /* "pyees/sheet.py":420
  *                         else:
  *                             if unc[ii] != '':
  *                                 indexNan = ii             # <<<<<<<<<<<<<<
@@ -11713,7 +11917,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               __Pyx_INCREF(__pyx_v_ii);
               __Pyx_DECREF_SET(__pyx_v_indexNan, __pyx_v_ii);
 
-              /* "pyees/sheet.py":406
+              /* "pyees/sheet.py":419
  *                                 indexNan = -1
  *                         else:
  *                             if unc[ii] != '':             # <<<<<<<<<<<<<<
@@ -11724,7 +11928,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           }
           __pyx_L65:;
 
-          /* "pyees/sheet.py":400
+          /* "pyees/sheet.py":413
  *                     indexNan = -1
  *                     lastWasNan = False
  *                     for ii in range(len(unc)):             # <<<<<<<<<<<<<<
@@ -11734,22 +11938,22 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         }
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-        /* "pyees/sheet.py":408
+        /* "pyees/sheet.py":421
  *                             if unc[ii] != '':
  *                                 indexNan = ii
  *                     uncert.append(unc[0:indexNan+1])             # <<<<<<<<<<<<<<
  *                     validUncert = False
  *                     for unc in uncert:
 */
-        __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_v_indexNan, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 408, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_v_indexNan, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 421, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_14 = __Pyx_PyObject_GetSlice(__pyx_v_unc, 0, 0, NULL, &__pyx_t_2, NULL, 1, 0, 1); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 408, __pyx_L1_error)
+        __pyx_t_14 = __Pyx_PyObject_GetSlice(__pyx_v_unc, 0, 0, NULL, &__pyx_t_2, NULL, 1, 0, 1); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 421, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_14);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __pyx_t_15 = __Pyx_PyObject_Append(__pyx_v_uncert, __pyx_t_14); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 408, __pyx_L1_error)
+        __pyx_t_15 = __Pyx_PyObject_Append(__pyx_v_uncert, __pyx_t_14); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 421, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
 
-        /* "pyees/sheet.py":409
+        /* "pyees/sheet.py":422
  *                                 indexNan = ii
  *                     uncert.append(unc[0:indexNan+1])
  *                     validUncert = False             # <<<<<<<<<<<<<<
@@ -11758,7 +11962,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
         __pyx_v_validUncert = 0;
 
-        /* "pyees/sheet.py":410
+        /* "pyees/sheet.py":423
  *                     uncert.append(unc[0:indexNan+1])
  *                     validUncert = False
  *                     for unc in uncert:             # <<<<<<<<<<<<<<
@@ -11771,28 +11975,28 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_14);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 410, __pyx_L1_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 423, __pyx_L1_error)
             #endif
             if (__pyx_t_12 >= __pyx_temp) break;
           }
           __pyx_t_2 = __Pyx_PyList_GetItemRefFast(__pyx_t_14, __pyx_t_12, __Pyx_ReferenceSharing_OwnStrongReference);
           ++__pyx_t_12;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 410, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 423, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF_SET(__pyx_v_unc, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "pyees/sheet.py":411
+          /* "pyees/sheet.py":424
  *                     validUncert = False
  *                     for unc in uncert:
  *                         if unc:             # <<<<<<<<<<<<<<
  *                             validUncert = True
  *                             break
 */
-          __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_unc); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 411, __pyx_L1_error)
+          __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_unc); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 424, __pyx_L1_error)
           if (__pyx_t_10) {
 
-            /* "pyees/sheet.py":412
+            /* "pyees/sheet.py":425
  *                     for unc in uncert:
  *                         if unc:
  *                             validUncert = True             # <<<<<<<<<<<<<<
@@ -11801,7 +12005,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
             __pyx_v_validUncert = 1;
 
-            /* "pyees/sheet.py":413
+            /* "pyees/sheet.py":426
  *                         if unc:
  *                             validUncert = True
  *                             break             # <<<<<<<<<<<<<<
@@ -11810,7 +12014,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
             goto __pyx_L70_break;
 
-            /* "pyees/sheet.py":411
+            /* "pyees/sheet.py":424
  *                     validUncert = False
  *                     for unc in uncert:
  *                         if unc:             # <<<<<<<<<<<<<<
@@ -11819,7 +12023,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
           }
 
-          /* "pyees/sheet.py":410
+          /* "pyees/sheet.py":423
  *                     uncert.append(unc[0:indexNan+1])
  *                     validUncert = False
  *                     for unc in uncert:             # <<<<<<<<<<<<<<
@@ -11834,7 +12038,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         goto __pyx_L72_for_end;
         __pyx_L72_for_end:;
 
-        /* "pyees/sheet.py":414
+        /* "pyees/sheet.py":427
  *                             validUncert = True
  *                             break
  *                     if not validUncert:             # <<<<<<<<<<<<<<
@@ -11844,7 +12048,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __pyx_t_10 = (!__pyx_v_validUncert);
         if (unlikely(__pyx_t_10)) {
 
-          /* "pyees/sheet.py":415
+          /* "pyees/sheet.py":428
  *                             break
  *                     if not validUncert:
  *                         raise ValueError("There is no valid uncertanty in the data sheet")             # <<<<<<<<<<<<<<
@@ -11857,14 +12061,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_There_is_no_valid_uncertanty_in};
             __pyx_t_14 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-            if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 415, __pyx_L1_error)
+            if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 428, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_14);
           }
           __Pyx_Raise(__pyx_t_14, 0, 0, 0);
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-          __PYX_ERR(0, 415, __pyx_L1_error)
+          __PYX_ERR(0, 428, __pyx_L1_error)
 
-          /* "pyees/sheet.py":414
+          /* "pyees/sheet.py":427
  *                             validUncert = True
  *                             break
  *                     if not validUncert:             # <<<<<<<<<<<<<<
@@ -11873,7 +12077,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
         }
 
-        /* "pyees/sheet.py":395
+        /* "pyees/sheet.py":408
  *             if not uncertRange is None:
  *                 uncert = []
  *                 for i in uncertRange:             # <<<<<<<<<<<<<<
@@ -11883,7 +12087,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       }
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":393
+      /* "pyees/sheet.py":406
  * 
  *             uncertIsZero = uncertRange is None
  *             if not uncertRange is None:             # <<<<<<<<<<<<<<
@@ -11892,69 +12096,69 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
     }
 
-    /* "pyees/sheet.py":417
+    /* "pyees/sheet.py":430
  *                         raise ValueError("There is no valid uncertanty in the data sheet")
  * 
  *             if uncertIsZero:             # <<<<<<<<<<<<<<
  *                 n = len(data)
  *                 m = len(data[0])
 */
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_uncertIsZero); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 417, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_uncertIsZero); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 430, __pyx_L1_error)
     if (__pyx_t_10) {
 
-      /* "pyees/sheet.py":418
+      /* "pyees/sheet.py":431
  * 
  *             if uncertIsZero:
  *                 n = len(data)             # <<<<<<<<<<<<<<
  *                 m = len(data[0])
  *                 uncert = [[0] * m] * n
 */
-      __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_v_data); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 418, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_v_data); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 431, __pyx_L1_error)
       __pyx_v_n = __pyx_t_9;
 
-      /* "pyees/sheet.py":419
+      /* "pyees/sheet.py":432
  *             if uncertIsZero:
  *                 n = len(data)
  *                 m = len(data[0])             # <<<<<<<<<<<<<<
  *                 uncert = [[0] * m] * n
  * 
 */
-      __pyx_t_7 = __Pyx_GetItemInt_List(__pyx_v_data, 0, long, 1, __Pyx_PyLong_From_long, 1, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 419, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_GetItemInt_List(__pyx_v_data, 0, long, 1, __Pyx_PyLong_From_long, 1, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 432, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_9 = PyObject_Length(__pyx_t_7); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 419, __pyx_L1_error)
+      __pyx_t_9 = PyObject_Length(__pyx_t_7); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 432, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_v_m = __pyx_t_9;
 
-      /* "pyees/sheet.py":420
+      /* "pyees/sheet.py":433
  *                 n = len(data)
  *                 m = len(data[0])
  *                 uncert = [[0] * m] * n             # <<<<<<<<<<<<<<
  * 
  *             nUncert = len(uncert[0])
 */
-      __pyx_t_7 = PyList_New(1 * ((__pyx_v_m<0) ? 0:__pyx_v_m)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 420, __pyx_L1_error)
+      __pyx_t_7 = PyList_New(1 * ((__pyx_v_m<0) ? 0:__pyx_v_m)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 433, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       { Py_ssize_t __pyx_temp;
         for (__pyx_temp=0; __pyx_temp < __pyx_v_m; __pyx_temp++) {
           __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
           __Pyx_GIVEREF(__pyx_mstate_global->__pyx_int_0);
-          if (__Pyx_PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_mstate_global->__pyx_int_0) != (0)) __PYX_ERR(0, 420, __pyx_L1_error);
+          if (__Pyx_PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_mstate_global->__pyx_int_0) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
         }
       }
-      __pyx_t_14 = PyList_New(1 * ((__pyx_v_n<0) ? 0:__pyx_v_n)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 420, __pyx_L1_error)
+      __pyx_t_14 = PyList_New(1 * ((__pyx_v_n<0) ? 0:__pyx_v_n)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 433, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_14);
       { Py_ssize_t __pyx_temp;
         for (__pyx_temp=0; __pyx_temp < __pyx_v_n; __pyx_temp++) {
           __Pyx_INCREF(__pyx_t_7);
           __Pyx_GIVEREF(__pyx_t_7);
-          if (__Pyx_PyList_SET_ITEM(__pyx_t_14, __pyx_temp, __pyx_t_7) != (0)) __PYX_ERR(0, 420, __pyx_L1_error);
+          if (__Pyx_PyList_SET_ITEM(__pyx_t_14, __pyx_temp, __pyx_t_7) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
         }
       }
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_XDECREF_SET(__pyx_v_uncert, __pyx_t_14);
       __pyx_t_14 = 0;
 
-      /* "pyees/sheet.py":417
+      /* "pyees/sheet.py":430
  *                         raise ValueError("There is no valid uncertanty in the data sheet")
  * 
  *             if uncertIsZero:             # <<<<<<<<<<<<<<
@@ -11963,57 +12167,57 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
     }
 
-    /* "pyees/sheet.py":422
+    /* "pyees/sheet.py":435
  *                 uncert = [[0] * m] * n
  * 
  *             nUncert = len(uncert[0])             # <<<<<<<<<<<<<<
  *             for u in uncert:
  *                 if len(u) != nUncert:
 */
-    if (unlikely(!__pyx_v_uncert)) { __Pyx_RaiseUnboundLocalError("uncert"); __PYX_ERR(0, 422, __pyx_L1_error) }
-    __pyx_t_14 = __Pyx_GetItemInt(__pyx_v_uncert, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 422, __pyx_L1_error)
+    if (unlikely(!__pyx_v_uncert)) { __Pyx_RaiseUnboundLocalError("uncert"); __PYX_ERR(0, 435, __pyx_L1_error) }
+    __pyx_t_14 = __Pyx_GetItemInt(__pyx_v_uncert, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 435, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __pyx_t_9 = PyObject_Length(__pyx_t_14); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 422, __pyx_L1_error)
+    __pyx_t_9 = PyObject_Length(__pyx_t_14); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 435, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __pyx_v_nUncert = __pyx_t_9;
 
-    /* "pyees/sheet.py":423
+    /* "pyees/sheet.py":436
  * 
  *             nUncert = len(uncert[0])
  *             for u in uncert:             # <<<<<<<<<<<<<<
  *                 if len(u) != nUncert:
  *                     raise ValueError('The uncertanty coloumns does not have an equal length')
 */
-    if (unlikely(!__pyx_v_uncert)) { __Pyx_RaiseUnboundLocalError("uncert"); __PYX_ERR(0, 423, __pyx_L1_error) }
+    if (unlikely(!__pyx_v_uncert)) { __Pyx_RaiseUnboundLocalError("uncert"); __PYX_ERR(0, 436, __pyx_L1_error) }
     __pyx_t_14 = __pyx_v_uncert; __Pyx_INCREF(__pyx_t_14);
     __pyx_t_9 = 0;
     for (;;) {
       {
         Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_14);
         #if !CYTHON_ASSUME_SAFE_SIZE
-        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 423, __pyx_L1_error)
+        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 436, __pyx_L1_error)
         #endif
         if (__pyx_t_9 >= __pyx_temp) break;
       }
       __pyx_t_7 = __Pyx_PyList_GetItemRefFast(__pyx_t_14, __pyx_t_9, __Pyx_ReferenceSharing_OwnStrongReference);
       ++__pyx_t_9;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 423, __pyx_L1_error)
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 436, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_XDECREF_SET(__pyx_v_u, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":424
+      /* "pyees/sheet.py":437
  *             nUncert = len(uncert[0])
  *             for u in uncert:
  *                 if len(u) != nUncert:             # <<<<<<<<<<<<<<
  *                     raise ValueError('The uncertanty coloumns does not have an equal length')
  * 
 */
-      __pyx_t_12 = PyObject_Length(__pyx_v_u); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 424, __pyx_L1_error)
+      __pyx_t_12 = PyObject_Length(__pyx_v_u); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 437, __pyx_L1_error)
       __pyx_t_10 = (__pyx_t_12 != __pyx_v_nUncert);
       if (unlikely(__pyx_t_10)) {
 
-        /* "pyees/sheet.py":425
+        /* "pyees/sheet.py":438
  *             for u in uncert:
  *                 if len(u) != nUncert:
  *                     raise ValueError('The uncertanty coloumns does not have an equal length')             # <<<<<<<<<<<<<<
@@ -12026,14 +12230,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_The_uncertanty_coloumns_does_not};
           __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 425, __pyx_L1_error)
+          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 438, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
         }
         __Pyx_Raise(__pyx_t_7, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __PYX_ERR(0, 425, __pyx_L1_error)
+        __PYX_ERR(0, 438, __pyx_L1_error)
 
-        /* "pyees/sheet.py":424
+        /* "pyees/sheet.py":437
  *             nUncert = len(uncert[0])
  *             for u in uncert:
  *                 if len(u) != nUncert:             # <<<<<<<<<<<<<<
@@ -12042,7 +12246,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
       }
 
-      /* "pyees/sheet.py":423
+      /* "pyees/sheet.py":436
  * 
  *             nUncert = len(uncert[0])
  *             for u in uncert:             # <<<<<<<<<<<<<<
@@ -12052,22 +12256,22 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     }
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
 
-    /* "pyees/sheet.py":429
+    /* "pyees/sheet.py":442
  * 
  * 
  *             if nData == nUncert:             # <<<<<<<<<<<<<<
  *                 containsCovariace = False
  *             else:
 */
-    __pyx_t_14 = PyLong_FromSsize_t(__pyx_v_nUncert); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 429, __pyx_L1_error)
+    __pyx_t_14 = PyLong_FromSsize_t(__pyx_v_nUncert); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 442, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __pyx_t_7 = PyObject_RichCompare(__pyx_v_nData, __pyx_t_14, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 429, __pyx_L1_error)
+    __pyx_t_7 = PyObject_RichCompare(__pyx_v_nData, __pyx_t_14, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 442, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 429, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 442, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     if (__pyx_t_10) {
 
-      /* "pyees/sheet.py":430
+      /* "pyees/sheet.py":443
  * 
  *             if nData == nUncert:
  *                 containsCovariace = False             # <<<<<<<<<<<<<<
@@ -12076,7 +12280,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
       __pyx_v_containsCovariace = 0;
 
-      /* "pyees/sheet.py":429
+      /* "pyees/sheet.py":442
  * 
  * 
  *             if nData == nUncert:             # <<<<<<<<<<<<<<
@@ -12086,7 +12290,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       goto __pyx_L80;
     }
 
-    /* "pyees/sheet.py":432
+    /* "pyees/sheet.py":445
  *                 containsCovariace = False
  *             else:
  *                 if nUncert == nData * nDataColoumns:             # <<<<<<<<<<<<<<
@@ -12094,18 +12298,18 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                 else:
 */
     /*else*/ {
-      __pyx_t_7 = PyLong_FromSsize_t(__pyx_v_nUncert); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 432, __pyx_L1_error)
+      __pyx_t_7 = PyLong_FromSsize_t(__pyx_v_nUncert); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 445, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_14 = PyNumber_Multiply(__pyx_v_nData, __pyx_v_nDataColoumns); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 432, __pyx_L1_error)
+      __pyx_t_14 = PyNumber_Multiply(__pyx_v_nData, __pyx_v_nDataColoumns); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 445, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_14);
-      __pyx_t_2 = PyObject_RichCompare(__pyx_t_7, __pyx_t_14, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 432, __pyx_L1_error)
+      __pyx_t_2 = PyObject_RichCompare(__pyx_t_7, __pyx_t_14, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 445, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 432, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 445, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (likely(__pyx_t_10)) {
 
-        /* "pyees/sheet.py":433
+        /* "pyees/sheet.py":446
  *             else:
  *                 if nUncert == nData * nDataColoumns:
  *                     containsCovariace = True             # <<<<<<<<<<<<<<
@@ -12114,7 +12318,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
         __pyx_v_containsCovariace = 1;
 
-        /* "pyees/sheet.py":432
+        /* "pyees/sheet.py":445
  *                 containsCovariace = False
  *             else:
  *                 if nUncert == nData * nDataColoumns:             # <<<<<<<<<<<<<<
@@ -12124,7 +12328,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         goto __pyx_L81;
       }
 
-      /* "pyees/sheet.py":435
+      /* "pyees/sheet.py":448
  *                     containsCovariace = True
  *                 else:
  *                     raise ValueError('The number of rows in the uncertanty does not match the data')             # <<<<<<<<<<<<<<
@@ -12138,18 +12342,18 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           PyObject *__pyx_callargs[2] = {__pyx_t_14, __pyx_mstate_global->__pyx_kp_u_The_number_of_rows_in_the_uncert};
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 435, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 448, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
         __Pyx_Raise(__pyx_t_2, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __PYX_ERR(0, 435, __pyx_L1_error)
+        __PYX_ERR(0, 448, __pyx_L1_error)
       }
       __pyx_L81:;
     }
     __pyx_L80:;
 
-    /* "pyees/sheet.py":437
+    /* "pyees/sheet.py":450
  *                     raise ValueError('The number of rows in the uncertanty does not match the data')
  * 
  *             if not containsCovariace:             # <<<<<<<<<<<<<<
@@ -12159,19 +12363,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     __pyx_t_10 = (!__pyx_v_containsCovariace);
     if (__pyx_t_10) {
 
-      /* "pyees/sheet.py":438
+      /* "pyees/sheet.py":451
  * 
  *             if not containsCovariace:
  *                 variables = []             # <<<<<<<<<<<<<<
  *                 for i in range(len(list(dataRange))):
  *                     dat, u, unc = data[i], units[i], uncert[i]
 */
-      __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 438, __pyx_L1_error)
+      __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 451, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_v_variables, ((PyObject*)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":439
+      /* "pyees/sheet.py":452
  *             if not containsCovariace:
  *                 variables = []
  *                 for i in range(len(list(dataRange))):             # <<<<<<<<<<<<<<
@@ -12179,11 +12383,11 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                     dat = [elem if isinstance(elem, float) or isinstance(elem, int) else np.nan for elem in dat]
 */
       __pyx_t_14 = NULL;
-      __pyx_t_7 = PySequence_List(__pyx_v_dataRange); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 439, __pyx_L1_error)
+      __pyx_t_7 = PySequence_List(__pyx_v_dataRange); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 452, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_t_7); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 439, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_t_7); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 452, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 439, __pyx_L1_error)
+      __pyx_t_7 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 452, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __pyx_t_8 = 1;
       {
@@ -12191,12 +12395,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 439, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 452, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
       }
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 439, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 452, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 439, __pyx_L1_error)
+      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 452, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       for (;;) {
         {
@@ -12204,7 +12408,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           if (unlikely(!__pyx_t_2)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 439, __pyx_L1_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 452, __pyx_L1_error)
               PyErr_Clear();
             }
             break;
@@ -12214,19 +12418,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "pyees/sheet.py":440
+        /* "pyees/sheet.py":453
  *                 variables = []
  *                 for i in range(len(list(dataRange))):
  *                     dat, u, unc = data[i], units[i], uncert[i]             # <<<<<<<<<<<<<<
  *                     dat = [elem if isinstance(elem, float) or isinstance(elem, int) else np.nan for elem in dat]
  *                     unc = [elem if isinstance(elem, float) or isinstance(elem, int) else np.nan for elem in unc]
 */
-        __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_data, __pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 440, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_data, __pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 453, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_units, __pyx_v_i); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 440, __pyx_L1_error)
+        __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_units, __pyx_v_i); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 453, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_14);
-        if (unlikely(!__pyx_v_uncert)) { __Pyx_RaiseUnboundLocalError("uncert"); __PYX_ERR(0, 440, __pyx_L1_error) }
-        __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_uncert, __pyx_v_i); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 440, __pyx_L1_error)
+        if (unlikely(!__pyx_v_uncert)) { __Pyx_RaiseUnboundLocalError("uncert"); __PYX_ERR(0, 453, __pyx_L1_error) }
+        __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_uncert, __pyx_v_i); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 453, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_XDECREF_SET(__pyx_v_dat, __pyx_t_2);
         __pyx_t_2 = 0;
@@ -12235,7 +12439,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_XDECREF_SET(__pyx_v_unc, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "pyees/sheet.py":441
+        /* "pyees/sheet.py":454
  *                 for i in range(len(list(dataRange))):
  *                     dat, u, unc = data[i], units[i], uncert[i]
  *                     dat = [elem if isinstance(elem, float) or isinstance(elem, int) else np.nan for elem in dat]             # <<<<<<<<<<<<<<
@@ -12243,16 +12447,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                     variables.append(variable(dat, u, unc))
 */
         { /* enter inner scope */
-          __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 441, __pyx_L87_error)
+          __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 454, __pyx_L87_error)
           __Pyx_GOTREF(__pyx_t_6);
           if (likely(PyList_CheckExact(__pyx_v_dat)) || PyTuple_CheckExact(__pyx_v_dat)) {
             __pyx_t_14 = __pyx_v_dat; __Pyx_INCREF(__pyx_t_14);
             __pyx_t_9 = 0;
             __pyx_t_13 = NULL;
           } else {
-            __pyx_t_9 = -1; __pyx_t_14 = PyObject_GetIter(__pyx_v_dat); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 441, __pyx_L87_error)
+            __pyx_t_9 = -1; __pyx_t_14 = PyObject_GetIter(__pyx_v_dat); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 454, __pyx_L87_error)
             __Pyx_GOTREF(__pyx_t_14);
-            __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 441, __pyx_L87_error)
+            __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 454, __pyx_L87_error)
           }
           for (;;) {
             if (likely(!__pyx_t_13)) {
@@ -12260,7 +12464,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_14);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 441, __pyx_L87_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 454, __pyx_L87_error)
                   #endif
                   if (__pyx_t_9 >= __pyx_temp) break;
                 }
@@ -12270,7 +12474,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_14);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 441, __pyx_L87_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 454, __pyx_L87_error)
                   #endif
                   if (__pyx_t_9 >= __pyx_temp) break;
                 }
@@ -12281,13 +12485,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 #endif
                 ++__pyx_t_9;
               }
-              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 441, __pyx_L87_error)
+              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 454, __pyx_L87_error)
             } else {
               __pyx_t_2 = __pyx_t_13(__pyx_t_14);
               if (unlikely(!__pyx_t_2)) {
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
-                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 441, __pyx_L87_error)
+                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 454, __pyx_L87_error)
                   PyErr_Clear();
                 }
                 break;
@@ -12309,15 +12513,15 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               __Pyx_INCREF(__pyx_8genexpr7__pyx_v_elem);
               __pyx_t_2 = __pyx_8genexpr7__pyx_v_elem;
             } else {
-              __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 441, __pyx_L87_error)
+              __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 454, __pyx_L87_error)
               __Pyx_GOTREF(__pyx_t_16);
-              __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_nan); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 441, __pyx_L87_error)
+              __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_nan); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 454, __pyx_L87_error)
               __Pyx_GOTREF(__pyx_t_18);
               __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
               __pyx_t_2 = __pyx_t_18;
               __pyx_t_18 = 0;
             }
-            if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 441, __pyx_L87_error)
+            if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 454, __pyx_L87_error)
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           }
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
@@ -12331,7 +12535,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_DECREF_SET(__pyx_v_dat, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "pyees/sheet.py":442
+        /* "pyees/sheet.py":455
  *                     dat, u, unc = data[i], units[i], uncert[i]
  *                     dat = [elem if isinstance(elem, float) or isinstance(elem, int) else np.nan for elem in dat]
  *                     unc = [elem if isinstance(elem, float) or isinstance(elem, int) else np.nan for elem in unc]             # <<<<<<<<<<<<<<
@@ -12339,16 +12543,16 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  * 
 */
         { /* enter inner scope */
-          __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 442, __pyx_L96_error)
+          __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 455, __pyx_L96_error)
           __Pyx_GOTREF(__pyx_t_6);
           if (likely(PyList_CheckExact(__pyx_v_unc)) || PyTuple_CheckExact(__pyx_v_unc)) {
             __pyx_t_14 = __pyx_v_unc; __Pyx_INCREF(__pyx_t_14);
             __pyx_t_9 = 0;
             __pyx_t_13 = NULL;
           } else {
-            __pyx_t_9 = -1; __pyx_t_14 = PyObject_GetIter(__pyx_v_unc); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 442, __pyx_L96_error)
+            __pyx_t_9 = -1; __pyx_t_14 = PyObject_GetIter(__pyx_v_unc); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 455, __pyx_L96_error)
             __Pyx_GOTREF(__pyx_t_14);
-            __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 442, __pyx_L96_error)
+            __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 455, __pyx_L96_error)
           }
           for (;;) {
             if (likely(!__pyx_t_13)) {
@@ -12356,7 +12560,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_14);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 442, __pyx_L96_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 455, __pyx_L96_error)
                   #endif
                   if (__pyx_t_9 >= __pyx_temp) break;
                 }
@@ -12366,7 +12570,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_14);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 442, __pyx_L96_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 455, __pyx_L96_error)
                   #endif
                   if (__pyx_t_9 >= __pyx_temp) break;
                 }
@@ -12377,13 +12581,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 #endif
                 ++__pyx_t_9;
               }
-              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 442, __pyx_L96_error)
+              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 455, __pyx_L96_error)
             } else {
               __pyx_t_2 = __pyx_t_13(__pyx_t_14);
               if (unlikely(!__pyx_t_2)) {
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
-                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 442, __pyx_L96_error)
+                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 455, __pyx_L96_error)
                   PyErr_Clear();
                 }
                 break;
@@ -12405,15 +12609,15 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               __Pyx_INCREF(__pyx_8genexpr8__pyx_v_elem);
               __pyx_t_2 = __pyx_8genexpr8__pyx_v_elem;
             } else {
-              __Pyx_GetModuleGlobalName(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 442, __pyx_L96_error)
+              __Pyx_GetModuleGlobalName(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 455, __pyx_L96_error)
               __Pyx_GOTREF(__pyx_t_18);
-              __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_nan); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 442, __pyx_L96_error)
+              __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_nan); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 455, __pyx_L96_error)
               __Pyx_GOTREF(__pyx_t_16);
               __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
               __pyx_t_2 = __pyx_t_16;
               __pyx_t_16 = 0;
             }
-            if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 442, __pyx_L96_error)
+            if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 455, __pyx_L96_error)
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           }
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
@@ -12427,7 +12631,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_DECREF_SET(__pyx_v_unc, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "pyees/sheet.py":443
+        /* "pyees/sheet.py":456
  *                     dat = [elem if isinstance(elem, float) or isinstance(elem, int) else np.nan for elem in dat]
  *                     unc = [elem if isinstance(elem, float) or isinstance(elem, int) else np.nan for elem in unc]
  *                     variables.append(variable(dat, u, unc))             # <<<<<<<<<<<<<<
@@ -12435,7 +12639,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  * 
 */
         __pyx_t_14 = NULL;
-        __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_variable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 443, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_variable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 456, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __pyx_t_8 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -12454,13 +12658,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           __pyx_t_6 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_8, (4-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 443, __pyx_L1_error)
+          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 456, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
         }
-        __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_variables, __pyx_t_6); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 443, __pyx_L1_error)
+        __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_variables, __pyx_t_6); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 456, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "pyees/sheet.py":439
+        /* "pyees/sheet.py":452
  *             if not containsCovariace:
  *                 variables = []
  *                 for i in range(len(list(dataRange))):             # <<<<<<<<<<<<<<
@@ -12470,7 +12674,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       }
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":437
+      /* "pyees/sheet.py":450
  *                     raise ValueError('The number of rows in the uncertanty does not match the data')
  * 
  *             if not containsCovariace:             # <<<<<<<<<<<<<<
@@ -12480,7 +12684,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       goto __pyx_L82;
     }
 
-    /* "pyees/sheet.py":449
+    /* "pyees/sheet.py":462
  * 
  *                 ## extract the covariance matricies of each setpoint
  *                 uncert = np.array(uncert).transpose()             # <<<<<<<<<<<<<<
@@ -12489,12 +12693,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
     /*else*/ {
       __pyx_t_14 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 449, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 462, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_16);
-      __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 449, __pyx_L1_error)
+      __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 462, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_18);
       __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-      if (unlikely(!__pyx_v_uncert)) { __Pyx_RaiseUnboundLocalError("uncert"); __PYX_ERR(0, 449, __pyx_L1_error) }
+      if (unlikely(!__pyx_v_uncert)) { __Pyx_RaiseUnboundLocalError("uncert"); __PYX_ERR(0, 462, __pyx_L1_error) }
       __pyx_t_8 = 1;
       #if CYTHON_UNPACK_METHODS
       if (unlikely(PyMethod_Check(__pyx_t_18))) {
@@ -12512,7 +12716,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_18, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 449, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 462, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
       }
       __pyx_t_6 = __pyx_t_2;
@@ -12523,25 +12727,25 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __pyx_t_7 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_transpose, __pyx_callargs+__pyx_t_8, (1-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 449, __pyx_L1_error)
+        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 462, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
       }
       __Pyx_XDECREF_SET(__pyx_v_uncert, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":450
+      /* "pyees/sheet.py":463
  *                 ## extract the covariance matricies of each setpoint
  *                 uncert = np.array(uncert).transpose()
  *                 covariances = []             # <<<<<<<<<<<<<<
  *                 for i in range(nData):
  *                     covariances.append(uncert[(i) * nDataColoumns:(i+1) * nDataColoumns , : ])
 */
-      __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 450, __pyx_L1_error)
+      __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 463, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_XDECREF_SET(__pyx_v_covariances, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":451
+      /* "pyees/sheet.py":464
  *                 uncert = np.array(uncert).transpose()
  *                 covariances = []
  *                 for i in range(nData):             # <<<<<<<<<<<<<<
@@ -12554,12 +12758,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_nData};
         __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 451, __pyx_L1_error)
+        if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 464, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
       }
-      __pyx_t_2 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 451, __pyx_L1_error)
+      __pyx_t_2 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 464, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 451, __pyx_L1_error)
+      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 464, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       for (;;) {
         {
@@ -12567,7 +12771,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           if (unlikely(!__pyx_t_7)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 451, __pyx_L1_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 464, __pyx_L1_error)
               PyErr_Clear();
             }
             break;
@@ -12577,39 +12781,39 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_7);
         __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":452
+        /* "pyees/sheet.py":465
  *                 covariances = []
  *                 for i in range(nData):
  *                     covariances.append(uncert[(i) * nDataColoumns:(i+1) * nDataColoumns , : ])             # <<<<<<<<<<<<<<
  *                 covariances = np.array(covariances)
  * 
 */
-        __pyx_t_7 = PyNumber_Multiply(__pyx_v_i, __pyx_v_nDataColoumns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_7 = PyNumber_Multiply(__pyx_v_i, __pyx_v_nDataColoumns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 465, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_6 = __Pyx_PyLong_AddObjC(__pyx_v_i, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyLong_AddObjC(__pyx_v_i, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 465, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_18 = PyNumber_Multiply(__pyx_t_6, __pyx_v_nDataColoumns); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_18 = PyNumber_Multiply(__pyx_t_6, __pyx_v_nDataColoumns); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 465, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_18);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_6 = PySlice_New(__pyx_t_7, __pyx_t_18, Py_None); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_6 = PySlice_New(__pyx_t_7, __pyx_t_18, Py_None); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 465, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-        __pyx_t_18 = PyTuple_New(2); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_18 = PyTuple_New(2); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 465, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_18);
         __Pyx_GIVEREF(__pyx_t_6);
-        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_18, 0, __pyx_t_6) != (0)) __PYX_ERR(0, 452, __pyx_L1_error);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_18, 0, __pyx_t_6) != (0)) __PYX_ERR(0, 465, __pyx_L1_error);
         __Pyx_INCREF(__pyx_mstate_global->__pyx_slice[2]);
         __Pyx_GIVEREF(__pyx_mstate_global->__pyx_slice[2]);
-        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_18, 1, __pyx_mstate_global->__pyx_slice[2]) != (0)) __PYX_ERR(0, 452, __pyx_L1_error);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_18, 1, __pyx_mstate_global->__pyx_slice[2]) != (0)) __PYX_ERR(0, 465, __pyx_L1_error);
         __pyx_t_6 = 0;
-        __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_uncert, __pyx_t_18); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_uncert, __pyx_t_18); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 465, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-        __pyx_t_15 = __Pyx_PyObject_Append(__pyx_v_covariances, __pyx_t_6); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_15 = __Pyx_PyObject_Append(__pyx_v_covariances, __pyx_t_6); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 465, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "pyees/sheet.py":451
+        /* "pyees/sheet.py":464
  *                 uncert = np.array(uncert).transpose()
  *                 covariances = []
  *                 for i in range(nData):             # <<<<<<<<<<<<<<
@@ -12619,7 +12823,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       }
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":453
+      /* "pyees/sheet.py":466
  *                 for i in range(nData):
  *                     covariances.append(uncert[(i) * nDataColoumns:(i+1) * nDataColoumns , : ])
  *                 covariances = np.array(covariances)             # <<<<<<<<<<<<<<
@@ -12627,9 +12831,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                 for cov in covariances:
 */
       __pyx_t_6 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 453, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 466, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_18);
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 453, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 466, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
       __pyx_t_8 = 1;
@@ -12649,13 +12853,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_7, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 453, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 466, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
       }
       __Pyx_DECREF_SET(__pyx_v_covariances, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":455
+      /* "pyees/sheet.py":468
  *                 covariances = np.array(covariances)
  * 
  *                 for cov in covariances:             # <<<<<<<<<<<<<<
@@ -12667,9 +12871,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __pyx_t_9 = 0;
         __pyx_t_11 = NULL;
       } else {
-        __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_covariances); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 455, __pyx_L1_error)
+        __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_covariances); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 468, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 455, __pyx_L1_error)
+        __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 468, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_11)) {
@@ -12677,7 +12881,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             {
               Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 455, __pyx_L1_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 468, __pyx_L1_error)
               #endif
               if (__pyx_t_9 >= __pyx_temp) break;
             }
@@ -12687,7 +12891,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             {
               Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
               #if !CYTHON_ASSUME_SAFE_SIZE
-              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 455, __pyx_L1_error)
+              if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 468, __pyx_L1_error)
               #endif
               if (__pyx_t_9 >= __pyx_temp) break;
             }
@@ -12698,13 +12902,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             #endif
             ++__pyx_t_9;
           }
-          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 455, __pyx_L1_error)
+          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 468, __pyx_L1_error)
         } else {
           __pyx_t_7 = __pyx_t_11(__pyx_t_2);
           if (unlikely(!__pyx_t_7)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 455, __pyx_L1_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 468, __pyx_L1_error)
               PyErr_Clear();
             }
             break;
@@ -12714,7 +12918,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_XDECREF_SET(__pyx_v_cov, __pyx_t_7);
         __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":456
+        /* "pyees/sheet.py":469
  * 
  *                 for cov in covariances:
  *                     for i in range(nDataColoumns):             # <<<<<<<<<<<<<<
@@ -12727,12 +12931,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_v_nDataColoumns};
           __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 456, __pyx_L1_error)
+          if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 469, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
         }
-        __pyx_t_6 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 456, __pyx_L1_error)
+        __pyx_t_6 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 469, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 456, __pyx_L1_error)
+        __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 469, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         for (;;) {
           {
@@ -12740,7 +12944,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             if (unlikely(!__pyx_t_7)) {
               PyObject* exc_type = PyErr_Occurred();
               if (exc_type) {
-                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 456, __pyx_L1_error)
+                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 469, __pyx_L1_error)
                 PyErr_Clear();
               }
               break;
@@ -12750,7 +12954,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_7);
           __pyx_t_7 = 0;
 
-          /* "pyees/sheet.py":457
+          /* "pyees/sheet.py":470
  *                 for cov in covariances:
  *                     for i in range(nDataColoumns):
  *                         for j in range(nDataColoumns):             # <<<<<<<<<<<<<<
@@ -12763,12 +12967,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             PyObject *__pyx_callargs[2] = {__pyx_t_18, __pyx_v_nDataColoumns};
             __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
-            if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 457, __pyx_L1_error)
+            if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 470, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
           }
-          __pyx_t_18 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 457, __pyx_L1_error)
+          __pyx_t_18 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 470, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_18);
-          __pyx_t_19 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_18); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 457, __pyx_L1_error)
+          __pyx_t_19 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_18); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 470, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           for (;;) {
             {
@@ -12776,7 +12980,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               if (unlikely(!__pyx_t_7)) {
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
-                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 457, __pyx_L1_error)
+                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 470, __pyx_L1_error)
                   PyErr_Clear();
                 }
                 break;
@@ -12786,43 +12990,43 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             __Pyx_XDECREF_SET(__pyx_v_j, __pyx_t_7);
             __pyx_t_7 = 0;
 
-            /* "pyees/sheet.py":458
+            /* "pyees/sheet.py":471
  *                     for i in range(nDataColoumns):
  *                         for j in range(nDataColoumns):
  *                             if cov[i,j] != cov[j,i]:             # <<<<<<<<<<<<<<
  *                                 raise ValueError("The covariances has to be symmetric")
  * 
 */
-            __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
+            __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 471, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             __Pyx_INCREF(__pyx_v_i);
             __Pyx_GIVEREF(__pyx_v_i);
-            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_i) != (0)) __PYX_ERR(0, 458, __pyx_L1_error);
+            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_i) != (0)) __PYX_ERR(0, 471, __pyx_L1_error);
             __Pyx_INCREF(__pyx_v_j);
             __Pyx_GIVEREF(__pyx_v_j);
-            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_v_j) != (0)) __PYX_ERR(0, 458, __pyx_L1_error);
-            __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_cov, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 458, __pyx_L1_error)
+            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_v_j) != (0)) __PYX_ERR(0, 471, __pyx_L1_error);
+            __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_cov, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 471, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_14);
             __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-            __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
+            __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 471, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             __Pyx_INCREF(__pyx_v_j);
             __Pyx_GIVEREF(__pyx_v_j);
-            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_j) != (0)) __PYX_ERR(0, 458, __pyx_L1_error);
+            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_j) != (0)) __PYX_ERR(0, 471, __pyx_L1_error);
             __Pyx_INCREF(__pyx_v_i);
             __Pyx_GIVEREF(__pyx_v_i);
-            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_v_i) != (0)) __PYX_ERR(0, 458, __pyx_L1_error);
-            __pyx_t_16 = __Pyx_PyObject_GetItem(__pyx_v_cov, __pyx_t_7); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 458, __pyx_L1_error)
+            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_v_i) != (0)) __PYX_ERR(0, 471, __pyx_L1_error);
+            __pyx_t_16 = __Pyx_PyObject_GetItem(__pyx_v_cov, __pyx_t_7); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 471, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_16);
             __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-            __pyx_t_7 = PyObject_RichCompare(__pyx_t_14, __pyx_t_16, Py_NE); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
+            __pyx_t_7 = PyObject_RichCompare(__pyx_t_14, __pyx_t_16, Py_NE); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 471, __pyx_L1_error)
             __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
             __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-            __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 458, __pyx_L1_error)
+            __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 471, __pyx_L1_error)
             __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
             if (unlikely(__pyx_t_10)) {
 
-              /* "pyees/sheet.py":459
+              /* "pyees/sheet.py":472
  *                         for j in range(nDataColoumns):
  *                             if cov[i,j] != cov[j,i]:
  *                                 raise ValueError("The covariances has to be symmetric")             # <<<<<<<<<<<<<<
@@ -12835,14 +13039,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 PyObject *__pyx_callargs[2] = {__pyx_t_16, __pyx_mstate_global->__pyx_kp_u_The_covariances_has_to_be_symmet};
                 __pyx_t_7 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
                 __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
-                if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 459, __pyx_L1_error)
+                if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 472, __pyx_L1_error)
                 __Pyx_GOTREF(__pyx_t_7);
               }
               __Pyx_Raise(__pyx_t_7, 0, 0, 0);
               __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-              __PYX_ERR(0, 459, __pyx_L1_error)
+              __PYX_ERR(0, 472, __pyx_L1_error)
 
-              /* "pyees/sheet.py":458
+              /* "pyees/sheet.py":471
  *                     for i in range(nDataColoumns):
  *                         for j in range(nDataColoumns):
  *                             if cov[i,j] != cov[j,i]:             # <<<<<<<<<<<<<<
@@ -12851,7 +13055,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
 */
             }
 
-            /* "pyees/sheet.py":457
+            /* "pyees/sheet.py":470
  *                 for cov in covariances:
  *                     for i in range(nDataColoumns):
  *                         for j in range(nDataColoumns):             # <<<<<<<<<<<<<<
@@ -12861,7 +13065,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           }
           __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
 
-          /* "pyees/sheet.py":456
+          /* "pyees/sheet.py":469
  * 
  *                 for cov in covariances:
  *                     for i in range(nDataColoumns):             # <<<<<<<<<<<<<<
@@ -12871,7 +13075,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "pyees/sheet.py":455
+        /* "pyees/sheet.py":468
  *                 covariances = np.array(covariances)
  * 
  *                 for cov in covariances:             # <<<<<<<<<<<<<<
@@ -12881,19 +13085,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       }
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":462
+      /* "pyees/sheet.py":475
  * 
  *                 ## get the uncertanty as the diagonal of each covariance matrix
  *                 uncert = []             # <<<<<<<<<<<<<<
  *                 for i in range(len(list(dataRange))):
  *                     uncert.append(np.array([np.sqrt(cov[i,i]) for cov in covariances]))
 */
-      __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 462, __pyx_L1_error)
+      __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 475, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF_SET(__pyx_v_uncert, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":463
+      /* "pyees/sheet.py":476
  *                 ## get the uncertanty as the diagonal of each covariance matrix
  *                 uncert = []
  *                 for i in range(len(list(dataRange))):             # <<<<<<<<<<<<<<
@@ -12901,11 +13105,11 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  * 
 */
       __pyx_t_6 = NULL;
-      __pyx_t_18 = PySequence_List(__pyx_v_dataRange); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 463, __pyx_L1_error)
+      __pyx_t_18 = PySequence_List(__pyx_v_dataRange); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 476, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_18);
-      __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_t_18); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 463, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_t_18); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 476, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-      __pyx_t_18 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 463, __pyx_L1_error)
+      __pyx_t_18 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 476, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_18);
       __pyx_t_8 = 1;
       {
@@ -12913,12 +13117,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 463, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 476, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
       }
-      __pyx_t_18 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 463, __pyx_L1_error)
+      __pyx_t_18 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 476, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_18);
-      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_18); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 463, __pyx_L1_error)
+      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_18); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 476, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       for (;;) {
         {
@@ -12926,7 +13130,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           if (unlikely(!__pyx_t_2)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 463, __pyx_L1_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 476, __pyx_L1_error)
               PyErr_Clear();
             }
             break;
@@ -12936,7 +13140,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "pyees/sheet.py":464
+        /* "pyees/sheet.py":477
  *                 uncert = []
  *                 for i in range(len(list(dataRange))):
  *                     uncert.append(np.array([np.sqrt(cov[i,i]) for cov in covariances]))             # <<<<<<<<<<<<<<
@@ -12944,22 +13148,22 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                 variables = [variable(data[i], units[i], uncert[i]) for i in range(len(list(dataRange)))]
 */
         __pyx_t_6 = NULL;
-        __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 464, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 477, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 464, __pyx_L1_error)
+        __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 477, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_16);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         { /* enter inner scope */
-          __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 464, __pyx_L121_error)
+          __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 477, __pyx_L121_error)
           __Pyx_GOTREF(__pyx_t_7);
           if (likely(PyList_CheckExact(__pyx_v_covariances)) || PyTuple_CheckExact(__pyx_v_covariances)) {
             __pyx_t_14 = __pyx_v_covariances; __Pyx_INCREF(__pyx_t_14);
             __pyx_t_9 = 0;
             __pyx_t_13 = NULL;
           } else {
-            __pyx_t_9 = -1; __pyx_t_14 = PyObject_GetIter(__pyx_v_covariances); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 464, __pyx_L121_error)
+            __pyx_t_9 = -1; __pyx_t_14 = PyObject_GetIter(__pyx_v_covariances); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 477, __pyx_L121_error)
             __Pyx_GOTREF(__pyx_t_14);
-            __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 464, __pyx_L121_error)
+            __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 477, __pyx_L121_error)
           }
           for (;;) {
             if (likely(!__pyx_t_13)) {
@@ -12967,7 +13171,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_14);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 464, __pyx_L121_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 477, __pyx_L121_error)
                   #endif
                   if (__pyx_t_9 >= __pyx_temp) break;
                 }
@@ -12977,7 +13181,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_14);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 464, __pyx_L121_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 477, __pyx_L121_error)
                   #endif
                   if (__pyx_t_9 >= __pyx_temp) break;
                 }
@@ -12988,13 +13192,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                 #endif
                 ++__pyx_t_9;
               }
-              if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 464, __pyx_L121_error)
+              if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 477, __pyx_L121_error)
             } else {
               __pyx_t_20 = __pyx_t_13(__pyx_t_14);
               if (unlikely(!__pyx_t_20)) {
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
-                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 464, __pyx_L121_error)
+                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 477, __pyx_L121_error)
                   PyErr_Clear();
                 }
                 break;
@@ -13004,20 +13208,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             __Pyx_XDECREF_SET(__pyx_8genexpr9__pyx_v_cov, __pyx_t_20);
             __pyx_t_20 = 0;
             __pyx_t_21 = NULL;
-            __Pyx_GetModuleGlobalName(__pyx_t_22, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 464, __pyx_L121_error)
+            __Pyx_GetModuleGlobalName(__pyx_t_22, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 477, __pyx_L121_error)
             __Pyx_GOTREF(__pyx_t_22);
-            __pyx_t_23 = __Pyx_PyObject_GetAttrStr(__pyx_t_22, __pyx_mstate_global->__pyx_n_u_sqrt); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 464, __pyx_L121_error)
+            __pyx_t_23 = __Pyx_PyObject_GetAttrStr(__pyx_t_22, __pyx_mstate_global->__pyx_n_u_sqrt); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 477, __pyx_L121_error)
             __Pyx_GOTREF(__pyx_t_23);
             __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
-            __pyx_t_22 = PyTuple_New(2); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 464, __pyx_L121_error)
+            __pyx_t_22 = PyTuple_New(2); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 477, __pyx_L121_error)
             __Pyx_GOTREF(__pyx_t_22);
             __Pyx_INCREF(__pyx_v_i);
             __Pyx_GIVEREF(__pyx_v_i);
-            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_22, 0, __pyx_v_i) != (0)) __PYX_ERR(0, 464, __pyx_L121_error);
+            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_22, 0, __pyx_v_i) != (0)) __PYX_ERR(0, 477, __pyx_L121_error);
             __Pyx_INCREF(__pyx_v_i);
             __Pyx_GIVEREF(__pyx_v_i);
-            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_22, 1, __pyx_v_i) != (0)) __PYX_ERR(0, 464, __pyx_L121_error);
-            __pyx_t_24 = __Pyx_PyObject_GetItem(__pyx_8genexpr9__pyx_v_cov, __pyx_t_22); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 464, __pyx_L121_error)
+            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_22, 1, __pyx_v_i) != (0)) __PYX_ERR(0, 477, __pyx_L121_error);
+            __pyx_t_24 = __Pyx_PyObject_GetItem(__pyx_8genexpr9__pyx_v_cov, __pyx_t_22); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 477, __pyx_L121_error)
             __Pyx_GOTREF(__pyx_t_24);
             __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
             __pyx_t_8 = 1;
@@ -13038,10 +13242,10 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               __Pyx_XDECREF(__pyx_t_21); __pyx_t_21 = 0;
               __Pyx_DECREF(__pyx_t_24); __pyx_t_24 = 0;
               __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
-              if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 464, __pyx_L121_error)
+              if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 477, __pyx_L121_error)
               __Pyx_GOTREF(__pyx_t_20);
             }
-            if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_t_20))) __PYX_ERR(0, 464, __pyx_L121_error)
+            if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_t_20))) __PYX_ERR(0, 477, __pyx_L121_error)
             __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
           }
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
@@ -13070,13 +13274,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 464, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 477, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_15 = __Pyx_PyObject_Append(__pyx_v_uncert, __pyx_t_2); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 464, __pyx_L1_error)
+        __pyx_t_15 = __Pyx_PyObject_Append(__pyx_v_uncert, __pyx_t_2); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 477, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-        /* "pyees/sheet.py":463
+        /* "pyees/sheet.py":476
  *                 ## get the uncertanty as the diagonal of each covariance matrix
  *                 uncert = []
  *                 for i in range(len(list(dataRange))):             # <<<<<<<<<<<<<<
@@ -13086,7 +13290,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       }
       __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
 
-      /* "pyees/sheet.py":466
+      /* "pyees/sheet.py":479
  *                     uncert.append(np.array([np.sqrt(cov[i,i]) for cov in covariances]))
  * 
  *                 variables = [variable(data[i], units[i], uncert[i]) for i in range(len(list(dataRange)))]             # <<<<<<<<<<<<<<
@@ -13094,23 +13298,23 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  *                 for i in range(nDataColoumns):
 */
       { /* enter inner scope */
-        __pyx_t_18 = PyList_New(0); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 466, __pyx_L1_error)
+        __pyx_t_18 = PyList_New(0); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 479, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_18);
-        __pyx_t_2 = PySequence_List(__pyx_v_dataRange); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 466, __pyx_L1_error)
+        __pyx_t_2 = PySequence_List(__pyx_v_dataRange); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 479, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 466, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 479, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_t_12 = __pyx_t_9;
         for (__pyx_t_25 = 0; __pyx_t_25 < __pyx_t_12; __pyx_t_25+=1) {
           __pyx_9genexpr10__pyx_v_i = __pyx_t_25;
           __pyx_t_16 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_variable); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 466, __pyx_L1_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_variable); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 479, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
-          __pyx_t_6 = __Pyx_GetItemInt_List(__pyx_v_data, __pyx_9genexpr10__pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 1, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 466, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_GetItemInt_List(__pyx_v_data, __pyx_9genexpr10__pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 1, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 479, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_14 = __Pyx_GetItemInt(__pyx_v_units, __pyx_9genexpr10__pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 466, __pyx_L1_error)
+          __pyx_t_14 = __Pyx_GetItemInt(__pyx_v_units, __pyx_9genexpr10__pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 479, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_14);
-          __pyx_t_20 = __Pyx_GetItemInt(__pyx_v_uncert, __pyx_9genexpr10__pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 466, __pyx_L1_error)
+          __pyx_t_20 = __Pyx_GetItemInt(__pyx_v_uncert, __pyx_9genexpr10__pyx_v_i, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 479, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_20);
           __pyx_t_8 = 1;
           #if CYTHON_UNPACK_METHODS
@@ -13132,17 +13336,17 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
             __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
             __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 466, __pyx_L1_error)
+            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 479, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_18, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 466, __pyx_L1_error)
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_18, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 479, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         }
       } /* exit inner scope */
       __Pyx_XDECREF_SET(__pyx_v_variables, ((PyObject*)__pyx_t_18));
       __pyx_t_18 = 0;
 
-      /* "pyees/sheet.py":468
+      /* "pyees/sheet.py":481
  *                 variables = [variable(data[i], units[i], uncert[i]) for i in range(len(list(dataRange)))]
  * 
  *                 for i in range(nDataColoumns):             # <<<<<<<<<<<<<<
@@ -13155,12 +13359,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_nDataColoumns};
         __pyx_t_18 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 468, __pyx_L1_error)
+        if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 481, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_18);
       }
-      __pyx_t_2 = PyObject_GetIter(__pyx_t_18); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 468, __pyx_L1_error)
+      __pyx_t_2 = PyObject_GetIter(__pyx_t_18); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 481, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 468, __pyx_L1_error)
+      __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 481, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
       for (;;) {
         {
@@ -13168,7 +13372,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           if (unlikely(!__pyx_t_18)) {
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
-              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 468, __pyx_L1_error)
+              if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 481, __pyx_L1_error)
               PyErr_Clear();
             }
             break;
@@ -13178,7 +13382,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_18);
         __pyx_t_18 = 0;
 
-        /* "pyees/sheet.py":469
+        /* "pyees/sheet.py":482
  * 
  *                 for i in range(nDataColoumns):
  *                     for j in range(nDataColoumns):             # <<<<<<<<<<<<<<
@@ -13191,12 +13395,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           PyObject *__pyx_callargs[2] = {__pyx_t_7, __pyx_v_nDataColoumns};
           __pyx_t_18 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-          if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 469, __pyx_L1_error)
+          if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 482, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_18);
         }
-        __pyx_t_7 = PyObject_GetIter(__pyx_t_18); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 469, __pyx_L1_error)
+        __pyx_t_7 = PyObject_GetIter(__pyx_t_18); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 482, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 469, __pyx_L1_error)
+        __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_7); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 482, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
         for (;;) {
           {
@@ -13204,7 +13408,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             if (unlikely(!__pyx_t_18)) {
               PyObject* exc_type = PyErr_Occurred();
               if (exc_type) {
-                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 469, __pyx_L1_error)
+                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 482, __pyx_L1_error)
                 PyErr_Clear();
               }
               break;
@@ -13214,48 +13418,48 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
           __Pyx_XDECREF_SET(__pyx_v_j, __pyx_t_18);
           __pyx_t_18 = 0;
 
-          /* "pyees/sheet.py":470
+          /* "pyees/sheet.py":483
  *                 for i in range(nDataColoumns):
  *                     for j in range(nDataColoumns):
  *                         if i == j: continue             # <<<<<<<<<<<<<<
  *                         variables[i].addCovariance(variables[j], [float(elem) for elem in covariances[:,i,j]], str(variables[i]._unitObject * variables[j]._unitObject))
  * 
 */
-          __pyx_t_18 = PyObject_RichCompare(__pyx_v_i, __pyx_v_j, Py_EQ); __Pyx_XGOTREF(__pyx_t_18); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 470, __pyx_L1_error)
-          __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_18); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 470, __pyx_L1_error)
+          __pyx_t_18 = PyObject_RichCompare(__pyx_v_i, __pyx_v_j, Py_EQ); __Pyx_XGOTREF(__pyx_t_18); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 483, __pyx_L1_error)
+          __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_18); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 483, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
           if (__pyx_t_10) {
             goto __pyx_L131_continue;
           }
 
-          /* "pyees/sheet.py":471
+          /* "pyees/sheet.py":484
  *                     for j in range(nDataColoumns):
  *                         if i == j: continue
  *                         variables[i].addCovariance(variables[j], [float(elem) for elem in covariances[:,i,j]], str(variables[i]._unitObject * variables[j]._unitObject))             # <<<<<<<<<<<<<<
  * 
  *             for i in range(len(list(dataRange))):
 */
-          __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_i); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 471, __pyx_L1_error)
+          __pyx_t_14 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_i); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 484, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_14);
           __pyx_t_20 = __pyx_t_14;
           __Pyx_INCREF(__pyx_t_20);
-          __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_j); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 471, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_j); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 484, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           { /* enter inner scope */
-            __pyx_t_16 = PyList_New(0); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 471, __pyx_L136_error)
+            __pyx_t_16 = PyList_New(0); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 484, __pyx_L136_error)
             __Pyx_GOTREF(__pyx_t_16);
-            __pyx_t_23 = PyTuple_New(3); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 471, __pyx_L136_error)
+            __pyx_t_23 = PyTuple_New(3); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 484, __pyx_L136_error)
             __Pyx_GOTREF(__pyx_t_23);
             __Pyx_INCREF(__pyx_mstate_global->__pyx_slice[2]);
             __Pyx_GIVEREF(__pyx_mstate_global->__pyx_slice[2]);
-            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_23, 0, __pyx_mstate_global->__pyx_slice[2]) != (0)) __PYX_ERR(0, 471, __pyx_L136_error);
+            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_23, 0, __pyx_mstate_global->__pyx_slice[2]) != (0)) __PYX_ERR(0, 484, __pyx_L136_error);
             __Pyx_INCREF(__pyx_v_i);
             __Pyx_GIVEREF(__pyx_v_i);
-            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_23, 1, __pyx_v_i) != (0)) __PYX_ERR(0, 471, __pyx_L136_error);
+            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_23, 1, __pyx_v_i) != (0)) __PYX_ERR(0, 484, __pyx_L136_error);
             __Pyx_INCREF(__pyx_v_j);
             __Pyx_GIVEREF(__pyx_v_j);
-            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_23, 2, __pyx_v_j) != (0)) __PYX_ERR(0, 471, __pyx_L136_error);
-            __pyx_t_24 = __Pyx_PyObject_GetItem(__pyx_v_covariances, __pyx_t_23); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 471, __pyx_L136_error)
+            if (__Pyx_PyTuple_SET_ITEM(__pyx_t_23, 2, __pyx_v_j) != (0)) __PYX_ERR(0, 484, __pyx_L136_error);
+            __pyx_t_24 = __Pyx_PyObject_GetItem(__pyx_v_covariances, __pyx_t_23); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 484, __pyx_L136_error)
             __Pyx_GOTREF(__pyx_t_24);
             __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
             if (likely(PyList_CheckExact(__pyx_t_24)) || PyTuple_CheckExact(__pyx_t_24)) {
@@ -13263,9 +13467,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               __pyx_t_9 = 0;
               __pyx_t_19 = NULL;
             } else {
-              __pyx_t_9 = -1; __pyx_t_23 = PyObject_GetIter(__pyx_t_24); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 471, __pyx_L136_error)
+              __pyx_t_9 = -1; __pyx_t_23 = PyObject_GetIter(__pyx_t_24); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 484, __pyx_L136_error)
               __Pyx_GOTREF(__pyx_t_23);
-              __pyx_t_19 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_23); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 471, __pyx_L136_error)
+              __pyx_t_19 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_23); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 484, __pyx_L136_error)
             }
             __Pyx_DECREF(__pyx_t_24); __pyx_t_24 = 0;
             for (;;) {
@@ -13274,7 +13478,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                   {
                     Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_23);
                     #if !CYTHON_ASSUME_SAFE_SIZE
-                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 471, __pyx_L136_error)
+                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 484, __pyx_L136_error)
                     #endif
                     if (__pyx_t_9 >= __pyx_temp) break;
                   }
@@ -13284,7 +13488,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                   {
                     Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_23);
                     #if !CYTHON_ASSUME_SAFE_SIZE
-                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 471, __pyx_L136_error)
+                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 484, __pyx_L136_error)
                     #endif
                     if (__pyx_t_9 >= __pyx_temp) break;
                   }
@@ -13295,13 +13499,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
                   #endif
                   ++__pyx_t_9;
                 }
-                if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 471, __pyx_L136_error)
+                if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 484, __pyx_L136_error)
               } else {
                 __pyx_t_24 = __pyx_t_19(__pyx_t_23);
                 if (unlikely(!__pyx_t_24)) {
                   PyObject* exc_type = PyErr_Occurred();
                   if (exc_type) {
-                    if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 471, __pyx_L136_error)
+                    if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 484, __pyx_L136_error)
                     PyErr_Clear();
                   }
                   break;
@@ -13310,9 +13514,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
               __Pyx_GOTREF(__pyx_t_24);
               __Pyx_XDECREF_SET(__pyx_9genexpr11__pyx_v_elem, __pyx_t_24);
               __pyx_t_24 = 0;
-              __pyx_t_24 = __Pyx_PyNumber_Float(__pyx_9genexpr11__pyx_v_elem); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 471, __pyx_L136_error)
+              __pyx_t_24 = __Pyx_PyNumber_Float(__pyx_9genexpr11__pyx_v_elem); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 484, __pyx_L136_error)
               __Pyx_GOTREF(__pyx_t_24);
-              if (unlikely(__Pyx_ListComp_Append(__pyx_t_16, (PyObject*)__pyx_t_24))) __PYX_ERR(0, 471, __pyx_L136_error)
+              if (unlikely(__Pyx_ListComp_Append(__pyx_t_16, (PyObject*)__pyx_t_24))) __PYX_ERR(0, 484, __pyx_L136_error)
               __Pyx_DECREF(__pyx_t_24); __pyx_t_24 = 0;
             }
             __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
@@ -13323,21 +13527,21 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             goto __pyx_L1_error;
             __pyx_L140_exit_scope:;
           } /* exit inner scope */
-          __pyx_t_23 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_i); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 471, __pyx_L1_error)
+          __pyx_t_23 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_i); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 484, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_23);
-          __pyx_t_24 = __Pyx_PyObject_GetAttrStr(__pyx_t_23, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 471, __pyx_L1_error)
+          __pyx_t_24 = __Pyx_PyObject_GetAttrStr(__pyx_t_23, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 484, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_24);
           __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
-          __pyx_t_23 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_j); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 471, __pyx_L1_error)
+          __pyx_t_23 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_j); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 484, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_23);
-          __pyx_t_21 = __Pyx_PyObject_GetAttrStr(__pyx_t_23, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 471, __pyx_L1_error)
+          __pyx_t_21 = __Pyx_PyObject_GetAttrStr(__pyx_t_23, __pyx_mstate_global->__pyx_n_u_unitObject); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 484, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_21);
           __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
-          __pyx_t_23 = PyNumber_Multiply(__pyx_t_24, __pyx_t_21); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 471, __pyx_L1_error)
+          __pyx_t_23 = PyNumber_Multiply(__pyx_t_24, __pyx_t_21); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 484, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_23);
           __Pyx_DECREF(__pyx_t_24); __pyx_t_24 = 0;
           __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
-          __pyx_t_21 = __Pyx_PyObject_Unicode(__pyx_t_23); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 471, __pyx_L1_error)
+          __pyx_t_21 = __Pyx_PyObject_Unicode(__pyx_t_23); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 484, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_21);
           __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
           __pyx_t_8 = 0;
@@ -13349,12 +13553,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
             __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
             __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
             __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-            if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 471, __pyx_L1_error)
+            if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 484, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_18);
           }
           __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
 
-          /* "pyees/sheet.py":469
+          /* "pyees/sheet.py":482
  * 
  *                 for i in range(nDataColoumns):
  *                     for j in range(nDataColoumns):             # <<<<<<<<<<<<<<
@@ -13365,7 +13569,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         }
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-        /* "pyees/sheet.py":468
+        /* "pyees/sheet.py":481
  *                 variables = [variable(data[i], units[i], uncert[i]) for i in range(len(list(dataRange)))]
  * 
  *                 for i in range(nDataColoumns):             # <<<<<<<<<<<<<<
@@ -13377,7 +13581,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     }
     __pyx_L82:;
 
-    /* "pyees/sheet.py":473
+    /* "pyees/sheet.py":486
  *                         variables[i].addCovariance(variables[j], [float(elem) for elem in covariances[:,i,j]], str(variables[i]._unitObject * variables[j]._unitObject))
  * 
  *             for i in range(len(list(dataRange))):             # <<<<<<<<<<<<<<
@@ -13385,11 +13589,11 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
  * 
 */
     __pyx_t_7 = NULL;
-    __pyx_t_18 = PySequence_List(__pyx_v_dataRange); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 473, __pyx_L1_error)
+    __pyx_t_18 = PySequence_List(__pyx_v_dataRange); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_18);
-    __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_t_18); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 473, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyList_GET_SIZE(__pyx_t_18); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-    __pyx_t_18 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 473, __pyx_L1_error)
+    __pyx_t_18 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_18);
     __pyx_t_8 = 1;
     {
@@ -13397,12 +13601,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 473, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 486, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
-    __pyx_t_18 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 473, __pyx_L1_error)
+    __pyx_t_18 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_18);
-    __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_18); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 473, __pyx_L1_error)
+    __pyx_t_11 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_18); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     for (;;) {
       {
@@ -13410,7 +13614,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
         if (unlikely(!__pyx_t_2)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 473, __pyx_L1_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 486, __pyx_L1_error)
             PyErr_Clear();
           }
           break;
@@ -13420,22 +13624,22 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
       __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "pyees/sheet.py":474
+      /* "pyees/sheet.py":487
  * 
  *             for i in range(len(list(dataRange))):
  *                 setattr(sheetData, headers[i], variables[i])             # <<<<<<<<<<<<<<
  * 
  * 
 */
-      __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_headers, __pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 474, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_headers, __pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 487, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_i); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 474, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_variables, __pyx_v_i); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 487, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_15 = PyObject_SetAttr(__pyx_v_sheetData, __pyx_t_2, __pyx_t_7); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 474, __pyx_L1_error)
+      __pyx_t_15 = PyObject_SetAttr(__pyx_v_sheetData, __pyx_t_2, __pyx_t_7); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 487, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "pyees/sheet.py":473
+      /* "pyees/sheet.py":486
  *                         variables[i].addCovariance(variables[j], [float(elem) for elem in covariances[:,i,j]], str(variables[i]._unitObject * variables[j]._unitObject))
  * 
  *             for i in range(len(list(dataRange))):             # <<<<<<<<<<<<<<
@@ -13445,19 +13649,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
     }
     __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
 
-    /* "pyees/sheet.py":478
+    /* "pyees/sheet.py":491
  * 
  * 
  *             self.dat.append(sheetData)             # <<<<<<<<<<<<<<
  * 
  * 
 */
-    __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dat); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 478, __pyx_L1_error)
+    __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dat); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 491, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_18);
-    __pyx_t_15 = __Pyx_PyObject_Append(__pyx_t_18, __pyx_v_sheetData); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 478, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyObject_Append(__pyx_t_18, __pyx_v_sheetData); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 491, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
 
-    /* "pyees/sheet.py":338
+    /* "pyees/sheet.py":351
  * 
  *         # Looping over the sheets in the data file
  *         for ii, sh in enumerate(self.sheets):             # <<<<<<<<<<<<<<
@@ -13468,7 +13672,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":334
+  /* "pyees/sheet.py":347
  *         return out
  * 
  *     def readData(self):             # <<<<<<<<<<<<<<
@@ -13533,7 +13737,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_15_sheetsFromFile_6readData(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":483
+/* "pyees/sheet.py":496
  * 
  * class sheet():
  *     def __init__(self):             # <<<<<<<<<<<<<<
@@ -13580,32 +13784,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 483, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 496, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 483, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 496, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 483, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 496, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, i); __PYX_ERR(0, 483, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, i); __PYX_ERR(0, 496, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 483, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 496, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 483, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 496, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13638,7 +13842,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet___init__(CYTHON_UNUSED PyObject *
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":486
+/* "pyees/sheet.py":499
  *         pass
  * 
  *     def printContents(self):             # <<<<<<<<<<<<<<
@@ -13685,32 +13889,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 486, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 499, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 486, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 499, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "printContents", 0) < (0)) __PYX_ERR(0, 486, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "printContents", 0) < (0)) __PYX_ERR(0, 499, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("printContents", 1, 1, 1, i); __PYX_ERR(0, 486, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("printContents", 1, 1, 1, i); __PYX_ERR(0, 499, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 486, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 499, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("printContents", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 486, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("printContents", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 499, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13750,7 +13954,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_2printContents(CYTHON_UNUSED PyOb
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("printContents", 0);
 
-  /* "pyees/sheet.py":487
+  /* "pyees/sheet.py":500
  * 
  *     def printContents(self):
  *         for key, item in self.__dict__.items():             # <<<<<<<<<<<<<<
@@ -13758,13 +13962,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_2printContents(CYTHON_UNUSED PyOb
  *                 print(key)
 */
   __pyx_t_2 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 487, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 500, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (unlikely(__pyx_t_5 == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 487, __pyx_L1_error)
+    __PYX_ERR(0, 500, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 487, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 500, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_XDECREF(__pyx_t_1);
@@ -13773,7 +13977,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_2printContents(CYTHON_UNUSED PyOb
   while (1) {
     __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_3, &__pyx_t_2, &__pyx_t_6, &__pyx_t_5, NULL, __pyx_t_4);
     if (unlikely(__pyx_t_7 == 0)) break;
-    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 487, __pyx_L1_error)
+    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 500, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_6);
@@ -13781,20 +13985,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_2printContents(CYTHON_UNUSED PyOb
     __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "pyees/sheet.py":488
+    /* "pyees/sheet.py":501
  *     def printContents(self):
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
  *                 print(key)
  * 
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 488, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_8 = PyObject_IsInstance(__pyx_v_item, __pyx_t_5); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 488, __pyx_L1_error)
+    __pyx_t_8 = PyObject_IsInstance(__pyx_v_item, __pyx_t_5); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_8) {
 
-      /* "pyees/sheet.py":489
+      /* "pyees/sheet.py":502
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):
  *                 print(key)             # <<<<<<<<<<<<<<
@@ -13807,12 +14011,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_2printContents(CYTHON_UNUSED PyOb
         PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_v_key};
         __pyx_t_5 = __Pyx_PyObject_FastCall((PyObject*)__pyx_builtin_print, __pyx_callargs+__pyx_t_9, (2-__pyx_t_9) | (__pyx_t_9*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 489, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 502, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
       }
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "pyees/sheet.py":488
+      /* "pyees/sheet.py":501
  *     def printContents(self):
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
@@ -13823,7 +14027,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_2printContents(CYTHON_UNUSED PyOb
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":486
+  /* "pyees/sheet.py":499
  *         pass
  * 
  *     def printContents(self):             # <<<<<<<<<<<<<<
@@ -13848,7 +14052,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_2printContents(CYTHON_UNUSED PyOb
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":491
+/* "pyees/sheet.py":504
  *                 print(key)
  * 
  *     def __getitem__(self, index):             # <<<<<<<<<<<<<<
@@ -13896,39 +14100,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_index,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 491, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 504, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 491, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 504, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 491, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 504, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__getitem__", 0) < (0)) __PYX_ERR(0, 491, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__getitem__", 0) < (0)) __PYX_ERR(0, 504, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, i); __PYX_ERR(0, 491, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, i); __PYX_ERR(0, 504, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 491, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 504, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 491, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 504, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
     __pyx_v_index = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 491, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 504, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13970,7 +14174,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_4__getitem__(CYTHON_UNUSED PyObje
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "pyees/sheet.py":492
+  /* "pyees/sheet.py":505
  * 
  *     def __getitem__(self, index):
  *         sh = sheet()             # <<<<<<<<<<<<<<
@@ -13978,7 +14182,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_4__getitem__(CYTHON_UNUSED PyObje
  *             if isinstance(item, scalarVariable):
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 505, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -13997,13 +14201,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_4__getitem__(CYTHON_UNUSED PyObje
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 492, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 505, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_sh = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":493
+  /* "pyees/sheet.py":506
  *     def __getitem__(self, index):
  *         sh = sheet()
  *         for key, item in self.__dict__.items():             # <<<<<<<<<<<<<<
@@ -14011,13 +14215,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_4__getitem__(CYTHON_UNUSED PyObje
  *                 setattr(sh, key, item[index])
 */
   __pyx_t_5 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 493, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 506, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (unlikely(__pyx_t_3 == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 493, __pyx_L1_error)
+    __PYX_ERR(0, 506, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_dict_iterator(__pyx_t_3, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_6), (&__pyx_t_7)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 493, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_dict_iterator(__pyx_t_3, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_6), (&__pyx_t_7)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 506, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_XDECREF(__pyx_t_1);
@@ -14026,7 +14230,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_4__getitem__(CYTHON_UNUSED PyObje
   while (1) {
     __pyx_t_8 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_6, &__pyx_t_5, &__pyx_t_2, &__pyx_t_3, NULL, __pyx_t_7);
     if (unlikely(__pyx_t_8 == 0)) break;
-    if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 493, __pyx_L1_error)
+    if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 506, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_2);
@@ -14034,32 +14238,32 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_4__getitem__(CYTHON_UNUSED PyObje
     __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "pyees/sheet.py":494
+    /* "pyees/sheet.py":507
  *         sh = sheet()
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
  *                 setattr(sh, key, item[index])
  *         return sh
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 494, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 507, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_9 = PyObject_IsInstance(__pyx_v_item, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 494, __pyx_L1_error)
+    __pyx_t_9 = PyObject_IsInstance(__pyx_v_item, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 507, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_9) {
 
-      /* "pyees/sheet.py":495
+      /* "pyees/sheet.py":508
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):
  *                 setattr(sh, key, item[index])             # <<<<<<<<<<<<<<
  *         return sh
  * 
 */
-      __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_item, __pyx_v_index); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 495, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_item, __pyx_v_index); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 508, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_10 = PyObject_SetAttr(__pyx_v_sh, __pyx_v_key, __pyx_t_3); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 495, __pyx_L1_error)
+      __pyx_t_10 = PyObject_SetAttr(__pyx_v_sh, __pyx_v_key, __pyx_t_3); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 508, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "pyees/sheet.py":494
+      /* "pyees/sheet.py":507
  *         sh = sheet()
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
@@ -14070,7 +14274,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_4__getitem__(CYTHON_UNUSED PyObje
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":496
+  /* "pyees/sheet.py":509
  *             if isinstance(item, scalarVariable):
  *                 setattr(sh, key, item[index])
  *         return sh             # <<<<<<<<<<<<<<
@@ -14082,7 +14286,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_4__getitem__(CYTHON_UNUSED PyObje
   __pyx_r = __pyx_v_sh;
   goto __pyx_L0;
 
-  /* "pyees/sheet.py":491
+  /* "pyees/sheet.py":504
  *                 print(key)
  * 
  *     def __getitem__(self, index):             # <<<<<<<<<<<<<<
@@ -14106,7 +14310,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_4__getitem__(CYTHON_UNUSED PyObje
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":498
+/* "pyees/sheet.py":511
  *         return sh
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -14153,32 +14357,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 498, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 511, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 498, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 511, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__len__", 0) < (0)) __PYX_ERR(0, 498, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__len__", 0) < (0)) __PYX_ERR(0, 511, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__len__", 1, 1, 1, i); __PYX_ERR(0, 498, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__len__", 1, 1, 1, i); __PYX_ERR(0, 511, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 498, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 511, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__len__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 498, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__len__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 511, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -14218,7 +14422,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_6__len__(CYTHON_UNUSED PyObject *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "pyees/sheet.py":500
+  /* "pyees/sheet.py":513
  *     def __len__(self):
  * 
  *         for _, item in self.__dict__.items():             # <<<<<<<<<<<<<<
@@ -14226,13 +14430,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_6__len__(CYTHON_UNUSED PyObject *
  *                 return len(item)
 */
   __pyx_t_2 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 500, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 513, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (unlikely(__pyx_t_5 == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 500, __pyx_L1_error)
+    __PYX_ERR(0, 513, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 500, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 513, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_XDECREF(__pyx_t_1);
@@ -14241,7 +14445,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_6__len__(CYTHON_UNUSED PyObject *
   while (1) {
     __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_3, &__pyx_t_2, &__pyx_t_6, &__pyx_t_5, NULL, __pyx_t_4);
     if (unlikely(__pyx_t_7 == 0)) break;
-    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 500, __pyx_L1_error)
+    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 513, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_XDECREF_SET(__pyx_v__, __pyx_t_6);
@@ -14249,20 +14453,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_6__len__(CYTHON_UNUSED PyObject *
     __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "pyees/sheet.py":501
+    /* "pyees/sheet.py":514
  * 
  *         for _, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
  *                 return len(item)
  *         raise 0
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 514, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_8 = PyObject_IsInstance(__pyx_v_item, __pyx_t_5); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_8 = PyObject_IsInstance(__pyx_v_item, __pyx_t_5); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 514, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_8) {
 
-      /* "pyees/sheet.py":502
+      /* "pyees/sheet.py":515
  *         for _, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):
  *                 return len(item)             # <<<<<<<<<<<<<<
@@ -14270,15 +14474,15 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_6__len__(CYTHON_UNUSED PyObject *
  * 
 */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = PyObject_Length(__pyx_v_item); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 502, __pyx_L1_error)
-      __pyx_t_5 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 502, __pyx_L1_error)
+      __pyx_t_9 = PyObject_Length(__pyx_v_item); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 515, __pyx_L1_error)
+      __pyx_t_5 = PyLong_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 515, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_r = __pyx_t_5;
       __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       goto __pyx_L0;
 
-      /* "pyees/sheet.py":501
+      /* "pyees/sheet.py":514
  * 
  *         for _, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
@@ -14289,7 +14493,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_6__len__(CYTHON_UNUSED PyObject *
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":503
+  /* "pyees/sheet.py":516
  *             if isinstance(item, scalarVariable):
  *                 return len(item)
  *         raise 0             # <<<<<<<<<<<<<<
@@ -14297,9 +14501,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_6__len__(CYTHON_UNUSED PyObject *
  *     def append(self, other):
 */
   __Pyx_Raise(__pyx_mstate_global->__pyx_int_0, 0, 0, 0);
-  __PYX_ERR(0, 503, __pyx_L1_error)
+  __PYX_ERR(0, 516, __pyx_L1_error)
 
-  /* "pyees/sheet.py":498
+  /* "pyees/sheet.py":511
  *         return sh
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -14322,7 +14526,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_6__len__(CYTHON_UNUSED PyObject *
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":505
+/* "pyees/sheet.py":518
  *         raise 0
  * 
  *     def append(self, other):             # <<<<<<<<<<<<<<
@@ -14370,39 +14574,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_other,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 505, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 518, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 505, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 518, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 505, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 518, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "append", 0) < (0)) __PYX_ERR(0, 505, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "append", 0) < (0)) __PYX_ERR(0, 518, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("append", 1, 2, 2, i); __PYX_ERR(0, 505, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("append", 1, 2, 2, i); __PYX_ERR(0, 518, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 505, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 518, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 505, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 518, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
     __pyx_v_other = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("append", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 505, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("append", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 518, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -14456,21 +14660,21 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("append", 0);
 
-  /* "pyees/sheet.py":506
+  /* "pyees/sheet.py":519
  * 
  *     def append(self, other):
  *         if not isinstance(other, sheet):             # <<<<<<<<<<<<<<
  *             raise ValueError('You can only append two sheets together')
  * 
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 506, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 519, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_IsInstance(__pyx_v_other, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 506, __pyx_L1_error)
+  __pyx_t_2 = PyObject_IsInstance(__pyx_v_other, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 519, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (!__pyx_t_2);
   if (unlikely(__pyx_t_3)) {
 
-    /* "pyees/sheet.py":507
+    /* "pyees/sheet.py":520
  *     def append(self, other):
  *         if not isinstance(other, sheet):
  *             raise ValueError('You can only append two sheets together')             # <<<<<<<<<<<<<<
@@ -14483,14 +14687,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_You_can_only_append_two_sheets_t};
       __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 507, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 520, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 507, __pyx_L1_error)
+    __PYX_ERR(0, 520, __pyx_L1_error)
 
-    /* "pyees/sheet.py":506
+    /* "pyees/sheet.py":519
  * 
  *     def append(self, other):
  *         if not isinstance(other, sheet):             # <<<<<<<<<<<<<<
@@ -14499,55 +14703,55 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
 */
   }
 
-  /* "pyees/sheet.py":509
+  /* "pyees/sheet.py":522
  *             raise ValueError('You can only append two sheets together')
  * 
  *         selfMeasurements = []             # <<<<<<<<<<<<<<
  *         selfMeasurementNames = []
  *         otherMeasurements = []
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 509, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 522, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_selfMeasurements = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":510
+  /* "pyees/sheet.py":523
  * 
  *         selfMeasurements = []
  *         selfMeasurementNames = []             # <<<<<<<<<<<<<<
  *         otherMeasurements = []
  *         otherMeasurementNames = []
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 510, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 523, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_selfMeasurementNames = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":511
+  /* "pyees/sheet.py":524
  *         selfMeasurements = []
  *         selfMeasurementNames = []
  *         otherMeasurements = []             # <<<<<<<<<<<<<<
  *         otherMeasurementNames = []
  * 
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 511, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 524, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_otherMeasurements = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":512
+  /* "pyees/sheet.py":525
  *         selfMeasurementNames = []
  *         otherMeasurements = []
  *         otherMeasurementNames = []             # <<<<<<<<<<<<<<
  * 
  *         for key,item in self.__dict__.items():
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 512, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 525, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_otherMeasurementNames = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":514
+  /* "pyees/sheet.py":527
  *         otherMeasurementNames = []
  * 
  *         for key,item in self.__dict__.items():             # <<<<<<<<<<<<<<
@@ -14555,13 +14759,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
  *                 selfMeasurementNames.append(key)
 */
   __pyx_t_6 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 514, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 527, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (unlikely(__pyx_t_4 == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 514, __pyx_L1_error)
+    __PYX_ERR(0, 527, __pyx_L1_error)
   }
-  __pyx_t_9 = __Pyx_dict_iterator(__pyx_t_4, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_7), (&__pyx_t_8)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 514, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_dict_iterator(__pyx_t_4, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_7), (&__pyx_t_8)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 527, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_XDECREF(__pyx_t_1);
@@ -14570,7 +14774,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
   while (1) {
     __pyx_t_10 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_7, &__pyx_t_6, &__pyx_t_9, &__pyx_t_4, NULL, __pyx_t_8);
     if (unlikely(__pyx_t_10 == 0)) break;
-    if (unlikely(__pyx_t_10 == -1)) __PYX_ERR(0, 514, __pyx_L1_error)
+    if (unlikely(__pyx_t_10 == -1)) __PYX_ERR(0, 527, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_9);
@@ -14578,38 +14782,38 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
     __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":515
+    /* "pyees/sheet.py":528
  * 
  *         for key,item in self.__dict__.items():
  *             if isinstance(item,scalarVariable):             # <<<<<<<<<<<<<<
  *                 selfMeasurementNames.append(key)
  *                 selfMeasurements.append(item)
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 515, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 528, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyObject_IsInstance(__pyx_v_item, __pyx_t_4); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 515, __pyx_L1_error)
+    __pyx_t_3 = PyObject_IsInstance(__pyx_v_item, __pyx_t_4); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 528, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_3) {
 
-      /* "pyees/sheet.py":516
+      /* "pyees/sheet.py":529
  *         for key,item in self.__dict__.items():
  *             if isinstance(item,scalarVariable):
  *                 selfMeasurementNames.append(key)             # <<<<<<<<<<<<<<
  *                 selfMeasurements.append(item)
  * 
 */
-      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_selfMeasurementNames, __pyx_v_key); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 516, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_selfMeasurementNames, __pyx_v_key); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 529, __pyx_L1_error)
 
-      /* "pyees/sheet.py":517
+      /* "pyees/sheet.py":530
  *             if isinstance(item,scalarVariable):
  *                 selfMeasurementNames.append(key)
  *                 selfMeasurements.append(item)             # <<<<<<<<<<<<<<
  * 
  *         for key,item in other.__dict__.items():
 */
-      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_selfMeasurements, __pyx_v_item); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 517, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_selfMeasurements, __pyx_v_item); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 530, __pyx_L1_error)
 
-      /* "pyees/sheet.py":515
+      /* "pyees/sheet.py":528
  * 
  *         for key,item in self.__dict__.items():
  *             if isinstance(item,scalarVariable):             # <<<<<<<<<<<<<<
@@ -14620,7 +14824,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":519
+  /* "pyees/sheet.py":532
  *                 selfMeasurements.append(item)
  * 
  *         for key,item in other.__dict__.items():             # <<<<<<<<<<<<<<
@@ -14628,13 +14832,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
  *                 otherMeasurementNames.append(key)
 */
   __pyx_t_7 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 519, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 532, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (unlikely(__pyx_t_4 == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 519, __pyx_L1_error)
+    __PYX_ERR(0, 532, __pyx_L1_error)
   }
-  __pyx_t_9 = __Pyx_dict_iterator(__pyx_t_4, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_6), (&__pyx_t_8)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 519, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_dict_iterator(__pyx_t_4, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_6), (&__pyx_t_8)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 532, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_XDECREF(__pyx_t_1);
@@ -14643,7 +14847,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
   while (1) {
     __pyx_t_10 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_6, &__pyx_t_7, &__pyx_t_9, &__pyx_t_4, NULL, __pyx_t_8);
     if (unlikely(__pyx_t_10 == 0)) break;
-    if (unlikely(__pyx_t_10 == -1)) __PYX_ERR(0, 519, __pyx_L1_error)
+    if (unlikely(__pyx_t_10 == -1)) __PYX_ERR(0, 532, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_9);
@@ -14651,38 +14855,38 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
     __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":520
+    /* "pyees/sheet.py":533
  * 
  *         for key,item in other.__dict__.items():
  *             if isinstance(item,scalarVariable):             # <<<<<<<<<<<<<<
  *                 otherMeasurementNames.append(key)
  *                 otherMeasurements.append(item)
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 520, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 533, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyObject_IsInstance(__pyx_v_item, __pyx_t_4); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 520, __pyx_L1_error)
+    __pyx_t_3 = PyObject_IsInstance(__pyx_v_item, __pyx_t_4); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 533, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_3) {
 
-      /* "pyees/sheet.py":521
+      /* "pyees/sheet.py":534
  *         for key,item in other.__dict__.items():
  *             if isinstance(item,scalarVariable):
  *                 otherMeasurementNames.append(key)             # <<<<<<<<<<<<<<
  *                 otherMeasurements.append(item)
  * 
 */
-      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_otherMeasurementNames, __pyx_v_key); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 521, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_otherMeasurementNames, __pyx_v_key); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 534, __pyx_L1_error)
 
-      /* "pyees/sheet.py":522
+      /* "pyees/sheet.py":535
  *             if isinstance(item,scalarVariable):
  *                 otherMeasurementNames.append(key)
  *                 otherMeasurements.append(item)             # <<<<<<<<<<<<<<
  * 
  *         # Test if all names are the same
 */
-      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_otherMeasurements, __pyx_v_item); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 522, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_otherMeasurements, __pyx_v_item); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 535, __pyx_L1_error)
 
-      /* "pyees/sheet.py":520
+      /* "pyees/sheet.py":533
  * 
  *         for key,item in other.__dict__.items():
  *             if isinstance(item,scalarVariable):             # <<<<<<<<<<<<<<
@@ -14693,7 +14897,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":525
+  /* "pyees/sheet.py":538
  * 
  *         # Test if all names are the same
  *         for elem in selfMeasurementNames:             # <<<<<<<<<<<<<<
@@ -14706,28 +14910,28 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
     {
       Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
       #if !CYTHON_ASSUME_SAFE_SIZE
-      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 525, __pyx_L1_error)
+      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 538, __pyx_L1_error)
       #endif
       if (__pyx_t_6 >= __pyx_temp) break;
     }
     __pyx_t_4 = __Pyx_PyList_GetItemRefFast(__pyx_t_1, __pyx_t_6, __Pyx_ReferenceSharing_OwnStrongReference);
     ++__pyx_t_6;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 525, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 538, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_XDECREF_SET(__pyx_v_elem, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":526
+    /* "pyees/sheet.py":539
  *         # Test if all names are the same
  *         for elem in selfMeasurementNames:
  *             if elem not in otherMeasurementNames:             # <<<<<<<<<<<<<<
  *                 raise ValueError('You can only append sheets with the excact same measurements. The names did not match')
  * 
 */
-    __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_v_elem, __pyx_v_otherMeasurementNames, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 526, __pyx_L1_error)
+    __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_v_elem, __pyx_v_otherMeasurementNames, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 539, __pyx_L1_error)
     if (unlikely(__pyx_t_3)) {
 
-      /* "pyees/sheet.py":527
+      /* "pyees/sheet.py":540
  *         for elem in selfMeasurementNames:
  *             if elem not in otherMeasurementNames:
  *                 raise ValueError('You can only append sheets with the excact same measurements. The names did not match')             # <<<<<<<<<<<<<<
@@ -14740,14 +14944,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
         PyObject *__pyx_callargs[2] = {__pyx_t_9, __pyx_mstate_global->__pyx_kp_u_You_can_only_append_sheets_with};
         __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 527, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 540, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
       }
       __Pyx_Raise(__pyx_t_4, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __PYX_ERR(0, 527, __pyx_L1_error)
+      __PYX_ERR(0, 540, __pyx_L1_error)
 
-      /* "pyees/sheet.py":526
+      /* "pyees/sheet.py":539
  *         # Test if all names are the same
  *         for elem in selfMeasurementNames:
  *             if elem not in otherMeasurementNames:             # <<<<<<<<<<<<<<
@@ -14756,7 +14960,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
 */
     }
 
-    /* "pyees/sheet.py":525
+    /* "pyees/sheet.py":538
  * 
  *         # Test if all names are the same
  *         for elem in selfMeasurementNames:             # <<<<<<<<<<<<<<
@@ -14766,7 +14970,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":529
+  /* "pyees/sheet.py":542
  *                 raise ValueError('You can only append sheets with the excact same measurements. The names did not match')
  * 
  *         for elem in otherMeasurementNames:             # <<<<<<<<<<<<<<
@@ -14779,28 +14983,28 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
     {
       Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
       #if !CYTHON_ASSUME_SAFE_SIZE
-      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 529, __pyx_L1_error)
+      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 542, __pyx_L1_error)
       #endif
       if (__pyx_t_6 >= __pyx_temp) break;
     }
     __pyx_t_4 = __Pyx_PyList_GetItemRefFast(__pyx_t_1, __pyx_t_6, __Pyx_ReferenceSharing_OwnStrongReference);
     ++__pyx_t_6;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 529, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 542, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_XDECREF_SET(__pyx_v_elem, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pyees/sheet.py":530
+    /* "pyees/sheet.py":543
  * 
  *         for elem in otherMeasurementNames:
  *             if elem not in selfMeasurementNames:             # <<<<<<<<<<<<<<
  *                 raise ValueError('You can only append sheets with the excact same measurements. The names did not match')
  * 
 */
-    __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_v_elem, __pyx_v_selfMeasurementNames, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 530, __pyx_L1_error)
+    __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_v_elem, __pyx_v_selfMeasurementNames, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 543, __pyx_L1_error)
     if (unlikely(__pyx_t_3)) {
 
-      /* "pyees/sheet.py":531
+      /* "pyees/sheet.py":544
  *         for elem in otherMeasurementNames:
  *             if elem not in selfMeasurementNames:
  *                 raise ValueError('You can only append sheets with the excact same measurements. The names did not match')             # <<<<<<<<<<<<<<
@@ -14813,14 +15017,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
         PyObject *__pyx_callargs[2] = {__pyx_t_9, __pyx_mstate_global->__pyx_kp_u_You_can_only_append_sheets_with};
         __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 531, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 544, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
       }
       __Pyx_Raise(__pyx_t_4, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __PYX_ERR(0, 531, __pyx_L1_error)
+      __PYX_ERR(0, 544, __pyx_L1_error)
 
-      /* "pyees/sheet.py":530
+      /* "pyees/sheet.py":543
  * 
  *         for elem in otherMeasurementNames:
  *             if elem not in selfMeasurementNames:             # <<<<<<<<<<<<<<
@@ -14829,7 +15033,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
 */
     }
 
-    /* "pyees/sheet.py":529
+    /* "pyees/sheet.py":542
  *                 raise ValueError('You can only append sheets with the excact same measurements. The names did not match')
  * 
  *         for elem in otherMeasurementNames:             # <<<<<<<<<<<<<<
@@ -14839,7 +15043,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":534
+  /* "pyees/sheet.py":547
  * 
  *         # append the measurements from other to self
  *         for measurement, measurementName in zip(selfMeasurements, selfMeasurementNames):             # <<<<<<<<<<<<<<
@@ -14852,7 +15056,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
     PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_v_selfMeasurements, __pyx_v_selfMeasurementNames};
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_builtin_zip, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 534, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 547, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
@@ -14860,9 +15064,9 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
     __pyx_t_6 = 0;
     __pyx_t_12 = NULL;
   } else {
-    __pyx_t_6 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 534, __pyx_L1_error)
+    __pyx_t_6 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 547, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_12 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_4); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 534, __pyx_L1_error)
+    __pyx_t_12 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_4); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 547, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -14871,7 +15075,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_4);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 534, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 547, __pyx_L1_error)
           #endif
           if (__pyx_t_6 >= __pyx_temp) break;
         }
@@ -14881,7 +15085,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_4);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 534, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 547, __pyx_L1_error)
           #endif
           if (__pyx_t_6 >= __pyx_temp) break;
         }
@@ -14892,13 +15096,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
         #endif
         ++__pyx_t_6;
       }
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 534, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 547, __pyx_L1_error)
     } else {
       __pyx_t_1 = __pyx_t_12(__pyx_t_4);
       if (unlikely(!__pyx_t_1)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
-          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 534, __pyx_L1_error)
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 547, __pyx_L1_error)
           PyErr_Clear();
         }
         break;
@@ -14911,7 +15115,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 534, __pyx_L1_error)
+        __PYX_ERR(0, 547, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -14921,22 +15125,22 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
         __Pyx_INCREF(__pyx_t_13);
       } else {
         __pyx_t_9 = __Pyx_PyList_GetItemRefFast(sequence, 0, __Pyx_ReferenceSharing_SharedReference);
-        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 534, __pyx_L1_error)
+        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 547, __pyx_L1_error)
         __Pyx_XGOTREF(__pyx_t_9);
         __pyx_t_13 = __Pyx_PyList_GetItemRefFast(sequence, 1, __Pyx_ReferenceSharing_SharedReference);
-        if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 534, __pyx_L1_error)
+        if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 547, __pyx_L1_error)
         __Pyx_XGOTREF(__pyx_t_13);
       }
       #else
-      __pyx_t_9 = __Pyx_PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 534, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 547, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_13 = __Pyx_PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 534, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 547, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_13);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_14 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 534, __pyx_L1_error)
+      __pyx_t_14 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 547, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_14);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_14);
@@ -14944,7 +15148,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
       __Pyx_GOTREF(__pyx_t_9);
       index = 1; __pyx_t_13 = __pyx_t_15(__pyx_t_14); if (unlikely(!__pyx_t_13)) goto __pyx_L20_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_13);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_14), 2) < (0)) __PYX_ERR(0, 534, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_14), 2) < (0)) __PYX_ERR(0, 547, __pyx_L1_error)
       __pyx_t_15 = NULL;
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
       goto __pyx_L21_unpacking_done;
@@ -14952,7 +15156,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
       __pyx_t_15 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 534, __pyx_L1_error)
+      __PYX_ERR(0, 547, __pyx_L1_error)
       __pyx_L21_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_measurement, __pyx_t_9);
@@ -14960,32 +15164,32 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
     __Pyx_XDECREF_SET(__pyx_v_measurementName, __pyx_t_13);
     __pyx_t_13 = 0;
 
-    /* "pyees/sheet.py":535
+    /* "pyees/sheet.py":548
  *         # append the measurements from other to self
  *         for measurement, measurementName in zip(selfMeasurements, selfMeasurementNames):
  *             index = otherMeasurementNames.index(measurementName)             # <<<<<<<<<<<<<<
  *             measurement.append(otherMeasurements[index])
  * 
 */
-    __pyx_t_1 = __Pyx_CallUnboundCMethod1(&__pyx_mstate_global->__pyx_umethod_PyList_Type__index, __pyx_v_otherMeasurementNames, __pyx_v_measurementName); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 535, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_CallUnboundCMethod1(&__pyx_mstate_global->__pyx_umethod_PyList_Type__index, __pyx_v_otherMeasurementNames, __pyx_v_measurementName); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 548, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = __Pyx_PyIndex_AsSsize_t(__pyx_t_1); if (unlikely((__pyx_t_7 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 535, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyIndex_AsSsize_t(__pyx_t_1); if (unlikely((__pyx_t_7 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 548, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_index = __pyx_t_7;
 
-    /* "pyees/sheet.py":536
+    /* "pyees/sheet.py":549
  *         for measurement, measurementName in zip(selfMeasurements, selfMeasurementNames):
  *             index = otherMeasurementNames.index(measurementName)
  *             measurement.append(otherMeasurements[index])             # <<<<<<<<<<<<<<
  * 
  *     def __iter__(self):
 */
-    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_otherMeasurements, __pyx_v_index, Py_ssize_t, 1, PyLong_FromSsize_t, 1, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 536, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_otherMeasurements, __pyx_v_index, Py_ssize_t, 1, PyLong_FromSsize_t, 1, 1, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 549, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_11 = __Pyx_PyObject_Append(__pyx_v_measurement, __pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 536, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyObject_Append(__pyx_v_measurement, __pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 549, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "pyees/sheet.py":534
+    /* "pyees/sheet.py":547
  * 
  *         # append the measurements from other to self
  *         for measurement, measurementName in zip(selfMeasurements, selfMeasurementNames):             # <<<<<<<<<<<<<<
@@ -14995,7 +15199,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":505
+  /* "pyees/sheet.py":518
  *         raise 0
  * 
  *     def append(self, other):             # <<<<<<<<<<<<<<
@@ -15029,7 +15233,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_8append(CYTHON_UNUSED PyObject *_
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":538
+/* "pyees/sheet.py":551
  *             measurement.append(otherMeasurements[index])
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -15076,32 +15280,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 538, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 551, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 538, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 551, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__iter__", 0) < (0)) __PYX_ERR(0, 538, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__iter__", 0) < (0)) __PYX_ERR(0, 551, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__iter__", 1, 1, 1, i); __PYX_ERR(0, 538, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__iter__", 1, 1, 1, i); __PYX_ERR(0, 551, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 538, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 551, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__iter__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 538, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__iter__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 551, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -15142,19 +15346,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_10__iter__(CYTHON_UNUSED PyObject
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "pyees/sheet.py":540
+  /* "pyees/sheet.py":553
  *     def __iter__(self):
  * 
  *         variables = []             # <<<<<<<<<<<<<<
  *         for _, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 540, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 553, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_variables = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":541
+  /* "pyees/sheet.py":554
  * 
  *         variables = []
  *         for _, item in self.__dict__.items():             # <<<<<<<<<<<<<<
@@ -15162,13 +15366,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_10__iter__(CYTHON_UNUSED PyObject
  *                 variables.append(item)
 */
   __pyx_t_2 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 541, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 554, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (unlikely(__pyx_t_5 == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 541, __pyx_L1_error)
+    __PYX_ERR(0, 554, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 541, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 554, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_XDECREF(__pyx_t_1);
@@ -15177,7 +15381,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_10__iter__(CYTHON_UNUSED PyObject
   while (1) {
     __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_3, &__pyx_t_2, &__pyx_t_6, &__pyx_t_5, NULL, __pyx_t_4);
     if (unlikely(__pyx_t_7 == 0)) break;
-    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 541, __pyx_L1_error)
+    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 554, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_XDECREF_SET(__pyx_v__, __pyx_t_6);
@@ -15185,29 +15389,29 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_10__iter__(CYTHON_UNUSED PyObject
     __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "pyees/sheet.py":542
+    /* "pyees/sheet.py":555
  *         variables = []
  *         for _, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
  *                 variables.append(item)
  * 
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 542, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 555, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_8 = PyObject_IsInstance(__pyx_v_item, __pyx_t_5); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 542, __pyx_L1_error)
+    __pyx_t_8 = PyObject_IsInstance(__pyx_v_item, __pyx_t_5); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 555, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_8) {
 
-      /* "pyees/sheet.py":543
+      /* "pyees/sheet.py":556
  *         for _, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):
  *                 variables.append(item)             # <<<<<<<<<<<<<<
  * 
  *         return iter(variables)
 */
-      __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_variables, __pyx_v_item); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 543, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_variables, __pyx_v_item); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 556, __pyx_L1_error)
 
-      /* "pyees/sheet.py":542
+      /* "pyees/sheet.py":555
  *         variables = []
  *         for _, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
@@ -15218,7 +15422,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_10__iter__(CYTHON_UNUSED PyObject
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":545
+  /* "pyees/sheet.py":558
  *                 variables.append(item)
  * 
  *         return iter(variables)             # <<<<<<<<<<<<<<
@@ -15226,13 +15430,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_10__iter__(CYTHON_UNUSED PyObject
  *     def pop(self, index = -1):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyObject_GetIter(__pyx_v_variables); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 545, __pyx_L1_error)
+  __pyx_t_1 = PyObject_GetIter(__pyx_v_variables); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 558, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pyees/sheet.py":538
+  /* "pyees/sheet.py":551
  *             measurement.append(otherMeasurements[index])
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -15256,7 +15460,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_10__iter__(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":547
+/* "pyees/sheet.py":560
  *         return iter(variables)
  * 
  *     def pop(self, index = -1):             # <<<<<<<<<<<<<<
@@ -15304,35 +15508,35 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_index,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 547, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 560, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 547, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 560, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 547, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 560, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "pop", 0) < (0)) __PYX_ERR(0, 547, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "pop", 0) < (0)) __PYX_ERR(0, 560, __pyx_L3_error)
       if (!values[1]) values[1] = __Pyx_NewRef(((PyObject *)((PyObject*)__pyx_mstate_global->__pyx_int_neg_1)));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("pop", 0, 1, 2, i); __PYX_ERR(0, 547, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("pop", 0, 1, 2, i); __PYX_ERR(0, 560, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 547, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 560, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 547, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 560, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -15343,7 +15547,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("pop", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 547, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("pop", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 560, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -15383,7 +15587,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_12pop(CYTHON_UNUSED PyObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("pop", 0);
 
-  /* "pyees/sheet.py":548
+  /* "pyees/sheet.py":561
  * 
  *     def pop(self, index = -1):
  *         for key, item in self.__dict__.items():             # <<<<<<<<<<<<<<
@@ -15391,13 +15595,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_12pop(CYTHON_UNUSED PyObject *__p
  *                 item.pop(index)
 */
   __pyx_t_2 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 548, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 561, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (unlikely(__pyx_t_5 == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 548, __pyx_L1_error)
+    __PYX_ERR(0, 561, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 548, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_mstate_global->__pyx_n_u_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 561, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_XDECREF(__pyx_t_1);
@@ -15406,7 +15610,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_12pop(CYTHON_UNUSED PyObject *__p
   while (1) {
     __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_3, &__pyx_t_2, &__pyx_t_6, &__pyx_t_5, NULL, __pyx_t_4);
     if (unlikely(__pyx_t_7 == 0)) break;
-    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 548, __pyx_L1_error)
+    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 561, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_6);
@@ -15414,20 +15618,20 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_12pop(CYTHON_UNUSED PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "pyees/sheet.py":549
+    /* "pyees/sheet.py":562
  *     def pop(self, index = -1):
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
  *                 item.pop(index)
  * 
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 549, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 562, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_8 = PyObject_IsInstance(__pyx_v_item, __pyx_t_5); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 549, __pyx_L1_error)
+    __pyx_t_8 = PyObject_IsInstance(__pyx_v_item, __pyx_t_5); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 562, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_8) {
 
-      /* "pyees/sheet.py":550
+      /* "pyees/sheet.py":563
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):
  *                 item.pop(index)             # <<<<<<<<<<<<<<
@@ -15441,12 +15645,12 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_12pop(CYTHON_UNUSED PyObject *__p
         PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_v_index};
         __pyx_t_5 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_pop, __pyx_callargs+__pyx_t_9, (2-__pyx_t_9) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 550, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 563, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
       }
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "pyees/sheet.py":549
+      /* "pyees/sheet.py":562
  *     def pop(self, index = -1):
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):             # <<<<<<<<<<<<<<
@@ -15457,7 +15661,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_12pop(CYTHON_UNUSED PyObject *__p
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":547
+  /* "pyees/sheet.py":560
  *         return iter(variables)
  * 
  *     def pop(self, index = -1):             # <<<<<<<<<<<<<<
@@ -15482,7 +15686,7 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_12pop(CYTHON_UNUSED PyObject *__p
   return __pyx_r;
 }
 
-/* "pyees/sheet.py":552
+/* "pyees/sheet.py":565
  *                 item.pop(index)
  * 
  *     def __setattr__(self, name: str, value: Any) -> None:             # <<<<<<<<<<<<<<
@@ -15531,38 +15735,38 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_name,&__pyx_mstate_global->__pyx_n_u_value,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 552, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 565, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 552, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 565, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 552, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 565, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 552, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 565, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__setattr__", 0) < (0)) __PYX_ERR(0, 552, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__setattr__", 0) < (0)) __PYX_ERR(0, 565, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__setattr__", 1, 3, 3, i); __PYX_ERR(0, 552, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__setattr__", 1, 3, 3, i); __PYX_ERR(0, 565, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 552, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 565, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 552, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 565, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 552, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 565, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
     __pyx_v_name = ((PyObject*)values[1]);
@@ -15570,7 +15774,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__setattr__", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 552, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__setattr__", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 565, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -15581,7 +15785,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_name), (&PyUnicode_Type), 0, "name", 2))) __PYX_ERR(0, 552, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_name), (&PyUnicode_Type), 0, "name", 2))) __PYX_ERR(0, 565, __pyx_L1_error)
   __pyx_r = __pyx_pf_5pyees_5sheet_5sheet_14__setattr__(__pyx_self, __pyx_v_self, __pyx_v_name, __pyx_v_value);
 
   /* function exit code */
@@ -15618,21 +15822,21 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_14__setattr__(CYTHON_UNUSED PyObj
   __Pyx_RefNannySetupContext("__setattr__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "pyees/sheet.py":553
+  /* "pyees/sheet.py":566
  * 
  *     def __setattr__(self, name: str, value: Any) -> None:
  *         if not isinstance(value, scalarVariable):             # <<<<<<<<<<<<<<
  *             raise ValueError('You can only set variables as attributes to a sheet')
  * 
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 553, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_scalarVariable); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 566, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_IsInstance(__pyx_v_value, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 553, __pyx_L1_error)
+  __pyx_t_2 = PyObject_IsInstance(__pyx_v_value, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 566, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (!__pyx_t_2);
   if (unlikely(__pyx_t_3)) {
 
-    /* "pyees/sheet.py":554
+    /* "pyees/sheet.py":567
  *     def __setattr__(self, name: str, value: Any) -> None:
  *         if not isinstance(value, scalarVariable):
  *             raise ValueError('You can only set variables as attributes to a sheet')             # <<<<<<<<<<<<<<
@@ -15645,14 +15849,14 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_14__setattr__(CYTHON_UNUSED PyObj
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_You_can_only_set_variables_as_at};
       __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 554, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 567, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 554, __pyx_L1_error)
+    __PYX_ERR(0, 567, __pyx_L1_error)
 
-    /* "pyees/sheet.py":553
+    /* "pyees/sheet.py":566
  * 
  *     def __setattr__(self, name: str, value: Any) -> None:
  *         if not isinstance(value, scalarVariable):             # <<<<<<<<<<<<<<
@@ -15661,18 +15865,18 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_14__setattr__(CYTHON_UNUSED PyObj
 */
   }
 
-  /* "pyees/sheet.py":556
+  /* "pyees/sheet.py":569
  *             raise ValueError('You can only set variables as attributes to a sheet')
  * 
  *         if not hasattr(value, '__len__'):             # <<<<<<<<<<<<<<
  *             ## the variable is not an arrayVariable. It has to be to be an array variable
  *             value = arrayVariable(scalarVariables=[value])
 */
-  __pyx_t_3 = __Pyx_HasAttr(__pyx_v_value, __pyx_mstate_global->__pyx_n_u_len); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 556, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_HasAttr(__pyx_v_value, __pyx_mstate_global->__pyx_n_u_len); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 569, __pyx_L1_error)
   __pyx_t_2 = (!__pyx_t_3);
   if (__pyx_t_2) {
 
-    /* "pyees/sheet.py":558
+    /* "pyees/sheet.py":571
  *         if not hasattr(value, '__len__'):
  *             ## the variable is not an arrayVariable. It has to be to be an array variable
  *             value = arrayVariable(scalarVariables=[value])             # <<<<<<<<<<<<<<
@@ -15680,13 +15884,13 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_14__setattr__(CYTHON_UNUSED PyObj
  *         self.__dict__[name] = value
 */
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_arrayVariable); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 558, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_arrayVariable); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 571, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 558, __pyx_L1_error)
+    __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 571, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_v_value);
     __Pyx_GIVEREF(__pyx_v_value);
-    if (__Pyx_PyList_SET_ITEM(__pyx_t_7, 0, __pyx_v_value) != (0)) __PYX_ERR(0, 558, __pyx_L1_error);
+    if (__Pyx_PyList_SET_ITEM(__pyx_t_7, 0, __pyx_v_value) != (0)) __PYX_ERR(0, 571, __pyx_L1_error);
     __pyx_t_5 = 1;
     #if CYTHON_UNPACK_METHODS
     if (unlikely(PyMethod_Check(__pyx_t_6))) {
@@ -15701,21 +15905,21 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_14__setattr__(CYTHON_UNUSED PyObj
     #endif
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_4, NULL};
-      __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 558, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 571, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_scalarVariables, __pyx_t_7, __pyx_t_8, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 558, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_scalarVariables, __pyx_t_7, __pyx_t_8, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 571, __pyx_L1_error)
       __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_6, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_8);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 558, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 571, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "pyees/sheet.py":556
+    /* "pyees/sheet.py":569
  *             raise ValueError('You can only set variables as attributes to a sheet')
  * 
  *         if not hasattr(value, '__len__'):             # <<<<<<<<<<<<<<
@@ -15724,18 +15928,19 @@ static PyObject *__pyx_pf_5pyees_5sheet_5sheet_14__setattr__(CYTHON_UNUSED PyObj
 */
   }
 
-  /* "pyees/sheet.py":560
+  /* "pyees/sheet.py":573
  *             value = arrayVariable(scalarVariables=[value])
  * 
  *         self.__dict__[name] = value             # <<<<<<<<<<<<<<
  * 
+ * if __name__ == "__main__":
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 560, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_dict); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 573, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (unlikely((PyObject_SetItem(__pyx_t_1, __pyx_v_name, __pyx_v_value) < 0))) __PYX_ERR(0, 560, __pyx_L1_error)
+  if (unlikely((PyObject_SetItem(__pyx_t_1, __pyx_v_name, __pyx_v_value) < 0))) __PYX_ERR(0, 573, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyees/sheet.py":552
+  /* "pyees/sheet.py":565
  *                 item.pop(index)
  * 
  *     def __setattr__(self, name: str, value: Any) -> None:             # <<<<<<<<<<<<<<
@@ -16226,6 +16431,8 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_sheet(PyObject *__pyx_pyinit_modul
   PyObject *__pyx_t_9 = NULL;
   PyObject *__pyx_t_10 = NULL;
   PyObject *__pyx_t_11 = NULL;
+  int __pyx_t_12;
+  size_t __pyx_t_13;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -16573,7 +16780,7 @@ __Pyx_RefNannySetupContext("PyInit_sheet", 0);
   /* "pyees/sheet.py":17
  * 
  * 
- * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True):             # <<<<<<<<<<<<<<
+ * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False):             # <<<<<<<<<<<<<<
  *     if not isinstance(sheets, list):
  *         sheets = [sheets]
 */
@@ -16582,15 +16789,15 @@ __Pyx_RefNannySetupContext("PyInit_sheet", 0);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_9);
   #endif
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_9, __pyx_mstate_global->__pyx_tuple[2]);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_9, __pyx_mstate_global->__pyx_tuple[3]);
   if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_fileFromSheets_2, __pyx_t_9) < (0)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
   /* "pyees/sheet.py":25
- *     _fileFromSheets(sheets, fileName, sheetNames, showUncert)
+ *     _fileFromSheets(sheets, fileName, sheetNames, showUncert, prettyUnit)
  * 
  * class _fileFromSheets():             # <<<<<<<<<<<<<<
- *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:
+ *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False) -> None:
  * 
 */
   __pyx_t_9 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_mstate_global->__pyx_empty_tuple, __pyx_mstate_global->__pyx_n_u_fileFromSheets, __pyx_mstate_global->__pyx_n_u_fileFromSheets, (PyObject *) NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, (PyObject *) NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 25, __pyx_L1_error)
@@ -16599,7 +16806,7 @@ __Pyx_RefNannySetupContext("PyInit_sheet", 0);
   /* "pyees/sheet.py":26
  * 
  * class _fileFromSheets():
- *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:             # <<<<<<<<<<<<<<
+ *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False) -> None:             # <<<<<<<<<<<<<<
  * 
  *         self.fileName = fileName
 */
@@ -16611,47 +16818,47 @@ __Pyx_RefNannySetupContext("PyInit_sheet", 0);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[2]);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[3]);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_init, __pyx_t_2) < (0)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyees/sheet.py":89
+  /* "pyees/sheet.py":90
  *         self.saveSheets()
  * 
  *     def saveCsv(self):             # <<<<<<<<<<<<<<
  *         if len(self.sheets) != 1:
  *             raise ValueError("It is only possible to save a single sheet to a .csv file")
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_3saveCsv, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets_saveCsv, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_3saveCsv, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets_saveCsv, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_saveCsv, __pyx_t_2) < (0)) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_saveCsv, __pyx_t_2) < (0)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyees/sheet.py":151
+  /* "pyees/sheet.py":158
  * 
  * 
  *     def saveSheets(self):             # <<<<<<<<<<<<<<
  * 
  *         for ii, sheet in enumerate(self.sheets):
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_5saveSheets, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets_saveSheets, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_fileFromSheets_5saveSheets, 0, __pyx_mstate_global->__pyx_n_u_fileFromSheets_saveSheets, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_saveSheets, __pyx_t_2) < (0)) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_saveSheets, __pyx_t_2) < (0)) __PYX_ERR(0, 158, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "pyees/sheet.py":25
- *     _fileFromSheets(sheets, fileName, sheetNames, showUncert)
+ *     _fileFromSheets(sheets, fileName, sheetNames, showUncert, prettyUnit)
  * 
  * class _fileFromSheets():             # <<<<<<<<<<<<<<
- *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True) -> None:
+ *     def __init__(self, sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False) -> None:
  * 
 */
   __pyx_t_2 = __Pyx_Py3ClassCreate(((PyObject*)&PyType_Type), __pyx_mstate_global->__pyx_n_u_fileFromSheets, __pyx_mstate_global->__pyx_empty_tuple, __pyx_t_9, NULL, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
@@ -16663,284 +16870,385 @@ __Pyx_RefNannySetupContext("PyInit_sheet", 0);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-  /* "pyees/sheet.py":199
+  /* "pyees/sheet.py":212
  * 
  * 
  * def sheetsFromFile(xlFile, dataRange: str | List[str], uncertRange: str | List[str] = None, sheets: int | List[int] = None):             # <<<<<<<<<<<<<<
  *     dat = _sheetsFromFile(xlFile, dataRange, uncertRange, sheets)
  *     if len(dat.dat) == 1:
 */
-  __pyx_t_9 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_dataRange, __pyx_mstate_global->__pyx_kp_u_str_List_str) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_uncertRange, __pyx_mstate_global->__pyx_kp_u_str_List_str) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_sheets, __pyx_mstate_global->__pyx_kp_u_int_List_int) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_3sheetsFromFile, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_2, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_dataRange, __pyx_mstate_global->__pyx_kp_u_str_List_str) < (0)) __PYX_ERR(0, 212, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_uncertRange, __pyx_mstate_global->__pyx_kp_u_str_List_str) < (0)) __PYX_ERR(0, 212, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_sheets, __pyx_mstate_global->__pyx_kp_u_int_List_int) < (0)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_3sheetsFromFile, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_2, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[3]);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[4]);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_9);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_2, __pyx_t_2) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_2, __pyx_t_2) < (0)) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyees/sheet.py":206
+  /* "pyees/sheet.py":219
  * 
  * 
  * class _sheetsFromFile():             # <<<<<<<<<<<<<<
  * 
  *     def __init__(self, xlFile, dataRange, uncertRange=None, sheets = None) -> None:
 */
-  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_mstate_global->__pyx_empty_tuple, __pyx_mstate_global->__pyx_n_u_sheetsFromFile, __pyx_mstate_global->__pyx_n_u_sheetsFromFile, (PyObject *) NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_mstate_global->__pyx_empty_tuple, __pyx_mstate_global->__pyx_n_u_sheetsFromFile, __pyx_mstate_global->__pyx_n_u_sheetsFromFile, (PyObject *) NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "pyees/sheet.py":208
+  /* "pyees/sheet.py":221
  * class _sheetsFromFile():
  * 
  *     def __init__(self, xlFile, dataRange, uncertRange=None, sheets = None) -> None:             # <<<<<<<<<<<<<<
  * 
  * 
 */
-  __pyx_t_9 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 208, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_sheetsFromFile_1__init__, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile___init, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_sheetsFromFile_1__init__, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile___init, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[3]);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[4]);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_9);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_init, __pyx_t_4) < (0)) __PYX_ERR(0, 208, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_init, __pyx_t_4) < (0)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":283
+  /* "pyees/sheet.py":296
  *         self.readData()
  * 
  *     def colToIndex(self, col):             # <<<<<<<<<<<<<<
  *         if col is None:
  *             return None
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_sheetsFromFile_3colToIndex, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_colToIndex, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 283, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_sheetsFromFile_3colToIndex, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_colToIndex, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_colToIndex, __pyx_t_4) < (0)) __PYX_ERR(0, 283, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_colToIndex, __pyx_t_4) < (0)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":294
+  /* "pyees/sheet.py":307
  *         return num - 1
  * 
  *     def formatHeaders(self, header):             # <<<<<<<<<<<<<<
  * 
  *         out = []
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_sheetsFromFile_5formatHeaders, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_formatHeaders, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 294, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_sheetsFromFile_5formatHeaders, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_formatHeaders, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_formatHeaders, __pyx_t_4) < (0)) __PYX_ERR(0, 294, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_formatHeaders, __pyx_t_4) < (0)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":334
+  /* "pyees/sheet.py":347
  *         return out
  * 
  *     def readData(self):             # <<<<<<<<<<<<<<
  *         self.dat = []
  * 
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_sheetsFromFile_7readData, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_readData, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 334, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_15_sheetsFromFile_7readData, 0, __pyx_mstate_global->__pyx_n_u_sheetsFromFile_readData, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 347, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_readData, __pyx_t_4) < (0)) __PYX_ERR(0, 334, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_readData, __pyx_t_4) < (0)) __PYX_ERR(0, 347, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":206
+  /* "pyees/sheet.py":219
  * 
  * 
  * class _sheetsFromFile():             # <<<<<<<<<<<<<<
  * 
  *     def __init__(self, xlFile, dataRange, uncertRange=None, sheets = None) -> None:
 */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(((PyObject*)&PyType_Type), __pyx_mstate_global->__pyx_n_u_sheetsFromFile, __pyx_mstate_global->__pyx_empty_tuple, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(((PyObject*)&PyType_Type), __pyx_mstate_global->__pyx_n_u_sheetsFromFile, __pyx_mstate_global->__pyx_empty_tuple, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sheetsFromFile, __pyx_t_4) < (0)) __PYX_ERR(0, 206, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sheetsFromFile, __pyx_t_4) < (0)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyees/sheet.py":482
+  /* "pyees/sheet.py":495
  * 
  * 
  * class sheet():             # <<<<<<<<<<<<<<
  *     def __init__(self):
  *         pass
 */
-  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_mstate_global->__pyx_empty_tuple, __pyx_mstate_global->__pyx_n_u_sheet, __pyx_mstate_global->__pyx_n_u_sheet, (PyObject *) NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_mstate_global->__pyx_empty_tuple, __pyx_mstate_global->__pyx_n_u_sheet, __pyx_mstate_global->__pyx_n_u_sheet, (PyObject *) NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 495, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "pyees/sheet.py":483
+  /* "pyees/sheet.py":496
  * 
  * class sheet():
  *     def __init__(self):             # <<<<<<<<<<<<<<
  *         pass
  * 
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_1__init__, 0, __pyx_mstate_global->__pyx_n_u_sheet___init, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 483, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_1__init__, 0, __pyx_mstate_global->__pyx_n_u_sheet___init, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 496, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_init, __pyx_t_4) < (0)) __PYX_ERR(0, 483, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_init, __pyx_t_4) < (0)) __PYX_ERR(0, 496, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":486
+  /* "pyees/sheet.py":499
  *         pass
  * 
  *     def printContents(self):             # <<<<<<<<<<<<<<
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_3printContents, 0, __pyx_mstate_global->__pyx_n_u_sheet_printContents, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 486, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_3printContents, 0, __pyx_mstate_global->__pyx_n_u_sheet_printContents, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 499, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_printContents, __pyx_t_4) < (0)) __PYX_ERR(0, 486, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_printContents, __pyx_t_4) < (0)) __PYX_ERR(0, 499, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":491
+  /* "pyees/sheet.py":504
  *                 print(key)
  * 
  *     def __getitem__(self, index):             # <<<<<<<<<<<<<<
  *         sh = sheet()
  *         for key, item in self.__dict__.items():
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_5__getitem__, 0, __pyx_mstate_global->__pyx_n_u_sheet___getitem, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 491, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_5__getitem__, 0, __pyx_mstate_global->__pyx_n_u_sheet___getitem, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 504, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_getitem, __pyx_t_4) < (0)) __PYX_ERR(0, 491, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_getitem, __pyx_t_4) < (0)) __PYX_ERR(0, 504, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":498
+  /* "pyees/sheet.py":511
  *         return sh
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
  * 
  *         for _, item in self.__dict__.items():
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_7__len__, 0, __pyx_mstate_global->__pyx_n_u_sheet___len, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 498, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_7__len__, 0, __pyx_mstate_global->__pyx_n_u_sheet___len, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 511, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_len, __pyx_t_4) < (0)) __PYX_ERR(0, 498, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_len, __pyx_t_4) < (0)) __PYX_ERR(0, 511, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":505
+  /* "pyees/sheet.py":518
  *         raise 0
  * 
  *     def append(self, other):             # <<<<<<<<<<<<<<
  *         if not isinstance(other, sheet):
  *             raise ValueError('You can only append two sheets together')
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_9append, 0, __pyx_mstate_global->__pyx_n_u_sheet_append, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 505, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_9append, 0, __pyx_mstate_global->__pyx_n_u_sheet_append, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 518, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_append, __pyx_t_4) < (0)) __PYX_ERR(0, 505, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_append, __pyx_t_4) < (0)) __PYX_ERR(0, 518, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":538
+  /* "pyees/sheet.py":551
  *             measurement.append(otherMeasurements[index])
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
  * 
  *         variables = []
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_11__iter__, 0, __pyx_mstate_global->__pyx_n_u_sheet___iter, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[20])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_11__iter__, 0, __pyx_mstate_global->__pyx_n_u_sheet___iter, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[20])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 551, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_iter, __pyx_t_4) < (0)) __PYX_ERR(0, 538, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_iter, __pyx_t_4) < (0)) __PYX_ERR(0, 551, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":547
+  /* "pyees/sheet.py":560
  *         return iter(variables)
  * 
  *     def pop(self, index = -1):             # <<<<<<<<<<<<<<
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_13pop, 0, __pyx_mstate_global->__pyx_n_u_sheet_pop, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[21])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 547, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_13pop, 0, __pyx_mstate_global->__pyx_n_u_sheet_pop, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[21])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 560, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[4]);
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_pop, __pyx_t_4) < (0)) __PYX_ERR(0, 547, __pyx_L1_error)
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[5]);
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_pop, __pyx_t_4) < (0)) __PYX_ERR(0, 560, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyees/sheet.py":552
+  /* "pyees/sheet.py":565
  *                 item.pop(index)
  * 
  *     def __setattr__(self, name: str, value: Any) -> None:             # <<<<<<<<<<<<<<
  *         if not isinstance(value, scalarVariable):
  *             raise ValueError('You can only set variables as attributes to a sheet')
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 552, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 565, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_name, __pyx_mstate_global->__pyx_n_u_str) < (0)) __PYX_ERR(0, 552, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_value, __pyx_mstate_global->__pyx_n_u_Any) < (0)) __PYX_ERR(0, 552, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 552, __pyx_L1_error)
-  __pyx_t_9 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_15__setattr__, 0, __pyx_mstate_global->__pyx_n_u_sheet___setattr, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[22])); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 552, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_name, __pyx_mstate_global->__pyx_n_u_str_2) < (0)) __PYX_ERR(0, 565, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_value, __pyx_mstate_global->__pyx_n_u_Any) < (0)) __PYX_ERR(0, 565, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 565, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_CyFunction_New(&__pyx_mdef_5pyees_5sheet_5sheet_15__setattr__, 0, __pyx_mstate_global->__pyx_n_u_sheet___setattr, NULL, __pyx_mstate_global->__pyx_n_u_pyees_sheet, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[22])); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 565, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_9);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_9, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_setattr, __pyx_t_9) < (0)) __PYX_ERR(0, 552, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_setattr, __pyx_t_9) < (0)) __PYX_ERR(0, 565, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-  /* "pyees/sheet.py":482
+  /* "pyees/sheet.py":495
  * 
  * 
  * class sheet():             # <<<<<<<<<<<<<<
  *     def __init__(self):
  *         pass
 */
-  __pyx_t_9 = __Pyx_Py3ClassCreate(((PyObject*)&PyType_Type), __pyx_mstate_global->__pyx_n_u_sheet, __pyx_mstate_global->__pyx_empty_tuple, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_Py3ClassCreate(((PyObject*)&PyType_Type), __pyx_mstate_global->__pyx_n_u_sheet, __pyx_mstate_global->__pyx_empty_tuple, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 495, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_9);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sheet, __pyx_t_9) < (0)) __PYX_ERR(0, 482, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sheet, __pyx_t_9) < (0)) __PYX_ERR(0, 495, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "pyees/sheet.py":575
+ *         self.__dict__[name] = value
+ * 
+ * if __name__ == "__main__":             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 575, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_12 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_main, Py_EQ)); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 575, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__pyx_t_12) {
+
+    /* "pyees/sheet.py":578
+ * 
+ * 
+ *     s = sheet()             # <<<<<<<<<<<<<<
+ * 
+ *     s.b = variable([1,2,3], 'L/min', [1,2,3])
+*/
+    __pyx_t_9 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_sheet); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 578, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_13 = 1;
+    {
+      PyObject *__pyx_callargs[2] = {__pyx_t_9, NULL};
+      __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 578, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+    }
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_s, __pyx_t_2) < (0)) __PYX_ERR(0, 578, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+    /* "pyees/sheet.py":580
+ *     s = sheet()
+ * 
+ *     s.b = variable([1,2,3], 'L/min', [1,2,3])             # <<<<<<<<<<<<<<
+ * 
+ *     fileFromSheets(s, "test.txt", prettyUnit=True)
+*/
+    __pyx_t_4 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_variable); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_10 = __Pyx_PyList_Pack(3, __pyx_mstate_global->__pyx_int_1, __pyx_mstate_global->__pyx_int_2, __pyx_mstate_global->__pyx_int_3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_11 = __Pyx_PyList_Pack(3, __pyx_mstate_global->__pyx_int_1, __pyx_mstate_global->__pyx_int_2, __pyx_mstate_global->__pyx_int_3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    __pyx_t_13 = 1;
+    {
+      PyObject *__pyx_callargs[4] = {__pyx_t_4, __pyx_t_10, __pyx_mstate_global->__pyx_kp_u_L_min, __pyx_t_11};
+      __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_9, __pyx_callargs+__pyx_t_13, (4-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 580, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+    }
+    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_s); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    if (__Pyx_PyObject_SetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_b, __pyx_t_2) < (0)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+
+    /* "pyees/sheet.py":582
+ *     s.b = variable([1,2,3], 'L/min', [1,2,3])
+ * 
+ *     fileFromSheets(s, "test.txt", prettyUnit=True)             # <<<<<<<<<<<<<<
+*/
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_fileFromSheets_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 582, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_s); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 582, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_13 = 1;
+    {
+      PyObject *__pyx_callargs[3 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_2, __pyx_t_10, __pyx_mstate_global->__pyx_kp_u_test_txt};
+      __pyx_t_4 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 582, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prettyUnit, Py_True, __pyx_t_4, __pyx_callargs+3, 0) < (0)) __PYX_ERR(0, 582, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_11, __pyx_callargs+__pyx_t_13, (3-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_4);
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 582, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
+    }
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+
+    /* "pyees/sheet.py":575
+ *         self.__dict__[name] = value
+ * 
+ * if __name__ == "__main__":             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  }
 
   /* "pyees/sheet.py":1
  * from typing import Any, List             # <<<<<<<<<<<<<<
  * import numpy as np
  * from python_calamine import CalamineWorkbook
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_test, __pyx_t_2) < (0)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_9 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_test, __pyx_t_9) < (0)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
   /*--- Wrapped vars code ---*/
 
@@ -16982,11 +17290,11 @@ __Pyx_RefNannySetupContext("PyInit_sheet", 0);
 
 static int __Pyx_InitCachedBuiltins(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
-  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 133, __pyx_L1_error)
-  __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_open); if (!__pyx_builtin_open) __PYX_ERR(0, 140, __pyx_L1_error)
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 153, __pyx_L1_error)
-  __pyx_builtin_max = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_max); if (!__pyx_builtin_max) __PYX_ERR(0, 387, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_print); if (!__pyx_builtin_print) __PYX_ERR(0, 489, __pyx_L1_error)
+  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_open); if (!__pyx_builtin_open) __PYX_ERR(0, 147, __pyx_L1_error)
+  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_builtin_max = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_max); if (!__pyx_builtin_max) __PYX_ERR(0, 400, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_print); if (!__pyx_builtin_print) __PYX_ERR(0, 502, __pyx_L1_error)
 
   /* Cached unbound methods */
   __pyx_mstate->__pyx_umethod_PyDict_Type_items.type = (PyObject*)&PyDict_Type;
@@ -17008,97 +17316,108 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "pyees/sheet.py":140
+  /* "pyees/sheet.py":114
+ *                 else:
+ *                     if self.prettyUnit:
+ *                         u = f"${meas._unitObject.__str__(True)}$"             # <<<<<<<<<<<<<<
+ *                     else:
+ *                         u = meas.unit
+*/
+  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(1, Py_True); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[0]);
+  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[0]);
+
+  /* "pyees/sheet.py":147
  * 
  *         # Open the file in write mode
  *         with open(self.fileName, mode='w', newline='', encoding='utf-8') as file:             # <<<<<<<<<<<<<<
  *             # Create a csv.writer object
  *             writer = csv.writer(file)
 */
-  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 140, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[0]);
-  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[0]);
+  __pyx_mstate_global->__pyx_tuple[1] = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[1])) __PYX_ERR(0, 147, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[1]);
+  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[1]);
 
-  /* "pyees/sheet.py":307
+  /* "pyees/sheet.py":320
  *             done = False
  *             while not done:
  *                 head = head.replace('__', '_')             # <<<<<<<<<<<<<<
  *                 if not '__' in head:
  *                     done = True
 */
-  __pyx_mstate_global->__pyx_tuple[1] = PyTuple_Pack(2, __pyx_mstate_global->__pyx_n_u__8, __pyx_mstate_global->__pyx_n_u__7); if (unlikely(!__pyx_mstate_global->__pyx_tuple[1])) __PYX_ERR(0, 307, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[1]);
-  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[1]);
+  __pyx_mstate_global->__pyx_tuple[2] = PyTuple_Pack(2, __pyx_mstate_global->__pyx_n_u__9, __pyx_mstate_global->__pyx_n_u__8); if (unlikely(!__pyx_mstate_global->__pyx_tuple[2])) __PYX_ERR(0, 320, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[2]);
+  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[2]);
 
-  /* "pyees/sheet.py":317
+  /* "pyees/sheet.py":330
  *             # remove "_" if the last letter is "_"
  *             if head[-1] == "_" and len(head) != 1:
  *                 head = head[0:-1]             # <<<<<<<<<<<<<<
  * 
  *             # add a number to the end of the unit if the unit exists
 */
-  __pyx_mstate_global->__pyx_slice[0] = PySlice_New(__pyx_mstate_global->__pyx_int_0, __pyx_mstate_global->__pyx_int_neg_1, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_slice[0])) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_slice[0] = PySlice_New(__pyx_mstate_global->__pyx_int_0, __pyx_mstate_global->__pyx_int_neg_1, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_slice[0])) __PYX_ERR(0, 330, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_slice[0]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_slice[0]);
 
-  /* "pyees/sheet.py":355
+  /* "pyees/sheet.py":368
  * 
  *             ## get the headers and the units
  *             headers, units, workbook = workbook[0], workbook[1], workbook[2:]             # <<<<<<<<<<<<<<
  * 
  *             headers = [headers[i] for i in dataRange]
 */
-  __pyx_mstate_global->__pyx_slice[1] = PySlice_New(__pyx_mstate_global->__pyx_int_2, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_slice[1])) __PYX_ERR(0, 355, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_slice[1] = PySlice_New(__pyx_mstate_global->__pyx_int_2, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_slice[1])) __PYX_ERR(0, 368, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_slice[1]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_slice[1]);
 
-  /* "pyees/sheet.py":452
+  /* "pyees/sheet.py":465
  *                 covariances = []
  *                 for i in range(nData):
  *                     covariances.append(uncert[(i) * nDataColoumns:(i+1) * nDataColoumns , : ])             # <<<<<<<<<<<<<<
  *                 covariances = np.array(covariances)
  * 
 */
-  __pyx_mstate_global->__pyx_slice[2] = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_slice[2])) __PYX_ERR(0, 452, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_slice[2] = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_slice[2])) __PYX_ERR(0, 465, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_slice[2]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_slice[2]);
 
   /* "pyees/sheet.py":17
  * 
  * 
- * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True):             # <<<<<<<<<<<<<<
+ * def fileFromSheets(sheets, fileName, sheetNames = None, showUncert = True, prettyUnit = False):             # <<<<<<<<<<<<<<
  *     if not isinstance(sheets, list):
  *         sheets = [sheets]
 */
-  __pyx_mstate_global->__pyx_tuple[2] = PyTuple_Pack(2, Py_None, ((PyObject*)Py_True)); if (unlikely(!__pyx_mstate_global->__pyx_tuple[2])) __PYX_ERR(0, 17, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[2]);
-  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[2]);
+  __pyx_mstate_global->__pyx_tuple[3] = PyTuple_Pack(3, Py_None, ((PyObject*)Py_True), ((PyObject*)Py_False)); if (unlikely(!__pyx_mstate_global->__pyx_tuple[3])) __PYX_ERR(0, 17, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[3]);
+  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[3]);
 
-  /* "pyees/sheet.py":199
+  /* "pyees/sheet.py":212
  * 
  * 
  * def sheetsFromFile(xlFile, dataRange: str | List[str], uncertRange: str | List[str] = None, sheets: int | List[int] = None):             # <<<<<<<<<<<<<<
  *     dat = _sheetsFromFile(xlFile, dataRange, uncertRange, sheets)
  *     if len(dat.dat) == 1:
 */
-  __pyx_mstate_global->__pyx_tuple[3] = PyTuple_Pack(2, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[3])) __PYX_ERR(0, 199, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[3]);
-  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[3]);
+  __pyx_mstate_global->__pyx_tuple[4] = PyTuple_Pack(2, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[4])) __PYX_ERR(0, 212, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[4]);
+  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[4]);
 
-  /* "pyees/sheet.py":547
+  /* "pyees/sheet.py":560
  *         return iter(variables)
  * 
  *     def pop(self, index = -1):             # <<<<<<<<<<<<<<
  *         for key, item in self.__dict__.items():
  *             if isinstance(item, scalarVariable):
 */
-  __pyx_mstate_global->__pyx_tuple[4] = PyTuple_Pack(1, ((PyObject*)__pyx_mstate_global->__pyx_int_neg_1)); if (unlikely(!__pyx_mstate_global->__pyx_tuple[4])) __PYX_ERR(0, 547, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[4]);
-  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[4]);
+  __pyx_mstate_global->__pyx_tuple[5] = PyTuple_Pack(1, ((PyObject*)__pyx_mstate_global->__pyx_int_neg_1)); if (unlikely(!__pyx_mstate_global->__pyx_tuple[5])) __PYX_ERR(0, 560, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[5]);
+  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[5]);
   #if CYTHON_IMMORTAL_CONSTANTS
   {
     PyObject **table = __pyx_mstate->__pyx_tuple;
-    for (Py_ssize_t i=0; i<5; ++i) {
+    for (Py_ssize_t i=0; i<6; ++i) {
       #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
       Py_SET_REFCNT(table[i], _Py_IMMORTAL_REFCNT_LOCAL);
       #else
@@ -17130,34 +17449,34 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
-    const struct { const unsigned int length: 11; } index[] = {{1},{1},{55},{57},{179},{6},{30},{35},{51},{65},{11},{88},{90},{73},{75},{60},{53},{40},{46},{85},{39},{51},{1},{0},{5},{2},{1},{3},{1},{8},{32},{4},{7},{6},{2},{15},{9},{14},{15},{4},{5},{5},{4},{5},{3},{16},{4},{4},{20},{8},{1},{2},{6},{13},{9},{6},{5},{13},{13},{18},{1},{4},{17},{18},{3},{10},{17},{3},{11},{11},{12},{3},{1},{3},{4},{10},{9},{10},{12},{5},{8},{7},{4},{4},{8},{9},{9},{8},{9},{4},{15},{14},{24},{45},{39},{42},{23},{26},{8},{4},{13},{9},{8},{8},{17},{11},{1},{4},{6},{7},{1},{2},{4},{5},{8},{8},{13},{9},{4},{5},{8},{1},{3},{10},{7},{1},{8},{3},{4},{11},{15},{13},{4},{10},{1},{5},{13},{7},{15},{4},{8},{5},{3},{7},{2},{3},{5},{6},{10},{4},{8},{2},{7},{5},{21},{17},{3},{4},{3},{11},{5},{13},{11},{14},{15},{12},{2},{8},{7},{6},{3},{4},{7},{10},{14},{15},{4},{20},{16},{12},{11},{10},{2},{5},{9},{9},{10},{17},{14},{14},{13},{17},{12},{11},{9},{19},{6},{15},{14},{24},{26},{29},{24},{10},{15},{8},{4},{3},{6},{3},{19},{8},{5},{9},{9},{6},{1},{3},{6},{12},{12},{11},{12},{14},{4},{11},{11},{5},{5},{3},{9},{11},{5},{6},{8},{9},{1},{2},{8},{9},{5},{6},{8},{9},{6},{4},{3},{65},{70},{2},{443},{99},{229},{50},{51},{42},{326},{35},{1288},{23},{55},{15},{271},{13},{13},{42},{69},{39},{715},{255}};
-    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (3671 bytes) */
-const char* const cstring = "BZh91AY&SY\241\331\242\016\000\003\020\177\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\376\300@@@@@`@P@@@@\000@\000`\016\377wx\350\326\235-\273\275\316\367\261\221\2601v*m#Ci\256\334\256\305\217y\252\266\200\037\026\000jz\021MI\241\242\030jy\023\032 f\2020\006O&F\223\330\201\212H\332\023\321<\236\246\215#L\rM6Si\243A4\301$\200\023BLS\311\212z\210\364\323T\374\202jh\365\032=M\000\000\000\320=@\000\000\000\r\001\246\232z@\032\236M\021\022\247\250i\243 \001\246C@\032hz\232h\000\365\036\246\203F\215\000\320\323 h\014OPh~\250\006\322\001&\244\322\020I\202\243\312zjh\365\003G\250=@\006\217P\017I\247\250\320\000\000\r\0004\320\031\000\365\032\032h\001\252\236\244\003M\003\312z\232d\311\341G\251\265\032\r\036\223\023G\250\320\001\243&\201\352h\332\206A\246\010\014\200\000\000\001\"\204jdi\036\211\351OL\223L\nlM\021\350\232\000\000\000\001\2404\032\000h\000\006\200\r22?\341LX\335m&\232 \360\365\nE\316\347\276\217\364\216\212\024\020\177it\372\203(\351\330\200\344*I\" \301\202\212\262Q\010\003\n9\315\025\036w\257\354\361~\036=b\2671>\365\255k[#+\245{\334\377\242\324\246M)\242R\321\025\024g\312\010z\304\324/\320\227ay\r\363\3771Q\210\261PDF\"E\202\305\210\304V\031\206N<:\260.\313\237\367}\331\303\260[!e\361\343\303\214b\254\001dX*\310*\305V\"(\306\333z\n\003\232H\274\3059\341\210X%\256\224/\346R\"\243\264\020%\021\024\026(\0166\234\t\305Q`\253\005\213\024\200\240\240\"\240(\260\32034\000\324\323\233\237M\372\353\274\326@\343&\323`\342sc94\254\030\215F\264\350\253\301q\254Lz\232+V\2272\322i\350\270\225\211\322\232\243\2032\006a\206\274\311\314\322\226\241\2230\231\220((,\210\301N\035\023w9\274) \246\340\334\034K\350\327L0x\t\242kz\232i\251\300\n,\254\267\021B\251\271\300\203\023\034\035\373\350\250:\223\225\005\207>\333DbCh\315\246\275<\371\321\321j\215\375\242\355\026Lr\363v\313\006du\2557\362\035D\206rmE\016\263d\340`\301lG\273t\034\221Z&a\325\256\206\2202\344\376<8\267\326'\231\346\363E\3364\310\253E\207\007\3725\3632\273!\373\377\261\262\352q\242\377""\205\006\307\214\350\357\260\312\177s\035\343'\034\353\275\267\001\242f\232'\365\251Bq\320\336\305.<\307|\216\323\017.\333\370n\345sU\232\"\366w\210\022p\"\347\"\2603\031\201\235\222F/F\2126\031\254\n\021tSA\031\223\246\210U\220\323fS.\356\3773w\253\305\333Ik^\255\355\202\331\025\344\367\266\330Fz\273+\013\242\343\265E\270L\325\032\322\314Q\256z\307\205\325<`\276L|WV\210DzWW\266JU$J\201\214\3474kT\261Z\347\353kAe\033\316\227 h\313&\306s9\364z\202\246\266\3256\002E\246\343*\312\364\024\245\255\303\365?\236WY\r\330\337\343\273\013~\300\"\001\224S\023\271\020fX+\225\035\252Y\0234\342}\037T\363\341\357\260\300\203\247^\030\201\331\236\227\301\27542\351\201*-\025\214Uc\026(\314U\216)V\332\306%\025=\177\020\260\271\013\223:l_\217\277i6\227&\300m>\215p\224\211\022\261\002\004\034\234\016\361\373\014#\025\020\231\343\244b\026\272\036\2463j\322v*Jw\271\274\331dO6\367K\253*\230\320\254\021hh\340.\240\231'8\300m\302\324\002\000\215\242#\004(\202\206!PiQ\355\361C\027\253E\225\237\023Ws\320j\263\231r;\230\355\\.\214\322\305bc\267\316-v2\260YZ\272\272\264V\264\025\021Db\253\227\250/g\244Z@\255J\324\036='i.A@\302\030t\222\373\026\240X\241NX\020a\227\251a\346\027\341\350y\376\001\243.\276\214\331\035\215^\007\303\2634c\370\262\312dnZc\3721XJ\200a|E\312-\304\204G\030D\234e\027(\016N\351K\023$\333\033\031\254\265,c \345L\364h\332\3076\365\000\201TlEh\276\213\374C\3219<_\347\241\347\200n\035\016\313\334\347\316hZ\014\371M\245\217'G\032*\035j\2347\364\366\211\314\231\217\364\236\216\035\272\n\205\017\357\317\317\010=\365U\331\214\305=\322\354V\257\365\354X\245\017K\320'%\351\374\317\337\034\270am\336:w\021\036\373\223\227+\207;\314r\1777soOVu\2457\312\035\332\260v\330\226k&\214\232\222\0074\331MVj\347\024\326\341L\006FF\303)g\201\0142\240\320\275V*/@\203\334\277\003\224\304JS#\216\242\006\002\235@\347\231\0169$\330\323K\r7\234\0052\330d\351N\354\030H\273\236\006*\361Q\345\007B\245\220#\005\370\305[i\3744\306\233i\350\231\260\336\013\364\230\224\261\356\212\257:3\n\007\216\371\035K\250""\343h\214b\341\352H\235\250\334\216\233\031]\360\245\305-)\345*GX\322cj\n\024\032-\324\253U\361\341]m\025\0238\374\034]\370\021A\004\202 \267\024\243\3223JE%\024\276\006@n.\206\022m\222\344\306\335r\321X\265w\016q\003\226#}Nr\363<\254r1*K\016\327z\233H,\001\321\231\320\316@oP\357\276\321+\335\032\007G6\253\206R\213\316\336\327\343\223\206k\303\024\316`\276\363^\263|\345\241\323\0363\234\343\232\244 \317!\222#\354g<\243\224)5\233n\333\tN(\300;\314\355P\233VK\302\365\034i=K\031\215v\034N\r\223Con\334|2\032\264\\\321$\370LS\030\266Z\"\324\250\234\211\023:\370\013\031\014\224t\233a7\246w\347\031\274UY\247gy\337\023;h\375\301\030r\221\344s\005yn\343*\3427}]\010]S\306=\211\337\016E<\261\nI'u\332\344\t\323\016\350A&\301\246\020T`p\347T\227`/\326S\272e7\274\2362\214<\223 \314E%\203\3552\035\225\230\370\3135\266\232+\256\220d\314Q\376\\(\254\312Ic\nkJ\300\213\200\272\266HW-g:gv\334\207:tg\330\330\370\364\363\034\334\307A\263\r\202=*\342i7\345\220\2653\234\334\221\351\3024\237\177F\200\320s\340\270$\341\267S\232\245\316\323\003\267\222v\025S\236\n\377\230\202 \210\254A\032\350\354z>\347\237\010\"*\301#\"\242\275\235Ca\344\353@(n\274\313!\223K\021\205#-\342\013\202\330J\rJ\214N\030\371`\3015\304\302\264:\264\277\300O\264^l\3333\317\021\317\262V0\316'\234\320\0372\254sz\270HVw\307\353\177\245\252\0066Y\201Y\212\262A\213\227L\331\234\317\263\274aez\264\245J\325\344\233\033&\202\267\221\2322\253P.\211\245\303\220T\034\2125\231\261\277\244A%&@.\270\325J*L\313(>!\200a\277\030r\221\367K\22313\301\253\225\240Dh\36042\266\356\3111'\232\031\316\330j^\027\342\256\225\365\362\316\026\001\2442\t\366\034ClR\210\3676\356+x\371\346\325p\340~\256\260?\\\263\316\004\344\324s8\304\213[4\341\371S\325p\206\031\250\346\337\2737Gto\266%<S\205T\345\252\232\310\314\310\3542%\303\214I\222d\247\r\360\240\3339\007\326\000\362\260OM\004\341\311\316C\302\251\331\360\237\247\273X.,\031\227\356\2175\313b\257\026z\310D\264(\257l00iIa\314\314\336\272\256\252\032s%\314\264\353\344w\236j;\305H.]\256\326\305""\020h\344\216>\341l\265E%-\004\024\340\035\026\353j\323\257\207\233\313\244&6\200\236v\306\222P\261\327\016!{\315\327\317~\201\325\014\362\235\227\247\241\263U\001DyI\243h\016*[\301\333\034n\374\21549S&\333m\023\\\006\"\341\215JJ\253q\272\034\311\3224\212\236y\243L\224\006\355\206el\362%\302\243\025\342\t\025\220jK]\031E>H\226\304\311\025\345\211X\302\275\210\305\261\024\246s\030d\310]q\220\2357\261\303\000\313bA1\274w\275I\017\0072&\303\217-\231Q\342\213t\273\215!\032\271\373\334\375Om\3707\262\312\222/\262\314\222+eFnC-\302a\241SB!\014\376\204i\262\310\223\327e\261;\222!&3\334or\315\333R\207H\003\2242\332t*fPV0\020!1\022H{\236\367\005h\343\315\223\307\235\372\245\333;\222p\347n\3379s\374\016u\316\203\234K\235s\365i\351\013e\264\360\206P\3645:\354\206\262\212\255\007\031\272\037\003\3003=\235\224\332\231\323H\260\305\222\265\tN]\003\025\341\214\335\202\201\026\212\2329\215CpL\253<75\373.\035n\002{Wh\"\344[\212\201\276\203\242\253r\327\313\000\r3[f_1\3247]]\206\264\026\302,8n\301\313u\214\360\2762\357\032G\004u\357\006\324\254\243S>pY\3223\201\235\033\374 \336E\312\345\255-\274\230\221\0213\247t\3724\312\332\303w\nl\254\201?hf\352\256;\021\263\313\242\304\266\234\355\303\204\241;\241\211\234X\031\235}\373\326\371\370\270\341\206Z\2723\226\211J\253\2237fj\026\210O\312`\322\317}\307\301\203\302\330T\255V\242\344S3\007\037\205hiv\345\206c\265\313\251\207\364\261V\304\2636\234\355B\207vB\220\244\276n\312\310Q>wS\241\331\377\247\301s\214\r\347\365\0309\277Z\251\245\322\206\355\333\217\323\363?\030y\014\"\212\244U\211\344w\342>Q\350\231\365\323\360\261N\226[\204n\260UH\212]\\8rT>2\014i\007\361v\275ra\235Z\361~&\205\215\370\225!\326<\277)\374\206\n\363\250\250\214\264\224*\226\303L\036\203\014\307iy\325\350\202\244\020\001H\300\253\213\240\013\265\251W\330#\320\022\313\336\274%\247M\001#\231\273\371\230\354\003\331>2R`\217\313d`+\226,\351\363\264\356\354Gf\217t\273G`\376\212\330\201\"Q\260'\202\r\221\004\366\247\266\241\356\375\374(\016\004T\247!r\301f\025\237\341\227\245O""\263\373g\217>z\007\325\272=\325\344\363=\265\371\270\253\335\034\210#\020;\373\351U\337\177cV\332\"5|V\310\205\276\261[\350\366\313\037\345MZ\210\264\002\025P\254\243\334\375c\334<\237'\336y\256C\337\351r\331M\t\336\370x\375\231\n;\273U\301\030(]Q\036\250A\370\233\026\344y\n\310\371+\364\200m\"\002\023\254P{:\313\216\336j\246\354\032\270\331;\276w\211(\362\323\003+\305\243\275X/\026b\304\371.\021d\003\257\323\214\022\354\237\371Q\307\322#\005\014\030\"\231\245h\024\020@\363\033h\311 \2227\257\2468\\\n\271\nab\024\035\210@\216]\234ZMa\010.*\021A\005kZ\336T.\026\234\212\002\331L\340\327\0020\020\271w\342\324\213B\006\361\014g2]:\234\343k\321h(`\216sk\316\256#\372\232\014\302\201\034\342tu\010\200\223r\337\255\220\344#\221\021\006`\235 \332\320j[[\026\244\267C\334\324V\235bz\013\252\357\361\357\016y-6`A~/\255\314\005\231\211E\027nT\355P\2579\370)\022_\007\304\366\277\224\235r\203\341\236\254\323\020h.\254\020h-&BA\006iM\277\365F\004\311m\340\374L&BF\204\004\024)\013\025\365 \037\227{\267+\255[Y\305Ko\023\245\021!\334\245\352\030@0v\311vJ'\032\272w\002\314\263]R\223A@\307\005\025\341.X2Iy\220\n\205\212\235\033\217\302k\027\206\004r\332x\214\313\321Q\001\020iM\212\347\267\\I\037LX\262\257\245MD\004\257\225\030,Qm\345\214\310\005\207\ng\274R\026V\311H\363\305wFv#r\215\315^\325z\371N\313u\214\212\264\351\344\324(\2039\206\306uj\306\253U\250Ft\237\262\327\306\354e\034\234\226\010B\221\233\247\257\231\337\255\322\246\225Td\003O\235\322\306\353SFd\322\322A\350P,\275e\226\017\227\246\231\035\0209\325LTH\203\374\0222\362\335\302\240\215\322#tF^p<@Sh\363N7\020\340\332\3045|\364\030\320\316\022 \342\031!\032QUe?\212\214\200\374`\205\013\032\312\242\036\"Y \302\201-H\347\214\256\206\031\244`\004K\351-BT\324\206\266u\024\274&\207\005q\356\022\336A\344K\220g\2545\335\353\275\200\335:\374\014\272\364b\331\032\236\233\270\276M\336\027\033g\206\243\203\266<\002\026\017\304h\027\222R\037}\"\254\364\004)m\\D\320\222\331\232w\257\226\242&\324@\300l\207vh!\244\253;\204+#,\033M\3202\361-""\272w\274\263.j\360\205D\252\2236a\013\305\345\253]\325+!\021\026\252m\232\232\27510]\325\356\013|\234^&\260\306\004b\306\\qb\204^\216\021\230T\235\t\270\244Ke+\240\255\206\252\367\230D\265\014\221\312\327\234\262\004]\226\372\371\016\350%\235D\r\354g\211\0320\356+\014R0 \353\273(\231\212\203\210 \320PE\177\331\330V6\371(\307>9b'Eh0\326\244)\212\037\370\273\222)\302\204\205\016\315\020p";
-    PyObject *data = __Pyx_DecompressString(cstring, 3671, 2);
+    const struct { const unsigned int length: 11; } index[] = {{1},{1},{55},{57},{5},{179},{6},{30},{35},{51},{65},{11},{88},{90},{73},{75},{60},{53},{40},{46},{85},{39},{51},{1},{1},{1},{0},{5},{2},{1},{3},{8},{32},{4},{7},{6},{2},{15},{9},{14},{15},{8},{4},{5},{5},{4},{5},{3},{16},{4},{4},{20},{8},{1},{2},{6},{13},{9},{6},{5},{13},{13},{18},{1},{1},{4},{17},{18},{3},{10},{17},{3},{11},{11},{12},{3},{1},{3},{4},{10},{9},{10},{12},{5},{8},{7},{4},{4},{8},{9},{9},{8},{9},{4},{15},{14},{24},{45},{39},{42},{23},{26},{8},{4},{13},{9},{8},{8},{17},{11},{1},{4},{6},{7},{1},{2},{4},{5},{8},{8},{13},{9},{4},{5},{8},{1},{3},{10},{7},{1},{8},{3},{4},{11},{15},{13},{4},{10},{1},{5},{13},{7},{15},{4},{8},{5},{3},{7},{2},{3},{5},{6},{10},{4},{8},{2},{7},{5},{21},{17},{3},{4},{3},{11},{10},{5},{13},{11},{14},{15},{12},{2},{8},{7},{6},{3},{1},{4},{7},{10},{14},{15},{4},{20},{16},{12},{11},{10},{2},{5},{9},{9},{10},{17},{14},{14},{13},{17},{12},{11},{9},{19},{6},{15},{14},{24},{26},{29},{24},{10},{15},{8},{4},{7},{3},{6},{3},{19},{8},{5},{9},{9},{6},{1},{3},{6},{12},{12},{11},{12},{14},{4},{11},{11},{5},{5},{3},{9},{11},{5},{6},{8},{9},{1},{2},{8},{9},{5},{6},{8},{9},{6},{4},{3},{65},{75},{2},{473},{99},{229},{50},{51},{42},{356},{35},{1288},{23},{55},{15},{271},{13},{13},{42},{69},{39},{715},{265}};
+    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (3726 bytes) */
+const char* const cstring = "BZh91AY&SYk|\236\336\000\003\034\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\376\300@@@@@`@P@@@@\000@\000`\017<\320\025\365yu\354\355\356^\306\330\315\222\251\032\2206\301e\264\310\020\362\247\200\003\341p\003L\210\211MF\200i\221\265\006\237\252\017(4\000\320\037\245?CM\251\350\000\224\001\352i\265?T\320\000\323j\031\036SF\206\232\002I\000 @\230\214\212i\346\241\220\324\365M4\332\236\246\215\006\200\000\321\2204\320\r\000\000\000\000\323M\r\003S\321\241)4B\001\240h\311\241\232\215\r\031=OH0#4OPi\221\223&@\001\220\321\344OQ\344=M\rM\240\t5\021\023S$\323MI\352zj~\242=@=C\324h\003OH=A\246\200\001\2404\000\017)\240\310\320\000\036\223\324\332\232\rT\375H\200\320\017Q\352\003ji\352i\352=A\240\310<\243\032h\203C#@\321\342\200\r\006\200\000\000\000\000\224\321\004\236\252\237\350\230\230\202M\244\363T\365\r\250z\203\324\304\332@\000\000\000\000\000\000\000\032\000\032\001\350\223Rs<L\214aOC\276hO\273\333{\277\356\035\330J\201\347\311\336;\343\236\364C\031+J\252)-\266\332J\225Wt\r\323~\206)\254|\257\255\366?\007\341\373r\245o0>\345\255k[\023\033\300\276\373\317`ZT\311\2454\245,\321QF[B\027.j\030\3471\211\214\207\024\364X\250\304X\250\"#\021\221`\261b1\025\206a\223\206\363\247\003\0300\177\356,`\337\351\2142\0301\303\206\376\021\212\260\005\221`\253 \253\025X\210\242*\274\222\207Y!\271\223]w\3640\034d\235i+\207V`\271~\254(\304DPX\2407\264\340N4Q`\253\005\026)\001A@E@Qa\240fh\001\251\247\027.\234Z\353\304k p\223t\334\034\016\215\347&\225e\306\243Z7E\306\256_\256\242\264\322\347\263I\372\r\035\313\304\254N\224\323\033\231\2043\0145\363&OB\322\302a\222\301`((,\210\301M\375)\267)\304\024\300S`\330/\226Z\322\020+\312\261V\336\245)\2018\023\303c&Rm\201*\270\342\004\210\323\277|6\016\204\344V(\260\345\335\2721\214\r\321\233\246\274\334\271\242\242N\345\270\344\244\204\231\243S\036\371 A1U\351l&$$\3019\227`\324Hck\221\2048p\215\230\372\352B\202'\014C\251\2650\304\006\014\355\037u\355\375\010\322\314\355\nW\305\002l\366\037.\240\2558&\344\017\373\256.M\014v""\013E\200\271\336\252+H&\217\330\216\354\231|\353e%\001DM\323\215\371\2738\213\350Y&b\t\263\037\320MD\366\312\226\272\271B2\225\234\323f!7\274\213P|\332\254\352\026,\026gwQZ*'LY\357g\205:L\212\225\244\337\006\203c\\q\034}O\033/\373\341Yfn\366\213\006\310\r\312\r\252\307V\232A\004\rX\t\311\231/\250\204\027b.t\331\316d\367\023\216\303\271\254\370\301\0140\363/V\210DzW\253\375K\262S\2612u\014g9\243\211R\342\265\315\344\326\202\3127\307\372\302!uk\010\026\214m\305\201(\313d\305\200\201h\241\202pT\206\206l\314\216G\033\263\237\346\327\2166[\273l\274\262\200f\260>w\347AC\311\331\323 _\364^\347AY\355\273\214\371\364\373\3550&\315\335\006v\003\220\334\2558\263E\002f\207\022\242\321WuWyU\031u\201\272U\303Wr\212\236'\030` \221\004\243*\220\365.\242T\010%@(\274U\276R$J\304\010&L\020\364\2749\357\224\224\202\205=(\304.\301\017S\031\270\254x\224\024\353\351\372p\330\232]\377\365\354Cda8\020\350\207'\t\340d\324\303\255\320\255M\002\201:4\233\222\256\004\345\320=\t;\321k\335B\352V\255&v\237\247\303\273\267\302\2356W\322t8B\3660\003\005\201\206\317\021k\330\306\301eb\326\323\325\232\326\250\252\212\242\252\270\372\302\3634\013@\025\251Z\203\307\211\332\013\310(\027@\273\250\227\330\265\002\305)\266\004\030e\302^\265\304K\3607\372\036o`\321\227.{\231\0366\256\307\362\366\250,\177\016YL\355K\023Q\256\237\237V&t\0048\020\352K[*\306\352\312\272n\207s\324\306<\004\302\243\207\034\274\332\304\204:\225i-:(\226\320\016]\027\261\200k\005\266\316n>\037\337\243\203\260m\373\335\217\235\227l\314\263\031l\326X\365\373\275\\\325U5\330\335\272}\004\346L\303\371\3176\356\335\005B\207\366\341\302\020{\352\253\257\t\212|r\346\255_\322\305\212P\376\376\2019/W\321\375\321\335l\255\307\364i\324\211u\2719mp\347y\016O\347\357l\351\352\306\264\247$\241\337\253\007m\211Y\325\203\232-,\241\336egM8\253Wu\326\225~\252\263f\023f\033g\017\314\274\030e0\236RL\356\242\237_\276\217n\220\3065/\233b\203\201\2478w\016\231\3301\024c\033\025.N5L\217\243\235\\\367\342!z\352\3645\262\317\304\016n\006\320\020\355\367Cd""\310~\2110\311\231\223f7c@\272F\205\r=\341W\346\276a\021\271n\037\313\256>\014\303\014.nX\023\316\216\247\361\260\305\256\t3\322\325=\245Q\335d\230fNN\211\231\232\255f\266\373\332\311\214\005N\016\243\203\217\276\3440;0@6\363J9\307\022R(N\213\201\016%\nh$\222%\326F\\;\206Q\265\033\215\274z\203\234\221\215\366\255e\324\355\342\3241*J\356\036E2 \256\017\004\250t\263\220\033\324\373\037tKPh\035\336\2157\2062\234\035\026\264a\304\342W\313\013'A~\311\2331\263Zcz\220'w4\340%%\004\261D}\254\347\214q\205&\262n=\220\224\342\213\203\255\235\246\023j\311x^\243\205'\245i4\255\3167W\244\324\335\335\311\253\305\037jy\323\022e\254\206\250\206\322\230\204\322\235dH\251\261\001!3\023\034\325.\204Y\023\264\342r\207y\024\350,~B'u\027\254!\016\244z\356`\256\333\334c\\\006\353W\241\013\252xG\232w\335\235O\034\002\222I\333\332\362\004\351w| \223\\\323\010*08s\252K\230/\342S\2752\233\336O\tF\036\274\3103\021I\\\373L\207\214\262\037\031d\266f\255uQ\354\231\212\017\361\341Eff$\300\302\232\322\254E\260\305a\222\025\310Vs\246v\335\306r\247K>\327\005\307\247\234\347\347;\206\273\265\210\377\025\300\320r\030\342-,\341\331\343\323t)>\274\331\2031\303\256\365\301'\r\2719jb{\006\007\2632NuT\351A_\371\020D\021\025\210#\\\334\376\243\337t\302\010\212\260H\310\250\257[P\334<{\\\021f\266\345\260\331\253A\212G\035\007/';\240\346P\216\206v\237,\030\023.\326+.~\366\230{\"\221/\2336\274\262\300s\354\225\213\262\211\342h\017\231V:?\335\322\025\235\347\361y\353\230\r,az\303E\210\006\217\014\2461\270\335\303\276b\305\271\244\224\2277\224s\364\031,\375\234\217\205w\207\023\315\\\260\n\207d{Ls\365\352\034\222\203\016\016.#\231'\2501\266\016|B\340\273\223\010m#\357\226|\204\317\006\2566\201\021\243\270\314\312\334~11'\231\231\316\326i^[\360W\245~\255\263\205\200i\014\202|\336\213\310\355\222R\036\346\344\346n!\025\306\254\343\204f\320\021\235\351\217\034\312\315\\\351\314$\325\261\263\221\212\357\351\306\021h\350\361m\234Q\343\216<A)\340\233\352\247%T\326FfGp\310\331\242\213\344P\233%Hn\205F\331\234}`\017+\004""\364\320N\034\234\344<*\235\226\371\372\274\232\201s0d_\340\036qKZ\2573=b\"Y\224W\272\030\0304$\256\350foiWU\r9\222\350Z5gw\232i:\312\220[v;S\024A\233<p\363\226\273TRR\314AN\001\335\267\026\235\032\267{=\272\002cf\t\345l)%\013\033\303\224//\233_\272\347\215Wn\204\260\244\362\350\254B/\362\323#\202\016\224\273\341\356O\007\301\037,\270\323\n\341\302&\266\027\026\330\325\"\225XohtS\230i\022M\2319\260I\304\262>\313d\256\206mi\345{\210f,:hm\2665\306\257\000\315\271RE\265\340\260\202\333\221\t\r\344 \253!\264h3\3474\024\245\332\257x\216[*\"\361\365ni\013\na\252Q\326Y\272\311\227\257^\026\354gj\276\255?K\333\222\346\363&\366k1~\270\025b\207'c\031\2600\210J(s\267y\022\303\t\023\361\321\216\016\310\200\232\213i\344`\264\233\r\014\301)\271\203&7\234\346\343\266\263\310\201\017\021\357\223\230wo\303\215\213\234\343\311\225\207\235vK\266w\244\341\316\344\312r\341\360\370.\0108\tp\\:\264\364\205\261\332w\006N\033C9r2F\357*\252\004\035A\23788io35\301N\024\316\232E\206q\222^\241)\321\310]x\2436\262\201\026\212\2329\215C`\324\331\260\360^\036\357\236\313\337\316Kx\272\201\0163/\207 n\240\350\252\340[\014\256\000\224]H\311\210\3472\032\260| \024pA\220\231\221u\236f\203\243W\336\232Pt\237{\371\312\005\335\270\341.]\373\301oB\336\226\364u\354\016\3725\255k\307\207sf\224<Luj\237wD\255\2508\367S]d\t\373\003'Ur\353F\276z,\013h\312\333\267J\023\275\014L\345`fu\367\361\2569\373~[\256\307Gw)f\224\252\263\344\354\214\205\313\t\366\23043\337x\370Y\301\341gT\255V\222\362)\231\203\227\342\276\315\241\334j\354\207j\227y\207\3651V\300\303\223\216y\320\235\347\016\220H\270\357C\007F\177_\277\313\342\372\007\344\266\350\353\276a\277\344y\263\3712s!\266\333\036g\321\355\207\226\302(\252E\026'\227\375\242>q\341\263\355'\345b\234\314\303h\342\254\252\221\024\305b\033\370\352\037-\0064\203\333\353\366\022\331\323\257#\344\350`q\343\324\207\245?w\234\367\013+\275EDC\t(Uq\317^\017g\007\324\235\317\341y\252;ZP\032\262^\304H6\305\\.\311\032!\2768\207\363\336T\246\002\006\226O9\r\230Z\247|\315\005\310\351""\352\213\206\242\205\224\256\336,\233\021\265c\267oIX/\342t\034@\206\"\304\216(6\226\213\354\236\306\207\334\376>M\230\262\364\316o4.X,\265N\3531\245O\263B\337}\276r\000\372\223\017m@\323\366V\243\262\301c\001\310\273\217j\2614\345\177\343.\330]\362\373X\302]vA\256\315\371N\016\376\231\322h\222\304*\241YG\306\375\203\343\037\247\271\357\374\367!\332\320\304\303)\241>?\221\177\267!F~%P\232\270\263K\264\362J1k}\276\235t\310\354.\007\005\244\034!-\242\232\017[i\364\030\022I\2548\240\275$k\377{\014\233|\270,\256!u8\212\242B$\010\302\\\207\254\017z\252\301-\263\376:c\300+\005\031\300Nr_\211\224&\204\215q\317\275x^\333\207\257\2063_\242d):\246p\360w\335\002:-\016\3234P\232&\234\240\202l<=\024Xad\342\371\021\201n\314\317\030R\000\306<\235yQ5%2\372\020GH\336\310z~\221\303\322\302\034@L\321\3249\235\210\3732\316 g\025\346\031\223gH\022q\342\375\341\033i\222Hn\014\312q\3038\243\213\267\202\361\303\236L\371\3663=2C#\267JR\r\"r\356\t\215!c\026P0e%8\305\220\035nnw\221\347.C\322\254\010\246B4\257\023\324(u\267\236#!\0071ka\0057D\202\016:\316\016\007\034\\k\004\201\353\231\343D\215\351\211\270r\036\233\024\001+\232>:\332\376\007\310-`\220\310\262\322\217\031h\313\002b\003q\037\210\343 \375w\360\207\306\370\3619X\346\340z\240\247\220\307\212\243]z!\001\254`\271\347\307v\367t\016\312\252\357\310Tk\364\334LR\"\263wd\350\331\033um\013\267\236Tz\356&+\225j\003\323Oi]Gl\013\254-\037\230\251\336{\306\256p\270\325\036\256\3638\343[\346\334\271\262\333MW\261n\325\255\215b\220\335\201\325\335\327\3276\342\335\2627k\266\357\200\373B\374\241\303l\014 \027\360\312\225\t\374\003\026j \202\351U8\017\230T\306\315\214\225)\013\260\370&\313VXQ\227\257J\344\205\274\207\242zLo\340\362\304\235\332f\002H$\225x\211\024 1\037\271\321#\352\317>\021\010\216\017\025W\312\003\252\016\337$\035\307,k3M\2415f\021\222\026\n\205M\031\322\021\n\"i0\362<]\305t\320\030}\r\343\024\330\013\336\3558\tML9>\353<\3305.\220\031\250\341Xk\272Mw`\357\\\226\235\355=\200\246h\334\n\256\215\316]\361\323\340\311\313\350q\371=""\377a\246\342\317fdC\371R\263\0232$\251\352P^R(\020\241&\240\361\"\nF%T\376\262\357\026\222\005\302D*FC\014E\254\2500\234\006\0206\212`a^\022R\252\241\021\n&\235\204\2744\304Y\002\364\325\t\255Je\254\301\335\3552\2223\023R\2049T\325@\245\235\027\245\"\257x\244\3660\237\360y\017Rn\306\035\245\224\210\241,JE\251\301`\326\272c5P\354L3\242F~l`\300\010\244R\307\200\251\20364\273\214\247\306\274\0147T&\350K\027\016sU\231\342\036^\354\\\203!\234\314\263O{\032\302\363\342\303=\365\203\242\0360\316\022\351\262\035\241\344w\305\334\221N\024$\032\337'\267\200";
+    PyObject *data = __Pyx_DecompressString(cstring, 3726, 2);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (3780 bytes) */
-const char* const cstring = "x\332\255W\313\177\323\306\026\306!@\000\003v\342<\200P\344\220\360,\241&\341\321\226\3730y\224\024\010M\302\243\024\270\252b+X`K\266FN\354>~\227\245\227Zj\251\245\226\272;/\363\273\253,\265\364\322\177B\377\204\373\235\031\311\217\024\332..?\"\215g\316\314\234\307w\276st=\263bI\032\223t\303\222\312\006c\332fQ\225,CR0|\253K\254\240\252\226\244+%\225\361Yi6\307\266\245-\255\250\212m\206^\254\367\355c\312\266\n1\246\351o1!\266\367o\\5,H\026\024KZ\250[\005C\247c\362jQ\333TM\305Rq\034\263L-g\251&\t\351\322wK\337]\237\277;/)z^2\325wj\316b\022\253n\346\212\320\020J\031[\322fU+Z\232.Y\365\262\312f\245\225-\251nT%]U\363ts\031r\275\033\254\202\n\263H\253\202*]Rt\030\256X\232\241\313\330\016\245/Iy\315\304%\33267gY)2uv\203\233\361\024\033rF\321\250\226t\251\240p\177lr[\241\257\376V\254n+\246\246\3509\334\323\225`\365RI%\233H$\257X\212d*\372[H\303:\356?M\317\025\253\371\216\333\352R\241^&-/_\277B[\310i\222Z\263T\235i\302]\024,V-\227\r\323R\363\263\\\261\316\317\036I\305T\371ZAU\362p'\r\213\252\376\326*\220\327\310|M/W-i\212tZ'\225\246z\264V+U\245Hc\353#\333,\276\217G\227M}\362\334*\034aZ\377\327\223{\361\370\227N\024'\321Az\265\004\210\321<\217A\030I`\317P\205GK\212\225+\360M]Qa\202\242[\365hC\377Q\246\261\303$\302\036f{d?r&]\372\264_\352\367*\024x\366\350\241A\302\022lB\034y\324\245m\245\250\345\205\376\341\245|\314\215\374\275\\\317U\277\223~\211\024\351\000P)\227U\244\227\360\225\264\243YBe\265\226Sr@\032\274-\225T\205UM\265\244\352\026\023\210\023A\310\343\236\216\241\037;\324\3321\242\203-\343\255\212s\315>1JE\2365 \020\006\332\221\024\013\271\262Y\265\"\306\341\233\377!]\273q]\372\357\177\360\377\330\254\222\317\313:\261H\316\250\026\305\365\224\210\371\274\310\370N\330\211r\362\032\243\223U\235\236os\000\230\364\213\364Hc\326+\014\337hL,\344\313uUe7\304\256r\035\031\035Ia\370f\326\252YUk\353\372\335W\377z\275\363f\266Vd\364W\313\352\365\005\245\250\2244]}a\230\3577\r\343=mY5tU\226\277\253\327\360\267\010\"\223W\221\221\353\352V$#\313\262\302\371\005\n/t\010\203l\342""\327\013\267)\246\251\324\371\343y\350\033\205\3454M.\252\026\230\221)\254\256\3474c6g\230F\025\334\247\262\\N-\026e\231\263\234\0147k\226Z\242\237X\2235\220\233\251\344\324M%\367\036\230\303\377\247\306\212\236Gx\r\335R4\235\205j\344T\020X\017\207\345L\025\214\314\311O\014\205\206\344U\000\211\260D\177K:\314(v8\2443`4\332\260\024\323\n\227\231,\347\311\037\370\2277r\364\000G\027\tR9#\017\342\223e\200K5\351U-\361b\200aM\263\350\031R\032Q\241L\217e\323(q\305X\377\257}\213\2632\214\247\023>5?{\257h\344\300\361\177\237\3551\366\317\205wL\370\367\317\305\020\207\217\036HEr\201m\177l\272k\324*\362kK\323\363[\206\211\344z\3009\234mAZ.+V\001\026!\275e9\272\002o\021\035y\263.Sj\312]\024\024\250\000\210\" \236L\303\277\222R\323\010\004\374\261\252\350\035WiL\356\340Jc<\026Z\216N\242?\004Q\343Az\367^\255\003l\326\013\205\361\315 +Y\306e%\000\212\2365b\214\036\326\350\031\256r\365P\023\025\001W\271d\344U\376\254\"\274\262\256/\002-\374\261\0202\244\376\214SY\370\352\314\362s\272OL\350\272\272C\230\327\313\320\033\377\313uc\223z\006\361\244\213\r\244\027\375\225\353\265\242\301\0146K\3364\210\226\370\343q\277\232l\377$\203_hG\331(\313r\331T\313(\2624\240\312E\217\005\244\024\211qB\231\345\021\021\303\210\343\312\274\351\221s!s\3102Q\275\260\301\004\201+y\262\033\347\026\221\216\246jUM\235j\014\220\021\202\246\013\022Fg\230\021?\354\373\305\324\342\026\375\355\267g\337\034\234\017\002\016}\310\307D\277|\220W\267\224j\321b\005\301\336\364 \325\370\200\037\325\031\010\332\354\001\\4!\000\325\371\305q\023\375\342x\211~t\357\345\023\202\003\005\234\365\356\r\360y8\350\365\264PO\354d\224M\313H\236\376_\373\026\273\254\260o\276\313\214\373W\372\222p\377b\0245V0v\004B\331{\255,\253\245\262U\227\021K\205\225\2130\276f\261\n\226,S4\214\350I;M\333RDp\210\007\n\037T\203'\301\365\206,\340\002\372\326\031\332lU4\251U\244\276(\356\342)(X\214W\330\017\200rO\353\3253db\034\221r\225\234@\217'<;\272#FCRN5\321I\360f\202\354\343\003a \206U\225?X\004\354N\021\337\331\331\334\tk\035\275\271\2638a""\362\207)\236\306N\364f\265\"y\261V\334\261~\322\312\301\201\213\301\305;\376\257\301\342\353\340u>\310\253\255\301c\215\033N\322\271\354^\363\3364\323\255\301#\037X#\335\230kl\331\013v\2455t\252\301\354i[\301p\3608f\225\340\300L0s\267\031#A\253\361\225\275f\027\034\2455\224\264\22366\307\033\017m\346\244[C\307\033\363\215\237p\354\347\256\322\212\237\306\000\213#v\306~\340|\353\026\375\364\207\354\207,\t\341\300\206e\177\351,8\225V|\330\276\352d\2355\272\323\262\3579\314Mw\346~;|\340\350\211\306\212\375\324\031wcn\2625\024o,4*\366\240\235m\017%\354X\253\3471f+\264\274\352\\p\326\234<\2351j\277\300\031O\335\t/\331\212\237\342j]\306|b\334\256\264\023bq\255\225H\331\3378\363\316\266\273\341\035\365S>&\302\225v\342\254s\307M\273\363.\244S\366\023\032x1\222\177\340d[\251\t\347\224ky\031\017\212\304\033K\366(w\025\324\306\275\t{\310\211\3215;\216\342X\356]/C\007,b.u\316\331\200\035)w\r\356\301\217\347\264\350\255\340\326\316\217%?\331J\211\255\225v\277|8\333\212'\355q'\346$\351\346e{\206\034O\232\266\342#\366\035\014\347\235\232[!-N9\225\2162d@\006\336<9\214\200M\333\357\335QW\365\356\372\363~}7\276\227m\303W\033\316\021\247\342\306\332\260\341\212\223\201\211\275\003\036\014\021\272y\000\203\337\225\351F{\246/\214'\033<\022K6w\273i\217\330\313\200Ab\314\316;S\2108s/\220=\356\266\367\324\037\363\267\233\353\315\212\010\375M\273s\005\035z\t\361\216\016m\017\235up\337y\33434\t\225\206$h\212;\026a\335\240\263\342>\3672Q\210I\227\304\264\373\r\305\246\225\220\334#\024\266H\366\220\363\322\335\302|\257\354\214\373\302\313z\010|\332\035\367b^R`\356\201\315\245\252@G\206t\177G\370\243c>\272 \366<\016N\177\356-x\225\340\213\373\273pQ*H]\361\306\274\212\037k\305y\354\202\363_\3701?\331\200^#\366mg\030\007\244$w\320}\344\307\332|\260\200\300%&\234c\344!\202\304K\204\235\340\372\001(K\341^\016\377\232m9_\272\313^:\262\342\242\213\000\237\026\031\322\346\236\314\330\331\017\034\230\237\222\036\347\240\311\360X\t\311E\373\250s:\204{|\002\220\211\023d\343B\245Ig\321=\316\035\212%\362""\367\232\233\367\322\355\010\356'\235\234\233\244\314\022J\214S\232\214\330_!\017\013\204[\204\256\215|9\014\360\376\354]\360\236\371iJ\237#H\215\333\336\010\320\377\264\231l\365\257\223\370`_\226\321p\010\232OL:O\274y\362i$\203\231%\\y\324O\342\334\311\031\3441bH\203\347\300w\306_i\256\265&%\3670\000\367\263?\355o6\0176o\355\306\332=\273\246}\245g\337\357E\271\022\225>\005`\017\031\305\035\\\265\263\240\247\344\207\254\300\374\204\223\352\307\030\367\367(\370R\021\"\337\330\031\201\226E\373\260\255!\345\006\335,y\374\020P\016\230\230\316\0317\023L\317\373|r\320y\310Y'~\306\231vJ\"\002\223\304\232n\014\207\234H\205t\231\230\0229En\377\273;\342\302]g\234\253n\326%\002=1\006B{\350\326\340\264A\377A3\333|\272;\261\227\334C\370@\231\234R\230;\r6\310P\310\263\3663\000c\016\004:\343V~\033\242+2\024\342C\366\032\201]\001\2322\270?d5J\305\3049\301\242\313\224M\356A7C\267\003\263\255\211\2638\207\010p\016\212M^!\347^F&\366O_\"x\021\005g\270U\003\356e/\215\223\005\002\023\366\021\234\223 \252Az\200>G\311\251\200wo\336\235\030\245\202\005>\034\001Ql\300\233KD\367\t\373\240}\3139*`9b\317AsF\225\201\302\030sF\241\200\351\216\271\246\227l\307\317:\367\\\346qJ\013\275\211\272EJ-\341\005?\022\243\222a\363\344\302\266P$\355\206\220Ua\357\002\017\321\0041\324\344y:\001\242t\240t\035\254\"}\216\022\321?}\r\256\306\271\3407\036\265Mo\210X\241\225\232r\303\304\250\204\207]\205\364\3449\362&\274\336\232\370\314yG\030m\303\007\334i\334\354h0(\252\031/\271\316-\250{\323]\243\010\347\004\004\335d'\212}\336\210`\202H'\032\333(\0021\"\317l\033Rw\021\247-\367>e0\305-\022mG!\340\301'/\215r\010\245\303\002\231:\215H,\003Q\n2\367\026,K\371\317\233\231fV\270\362\256\373\225\267\346m\371\3374\347\232\357\366b{c{?\005/_\005\257~\014~DWR\014\212\245\277.w\316y\001\205\276\207\234\352\317\371\312o\361\003\3113 \325\333\360\353%\357\214\017\025?C\213\322Q\021)|\336\331\341\205g\335c\376\224\377d7\263\233\335\335\330\033\330K\223\350&\317|^\354\211\332S\224\222\317`VFP\314(-F\001\276\t\2728\350\315y""\212g\"r\322E\367\035\205\020h\204\006\311\217zE\304{\212\230\030i|\037*g\374\005\277\322\034hN7\363\273\227\366\222<\233\234\357\005\265\202\342\252~\026\3148\326\254\354\016\356.\356\035\332{\026\254o\004\033\317\203\347/\202\027p\004\332\2707\355^\333z\324=\353\334D&\034\244a\232_\272\352\247\375/y\346'wgv+{\207\367\362\301\372\017\301\017j\240\026\202\302\273\340\235\021\030f`\262\200\375\022\374\362k\360\353\277\177;p\340\237\003\217\007\360z<\360\204^O\006\276\247\327\367\003/\351\365r\340\025\275^\r\274\036hsX\t\322\240\254\246\364\247\222\345\034w\357p;\352\315X3I\370J\242m\243<\317R\375\033\355l\021\355@\316\343\014z\242\361\014%\345\017\210t\234C})l\211P\354*\342\264\3478\230\307\210\252Y\330\200t*\365\202`\221;\274\344%\220@#\3505\300\331\000\364\022\257\367\202\345\206\251\341\245+,\300/\303k&~Ty\223J|O\202\t^]\357\023\373\010\311\233\274I\345\3637\221>\007A\026\234\332\200\262\r?\224\341\334&\244\302\266!T\246\315\373\200q\204\352\026\325L\352\220f\260\235\320\025\023\021]\347\030\312P\342\021\017\230T`)\300wD\244\251!Jq\272\032\261\347ae\230\244o\020\357L\307;\244\302\034qG\367\007JI\003I>n\327@m\207AA\261\236\276\203J[w\223\227\014\006%7\356=\360?\331\233\321\354\216\250%m\324\220\307n2\230\272I*P\205\\\021\237\n\037V\3778\260\274Avp\327\325\340\352\275\340\336\352\236\002\314\034\035\205\253U\364/\331\260G\033BF\363\366\026w~E}z\250Ep\016\304\240\004\312&\357\211\203\341)\367\252\220\2177\276\345Ek.\370\214z\2571\337j\336\335\235\337eHy\270g\207\350Q\324\224\250[\021\014Jdy\214\023\351 \030\260\340i\310\324\301\346\n'\213\013{\241\311\244\37358\214\212\225s\026r\000\2617\355)\321\007\316\317\240\330\260}\357q\326\251\306/\204\373\356\255\210\005g*\347W\320B.lH\342\364\375\225\266\377\006h\314q&\355iB\343D\220\267\335\341hE\264\023\253\364\371\025\017\320\036P?\307\337\342{HL\023\025\366L\213/\026&\212\233\320e\216w#\034\010G9k 7(\005\316;u\240`\230\263\226B\345\036])UN\357\242?\200V-\\O\362F\240\035\236T\202ny\364rk=Z\217\330_G\351.\340\312\310{T^&y""\2273\340\315\360^95\343\276B\250\206A\220\367\341\211\324\005\367k\301\263\376E\260%zC\261\236\244\025\236At\322\rt\222\213\376A?\323)i\355\004\025ihW\241\022?\217\3262M-\316i\240\357\025\3277~\016\337\206g9L\272\002Dg\307yv!#\275\317\374\237\300\230W\367\036\007/\301\267[\301\326[\002\306\t^w\236y\351\340\332\327\315{\240\323c\301:\260\207\272\244\007\272\021}\262\256\005\203W\202+\200\362:\210\233`\371\010\265U\340\261\033\027z\321\206$.\345\240\240\276%c?\n\303^\351\371\362HuR\341%\334Q\211R\241\356\017\341\243\374\323\351@\013\364i\307\220\021\3704\211>\010\343'\242%\336g\035\006\363\\\2017\343'\210\246N\212\307\360\201\223\023\374\253\236\013\024\034\215>\r\372\005`\351\023\372\214\340i\336\022F\222\255\017\355\312\377\000m3_+";
-    PyObject *data = __Pyx_DecompressString(cstring, 3780, 1);
+    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (3833 bytes) */
+const char* const cstring = "x\332\255XK{\323\326\326&!\245\001\014\330\211s\001BQB\302\265\204c\022J\332\362\235sL\022J\n$\r\341RJ9:\212\255`\201-\331\332r\022\367\362|\014=\324PC\r5\324\231y\230\347\033e\250\241\207\376\t\375\t\337\273\326\266\034;\245=gpxbikk\355\275\327\345]\357Z\342ff\305Q\014\241\230\226\243\224-!\214\315\242\2568\226\242a\370\326TDA\327\035\305\324J\272\340Ye6'\266\225-\243\250\313e\226Y\254\365\254\023\332\266\0161a\230o1!\227\367.||\253d\230\253\226\003\361\202\346(\2135\247`\231\264W^/\032\233\272\2559:\366\024\216m\344\034\335&!S\371n\371\273\233\363\013\363\212f\346\025[\177\247\347\034\241\210\352f\256\0105\241\231\265\245lV\215\242c\230\212S+\353bVY\331RjVU1u=O\307\227!\327\275\300)\350\260\215T+\350\312\025\315\204\365\232cX\246\212\345\320\374\212\2227l\034bl\263M\017\264\242\320g7\330\226gX\220\263\212V\265d*\005\215\235\262\311\006C_\363\255|\273\255\331\206f\346p\316\201\204\250\225J:\331D\"y\315\321\024[3\337B\032\326\261\023\r3W\254\346;\276\253)\205Z\231\264\274z\363\032-!\317)\372\256\243\233\302\220\356\242\210\211j\271l\331\216\236\237e\305:\217]\222\232\255\363\273\202\256\345\341N\032\026u\363\255S \257\221\371\206Y\256:\312\024\351\364\224T\232\352\322Z\257T\265\"\215\235\217,sx\035\207XL\375\341\276U8\302v\376\253;w\203\362?\332Q\356D\033\231\325\022 F\363\034\203v$\201=K\227\036-iN\256\300\213\016D\245\t\232\351\324\342\005\275[\331\326\216P\010{\230\355\222\375\310\236t\350\263^\251\337\253P\340\0242\333\006IK\260\010q\344\250+\333Z\321\310K\375\333\207\362\230\215\374\275\\\327Q\277\223~\205\024\351\000P+\227u\244\227\364\225\262c8Re}7\247\345\2004x[)\351\232\250\332zI7\035!\021'\203\220\3079\035C?\266\251\263c\305\033;\326[\035\373\332=b\224\212\2345`\021\001\356Q4\007\271\262Yub\332\341\305\263\177\233Vn\334\272\251\374\337\277\360wB\313\347U\223h$gU\213\362|\312\304|^\246|'\356D<yC\320\326\272I\327\2679 L\371Eyl\010\3475\206o\014!_\344\3135]\027\267\344\252r\r)\035Ka\370\006\2728\263\316.\377\252\316\326\315\205\327\377\370q\347\315\354nQ\320o""7k\326\026\265\242\006n\323_Z\366\373M\313zOKW-SW\325\357j\273\370-\201\321\324U\244\346S}+\226QUUc\242\201\342\213\035\346 \333X\r\351?\315\266\265\032_^\264\235\244\211\234a\250E\335\001E\nM\324\314\234a\315\346,\333\252\202\004u\261\231\313\351\305\242\2522\337\251p\270\341\350%z\304K\325\000\315\331ZN\337\324r\357\201>\374=\263V\314<\002m\231\216f\230\242\255GN\007\225u\261Y\316\326\301\315L\203r(U$\367\002R\204*\372-\233\260\243\330a\223\316@\320h\303\321l\247\375Z\250j\236\034\202\177y+G\027\260u\221\300\225\263\362\240@U\005\314t\233n\325\022\227\005\014w\r\207\256mr#RT\351\362\300\266J\254\230\350}:\364rV\205\361\264\303\037\315\317\336+Z9\260\375_g\273\214\375\367\302;6\374\373\357\305\020\207\217nH5sQl\177l\372\300\250Ud\332\226a\346\267,\033i\366\220\331\\lAZ-kN\001\026!\321U5>\002w\031\035u\263\246R\222\252\007((P)\220\345@^\205\201\177%m\327 \020\360eU3;\2562\204\332\001\226!8\026F\216v\242\037\202hp\220\336\275\327k\000\233\363R\023\274\030\264\245\2528\254\004@\321u\227\270\243\213?\272\206\253\254\036\252\243&\341\252\226\254\274\316\327*\302\253\232\346\022\320\302\227\3056W\232\317\231\324\332\267\316,\357sp\305\204i\352;\204y\263\014\275\361W\256Y\233\324=\310+\035l!\277\350W\256\355\026-a\211Y\362\246E\004\305\227'\275j\212\303\223\002~\241\025e\253\254\252e[/\243\334\362\300qj\317\341\277\262M\325\214.\213H.Z\300\0343\313\261\221\303\230\367\312\334\010\251\2716\211\250*\321\277\264\306\006\251ky\362\000N(\"1\261\177\3256\251\356\020H\332\3709\300\213\240M\354\230+\016=\t\275\270E\277\303\246\035\232C\034\300\312mw\362\2308\231\007y}K\253\026\035Q\220\224N\027\322\215\007\274Ug \251\264\013{\361\204\304V\347\211!\024?1t\342\207\203syB\362\241D\266yp\002\334\337\036t\273Z\252'W\nJ\254\007\310\243\336\247C/\017\010\342\320\374\001I\036~\323\223\217\207_\306a\023\005kG\202U\2747\312\252^*;5\025\301\324D\271\010\343w\035Q\261\311\037l\250c\313f\022\375j\247\241[\216)\017a\241B\204\253\341\200\376-U\302\006\204n\n\364\341\272l`\253 \003Y\370\345U""\222\262\034\257\210\037\000\356\256\266\254k(\3448\246\351*\371\202.k\234/\007#ACRN\267\321ep\243Af\362@\332\211aU\347\213\210\001\336)\360;;\233;\355\362Gw\366\031S(_ly\265v\342\273\330-\2223w\213;\316OF9:r9\272|7\3745Z\3721\3721\037\345\365\346\300\211\372-/\345]\365o\004o\032\223\315\201O?\210\372d}\256\276\345.\272\225\346\340\231\272p\247]\r\303\201\223\230\325\242#3\321\314B\264\360h?C\262N\375+w\335-xZs0\345\246\\\254O\324\037\271\302\233l\016\236\254\317\327\177\302\316\237\373Z3q\026\003\274\034v3\356C\357[\277\030~\336\320>d?dI\014\273\326\035\367Ko\321\2534\023C\356u/\353\255\323\301\216{\317\023\376dg\356\267cG\216\237\252\257\270\317\2741\277\317O5\007\023\365\305z\305\035p\263\255\301\244\333\327\354\272\214\272\032\275^\365.y\353^\236\366\030q_b\217g\376x\220j&\316\260bW1\237\034s+\255\244|\271\336L\016\273\363\356\266\267\341\3675\323\343^_+=\346:^\2469>A\272\371\003\376\343p\260\321\327H\2650\261\004\231x]+y\336\273\353O\372\363>\366J\273k4\010\360:\r[\263\264\323\031\337\t2\001\324L\324\227\335\021\366&\214\202VIw\320\353#%v<\315s\374\205 C\033,a.}\201\324\360\323\376:\334\207\207\027\3642X\t\327\017\036\226\303T3-\227VZ\275\362\355\331f\"\345\216y}^\212N~\340\316P`H\323fb\330\275\213\341\274\267\353WH\2133^\245\243\014\031\220\201\257O\017!\240\323\356{\177\304\327\203\205p>\254\355%\366\263-xr\303\373\024\356\350k\301\206k^\006&v\0178T2\260\363\300\016\237\2259@\303LO\220O\3279N\313.\007\305v\207\335\007\200Ir\324\315{S\360\271\360/\221=\376v\360,\034\r\267\033O\033\025\t\214\333n\347\010\332\364\n\320\020o\332\032<\217\220\r^\3049\203\023PiP\201\2468c\t\326\rx+\376\213 \023\003\200tIN\373\337Pl\232I\305\377\224\302\026\313~\342\275\362\2670\337-;\343\277\014\262\001p2\351\217\005}AJ\"\362\241\313RU\367\033\034\014\335\337\021:i\233\217\276\220k\236Dg?\017\026\203J\364\227\373{pQ:J_\013F\203J\330\327Lp\354\242\213\177\t\373\302T=K\230\374\302\033\302\006i\205\021\010T\322`\021\201K\216{'\310C\004\211W\010;\201\371\003P\226\306\271\234\034\273""\200\357\227\376\203`2\266\3422\241\366\254\314\237\026{2\343f?00\377Hz\214A\223\341XI\311%\367\270w\266\r\367\004\322\004\352\003\262\t\251\022e\306Iv(^\221\277\327\375|0\331\212\341~\332\313\371)\312;\251\304\030\245\311\260\373\025\262\264@\270E\350Z\310\227c\000\357\317\301\245\340y8\331\344\034\374\302\037\366\263\224\207\331\326\370y\300\266\322\234P\374\243~\306_\n\022\341\303F\266\261\336\232 \257p\266u\255\246\315\006zr\220\206\203\260\013{\255\005\363\344\361X\0063\313P\350x\230\302\251\0233\376\006E\230\006/\200\376L\270\322X\247C\217\001\216?\207\323\341f\343h\343\316^_\253k\325t\250u\255\373\275(+Q\351Q\000\326\222\311\354\376\252\233\005\265\245>deF\214{\351^\004^\226\214\263\356jR\344\0337#\261\264\344\036s\r\346\247,\305\343\023\344\000@d{\347\374L4=\037\362\344\200\367\2109)q\316\233\366J2>\222\325\372\260\311\251t\233j\223S2\343((\177e\237\247\317y\327\375\254O\344{j\024t\367\310\337\205\323\006\330\351\317\366\306\367S\373\010.\350\226\tG\370\323\340\212\014\001\"\353>\007l\346@\2763~\345\267A:\"C\000\370\304]\247T\320\210Xq~\233\363(Q\223\027\210\201\323`\000\344\032\0077K\301\2574\021\3619\246\3079(6q\215\234{\025y\332;}\205\300\227\246Lc\253\372\375\253\301$v\226\370L\272\237b\237$\021\021\222\007\344:BN\005\370\273\263\362\324\010U<\260\3450hd\003\336\\\246R\221t\217\272w\274\343\022\264\303\356\0344\027TU\270@x#P\300\366G};H\265\022\347\275{\276\010\230\360\332\336D\325#\245\226q\203\037\211o\311\260yraK*2\t\346b\310\352\260w\221C4N\3745q\221v\200(m\250\334\004\347(\237\243\200\364N\337\200\253\261/\330\217\243\266\031\014\022g4\323S8\033\233\202\244\333\233]\207\364\304\205f\\\316>\363\336\021F[\360\001;\215\315\216\007\003\262\022r\301\366\356@\335\333\376:E8'!\350\247:Q\354\361F\014\023D:Y\337F\211\350#j\315\266 \265\2008m\371\367)\277)n\261h+\016\001\007\237\2744\302\020\232l\227\317\364YD\342\001\020\245!s\357\300\262t\370\242\221id\245+\027\374\257\202\365`+\374\2461\327x\267\337\267?\272\377S\364\352u\364\372\237\321?\321\326\024\243b""\351?\227\273\340\275\204B\337CN\017\347B\355\267\304\221\3249P\356\027\360\353\225\340\\\010\025?C\203\323Q\021)|\321\333\341\262\3644\020\341T\270\266\227\331\313\356m\354\367\357O\222\350&g>\267\002D\374iJ\311\3470+#)f\204^\306\001\276\r\2728\032\314\005Z`#r\312e\377\035\205\020h\204\006\251\217zE\306{\212x\032i|\037*g\302\305\260\322\350oL7\362{W\366S\234M\336\367\222xAq\3250\033>k\2146*{\003{K\373\237\354?\217\236nD\033/\242\027/\243\227p\004\372\3007\255n\333\272\324=\357\335F&\034\245\341$\037\272\032N\206_r\346\247\366f\366*\373\307\366\363\321\323\037\242\037\364H/D\205w\321;+\262\354\310\026\221\370%\372\345\327\350\327\377\375\355\310\221\277\367?\351\307\355I\377\032\335\326\372\277\247\333\367\375\257\350\366\252\3775\335^\367\377\330\337bXI\322\240\254\246\364\247\202\346\235\364\357\262\0355j\275\010_)\264|\224\347Y\252\216#\235%\262Y\310\005\314\240\247\352\317Qp\376\204H\307\030\352\313\355\206\t\245\260\"w{\201\2159FT\353\332\355I\247\216/J\026\271\313\0051\211\004\032F'\002\316\006\240\227\271\033\220,7D\0353\035\341\000~\031\256\250x\250r\203K|O\202I\256\275\367\211}\244\344mnpy\3766\322\347(\310\202\251\r(\333\010\3332\314mR\252\335T\264\225iq\2270\206P\335\241\212J\375\323\014\226\023\272\372dD\2372\2062\224x\304\0036\225_\n\360]\031ij\227\322LW\324\002W\342|~\203xg:\336!\025\346\210;\016\036PJ\352H\3621w\027\324v\014\024\324\327\325\225Pi;X\024\244\242\001\305O\004\017\303?\354\334hvG\326\222\026j\310\023?\025M\335&\025\250B\256\310\017\215\017\253\177\036Xn\237=\234u=\272~/\272\267\272\257\0013\307G\340j\035\335M\266\335\301\r\"\243\271\371\305\231_Q\027\337\326\"\272\000b\320\"m\223;\346hh\312\277.\345\023\365o\271h\315E\237Qg6\032:\215\205\275\371=\201\224\207{v\210\036eM\211{\031\311\240D\226'\230H\007\300\200\205\300@\246\0164V\230,.\355\267M&\335o\300aT\254\274\363\220\003\210\203\351@\213?\216~\006\305\266\233\373.g\235\251\377B\270?8\025\261`\246\362~\005-\344\332\rI\202>\340&\335\377\0014\346\230I\273Z\324\004\021\344\027\376P\374F""\266\023\253\364\361\226\210\022\324l\265\357\362[JN\023\025vM\313\357\031!\213\233\324e\216\273\021\006\302qf\r\344\006\245\300E\257\006\024\0141kiT\356\321\263R\345\014.\207\375h\325\332\357S\334\010\264\332;\225\240[\036\275\334z\227\326\303\356\327q\272K\270\n\362\036\225\227\t\356r\372\203\031\356\244\3233\376k\204j\010\004y\037\236H_\362\277\226<\033^\006[\2427\224\357S\364\2063\210v\272\025\014\007K\341\3210\323)i\255$\025ihW\241\022?\217\326r\222Z\234\263@\337k\3267q\001\337\225\347\031&\007\002Dg'9\273\220\221\301g\341O`\314\353\373O\242W\340\333\255h\353-\001\343\024\327\235\347\301dt\343\353\306=\320\351\211\350)\260\207\272dF\246\025\177\356\256G\003\327\242k\200\362Z\264F+\t\231\217Q^%$\017B\323u\243\245)\034\317\360\240\016&\343>n\003\240\322\365\205\222\356$\305+8\246\022'E\215\276r\377$1\350\005}\002\n\344\006>a\342\017\307\304\251\370\025w\\\307\300A\327\340\327\304)\"\254\323\3622t\344\3648\377\357\000\013\024<\203>!z\005`\363\032}np\3027\245\255d\362#\267\362\377\330\010\212\030";
+    PyObject *data = __Pyx_DecompressString(cstring, 3833, 1);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (7426 bytes) */
-const char* const bytes = "-1It is not possible to assign sheet names to a .csv fileIt is only possible to save a single sheet to a .csv fileNote that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.Sheet The coloumn has to be a stringThe covariances has to be symmetricThe data range can only include a singly hyphen (-)The file extension is not supported. The supported extension are The header The length of the input \"dataRange\" has to be equal to the length of the intput \"sheets\"The length of the input \"uncertRange\" has to be equal to the length of the intput \"sheets\"The length of the sheet names has to be equal to the length of the sheetsThe number of data coloumns does not match the number of uncertanty coloumnThe number of rows in the uncertanty does not match the dataThe uncertanty coloumns does not have an equal lengthThere is no valid data in the data sheetThere is no valid uncertanty in the data sheetYou can only append sheets with the excact same measurements. The names did not matchYou can only append two sheets togetherYou can only set variables as attributes to a sheet? +/- \302\261 \302\261\n.add_note could not be added to the sheet.csvdisableenablegcint | List[int]isenabledpyees/sheet.pystr | List[str].txtutf-8[^\\w].xls.xlsxAnyCalamineWorkbookListNone__Pyx_PyDict_NextRefWorkbook___activeaddCovarianceadd_sheetappendarrayarrayVariableascii_lettersasyncio.coroutinesccell__class_getitem__cline_in_tracebackcolcolToIndexcontainsCovariacecovcovariancescreateSheetcreate_sheetcsvddatdatadataEndColdataRangedataRangesdataStartColdatas__dict____doc__doneelemencoding__enter__enumerate__exit__extensionfile_fileFromSheetsfileFromSheets_fileFromSheets.__init___fileFromSheets.__init__.<locals>.createSheet_fileFromSheets.__init__.<locals>.write_fileFromSheets.__init__.<locals>.getSheet_fileFromSheets.saveCsv_fileFromSheets.saveSheetsfileNamefindformatHeadersfrom_path__""func__getSheetget_sheet_by_name__getitem__hheadheaderheadersiiiimaxindexindexNan__init___is_coroutineisnumericitemitems__iter__jkeylastWasNan__len__m__main__maxmeasmeasurementmeasurementName__metaclass__mode__module__nnDatanDataColoumnsnUncertnUncertColoumnsname__name__namesnannewlinenpnumnumpyobjectobjectNameopenopenpyxlosos.pathotherotherMeasurementNamesotherMeasurementsoutpathpop__prepare__printprintContentspyees.sheetpyees.variablepython_calamine__qualname__rereadDatareplacereturnrowsavesaveCsvsaveSheetsscalarVariablescalarVariablesselfselfMeasurementNamesselfMeasurements__set_name____setattr__setdefaultshsheetsheetDatasheetNamesheetNamessheet.__getitem__sheet.__init__sheet.__iter__sheet.__len__sheet.__setattr__sheet.appendsheet_namessheet.popsheet.printContentssheets_sheetsFromFilesheetsFromFile_sheetsFromFile.__init___sheetsFromFile.colToIndex_sheetsFromFile.formatHeaders_sheetsFromFile.readDatashowUncertskip_empty_areasplitextsqrtstrstringsubsupportedExtensions__test__titleto_pythontransposetypinguuncuncertuncertEndColuncertIsZerouncertRangeuncertRangesuncertStartColunit_unitObjectunitObjectsunitsuppervalvalidDatavalidUncertvaluevaluesvariablevariableswwbworkbookworksheetwritewriterwriterowwriterowsxlFilexlwtzip\320\000&\320&7\260}\320D\\\320\\d\320de\330\004\n\210/\230\021\230(\240+\250]\270!\330\004\007\200s\210!\2103\210f\220C\220q\330\010\017\210s\220$\220a\220q\330\004\013\2103\210a\320\000%\320%8\270\001\330\004\007\200t\210:\220Q\220h\230a\330\010\021\220\021\220!\330\004\014\210K\220s\230!\330\010\013\2104\210z\230\021\230,\240a\330\014\031\230\021\230!\330\004\023\2201\220H\230J\240l\260!\200A\200A\330\010\013\2103\210a\210t\2209\230C\230q\330\014\022\220*\230A\230Q\330\010\017\210t\220<\230s\240!\330\014\022\220*\230A\230Q\360\006\000\t\r\210I\220T\230\027\240\001\240\021\330\010\014\210C\210q\220\004\220A\340\010\020\220\001\330\010\020\220\001\330\010\020\220\001\330\010\026\220a\330\010\014\210N\230#\230Q\230d\240!\330\014\025\220W\230A\230T\240""\030\250\021\330\014\017\210z\230\021\230(\240!\330\020\027\220q\340\020\025\220W\230A\230Q\330\020\024\220G\2304\230v\240S\250\t\260\024\260Q\330\020\025\220W\230A\230Q\340\020\033\2307\240!\2404\240q\340\020\024\220O\2404\240q\250\001\330\020\024\220H\230A\330\024\030\230\017\240t\2501\250A\340\010\014\210E\220\025\220a\220q\330\014\022\220!\330\014\020\220\010\230\001\330\020\027\220w\230a\230t\2408\2501\340\020\024\220D\230\001\330\024\035\230S\240\001\240\024\240Q\240a\330\024\035\230V\2408\2501\250I\260Q\330\024\035\230V\2408\2501\250E\260\021\330\024\027\220w\230a\230q\340\024\035\230S\240\001\240\024\240Q\240a\330\024\027\220w\230a\230q\330\014\021\220\027\230\001\230\021\340\010\014\210F\220%\220s\230!\2307\240!\330\014\023\2207\230!\2304\230x\240q\330\014\020\220\017\230q\330\014\020\220\010\230\001\330\020\024\220O\2401\360\006\000\016\022\220\021\220$\220k\240\025\240e\2508\2604\260y\300\014\310A\340\014\025\220S\230\007\230q\240\001\340\014\022\220)\2301\230A\330\014\022\220)\2301\230A\330\014\022\220*\230A\230Q\200A\330\010\013\2104\210s\220!\330\014\023\2201\330\010\013\2104\210z\230\021\230%\230q\330\014\022\220*\230A\230Q\330\010\016\210a\330\010\014\210E\220\021\330\014\017\210r\220\023\220F\230!\330\020\026\220d\230\"\230C\230s\240#\240Q\240a\240v\250T\260\026\260v\270R\270q\330\010\017\210t\2202\220Q\200A\330\010\013\2104\210z\230\021\230'\240\021\330\014\022\220*\230A\230Q\340\010\033\2301\330\010\037\230q\330\010\034\230A\330\010 \240\001\340\010\014\210D\220\010\230\004\230I\240V\2501\330\014\017\210z\230\021\230%\230q\330\020$\240G\2501\250A\330\020 \240\007\240q\250\001\340\010\014\210D\220\010\230\005\230Y\240f\250A\330\014\017\210z\230\021\230%\230q\330\020%\240W\250A\250Q\330\020!\240\027\250\001\250\021\360\006\000\t\r\210H\220A\330\014\017\210u\220G\2301\330\020\026\220j\240\001\240\021\340\010\014\210H\220A\330\014\017\210u\220G\2301\330\020\026\220j\240\001\240\021\360\006\000\t\r\210M\320\031,\250C\250q\3200B\300!\330\014\024\320""\024)\250\026\250q\260\001\330\014\027\220w\230a\320\0370\260\001\260\021\210A\330\020\023\2206\230\022\2301\330\024 \240\004\240L\260\001\340\024 \240\004\240C\240q\330\020\030\230\n\240#\240Q\330\024\035\230Y\240a\330\020\027\220q\200A\340\010\024\220A\330\010\014\210C\210x\220t\2309\240F\250!\330\014\017\210z\230\021\230&\240\001\330\020\031\230\027\240\001\240\021\340\010\017\210t\2201\220A\200A\340\010\014\210C\210x\220t\2309\240F\250!\330\014\017\210z\230\021\230&\240\001\330\020\027\220s\230!\2301\330\010\016\210a\200A\340\010\014\210D\220\t\230\031\240!\2404\240q\340\014\030\230\001\330\014\024\220D\230\014\240C\240q\330\020\034\230D\240\013\2501\250A\330\014\030\230\004\230I\240Q\240d\250!\340\014\022\220!\330\014\020\220\016\230c\240\021\240!\330\020\031\230\027\240\001\240\027\250\001\330\020\023\220:\230Q\230h\240a\330\024\033\2301\340\024\030\230\006\230a\230{\250#\250U\260!\330\024\030\230\007\230t\2406\250\023\250I\260T\270\021\330\024\030\230\006\230a\230{\250#\250U\260!\340\024\030\230\004\230A\330\024\030\230\017\240t\2501\250A\330\024\030\230\010\240\001\330\030\034\230O\2504\250q\260\001\340\024\030\230\004\230A\330\030\034\230E\240\027\250\t\260\021\260!\330\034%\240S\250\001\250\021\330\034%\240V\2508\2601\260I\270Q\330\034 \240\006\240a\240{\260$\260b\270\003\2705\300\001\340\030\034\230E\240\027\250\t\260\021\260$\260a\330\034%\240S\250\001\250\021\330\034 \240\006\240a\240{\260$\260b\270\003\2705\300\001\340\024\030\230\017\240q\330\024\030\230\010\240\001\330\030\034\230O\2501\340\024\033\2301\340\010\014\210C\210u\220A\220T\230\021\200A\330\010\014\210E\220\030\230\024\230Y\240f\250A\330\014\017\210z\230\021\230&\240\001\330\020\025\220Q\220a\200A\330\010\014\210G\2201\360\006\000\t\r\210D\220\006\220i\230q\240\004\240A\340\014\030\230\005\230Q\340\014\027\220r\230\032\2401\320$4\260A\340\014\030\230\004\230K\240q\250\001\330\014\032\230$\230m\2501\250A\330\014\034\230C\230q\240\001\360\006\000\r\024\220<\230s\240!\330\020\"\240#\240Q\240a""\330\020\023\220>\240\023\240A\330\024\032\230*\240A\240Q\360\006\000\r\026\220W\230K\240x\250q\260\004\260H\270A\270T\300\030\310\021\310!\340\014\026\220a\220w\230a\230s\240$\240e\2501\330\014\024\220A\220U\230!\2303\230d\240%\240q\360\010\000\r\024\2201\330\014\020\220\005\220Q\330\020\026\220a\220t\2301\230C\230t\2408\2501\340\020\034\230A\330\020\035\230Q\330\020\024\220F\230%\230q\240\003\2401\240A\330\024\027\220q\330\030\033\2303\230a\230t\2403\240a\330\034)\250\021\330\034(\250\001\340\030\033\2303\230a\230t\2403\240a\330\034'\240q\330\020\024\220G\2301\230C\230q\240\002\240(\250!\2501\340\014\030\230\001\330\014\020\220\007\220q\330\020\023\2201\330\024 \240\001\330\024\025\330\014\017\210t\2201\330\020\026\220j\240\001\240\021\360\006\000\r\025\220C\220q\230\001\230\023\230A\230S\240\004\240E\250\021\330\014\020\220\003\2205\230\t\240\021\240!\330\020\023\2203\220a\220s\230#\230Q\330\024\030\230\001\230\025\230a\230r\240\026\240r\250\021\340\014\033\230<\240s\250!\330\014\023\220<\230s\240!\330\020\031\230\021\330\020\024\220E\230\021\330\024\032\230!\2304\230q\240\003\2404\240x\250q\340\024 \240\001\330\024!\240\021\330\024\030\230\006\230e\2401\240C\240q\250\001\330\030\033\2301\330\034\037\230s\240!\2404\240s\250!\330 -\250Q\330 ,\250A\340\034\037\230s\240!\2404\240s\250!\330 +\2501\330\024\032\230'\240\021\240#\240Q\240b\250\010\260\001\260\021\330\024\"\240!\330\024\030\230\007\230q\330\030\033\2301\330\034*\250!\330\034\035\330\024\027\220t\2301\330\030\036\230j\250\001\250\021\340\014\017\210q\330\020\024\220C\220q\230\001\330\020\024\220C\220q\230\004\230A\230Q\330\020\031\230\021\230!\2305\240\003\2402\240Q\340\014\026\220c\230\021\230&\240\001\240\021\330\014\020\220\005\220Q\330\020\023\2203\220a\220s\230#\230Q\330\024\032\230*\240A\240Q\360\010\000\r\020\210v\220S\230\001\330\020$\240A\340\020\023\2208\2303\230f\240B\240a\330\024(\250\001\340\024\032\230*\240A\240Q\340\014\017\210t\2201\330\020\034\230A\330\020\024\220E\230\025\230a\230s\240!""\2404\240q\250\001\330\024\031\230\023\230F\240$\240a\240t\2505\260\001\260\024\260V\2701\270A\330\024\032\230!\2308\240:\250Q\250f\260G\2703\270j\310\001\310\026\310z\320Y[\320[`\320`d\320dl\320lm\330\024\032\230!\2308\240:\250Q\250f\260G\2703\270j\310\001\310\026\310z\320Y[\320[`\320`d\320dl\320lm\330\024\035\230W\240A\240X\250Q\250e\2603\260a\360\014\000\021\032\230\022\2306\240\021\240'\250\032\2601\330\020\036\230a\330\020\024\220E\230\025\230a\230q\330\024\037\230w\240a\240v\250R\250s\260\"\260O\3001\300A\300S\310\002\310!\330\020\036\230b\240\006\240a\240q\340\020\024\220G\2301\330\024\030\230\005\230U\240!\2401\330\030\034\230E\240\025\240a\240q\330\034\037\230s\240!\2402\240S\250\003\2503\250a\250r\260\021\330 &\240j\260\001\260\021\360\006\000\021\032\230\021\330\020\024\220E\230\025\230a\230s\240!\2404\240q\250\001\330\024\032\230'\240\021\240\"\240F\250!\2501\250B\250e\2601\260C\260q\270\002\270$\270d\300'\310\021\340\020\034\230A\230X\240Q\240d\250!\2504\250u\260A\260T\270\026\270q\300\004\300D\310\005\310U\320RS\320SV\320VW\320W[\320[\\\320\\]\340\020\024\220E\230\025\230a\230q\330\024\030\230\005\230U\240!\2401\330\030\033\2302\230S\240\003\2401\330\030!\240\021\240\"\240N\260!\2609\270A\270T\300\021\300%\300q\310\006\310d\320RZ\320Ze\320eh\320hj\320jo\320or\320rs\320s|\320|}\320}\177\360\000\000@\002M\002\360\000\000M\002O\002\360\000\000O\002X\002\360\000\000X\002Y\002\360\000\000Y\002[\002\360\000\000[\002\\\002\340\014\020\220\005\220U\230!\2303\230a\230t\2401\240A\330\020\027\220q\230\013\2407\250!\2504\250y\270\001\270\021\360\010\000\r\021\220\004\220G\2301\230A\210A\330\020\025\220U\230!\2303\230a\230s\240#\240Q\240c\250\021\200A\330\010\r\210U\220!\330\010\014\210E\220\030\230\024\230Y\240f\250A\330\014\017\210z\230\021\230&\240\001\330\020\027\220q\230\004\230E\240\024\240Q\240a\330\010\017\210q\210A\330\020\025\220V\2301\230E\240\025\240a\200A\340\010\016\210a\330\010\014\210H\220A\330\014\017\210u\220C\220q\330\020\023\2207\230!\2301\330""\020\021\340\014\023\2202\220T\230\021\230*\240E\250\021\360\006\000\r\024\2201\330\014\022\220$\220a\330\020\027\220t\2308\2401\240F\250!\330\020\027\220u\230C\230q\330\024\033\2301\360\006\000\r\020\210t\2201\220B\220j\240\001\330\020\027\220t\2302\230Q\360\006\000\r\020\210t\2202\220S\230\003\2304\230t\2403\240a\240v\250S\260\001\330\020\027\220t\2301\230C\230q\360\006\000\r\020\210u\220G\2301\330\020\023\2207\230!\2301\340\020\023\2206\230\027\240\003\2405\250\001\330\020\026\220d\230%\230t\2402\240S\250\001\330\024\030\230\005\230R\230s\240!\2401\240A\240Q\330\024\027\220r\230\027\240\001\330\030\033\2307\240!\2401\330\030\037\230q\330\024\031\230\021\330\020\023\2204\220q\330\024\032\230*\240A\240]\260!\2601\330\010\017\210q\210A\330\020\027\220t\2303\230j\250\001\210A\330\020\027\220t\2303\230m\2501\210A\340\020\027\220x\230q\240\006\240b\250\001\330\020\030\230\n\240#\240Q\330\024\033\2301\340\020\027\220t\2303\230j\250\001\250\021\320\004 \240\014\250H\260A\330\010\013\2104\210z\230\021\230'\240\021\330\014\022\220*\230A\230Q\340\010\013\2104\210w\220a\220w\230a\340\014\024\220M\240\021\320\"2\260!\2601\340\010\014\210I\220Q\220h\230a\200N\220!\330\010\014\210E\220\030\230\024\230Y\240f\250A\330\014\017\210z\230\021\230&\240\001\330\020\024\220D\230\001\230\021\320\004*\320*<\320<N\310a\360\010\000\t\025\220B\220e\2309\240A\240W\250A\250Q\330\010\036\230a\230x\240q\330\010\013\210:\220W\230A\330\014\022\220*\230A\320\035`\320`a\320ab\340\010\014\210F\320\022\"\240*\250A\250Q\330\010\014\210J\220a\220t\2303\320\0360\260\001\260\026\260t\2708\3004\300s\310!\330\010\017\210w\220c\230\021\330\014\017\210t\220:\230Q\230h\240a\330\020\031\230\021\230!\330\014\020\220\n\230!\2305\240\004\240B\240h\250i\260q\270\004\270I\300S\310\002\310#\310Q\340\010\013\2104\210z\230\021\230+\240Q\330\014\030\230\001\230\033\240B\240c\250\021\250$\250a\330\010\013\2103\210a\210{\230#\230S\240\001\240\024\240Q\330\014\022\220*\230A\230Q\340\010\017\210|\2303\230a\330\014\017\210t""\220:\230Q\230m\2501\330\020\036\230a\230}\250B\250c\260\021\260$\260a\330\014\017\210s\220!\220=\240\003\2403\240a\240t\2501\330\020\026\220j\240\001\240\021\340\014\032\230!\2306\240\022\2403\240a\240t\2501\360\006\000\t\r\210N\230!\330\010\014\320\014\034\230A\340\010\014\320\014\034\230A\330\010\014\210N\230!\330\010\014\320\014\036\230a\330\010\014\320\014\034\230A\330\010\014\210E\220\025\220a\220s\230!\2304\230q\330\014\017\210t\2203\220i\230q\240\001\330\020\030\230\t\240\021\240\"\240E\250\021\250!\330\020\037\230y\250\001\250\022\2501\250B\250a\330\020\035\230Y\240a\240r\250\021\250&\260\002\260!\340\020\037\230y\250\001\250\021\330\020\035\230Q\340\014\017\210t\2203\220m\2403\240d\250#\250Q\330\020\026\220j\240\001\240\021\340\014\023\220;\230a\230s\240#\240Q\330\020\023\2204\220s\230+\240Q\240a\330\024\034\230K\240q\250\002\250%\250q\260\001\330\024%\240[\260\001\260\022\2601\260B\260a\330\024#\240;\250a\250r\260\021\260&\270\002\270!\340\024%\240[\260\001\260\021\330\024#\2401\340\020\023\2204\220s\230/\250\023\250D\260\003\2601\330\024\032\230*\240A\240Q\340\020!\240\021\330\020\037\230q\340\014\033\2304\230{\250!\2501\330\014\031\230\024\230[\250\001\250\021\330\014\035\230T\240\033\250A\250Q\330\014\033\2304\230{\250!\2501\340\014\020\220\013\2307\240!\2405\250\001\250\036\260z\300\021\300*\310M\320Y\\\320\\f\320fg\330\014\020\220\r\230W\240A\240U\250!\320+;\270<\300q\310\n\320Ra\320ad\320dn\320no\360\006\000\t\r\210I\220Q\320\004)\320)<\320<R\320RS\340\010\014\210L\230\001\330\010\014\210J\220a\330\010\014\210N\230!\330\010\014\210N\230!\360\006\000\t\021\220\013\2303\230a\330\014\020\220\003\2201\220L\240\003\2403\240a\240q\330\020\026\220j\240\001\240\021\340\010\024\220B\220e\2309\240A\240Y\250a\250q\330\010\036\230a\230x\240y\260\010\270\001\330\010\013\210:\220W\230A\330\014\022\220*\230A\320\035`\320`a\320ab\340\010\013\210:\220S\230\007\230s\240*\250C\250q\330\014\020\220\010\230\001\330\014\r\340\010\013\210:\220S\230\001\330\014\020\220""\006\220d\230)\2401\340\014\r\360\006\000\r\016\360\006\000\r\016\360\022\000\016\030\220s\230!\330\014\020\220\006\220h\230i\240q\340\014\r\360\006\000\r\016\360\006\000\r\016\360\022\000\t\r\210O\2301\330\010\014\210I\220Q\330\010\014\210L\230\001\340\010\014\210K\220q";
+    #else /* compression: none (7534 bytes) */
+const char* const bytes = "-1It is not possible to assign sheet names to a .csv fileIt is only possible to save a single sheet to a .csv fileL/minNote that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.Sheet The coloumn has to be a stringThe covariances has to be symmetricThe data range can only include a singly hyphen (-)The file extension is not supported. The supported extension are The header The length of the input \"dataRange\" has to be equal to the length of the intput \"sheets\"The length of the input \"uncertRange\" has to be equal to the length of the intput \"sheets\"The length of the sheet names has to be equal to the length of the sheetsThe number of data coloumns does not match the number of uncertanty coloumnThe number of rows in the uncertanty does not match the dataThe uncertanty coloumns does not have an equal lengthThere is no valid data in the data sheetThere is no valid uncertanty in the data sheetYou can only append sheets with the excact same measurements. The names did not matchYou can only append two sheets togetherYou can only set variables as attributes to a sheet.?$ +/- \302\261 \302\261\nadd_note could not be added to the sheet.csvdisableenablegcint | List[int]isenabledpyees/sheet.pystr | List[str]test.txt.txtutf-8[^\\w].xls.xlsxAnyCalamineWorkbookListNone__Pyx_PyDict_NextRefWorkbook___activeaddCovarianceadd_sheetappendarrayarrayVariableascii_lettersasyncio.coroutinesbccell__class_getitem__cline_in_tracebackcolcolToIndexcontainsCovariacecovcovariancescreateSheetcreate_sheetcsvddatdatadataEndColdataRangedataRangesdataStartColdatas__dict____doc__doneelemencoding__enter__enumerate__exit__extensionfile_fileFromSheetsfileFromSheets_fileFromSheets.__init___fileFromSheets.__init__.<locals>.createSheet_fileFromSheets.__init__.<locals>.write_fileFromSheets.__init__.<locals>.getSheet_fileFromSheets.saveCsv_fileFromSheets.saveSheetsfileNamefindformatHea""dersfrom_path__func__getSheetget_sheet_by_name__getitem__hheadheaderheadersiiiimaxindexindexNan__init___is_coroutineisnumericitemitems__iter__jkeylastWasNan__len__m__main__maxmeasmeasurementmeasurementName__metaclass__mode__module__nnDatanDataColoumnsnUncertnUncertColoumnsname__name__namesnannewlinenpnumnumpyobjectobjectNameopenopenpyxlosos.pathotherotherMeasurementNamesotherMeasurementsoutpathpop__prepare__prettyUnitprintprintContentspyees.sheetpyees.variablepython_calamine__qualname__rereadDatareplacereturnrowssavesaveCsvsaveSheetsscalarVariablescalarVariablesselfselfMeasurementNamesselfMeasurements__set_name____setattr__setdefaultshsheetsheetDatasheetNamesheetNamessheet.__getitem__sheet.__init__sheet.__iter__sheet.__len__sheet.__setattr__sheet.appendsheet_namessheet.popsheet.printContentssheets_sheetsFromFilesheetsFromFile_sheetsFromFile.__init___sheetsFromFile.colToIndex_sheetsFromFile.formatHeaders_sheetsFromFile.readDatashowUncertskip_empty_areasplitextsqrt__str__strstringsubsupportedExtensions__test__titleto_pythontransposetypinguuncuncertuncertEndColuncertIsZerouncertRangeuncertRangesuncertStartColunit_unitObjectunitObjectsunitsuppervalvalidDatavalidUncertvaluevaluesvariablevariableswwbworkbookworksheetwritewriterwriterowwriterowsxlFilexlwtzip\320\000&\320&7\260}\320D\\\320\\d\320de\330\004\n\210/\230\021\230(\240+\250]\270!\330\004\007\200s\210!\2103\210f\220C\220q\330\010\017\210s\220$\220a\220q\330\004\013\2103\210a\320\000%\320%8\3208K\3101\330\004\007\200t\210:\220Q\220h\230a\330\010\021\220\021\220!\330\004\014\210K\220s\230!\330\010\013\2104\210z\230\021\230,\240a\330\014\031\230\021\230!\330\004\023\2201\220H\230J\240l\260,\270a\200A\200A\330\010\013\2103\210a\210t\2209\230C\230q\330\014\022\220*\230A\230Q\330\010\017\210t\220<\230s\240!\330\014\022\220*\230A\230Q\360\006\000\t\r\210I\220T\230\027\240\001\240\021\330\010\014\210C\210q\220\004\220A\340\010\020\220\001\330\010\020\220\001\330\010\020\220\001\330\010\026\220a\330\010\014\210N\230#\230Q""\230d\240!\330\014\025\220W\230A\230T\240\030\250\021\330\014\017\210z\230\021\230(\240!\330\020\027\220q\340\020\025\220W\230A\230Q\330\020\023\2204\220v\230S\240\001\330\024\030\230\001\340\024\027\220t\2301\330\030\034\230C\230q\240\004\240L\260\010\270\001\270\021\340\030\034\230D\240\001\330\020\025\220W\230A\230Q\340\020\033\2307\240!\2404\240q\340\020\024\220O\2404\240q\250\001\330\020\024\220H\230A\330\024\030\230\017\240t\2501\250A\340\010\014\210E\220\025\220a\220q\330\014\022\220!\330\014\020\220\010\230\001\330\020\027\220w\230a\230t\2408\2501\340\020\024\220D\230\001\330\024\035\230S\240\001\240\024\240Q\240a\330\024\035\230V\2408\2501\250I\260Q\330\024\035\230V\2408\2501\250E\260\021\330\024\027\220w\230a\230q\340\024\035\230S\240\001\240\024\240Q\240a\330\024\027\220w\230a\230q\330\014\021\220\027\230\001\230\021\340\010\014\210F\220%\220s\230!\2307\240!\330\014\023\2207\230!\2304\230x\240q\330\014\020\220\017\230q\330\014\020\220\010\230\001\330\020\024\220O\2401\360\006\000\016\022\220\021\220$\220k\240\025\240e\2508\2604\260y\300\014\310A\340\014\025\220S\230\007\230q\240\001\340\014\022\220)\2301\230A\330\014\022\220)\2301\230A\330\014\022\220*\230A\230Q\200A\330\010\013\2104\210s\220!\330\014\023\2201\330\010\013\2104\210z\230\021\230%\230q\330\014\022\220*\230A\230Q\330\010\016\210a\330\010\014\210E\220\021\330\014\017\210r\220\023\220F\230!\330\020\026\220d\230\"\230C\230s\240#\240Q\240a\240v\250T\260\026\260v\270R\270q\330\010\017\210t\2202\220Q\200A\330\010\013\2104\210z\230\021\230'\240\021\330\014\022\220*\230A\230Q\340\010\033\2301\330\010\037\230q\330\010\034\230A\330\010 \240\001\340\010\014\210D\220\010\230\004\230I\240V\2501\330\014\017\210z\230\021\230%\230q\330\020$\240G\2501\250A\330\020 \240\007\240q\250\001\340\010\014\210D\220\010\230\005\230Y\240f\250A\330\014\017\210z\230\021\230%\230q\330\020%\240W\250A\250Q\330\020!\240\027\250\001\250\021\360\006\000\t\r\210H\220A\330\014\017\210u\220G\2301\330\020\026\220j\240\001\240\021""\340\010\014\210H\220A\330\014\017\210u\220G\2301\330\020\026\220j\240\001\240\021\360\006\000\t\r\210M\320\031,\250C\250q\3200B\300!\330\014\024\320\024)\250\026\250q\260\001\330\014\027\220w\230a\320\0370\260\001\260\021\210A\330\020\023\2206\230\022\2301\330\024 \240\004\240L\260\001\340\024 \240\004\240C\240q\330\020\030\230\n\240#\240Q\330\024\035\230Y\240a\330\020\027\220q\200A\340\010\024\220A\330\010\014\210C\210x\220t\2309\240F\250!\330\014\017\210z\230\021\230&\240\001\330\020\031\230\027\240\001\240\021\340\010\017\210t\2201\220A\200A\340\010\014\210C\210x\220t\2309\240F\250!\330\014\017\210z\230\021\230&\240\001\330\020\027\220s\230!\2301\330\010\016\210a\200A\340\010\014\210D\220\t\230\031\240!\2404\240q\340\014\030\230\001\330\014\024\220D\230\014\240C\240q\330\020\034\230D\240\013\2501\250A\330\014\030\230\004\230I\240Q\240d\250!\340\014\022\220!\330\014\020\220\016\230c\240\021\240!\330\020\031\230\027\240\001\240\027\250\001\330\020\023\220:\230Q\230h\240a\330\024\033\2301\340\024\030\230\006\230a\230{\250#\250U\260!\330\024\027\220t\2306\240\023\240A\330\030\034\230A\340\030\033\2304\230q\330\034 \240\003\2401\240D\250\014\260H\270A\270Q\340\034 \240\004\240A\330\024\030\230\006\230a\230{\250#\250U\260!\340\024\030\230\004\230A\330\024\030\230\017\240t\2501\250A\330\024\030\230\010\240\001\330\030\034\230O\2504\250q\260\001\340\024\030\230\004\230A\330\030\034\230E\240\027\250\t\260\021\260!\330\034%\240S\250\001\250\021\330\034%\240V\2508\2601\260I\270Q\330\034 \240\006\240a\240{\260$\260b\270\003\2705\300\001\340\030\034\230E\240\027\250\t\260\021\260$\260a\330\034%\240S\250\001\250\021\330\034 \240\006\240a\240{\260$\260b\270\003\2705\300\001\340\024\030\230\017\240q\330\024\030\230\010\240\001\330\030\034\230O\2501\340\024\033\2301\340\010\014\210C\210u\220A\220T\230\021\200A\330\010\014\210E\220\030\230\024\230Y\240f\250A\330\014\017\210z\230\021\230&\240\001\330\020\025\220Q\220a\200A\330\010\014\210G\2201\360\006\000\t\r\210D\220\006\220i""\230q\240\004\240A\340\014\030\230\005\230Q\340\014\027\220r\230\032\2401\320$4\260A\340\014\030\230\004\230K\240q\250\001\330\014\032\230$\230m\2501\250A\330\014\034\230C\230q\240\001\360\006\000\r\024\220<\230s\240!\330\020\"\240#\240Q\240a\330\020\023\220>\240\023\240A\330\024\032\230*\240A\240Q\360\006\000\r\026\220W\230K\240x\250q\260\004\260H\270A\270T\300\030\310\021\310!\340\014\026\220a\220w\230a\230s\240$\240e\2501\330\014\024\220A\220U\230!\2303\230d\240%\240q\360\010\000\r\024\2201\330\014\020\220\005\220Q\330\020\026\220a\220t\2301\230C\230t\2408\2501\340\020\034\230A\330\020\035\230Q\330\020\024\220F\230%\230q\240\003\2401\240A\330\024\027\220q\330\030\033\2303\230a\230t\2403\240a\330\034)\250\021\330\034(\250\001\340\030\033\2303\230a\230t\2403\240a\330\034'\240q\330\020\024\220G\2301\230C\230q\240\002\240(\250!\2501\340\014\030\230\001\330\014\020\220\007\220q\330\020\023\2201\330\024 \240\001\330\024\025\330\014\017\210t\2201\330\020\026\220j\240\001\240\021\360\006\000\r\025\220C\220q\230\001\230\023\230A\230S\240\004\240E\250\021\330\014\020\220\003\2205\230\t\240\021\240!\330\020\023\2203\220a\220s\230#\230Q\330\024\030\230\001\230\025\230a\230r\240\026\240r\250\021\340\014\033\230<\240s\250!\330\014\023\220<\230s\240!\330\020\031\230\021\330\020\024\220E\230\021\330\024\032\230!\2304\230q\240\003\2404\240x\250q\340\024 \240\001\330\024!\240\021\330\024\030\230\006\230e\2401\240C\240q\250\001\330\030\033\2301\330\034\037\230s\240!\2404\240s\250!\330 -\250Q\330 ,\250A\340\034\037\230s\240!\2404\240s\250!\330 +\2501\330\024\032\230'\240\021\240#\240Q\240b\250\010\260\001\260\021\330\024\"\240!\330\024\030\230\007\230q\330\030\033\2301\330\034*\250!\330\034\035\330\024\027\220t\2301\330\030\036\230j\250\001\250\021\340\014\017\210q\330\020\024\220C\220q\230\001\330\020\024\220C\220q\230\004\230A\230Q\330\020\031\230\021\230!\2305\240\003\2402\240Q\340\014\026\220c\230\021\230&\240\001\240\021\330\014\020\220\005\220Q\330\020\023\2203\220a\220s\230#""\230Q\330\024\032\230*\240A\240Q\360\010\000\r\020\210v\220S\230\001\330\020$\240A\340\020\023\2208\2303\230f\240B\240a\330\024(\250\001\340\024\032\230*\240A\240Q\340\014\017\210t\2201\330\020\034\230A\330\020\024\220E\230\025\230a\230s\240!\2404\240q\250\001\330\024\031\230\023\230F\240$\240a\240t\2505\260\001\260\024\260V\2701\270A\330\024\032\230!\2308\240:\250Q\250f\260G\2703\270j\310\001\310\026\310z\320Y[\320[`\320`d\320dl\320lm\330\024\032\230!\2308\240:\250Q\250f\260G\2703\270j\310\001\310\026\310z\320Y[\320[`\320`d\320dl\320lm\330\024\035\230W\240A\240X\250Q\250e\2603\260a\360\014\000\021\032\230\022\2306\240\021\240'\250\032\2601\330\020\036\230a\330\020\024\220E\230\025\230a\230q\330\024\037\230w\240a\240v\250R\250s\260\"\260O\3001\300A\300S\310\002\310!\330\020\036\230b\240\006\240a\240q\340\020\024\220G\2301\330\024\030\230\005\230U\240!\2401\330\030\034\230E\240\025\240a\240q\330\034\037\230s\240!\2402\240S\250\003\2503\250a\250r\260\021\330 &\240j\260\001\260\021\360\006\000\021\032\230\021\330\020\024\220E\230\025\230a\230s\240!\2404\240q\250\001\330\024\032\230'\240\021\240\"\240F\250!\2501\250B\250e\2601\260C\260q\270\002\270$\270d\300'\310\021\340\020\034\230A\230X\240Q\240d\250!\2504\250u\260A\260T\270\026\270q\300\004\300D\310\005\310U\320RS\320SV\320VW\320W[\320[\\\320\\]\340\020\024\220E\230\025\230a\230q\330\024\030\230\005\230U\240!\2401\330\030\033\2302\230S\240\003\2401\330\030!\240\021\240\"\240N\260!\2609\270A\270T\300\021\300%\300q\310\006\310d\320RZ\320Ze\320eh\320hj\320jo\320or\320rs\320s|\320|}\320}\177\360\000\000@\002M\002\360\000\000M\002O\002\360\000\000O\002X\002\360\000\000X\002Y\002\360\000\000Y\002[\002\360\000\000[\002\\\002\340\014\020\220\005\220U\230!\2303\230a\230t\2401\240A\330\020\027\220q\230\013\2407\250!\2504\250y\270\001\270\021\360\010\000\r\021\220\004\220G\2301\230A\210A\330\020\025\220U\230!\2303\230a\230s\240#\240Q\240c\250\021\200A\330\010\r\210U\220!\330\010\014\210E\220\030\230\024\230Y\240f\250A\330\014""\017\210z\230\021\230&\240\001\330\020\027\220q\230\004\230E\240\024\240Q\240a\330\010\017\210q\210A\330\020\025\220V\2301\230E\240\025\240a\200A\340\010\016\210a\330\010\014\210H\220A\330\014\017\210u\220C\220q\330\020\023\2207\230!\2301\330\020\021\340\014\023\2202\220T\230\021\230*\240E\250\021\360\006\000\r\024\2201\330\014\022\220$\220a\330\020\027\220t\2308\2401\240F\250!\330\020\027\220u\230C\230q\330\024\033\2301\360\006\000\r\020\210t\2201\220B\220j\240\001\330\020\027\220t\2302\230Q\360\006\000\r\020\210t\2202\220S\230\003\2304\230t\2403\240a\240v\250S\260\001\330\020\027\220t\2301\230C\230q\360\006\000\r\020\210u\220G\2301\330\020\023\2207\230!\2301\340\020\023\2206\230\027\240\003\2405\250\001\330\020\026\220d\230%\230t\2402\240S\250\001\330\024\030\230\005\230R\230s\240!\2401\240A\240Q\330\024\027\220r\230\027\240\001\330\030\033\2307\240!\2401\330\030\037\230q\330\024\031\230\021\330\020\023\2204\220q\330\024\032\230*\240A\240]\260!\2601\330\010\017\210q\210A\330\020\027\220t\2303\230j\250\001\210A\330\020\027\220t\2303\230m\2501\210A\340\020\027\220x\230q\240\006\240b\250\001\330\020\030\230\n\240#\240Q\330\024\033\2301\340\020\027\220t\2303\230j\250\001\250\021\320\004 \240\014\250H\260A\330\010\013\2104\210z\230\021\230'\240\021\330\014\022\220*\230A\230Q\340\010\013\2104\210w\220a\220w\230a\340\014\024\220M\240\021\320\"2\260!\2601\340\010\014\210I\220Q\220h\230a\200N\220!\330\010\014\210E\220\030\230\024\230Y\240f\250A\330\014\017\210z\230\021\230&\240\001\330\020\024\220D\230\001\230\021\320\004*\320*<\320<N\310a\360\010\000\t\025\220B\220e\2309\240A\240W\250A\250Q\330\010\036\230a\230x\240q\330\010\013\210:\220W\230A\330\014\022\220*\230A\320\035`\320`a\320ab\340\010\014\210F\320\022\"\240*\250A\250Q\330\010\014\210J\220a\220t\2303\320\0360\260\001\260\026\260t\2708\3004\300s\310!\330\010\017\210w\220c\230\021\330\014\017\210t\220:\230Q\230h\240a\330\020\031\230\021\230!\330\014\020\220\n\230!\2305\240\004\240B\240h\250i\260q\270\004\270I\300S""\310\002\310#\310Q\340\010\013\2104\210z\230\021\230+\240Q\330\014\030\230\001\230\033\240B\240c\250\021\250$\250a\330\010\013\2103\210a\210{\230#\230S\240\001\240\024\240Q\330\014\022\220*\230A\230Q\340\010\017\210|\2303\230a\330\014\017\210t\220:\230Q\230m\2501\330\020\036\230a\230}\250B\250c\260\021\260$\260a\330\014\017\210s\220!\220=\240\003\2403\240a\240t\2501\330\020\026\220j\240\001\240\021\340\014\032\230!\2306\240\022\2403\240a\240t\2501\360\006\000\t\r\210N\230!\330\010\014\320\014\034\230A\340\010\014\320\014\034\230A\330\010\014\210N\230!\330\010\014\320\014\036\230a\330\010\014\320\014\034\230A\330\010\014\210E\220\025\220a\220s\230!\2304\230q\330\014\017\210t\2203\220i\230q\240\001\330\020\030\230\t\240\021\240\"\240E\250\021\250!\330\020\037\230y\250\001\250\022\2501\250B\250a\330\020\035\230Y\240a\240r\250\021\250&\260\002\260!\340\020\037\230y\250\001\250\021\330\020\035\230Q\340\014\017\210t\2203\220m\2403\240d\250#\250Q\330\020\026\220j\240\001\240\021\340\014\023\220;\230a\230s\240#\240Q\330\020\023\2204\220s\230+\240Q\240a\330\024\034\230K\240q\250\002\250%\250q\260\001\330\024%\240[\260\001\260\022\2601\260B\260a\330\024#\240;\250a\250r\260\021\260&\270\002\270!\340\024%\240[\260\001\260\021\330\024#\2401\340\020\023\2204\220s\230/\250\023\250D\260\003\2601\330\024\032\230*\240A\240Q\340\020!\240\021\330\020\037\230q\340\014\033\2304\230{\250!\2501\330\014\031\230\024\230[\250\001\250\021\330\014\035\230T\240\033\250A\250Q\330\014\033\2304\230{\250!\2501\340\014\020\220\013\2307\240!\2405\250\001\250\036\260z\300\021\300*\310M\320Y\\\320\\f\320fg\330\014\020\220\r\230W\240A\240U\250!\320+;\270<\300q\310\n\320Ra\320ad\320dn\320no\360\006\000\t\r\210I\220Q\320\004)\320)<\320<O\320Of\320fg\340\010\014\210L\230\001\330\010\014\210J\220a\330\010\014\210N\230!\330\010\014\210N\230!\330\010\014\210N\230!\360\006\000\t\021\220\013\2303\230a\330\014\020\220\003\2201\220L\240\003\2403\240a\240q\330\020\026\220j\240\001\240\021\340\010\024\220B\220e\2309""\240A\240Y\250a\250q\330\010\036\230a\230x\240y\260\010\270\001\330\010\013\210:\220W\230A\330\014\022\220*\230A\320\035`\320`a\320ab\340\010\013\210:\220S\230\007\230s\240*\250C\250q\330\014\020\220\010\230\001\330\014\r\340\010\013\210:\220S\230\001\330\014\020\220\006\220d\230)\2401\340\014\r\360\006\000\r\016\360\006\000\r\016\360\022\000\016\030\220s\230!\330\014\020\220\006\220h\230i\240q\340\014\r\360\006\000\r\016\360\006\000\r\016\360\022\000\t\r\210O\2301\330\010\014\210I\220Q\330\010\014\210L\230\001\340\010\014\210K\220q";
     PyObject *data = NULL;
     CYTHON_UNUSED_VAR(__Pyx_DecompressString);
     #endif
     PyObject **stringtab = __pyx_mstate->__pyx_string_tab;
     Py_ssize_t pos = 0;
-    for (int i = 0; i < 247; i++) {
+    for (int i = 0; i < 254; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyUnicode_DecodeUTF8(bytes + pos, bytes_length, NULL);
-      if (likely(string) && i >= 44) PyUnicode_InternInPlace(&string);
+      if (likely(string) && i >= 47) PyUnicode_InternInPlace(&string);
       if (unlikely(!string)) {
         Py_XDECREF(data);
         __PYX_ERR(0, 1, __pyx_L1_error)
@@ -17165,7 +17484,7 @@ const char* const bytes = "-1It is not possible to assign sheet names to a .csv 
       stringtab[i] = string;
       pos += bytes_length;
     }
-    for (int i = 247; i < 270; i++) {
+    for (int i = 254; i < 277; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyBytes_FromStringAndSize(bytes + pos, bytes_length);
       stringtab[i] = string;
@@ -17176,14 +17495,14 @@ const char* const bytes = "-1It is not possible to assign sheet names to a .csv 
       }
     }
     Py_XDECREF(data);
-    for (Py_ssize_t i = 0; i < 270; i++) {
+    for (Py_ssize_t i = 0; i < 277; i++) {
       if (unlikely(PyObject_Hash(stringtab[i]) == -1)) {
         __PYX_ERR(0, 1, __pyx_L1_error)
       }
     }
     #if CYTHON_IMMORTAL_CONSTANTS
     {
-      PyObject **table = stringtab + 247;
+      PyObject **table = stringtab + 254;
       for (Py_ssize_t i=0; i<23; ++i) {
         #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
         Py_SET_REFCNT(table[i], _Py_IMMORTAL_REFCNT_LOCAL);
@@ -17196,8 +17515,8 @@ const char* const bytes = "-1It is not possible to assign sheet names to a .csv 
   }
   {
     PyObject **numbertab = __pyx_mstate->__pyx_number_tab + 0;
-    int8_t const cint_constants_1[] = {0,-1,1,2,26};
-    for (int i = 0; i < 5; i++) {
+    int8_t const cint_constants_1[] = {0,-1,1,2,3,26};
+    for (int i = 0; i < 6; i++) {
       numbertab[i] = PyLong_FromLong(cint_constants_1[i - 0]);
       if (unlikely(!numbertab[i])) __PYX_ERR(0, 1, __pyx_L1_error)
     }
@@ -17205,7 +17524,7 @@ const char* const bytes = "-1It is not possible to assign sheet names to a .csv 
   #if CYTHON_IMMORTAL_CONSTANTS
   {
     PyObject **table = __pyx_mstate->__pyx_number_tab;
-    for (Py_ssize_t i=0; i<5; ++i) {
+    for (Py_ssize_t i=0; i<6; ++i) {
       #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
       Py_SET_REFCNT(table[i], _Py_IMMORTAL_REFCNT_LOCAL);
       #else
@@ -17242,117 +17561,117 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   PyObject* tuple_dedup_map = PyDict_New();
   if (unlikely(!tuple_dedup_map)) return -1;
   {
-    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 50};
+    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 51};
     PyObject* const varnames[] = {0};
     __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_createSheet, __pyx_mstate->__pyx_kp_b_iso88591_A_t3j, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 53};
+    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 54};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_sheet, __pyx_mstate->__pyx_n_u_row, __pyx_mstate->__pyx_n_u_col, __pyx_mstate->__pyx_n_u_value};
     __pyx_mstate_global->__pyx_codeobj_tab[1] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_write, __pyx_mstate->__pyx_kp_b_iso88591_A_V1E_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[1])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 56};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 57};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_index, __pyx_mstate->__pyx_n_u_sheetName, __pyx_mstate->__pyx_n_u_name};
     __pyx_mstate_global->__pyx_codeobj_tab[2] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_getSheet, __pyx_mstate->__pyx_kp_b_iso88591_A_xq_b_Q_1_t3j, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[2])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 68};
+    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 69};
     PyObject* const varnames[] = {0};
     __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_createSheet, __pyx_mstate->__pyx_kp_b_iso88591_A_t3m1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 71};
+    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 72};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_sheet, __pyx_mstate->__pyx_n_u_row, __pyx_mstate->__pyx_n_u_col, __pyx_mstate->__pyx_n_u_value};
     __pyx_mstate_global->__pyx_codeobj_tab[4] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_write, __pyx_mstate->__pyx_kp_b_iso88591_A_U_3as_Qc, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[4])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 74};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 75};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_index, __pyx_mstate->__pyx_n_u_sheetName, __pyx_mstate->__pyx_n_u_worksheet};
     __pyx_mstate_global->__pyx_codeobj_tab[5] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_getSheet, __pyx_mstate->__pyx_kp_b_iso88591_A_6_1_L_Cq_Q_Ya_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[5])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 17};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_sheets, __pyx_mstate->__pyx_n_u_fileName, __pyx_mstate->__pyx_n_u_sheetNames, __pyx_mstate->__pyx_n_u_showUncert};
-    __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_fileFromSheets_2, __pyx_mstate->__pyx_kp_b_iso88591_8_t_Qha_Ks_4z_a_1HJl, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
+    const __Pyx_PyCode_New_function_description descr = {5, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 17};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_sheets, __pyx_mstate->__pyx_n_u_fileName, __pyx_mstate->__pyx_n_u_sheetNames, __pyx_mstate->__pyx_n_u_showUncert, __pyx_mstate->__pyx_n_u_prettyUnit};
+    __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_fileFromSheets_2, __pyx_mstate->__pyx_kp_b_iso88591_88K1_t_Qha_Ks_4z_a_1HJl_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {5, 0, 0, 16, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 26};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_sheets, __pyx_mstate->__pyx_n_u_fileName, __pyx_mstate->__pyx_n_u_sheetNames, __pyx_mstate->__pyx_n_u_showUncert, __pyx_mstate->__pyx_n_u_extension, __pyx_mstate->__pyx_n_u_supportedExtensions, __pyx_mstate->__pyx_n_u_createSheet, __pyx_mstate->__pyx_n_u_createSheet, __pyx_mstate->__pyx_n_u_write, __pyx_mstate->__pyx_n_u_write, __pyx_mstate->__pyx_n_u_getSheet, __pyx_mstate->__pyx_n_u_getSheet, __pyx_mstate->__pyx_n_u_createSheet, __pyx_mstate->__pyx_n_u_write, __pyx_mstate->__pyx_n_u_getSheet};
-    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_init, __pyx_mstate->__pyx_kp_b_iso88591_RRS_L_Ja_N_N_3a_1L_3aq_j_Be9AYa, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
+    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 17, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 26};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_sheets, __pyx_mstate->__pyx_n_u_fileName, __pyx_mstate->__pyx_n_u_sheetNames, __pyx_mstate->__pyx_n_u_showUncert, __pyx_mstate->__pyx_n_u_prettyUnit, __pyx_mstate->__pyx_n_u_extension, __pyx_mstate->__pyx_n_u_supportedExtensions, __pyx_mstate->__pyx_n_u_createSheet, __pyx_mstate->__pyx_n_u_createSheet, __pyx_mstate->__pyx_n_u_write, __pyx_mstate->__pyx_n_u_write, __pyx_mstate->__pyx_n_u_getSheet, __pyx_mstate->__pyx_n_u_getSheet, __pyx_mstate->__pyx_n_u_createSheet, __pyx_mstate->__pyx_n_u_write, __pyx_mstate->__pyx_n_u_getSheet};
+    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_init, __pyx_mstate->__pyx_kp_b_iso88591_OOffg_L_Ja_N_N_N_3a_1L_3aq_j_Be, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 17, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 89};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 17, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 90};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_n, __pyx_mstate->__pyx_n_u_names, __pyx_mstate->__pyx_n_u_units, __pyx_mstate->__pyx_n_u_datas, __pyx_mstate->__pyx_n_u_unitObjects, __pyx_mstate->__pyx_n_u_objectName, __pyx_mstate->__pyx_n_u_object, __pyx_mstate->__pyx_n_u_meas, __pyx_mstate->__pyx_n_u_u, __pyx_mstate->__pyx_n_u_elem, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_dat, __pyx_mstate->__pyx_n_u_name, __pyx_mstate->__pyx_n_u_string, __pyx_mstate->__pyx_n_u_file, __pyx_mstate->__pyx_n_u_writer};
     __pyx_mstate_global->__pyx_codeobj_tab[8] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_saveCsv, __pyx_mstate->__pyx_kp_b_iso88591_A_3at9Cq_AQ_t_s_AQ_IT_Cq_A_a_N_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[8])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 14, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 151};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 14, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 158};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_ii, __pyx_mstate->__pyx_n_u_sheet, __pyx_mstate->__pyx_n_u_sheetName, __pyx_mstate->__pyx_n_u_worksheet, __pyx_mstate->__pyx_n_u_col, __pyx_mstate->__pyx_n_u_objectName, __pyx_mstate->__pyx_n_u_object, __pyx_mstate->__pyx_n_u_meas, __pyx_mstate->__pyx_n_u_u, __pyx_mstate->__pyx_n_u_elem, __pyx_mstate->__pyx_n_u_row, __pyx_mstate->__pyx_n_u_val, __pyx_mstate->__pyx_n_u_string};
     __pyx_mstate_global->__pyx_codeobj_tab[9] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_saveSheets, __pyx_mstate->__pyx_kp_b_iso88591_A_D_4q_D_Cq_D_1A_IQd_c_Qha_1_a_U, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[9])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 199};
+    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 212};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_xlFile, __pyx_mstate->__pyx_n_u_dataRange, __pyx_mstate->__pyx_n_u_uncertRange, __pyx_mstate->__pyx_n_u_sheets, __pyx_mstate->__pyx_n_u_dat};
     __pyx_mstate_global->__pyx_codeobj_tab[10] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_sheetsFromFile_2, __pyx_mstate->__pyx_kp_b_iso88591_7_D_dde_s_3fCq_s_aq_3a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[10])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {5, 0, 0, 16, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 208};
+    const __Pyx_PyCode_New_function_description descr = {5, 0, 0, 16, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 221};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_xlFile, __pyx_mstate->__pyx_n_u_dataRange, __pyx_mstate->__pyx_n_u_uncertRange, __pyx_mstate->__pyx_n_u_sheets, __pyx_mstate->__pyx_n_u_extension, __pyx_mstate->__pyx_n_u_supportedExtensions, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_index, __pyx_mstate->__pyx_n_u_dataStartCol, __pyx_mstate->__pyx_n_u_dataEndCol, __pyx_mstate->__pyx_n_u_uncertStartCol, __pyx_mstate->__pyx_n_u_uncertEndCol, __pyx_mstate->__pyx_n_u_elem, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_elem};
     __pyx_mstate_global->__pyx_codeobj_tab[11] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_init, __pyx_mstate->__pyx_kp_b_iso88591_Na_Be9AWAQ_axq_WA_A_aab_F_AQ_Ja, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[11])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 283};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 296};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_col, __pyx_mstate->__pyx_n_u_num, __pyx_mstate->__pyx_n_u_c};
     __pyx_mstate_global->__pyx_codeobj_tab[12] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_colToIndex, __pyx_mstate->__pyx_kp_b_iso88591_A_4s_1_4z_q_AQ_a_E_r_F_d_Cs_QavT, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[12])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 294};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 307};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_header, __pyx_mstate->__pyx_n_u_out, __pyx_mstate->__pyx_n_u_head, __pyx_mstate->__pyx_n_u_done, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_imax, __pyx_mstate->__pyx_n_u_h};
     __pyx_mstate_global->__pyx_codeobj_tab[13] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_formatHeaders, __pyx_mstate->__pyx_kp_b_iso88591_A_a_HA_uCq_7_1_2T_E_1_a_t81F_uCq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[13])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 42, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 334};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 42, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 347};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_ii, __pyx_mstate->__pyx_n_u_sh, __pyx_mstate->__pyx_n_u_sheetData, __pyx_mstate->__pyx_n_u_workbook, __pyx_mstate->__pyx_n_u_dataRange, __pyx_mstate->__pyx_n_u_uncertRange, __pyx_mstate->__pyx_n_u_nDataColoumns, __pyx_mstate->__pyx_n_u_nUncertColoumns, __pyx_mstate->__pyx_n_u_headers, __pyx_mstate->__pyx_n_u_units, __pyx_mstate->__pyx_n_u_data, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_dat, __pyx_mstate->__pyx_n_u_indexNan, __pyx_mstate->__pyx_n_u_lastWasNan, __pyx_mstate->__pyx_n_u_validData, __pyx_mstate->__pyx_n_u_nData, __pyx_mstate->__pyx_n_u_d, __pyx_mstate->__pyx_n_u_uncertIsZero, __pyx_mstate->__pyx_n_u_uncert, __pyx_mstate->__pyx_n_u_unc, __pyx_mstate->__pyx_n_u_validUncert, __pyx_mstate->__pyx_n_u_n, __pyx_mstate->__pyx_n_u_m, __pyx_mstate->__pyx_n_u_nUncert, __pyx_mstate->__pyx_n_u_u, __pyx_mstate->__pyx_n_u_containsCovariace, __pyx_mstate->__pyx_n_u_variables, __pyx_mstate->__pyx_n_u_covariances, __pyx_mstate->__pyx_n_u_cov, __pyx_mstate->__pyx_n_u_j, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_elem, __pyx_mstate->__pyx_n_u_d, __pyx_mstate->__pyx_n_u_elem, __pyx_mstate->__pyx_n_u_elem, __pyx_mstate->__pyx_n_u_elem, __pyx_mstate->__pyx_n_u_cov, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_elem};
     __pyx_mstate_global->__pyx_codeobj_tab[14] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_readData, __pyx_mstate->__pyx_kp_b_iso88591_A_G1_D_iq_A_Q_r_1_4A_Kq_m1A_Cq_s, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[14])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 483};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 496};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
     __pyx_mstate_global->__pyx_codeobj_tab[15] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_init, __pyx_mstate->__pyx_kp_b_iso88591_A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[15])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 486};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 499};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_key, __pyx_mstate->__pyx_n_u_item};
     __pyx_mstate_global->__pyx_codeobj_tab[16] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_printContents, __pyx_mstate->__pyx_kp_b_iso88591_A_E_YfA_z_Qa, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[16])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 491};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 504};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_index, __pyx_mstate->__pyx_n_u_sh, __pyx_mstate->__pyx_n_u_key, __pyx_mstate->__pyx_n_u_item};
     __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_getitem, __pyx_mstate->__pyx_kp_b_iso88591_A_U_E_YfA_z_q_E_Qa_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 498};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u__7, __pyx_mstate->__pyx_n_u_item};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 511};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u__8, __pyx_mstate->__pyx_n_u_item};
     __pyx_mstate_global->__pyx_codeobj_tab[18] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_len, __pyx_mstate->__pyx_kp_b_iso88591_A_Cxt9F_z_s_1_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[18])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 12, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 505};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 12, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 518};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_other, __pyx_mstate->__pyx_n_u_selfMeasurements, __pyx_mstate->__pyx_n_u_selfMeasurementNames, __pyx_mstate->__pyx_n_u_otherMeasurements, __pyx_mstate->__pyx_n_u_otherMeasurementNames, __pyx_mstate->__pyx_n_u_key, __pyx_mstate->__pyx_n_u_item, __pyx_mstate->__pyx_n_u_elem, __pyx_mstate->__pyx_n_u_measurement, __pyx_mstate->__pyx_n_u_measurementName, __pyx_mstate->__pyx_n_u_index};
     __pyx_mstate_global->__pyx_codeobj_tab[19] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_append, __pyx_mstate->__pyx_kp_b_iso88591_A_4z_AQ_1_q_A_D_IV1_z_q_G1A_q_D, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[19])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 538};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_variables, __pyx_mstate->__pyx_n_u__7, __pyx_mstate->__pyx_n_u_item};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 551};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_variables, __pyx_mstate->__pyx_n_u__8, __pyx_mstate->__pyx_n_u_item};
     __pyx_mstate_global->__pyx_codeobj_tab[20] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_iter, __pyx_mstate->__pyx_kp_b_iso88591_A_A_Cxt9F_z_t1A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[20])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 547};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 560};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_index, __pyx_mstate->__pyx_n_u_key, __pyx_mstate->__pyx_n_u_item};
     __pyx_mstate_global->__pyx_codeobj_tab[21] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_pop, __pyx_mstate->__pyx_kp_b_iso88591_N_E_YfA_z_D, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[21])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 552};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 565};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_name, __pyx_mstate->__pyx_n_u_value};
     __pyx_mstate_global->__pyx_codeobj_tab[22] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyees_sheet_py, __pyx_mstate->__pyx_n_u_setattr, __pyx_mstate->__pyx_kp_b_iso88591_HA_4z_AQ_4wawa_M_2_1_IQha, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[22])) goto bad;
   }
@@ -20564,6 +20883,84 @@ static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
     return PyObject_GetAttr(o, n);
 }
 
+/* JoinPyUnicode */
+static PyObject* __Pyx_PyUnicode_Join(PyObject** values, Py_ssize_t value_count, Py_ssize_t result_ulength,
+                                      Py_UCS4 max_char) {
+#if CYTHON_USE_UNICODE_INTERNALS && CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    PyObject *result_uval;
+    int result_ukind, kind_shift;
+    Py_ssize_t i, char_pos;
+    void *result_udata;
+    if (max_char > 1114111) max_char = 1114111;
+    result_uval = PyUnicode_New(result_ulength, max_char);
+    if (unlikely(!result_uval)) return NULL;
+    result_ukind = (max_char <= 255) ? PyUnicode_1BYTE_KIND : (max_char <= 65535) ? PyUnicode_2BYTE_KIND : PyUnicode_4BYTE_KIND;
+    kind_shift = (result_ukind == PyUnicode_4BYTE_KIND) ? 2 : result_ukind - 1;
+    result_udata = PyUnicode_DATA(result_uval);
+    assert(kind_shift == 2 || kind_shift == 1 || kind_shift == 0);
+    if (unlikely((PY_SSIZE_T_MAX >> kind_shift) - result_ulength < 0))
+        goto overflow;
+    char_pos = 0;
+    for (i=0; i < value_count; i++) {
+        int ukind;
+        Py_ssize_t ulength;
+        void *udata;
+        PyObject *uval = values[i];
+        #if !CYTHON_COMPILING_IN_LIMITED_API
+        if (__Pyx_PyUnicode_READY(uval) == (-1))
+            goto bad;
+        #endif
+        ulength = __Pyx_PyUnicode_GET_LENGTH(uval);
+        #if !CYTHON_ASSUME_SAFE_SIZE
+        if (unlikely(ulength < 0)) goto bad;
+        #endif
+        if (unlikely(!ulength))
+            continue;
+        if (unlikely((PY_SSIZE_T_MAX >> kind_shift) - ulength < char_pos))
+            goto overflow;
+        ukind = __Pyx_PyUnicode_KIND(uval);
+        udata = __Pyx_PyUnicode_DATA(uval);
+        if (ukind == result_ukind) {
+            memcpy((char *)result_udata + (char_pos << kind_shift), udata, (size_t) (ulength << kind_shift));
+        } else {
+            #if PY_VERSION_HEX >= 0x030d0000
+            if (unlikely(PyUnicode_CopyCharacters(result_uval, char_pos, uval, 0, ulength) < 0)) goto bad;
+            #elif CYTHON_COMPILING_IN_CPYTHON || defined(_PyUnicode_FastCopyCharacters)
+            _PyUnicode_FastCopyCharacters(result_uval, char_pos, uval, 0, ulength);
+            #else
+            Py_ssize_t j;
+            for (j=0; j < ulength; j++) {
+                Py_UCS4 uchar = __Pyx_PyUnicode_READ(ukind, udata, j);
+                __Pyx_PyUnicode_WRITE(result_ukind, result_udata, char_pos+j, uchar);
+            }
+            #endif
+        }
+        char_pos += ulength;
+    }
+    return result_uval;
+overflow:
+    PyErr_SetString(PyExc_OverflowError, "join() result is too long for a Python string");
+bad:
+    Py_DECREF(result_uval);
+    return NULL;
+#else
+    Py_ssize_t i;
+    PyObject *result = NULL;
+    PyObject *value_tuple = PyTuple_New(value_count);
+    if (unlikely(!value_tuple)) return NULL;
+    CYTHON_UNUSED_VAR(max_char);
+    CYTHON_UNUSED_VAR(result_ulength);
+    for (i=0; i<value_count; i++) {
+        if (__Pyx_PyTuple_SET_ITEM(value_tuple, i, values[i]) != (0)) goto bad;
+        Py_INCREF(values[i]);
+    }
+    result = PyUnicode_Join(__pyx_mstate_global->__pyx_empty_unicode, value_tuple);
+bad:
+    Py_DECREF(value_tuple);
+    return result;
+#endif
+}
+
 /* RaiseTooManyValuesToUnpack */
 static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
     PyErr_Format(PyExc_ValueError,
@@ -21346,84 +21743,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyLong_SubtractObjC(PyObject *op1, PyObject
     return __Pyx_Fallback___Pyx_PyLong_SubtractObjC(op1, op2, inplace);
 }
 #endif
-
-/* JoinPyUnicode */
-static PyObject* __Pyx_PyUnicode_Join(PyObject** values, Py_ssize_t value_count, Py_ssize_t result_ulength,
-                                      Py_UCS4 max_char) {
-#if CYTHON_USE_UNICODE_INTERNALS && CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    PyObject *result_uval;
-    int result_ukind, kind_shift;
-    Py_ssize_t i, char_pos;
-    void *result_udata;
-    if (max_char > 1114111) max_char = 1114111;
-    result_uval = PyUnicode_New(result_ulength, max_char);
-    if (unlikely(!result_uval)) return NULL;
-    result_ukind = (max_char <= 255) ? PyUnicode_1BYTE_KIND : (max_char <= 65535) ? PyUnicode_2BYTE_KIND : PyUnicode_4BYTE_KIND;
-    kind_shift = (result_ukind == PyUnicode_4BYTE_KIND) ? 2 : result_ukind - 1;
-    result_udata = PyUnicode_DATA(result_uval);
-    assert(kind_shift == 2 || kind_shift == 1 || kind_shift == 0);
-    if (unlikely((PY_SSIZE_T_MAX >> kind_shift) - result_ulength < 0))
-        goto overflow;
-    char_pos = 0;
-    for (i=0; i < value_count; i++) {
-        int ukind;
-        Py_ssize_t ulength;
-        void *udata;
-        PyObject *uval = values[i];
-        #if !CYTHON_COMPILING_IN_LIMITED_API
-        if (__Pyx_PyUnicode_READY(uval) == (-1))
-            goto bad;
-        #endif
-        ulength = __Pyx_PyUnicode_GET_LENGTH(uval);
-        #if !CYTHON_ASSUME_SAFE_SIZE
-        if (unlikely(ulength < 0)) goto bad;
-        #endif
-        if (unlikely(!ulength))
-            continue;
-        if (unlikely((PY_SSIZE_T_MAX >> kind_shift) - ulength < char_pos))
-            goto overflow;
-        ukind = __Pyx_PyUnicode_KIND(uval);
-        udata = __Pyx_PyUnicode_DATA(uval);
-        if (ukind == result_ukind) {
-            memcpy((char *)result_udata + (char_pos << kind_shift), udata, (size_t) (ulength << kind_shift));
-        } else {
-            #if PY_VERSION_HEX >= 0x030d0000
-            if (unlikely(PyUnicode_CopyCharacters(result_uval, char_pos, uval, 0, ulength) < 0)) goto bad;
-            #elif CYTHON_COMPILING_IN_CPYTHON || defined(_PyUnicode_FastCopyCharacters)
-            _PyUnicode_FastCopyCharacters(result_uval, char_pos, uval, 0, ulength);
-            #else
-            Py_ssize_t j;
-            for (j=0; j < ulength; j++) {
-                Py_UCS4 uchar = __Pyx_PyUnicode_READ(ukind, udata, j);
-                __Pyx_PyUnicode_WRITE(result_ukind, result_udata, char_pos+j, uchar);
-            }
-            #endif
-        }
-        char_pos += ulength;
-    }
-    return result_uval;
-overflow:
-    PyErr_SetString(PyExc_OverflowError, "join() result is too long for a Python string");
-bad:
-    Py_DECREF(result_uval);
-    return NULL;
-#else
-    Py_ssize_t i;
-    PyObject *result = NULL;
-    PyObject *value_tuple = PyTuple_New(value_count);
-    if (unlikely(!value_tuple)) return NULL;
-    CYTHON_UNUSED_VAR(max_char);
-    CYTHON_UNUSED_VAR(result_ulength);
-    for (i=0; i<value_count; i++) {
-        if (__Pyx_PyTuple_SET_ITEM(value_tuple, i, values[i]) != (0)) goto bad;
-        Py_INCREF(values[i]);
-    }
-    result = PyUnicode_Join(__pyx_mstate_global->__pyx_empty_unicode, value_tuple);
-bad:
-    Py_DECREF(value_tuple);
-    return result;
-#endif
-}
 
 /* PyObjectVectorCallMethodKwBuilder */
 #if !CYTHON_VECTORCALL || PY_VERSION_HEX < 0x03090000
@@ -22299,7 +22618,7 @@ static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
         if (unlikely(!module_name_str)) { goto modbad; }
         module_name = PyUnicode_FromString(module_name_str);
         if (unlikely(!module_name)) { goto modbad; }
-        module_dot = PyUnicode_Concat(module_name, __pyx_mstate_global->__pyx_kp_u__9);
+        module_dot = PyUnicode_Concat(module_name, __pyx_mstate_global->__pyx_kp_u__10);
         if (unlikely(!module_dot)) { goto modbad; }
         full_name = PyUnicode_Concat(module_dot, name);
         if (unlikely(!full_name)) { goto modbad; }
@@ -22421,6 +22740,25 @@ static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObj
     result = __Pyx_PyObject_FastCallDict(metaclass, margs+1, 3 | __Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET, mkw);
     Py_XDECREF(owned_metaclass);
     return result;
+}
+
+/* ListPack */
+static PyObject *__Pyx_PyList_Pack(Py_ssize_t n, ...) {
+    va_list va;
+    PyObject *l = PyList_New(n);
+    va_start(va, n);
+    if (unlikely(!l)) goto end;
+    for (Py_ssize_t i=0; i<n; ++i) {
+        PyObject *arg = va_arg(va, PyObject*);
+        Py_INCREF(arg);
+        if (__Pyx_PyList_SET_ITEM(l, i, arg) != (0)) {
+            Py_CLEAR(l);
+            goto end;
+        }
+    }
+    end:
+    va_end(va);
+    return l;
 }
 
 /* CLineInTraceback (used by AddTraceback) */
@@ -22819,7 +23157,7 @@ __Pyx_PyType_GetFullyQualifiedName(PyTypeObject* tp)
         result = name;
         name = NULL;
     } else {
-        result = __Pyx_NewRef(__pyx_mstate_global->__pyx_kp_u__10);
+        result = __Pyx_NewRef(__pyx_mstate_global->__pyx_kp_u__11);
     }
     goto done;
 }
