@@ -16,22 +16,6 @@ except ImportError:
 
 
 
-## TODO implement pyees.Chart in all of the plotting methods of the fit
-class Chart():
-
-    def __init__(self, input):
-
-        self.fig = input
-
-        if      type(input).__module__ == "matplotlib.axes._axes":           self._backend = "matplotlib"
-        elif    type(input).__module__ == "mpl_toolkits.mplot3d.axes3d":     self._backend = "matplotlib"
-        elif    type(input).__module__ == "plotly.graph_objs._figure":       self._backend = "plotly"
-        else:   raise ValueError("the input has to be a matplotlib figure or a plotly figure")
-    
-        self.xUnit = None
-        self.yUnit = None
-        
-
 
 def splitPlotlyKeywordArguments(fig, kwargs):
     addTraceKwargs = {}
@@ -195,11 +179,24 @@ class _fit():
     def __str__(self):
         return self.func_name() + fr', $R^2 = {self.r_squared.value:.5f}$'
 
+    def _checkUnits(self, ax):
+
+        if hasattr(ax, '_pyees_xUnit'):
+            if ax._pyees_xUnit != self.xUnit:
+                raise ValueError(f"The x unit of the fit ({self.xUnit}) is not the same as the x unit of the graph ({ax._pyees_xUnit})")
+            if ax._pyees_yUnit != self.yUnit:
+                raise ValueError(f"The y unit of the fit ({self.yUnit}) is not the same as the y unit of the graph ({ax._pyees_yUnit})")
+        else:
+            setattr(ax, '_pyees_xUnit', self.xUnit)
+            setattr(ax, '_pyees_yUnit', self.yUnit)
+
+
+
     def scatter(self, ax, showUncert=True, **kwargs):
+        self._checkUnits(ax)            
 
         if all(self.xUncert == 0) and all(self.yUncert == 0):
             showUncert = False
-
 
         if isinstance(ax, axes.Axes):
             # scatter
@@ -231,7 +228,8 @@ class _fit():
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
         
     def scatterNormalizedResiduals(self, ax, **kwargs):
-        
+        self._checkUnits(ax)
+
         np.seterr('ignore')
         scale = variable(np.array([1 / ((elemX**2 + elemY**2)**(1/2)) for elemX, elemY in zip(self._sx, self._sy)]))
         normRes = scale * self._residualY
@@ -260,7 +258,7 @@ class _fit():
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def scatterResiduals(self, ax, **kwargs):
-        
+        self._checkUnits(ax)
         
         if isinstance(ax, axes.Axes):
             if not 'label' in kwargs:
@@ -285,7 +283,7 @@ class _fit():
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def plotData(self, ax, **kwargs):
-
+        self._checkUnits(ax)
         if isinstance(ax, axes.Axes):
             if not 'label' in kwargs:
                 kwargs['label'] = 'Data'
@@ -312,7 +310,7 @@ class _fit():
         return self._func(self.coefficients, x)
 
     def plotResiduals(self, ax, **kwargs):    
-        
+        self._checkUnits(ax)
         x = []
         y = []
         for i in range(len(self.xVal)):
@@ -345,7 +343,7 @@ class _fit():
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
       
     def plotUncertanty(self, ax, x = None, **kwargs):
-        
+        self._checkUnits(ax)
         if x is None:
             x = variable(np.linspace(np.min(self.xVal), np.max(self.xVal), 100), self.xUnit)
         else:
@@ -375,7 +373,7 @@ class _fit():
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def plot(self, ax, x=None, **kwargs):
-
+        self._checkUnits(ax)
         if x is None:
             x = variable(np.linspace(np.min(self.xVal), np.max(self.xVal), 100), self.xUnit)
         else:
@@ -445,6 +443,13 @@ class _fit():
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def addUnitToYLabel(self, ax, **kwargs):
+        
+        if hasattr(ax, '_pyees_xUnit'):
+            if ax._pyees_yUnit != self.yUnit:
+                raise ValueError(f"The y unit of the fit ({self.yUnit}) is not the same as the y unit of the graph ({ax._pyees_yUnit})")
+        else:
+            setattr(ax, '_pyees_yUnit', self.yUnit)
+
         if isinstance(ax, axes.Axes):
             yLabel = ax.get_ylabel()
             if yLabel:
@@ -477,7 +482,8 @@ class _fit():
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def plotUncertantyOfInputs(self, ax, n = 100, **kwargs):
-            
+        ## TODO support inputs with zero uncertanty in the x or the y direction
+        self._checkUnits(ax)
         class Ellipse:
             def __init__(self, x, y, w, h):
                 self.x = x
@@ -1337,7 +1343,35 @@ class _multi_variable_fit(_fit):
     def predict(self, x):
         return self._func(self.coefficients, x)
 
+    def _checkUnits3D(self, ax):
+        if hasattr(ax, '_pyees_xUnit'):
+            if self.xUnit[0] != ax._pyees_xUnit[0]:
+                raise ValueError(f"The x unit of the fit ({self.xUnit[0]}) is not the same as the x unit of the graph ({ax._pyees_xUnit[0]})")
+            
+            if self.xUnit[1] != ax._pyees_xUnit[1]:
+                raise ValueError(f"The y unit of the fit ({self.xUnit[1]}) is not the same as the y unit of the graph ({ax._pyees_xUnit[1]})")
+            
+            if self.yUnit != ax._pyees_yUnit:
+                raise ValueError(f"The z unit of the fit ({self.yUnit}) is not the same as the z unit of the graph ({ax._pyees_yUnit})")
+        else:
+            setattr(ax, '_pyees_xUnit', self.xUnit)
+            setattr(ax, '_pyees_yUnit', self.yUnit)           
+
+
+    def _checkUnitsInPlane(self, ax, index):
+        if hasattr(ax, '_pyees_xUnit'):
+            if self.xUnit[index] != ax._pyees_xUnit:
+                raise ValueError(f"The x unit of the fit ({self.xUnit[index]}) is not the same as the x unit of the graph ({ax._pyees_xUnit})")
+            
+            if self.yUnit != ax._pyees_yUnit:
+                raise ValueError(f"The y unit of the fit ({self.yUnit}) is not the same as the y unit of the graph ({ax._pyees_yUnit})")
+        else:
+            setattr(ax, '_pyees_xUnit', self.xUnit[index])
+            setattr(ax, '_pyees_yUnit', self.yUnit)           
+
+
     def scatterInPlane(self, ax, index, showUncert=True, **kwargs):
+        self._checkUnitsInPlane(ax, index)
 
         if all(self.xUncert[index] == 0) and all(self.yUncert == 0):
             showUncert = False
@@ -1373,7 +1407,7 @@ class _multi_variable_fit(_fit):
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
         
     def scatterNormalizedResidualsInPlane(self, ax, index, **kwargs):
-
+        self._checkUnitsInPlane(ax, index)
         np.seterr('ignore')
         scale = variable(np.array([1 / ((elemX**2 + elemY**2)**(1/2)) for elemX, elemY in zip(self._sx[index], self._sy)]))
         normRes = scale * self._residualY
@@ -1402,7 +1436,7 @@ class _multi_variable_fit(_fit):
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def scatterResidualsInPlane(self, ax, index, **kwargs):
-        
+        self._checkUnitsInPlane(ax, index)
         if isinstance(ax, axes.Axes):
             if not 'label' in kwargs:
                 kwargs['label'] = 'Residuals'
@@ -1426,6 +1460,7 @@ class _multi_variable_fit(_fit):
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def plotDataInPlane(self, ax, index, **kwargs):
+        self._checkUnitsInPlane(ax, index)
         if isinstance(ax, axes.Axes):
             if not 'label' in kwargs:
                 kwargs['label'] = 'Data'
@@ -1447,6 +1482,7 @@ class _multi_variable_fit(_fit):
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def plotUncertantyInPlane(self, ax, index, x = None, **kwargs):
+        self._checkUnitsInPlane(ax, index)
         if x is None:
             x = []
             for i in range(len(self.xVal)):
@@ -1488,7 +1524,7 @@ class _multi_variable_fit(_fit):
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
 
     def plotResidualsInPlane(self, ax, index, **kwargs):    
-        
+        self._checkUnitsInPlane(ax, index)
         x = []
         y = []
         for i in range(len(self.xVal[index])):
@@ -1521,6 +1557,7 @@ class _multi_variable_fit(_fit):
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
       
     def plotInPlane(self, ax, index, x=None, **kwargs):
+        self._checkUnitsInPlane(ax, index)
         if x is None:
             x = []
             for i in range(len(self.xVal)):
@@ -1577,11 +1614,12 @@ class _multi_variable_fit(_fit):
 
     
     def addUnitToXLabel3D(self, ax, **kwargs):
+        self._checkUnits(ax)
         if isinstance(ax, axes.Axes):
             xLabel = ax.get_xlabel()
             if xLabel:
                 xLabel += ' '
-            xLabel += rf'$\left[{self.xUnit[0][0].__str__(pretty=True)}\right]$'
+            xLabel += rf'$\left[{self.xUnit[0].__str__(pretty=True)}\right]$'
             ax.set_xlabel(xLabel)
         elif isinstance(ax, go.Figure):
             
@@ -1609,11 +1647,12 @@ class _multi_variable_fit(_fit):
 
 
     def addUnitToYLabel3D(self, ax, **kwargs):
+        self._checkUnits(ax)
         if isinstance(ax, axes.Axes):
             yLabel = ax.get_ylabel()
             if yLabel:
                 yLabel += ' '
-            yLabel += rf'$\left[{self.xUnit[0][0].__str__(pretty=True)}\right]$'
+            yLabel += rf'$\left[{self.xUnit[1].__str__(pretty=True)}\right]$'
             ax.set_ylabel(yLabel)
         elif isinstance(ax, go.Figure):
             
@@ -1643,6 +1682,7 @@ class _multi_variable_fit(_fit):
 
 
     def addUnitToZLabel3D(self, ax, **kwargs):
+        self._checkUnits(ax)
         if isinstance(ax, axes.Axes):
             zLabel = ax.get_zlabel()
             if zLabel:
@@ -1676,7 +1716,7 @@ class _multi_variable_fit(_fit):
 
 
     def addUnitToXLabel(self, ax, index, **kwargs):
-
+        self._checkUnitsInPlane(ax, index)
         if isinstance(ax, axes.Axes):
             xLabel = ax.get_xlabel()
             if xLabel:
@@ -1722,6 +1762,7 @@ class _multi_variable_fit(_fit):
 
     def plot3D(self, ax, x=None,  n = 100, **kwargs):
         
+        self._checkUnits3D(ax)
         if (len(self.xVal) != 2):
             raise ValueError('You do not have excatly two independent variable. Therefore you cannot plot the data in 3D')
         
@@ -1779,6 +1820,7 @@ class _multi_variable_fit(_fit):
 
     def plotUncertanty3D(self, ax, x=None, n=100, **kwargs):
         
+        self._checkUnits3D(ax)
         if (len(self.xVal) != 2):
             raise ValueError('You do not have excatly two independent variable. Therefore you cannot plot the data in 3D')
         
@@ -1845,10 +1887,12 @@ class _multi_variable_fit(_fit):
                 )
         else:
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
-           
 
     def scatter3D(self, ax, showUncert = True, **kwargs):
         
+        self._checkUnits3D(ax)
+            
+
         if (len(self.xVal) != 2):
             raise ValueError('You do not have excatly two independent variable. Therefore you cannot plot the data in 3D')
 
@@ -1887,7 +1931,8 @@ class _multi_variable_fit(_fit):
             raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
         
     def plotResiduals3D(self, ax, **kwargs):    
-         
+
+        self._checkUnits3D(ax)
         if (len(self.xVal) != 2):
             raise ValueError('You do not have excatly two independent variable. Therefore you cannot plot the data in 3D')
 
@@ -2008,22 +2053,21 @@ if __name__ == "__main__":
     from plotly import graph_objects as go
     from plotly.subplots import make_subplots
   
-    
-    fig = plt.figure()
-    ax = fig.add_axes([0,0,1,1])
-    fig = Chart(ax)
-
-    fig, ax = plt.subplots()        
-    fig = Chart(ax)
-
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
-    fig = Chart(ax)
 
-    fig = go.Figure()
-    fig = Chart(fig)
+    x = variable([1,2,3], 'L/min', [0.1, 0.2, 0.3])
+    y = variable([4,3,2], 'mbar', [0.2, 0.3, 0.4])
+    z = variable([7,5,4], 'A', [0.7, 0.5, 0.4])
+    f = multi_variable_lin_fit([x,y], z)
+    f.scatter3D(ax)
+    f.addUnitToLabels3D(ax)
+    
+    x = variable([1.5,2.5,3.5], 'L/min', [0.1, 0.2, 0.3])
+    y = variable([4,3,2], 'mbar', [0.2, 0.3, 0.4])
+    z = variable([7,5,4], 'A', [0.7, 0.5, 0.4])
+    f = multi_variable_lin_fit([x,y], z)
+    f.scatter3D(ax)
 
-    fig = make_subplots(rows = 3, cols=4)
-    fig = Chart(fig)
 
-
+    plt.show()

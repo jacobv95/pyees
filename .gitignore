@@ -1,1 +1,6 @@
 .pypirc
+build
+dist
+.vscode
+.vs
+pyees.egg_infos

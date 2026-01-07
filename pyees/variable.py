@@ -1126,8 +1126,15 @@ def variable(value, unit='', uncert=None):
 
 
 if __name__ == "__main__":
+    out = (4/2) * 10 + 10
+    print(out)
 
-    x = variable([1,2,3,4])
-    y = variable([1,2,3])
-    x, y = np.meshgrid(x,y)
-    print(x,y)
+    out = (variable(4,'C') / variable(2, 'L/min')) * variable(10, 'L/min') + variable(10, 'C')
+    print(out)
+
+    a = variable(4, 'C') / variable(2, 'L/min')
+    x = variable(10, 'L/min')
+    b = variable(10, 'C')
+    out = a * x + b
+    print(out)
+
