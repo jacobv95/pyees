@@ -184,13 +184,32 @@ class _fit():
         if hasattr(ax, '_pyees_xUnit'):
             if ax._pyees_xUnit != self.xUnit:
                 raise ValueError(f"The x unit of the fit ({self.xUnit}) is not the same as the x unit of the graph ({ax._pyees_xUnit})")
+        else:
+            setattr(ax, '_pyees_xUnit', self.xUnit)
+        
+        if hasattr(ax, '_pyees_yUnit'):
             if ax._pyees_yUnit != self.yUnit:
                 raise ValueError(f"The y unit of the fit ({self.yUnit}) is not the same as the y unit of the graph ({ax._pyees_yUnit})")
         else:
-            setattr(ax, '_pyees_xUnit', self.xUnit)
             setattr(ax, '_pyees_yUnit', self.yUnit)
 
 
+        ## detect twin axes
+        if isinstance(ax, axes.Axes):
+            
+            for other_ax in ax.figure.axes:
+                if other_ax is ax: continue
+                if other_ax.bbox.bounds == ax.bbox.bounds:
+                    ## this is a twin axes
+                    if hasattr(other_ax, '_pyees_xUnit'):
+                        if other_ax._pyees_xUnit != self.xUnit:
+                            raise ValueError(f"The x unit of the fit ({self.xUnit}) is not the same as the x unit of the graph ({other_ax._pyees_xUnit})")
+                    setattr(other_ax, '_pyees_xUnit', self.xUnit)
+        elif isinstance(ax, go.Figure):
+            raise NotImplementedError()
+        else:
+            raise ValueError('The axes has to be a matplotlib axes or a plotly graphs object')
+        
 
     def scatter(self, ax, showUncert=True, **kwargs):
         self._checkUnits(ax)            
@@ -2052,22 +2071,23 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from plotly import graph_objects as go
     from plotly.subplots import make_subplots
-  
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
+    
+    fig, ax1 = plt.subplots()
+
+    # ax1, ax2 = ax1
+    ax2 = ax1.twinx()
 
     x = variable([1,2,3], 'L/min', [0.1, 0.2, 0.3])
     y = variable([4,3,2], 'mbar', [0.2, 0.3, 0.4])
     z = variable([7,5,4], 'A', [0.7, 0.5, 0.4])
-    f = multi_variable_lin_fit([x,y], z)
-    f.scatter3D(ax)
-    f.addUnitToLabels3D(ax)
+    f = lin_fit(x, y)
+    f.scatter(ax1)
+    f.addUnitToLabels(ax1)
     
-    x = variable([1.5,2.5,3.5], 'L/min', [0.1, 0.2, 0.3])
-    y = variable([4,3,2], 'mbar', [0.2, 0.3, 0.4])
-    z = variable([7,5,4], 'A', [0.7, 0.5, 0.4])
-    f = multi_variable_lin_fit([x,y], z)
-    f.scatter3D(ax)
-
+    f = lin_fit(x, -z)
+    f.scatter(ax2)
+    f.addUnitToLabels(ax2)
+    fig.tight_layout()
+    
 
     plt.show()
