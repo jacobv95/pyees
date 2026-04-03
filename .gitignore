@@ -3,4 +3,4 @@ build
 dist
 .vscode
 .vs
-pyees.egg_infos
+pyees.egg-info

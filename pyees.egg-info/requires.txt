@@ -1,9 +1,0 @@
-numpy
-scipy
-openpyxl
-xlrd
-pyfluids
-xlwt
-plotly
-matplotlib
-python_calamine
