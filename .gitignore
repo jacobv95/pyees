@@ -4,3 +4,8 @@ dist
 .vscode
 .vs
 pyees.egg-info
+compileDist.py
+setup.cfg
+setup.py
+uploadToPypi.py
+.gitignore
