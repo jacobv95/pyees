@@ -3,6 +3,7 @@
 Temperatures are wierd. The units celsius and fahrenheit are relative units, meaning that 20 [C] is equal to 20 [K] above the temperature 273.15 [K]. This makes addition and subtraction of temperatures ambiguis. Pyees implements the following rules with respect to tempatures
 
  - A tempaturedifference is returned, when subtracing two temperatures
+ - Addition of two temperatures are handled like any other unit
  
 ```
 import pyees as pe
@@ -17,6 +18,10 @@ c = pe.variable(20,'K')
 a - c
 ## 30 [C] - 20 [K] = (30 [K] + 273.15 [K]) - 20[K] = 300.15 [K] - 20 [K] = 283.15 [DELTAK]
 >> 283 [DELTAK]
+
+a + b
+## 30 [C] + 20 [C] = 50 [C]
+>> 50 [C]
 ```
 
 
