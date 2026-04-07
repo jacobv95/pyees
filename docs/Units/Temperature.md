@@ -17,33 +17,11 @@ a - b
 c = pe.variable(20,'K')
 a - c
 ## 30 [C] - 20 [K] = (30 [K] + 273.15 [K]) - 20[K] = 300.15 [K] - 20 [K] = 283.15 [DELTAK]
->> 283 [DELTAK]
+>> 283.15 [DELTAK]
 
 a + b
 ## 30 [C] + 20 [C] = 50 [C]
 >> 50 [C]
-```
-
-
- - If temperature difference is added to or subtracted from a temperature, then a tempeature is returned in the same unit as the original temperature
-```
-import pyees as pe
-a = pe.variable(30,'C')
-b = pe.variable(10,'DELTAK')
-a + b 
-## 30 [C] + 10 [DELTAK] = 30 [C] + 10 [DELTAC] = 40 [C]
->> 40 [C]
-
-
-a - b
-## 30 [C] - 10 [DELTAK] = 30 [C] - 10 [DELTAC] = 20 [C]
->> 40 [C]
-
-
-c = pe.variable(13, 'F')
-a - c
-## 30 [C] - 13 [F] = 30 [C] - 7.22 [DELTAC] = 22.77 [C]
->> 22.8 [C]
 ```
 
 
